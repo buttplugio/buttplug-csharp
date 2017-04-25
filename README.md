@@ -1,6 +1,6 @@
 # Buttplug - C# Server Implementation
 
-[![Build Status](https://travis-ci.org/metafetish/buttplug.svg?branch=master)](https://travis-ci.org/metafetish/buttplug) [![Build status](https://ci.appveyor.com/api/projects/status/g7vtlw95c39in22k?svg=true)](https://ci.appveyor.com/project/qdot/buttplug)
+[![Patreon donate button](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/qdot)
 
 Buttplug is a framework for hooking up hardware to interfaces, where
 hardware usually means sex toys, but could honestly be just about
@@ -37,6 +37,14 @@ The current implementation projects are in:
   support, and developers that want node or cordova support.
   
 Whether any of these will get done is a really good question.
+
+## Support The Project
+
+If you find this project helpful, you
+can
+[support Metafetish projects via Patreon](http://patreon.com/qdot)!
+Every donation helps us afford more hardware to reverse, document, and
+write code for!
 
 ## License
 
