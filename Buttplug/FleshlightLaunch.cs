@@ -9,7 +9,7 @@ namespace Buttplug
 {
     class FleshlightLaunch : IButtplugDevice
     {
-        static readonly Guid RAUNCH_SERVICE = new Guid("88f80580-0000-01e6-aace-0002a5d5c51b");
+        static public readonly Guid SERVICE = new Guid("88f80580-0000-01e6-aace-0002a5d5c51b");
         static readonly Guid RAUNCH_TX_CHAR = new Guid("88f80581-0000-01e6-aace-0002a5d5c51b");
         static readonly Guid RAUNCH_RX_CHAR = new Guid("88f80582-0000-01e6-aace-0002a5d5c51b");
         static readonly Guid RAUNCH_CMD_CHAR = new Guid("88f80583-0000-01e6-aace-0002a5d5c51b");
@@ -31,8 +31,6 @@ namespace Buttplug
             this.CommandChr = CommandChr;
         }
 
-
-
         async static public Task<Option<IButtplugDevice>> CreateDevice(DeviceInformation d)
         {
             // TODO don't just completely drop errors, return an Either instead of an Option
@@ -51,7 +49,7 @@ namespace Buttplug
             Option<GattDeviceService> service = Option<GattDeviceService>.None;
             foreach (GattDeviceService srv in srvResult.Services)
             {
-                if (srv.Uuid == RAUNCH_SERVICE)
+                if (srv.Uuid == SERVICE)
                 {
                     service = Option<GattDeviceService>.Some(srv);
                     break;

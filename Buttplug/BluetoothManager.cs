@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Bluetooth;
 using LanguageExt;
@@ -20,51 +21,25 @@ namespace Buttplug
     {
         const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
-        private DeviceWatcher mBleDeviceWatcher = null;
+        private BluetoothLEAdvertisementWatcher mBleWatcher = null;
         public event EventHandler<DeviceFoundEventArgs> DeviceFound;
 
         public BluetoothManager()
         {
-            string[] reqProps = { "System.Devices.Aep.DeviceAddress", "System.ItemNameDisplay", "System.Devices.Aep.ModelName" };
-            mBleDeviceWatcher = DeviceInformation.CreateWatcher(
-                "",
-                reqProps,
-                DeviceInformationKind.AssociationEndpoint);
-            mBleDeviceWatcher.Added += DeviceWatcher_Added;
-            mBleDeviceWatcher.Updated += DeviceWatcher_Updated;
-            mBleDeviceWatcher.Removed += DeviceWatcher_Removed;
-            mBleDeviceWatcher.EnumerationCompleted += DeviceWatcher_EnumerationCompleted;
+            mBleWatcher = new BluetoothLEAdvertisementWatcher();
+            mBleWatcher.AdvertisementFilter.Advertisement.LocalName = "Launch";
+            mBleWatcher.Received += OnAdvertisementReceived;
         }
 
-        public async void DeviceWatcher_Added(DeviceWatcher watcher, DeviceInformation info)
+        public async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher o,
+                                                  BluetoothLEAdvertisementReceivedEventArgs e)
         {
-            //Debug.WriteLine("Added: " + info.Id + " " + info.Name);
-            
-            if (info.Name == "Launch")
-            {
-                Option<IButtplugDevice> device = await FleshlightLaunch.CreateDevice(info);
-                device.IfSome(x => DeviceFound?.Invoke(this, new DeviceFoundEventArgs(x)));
-            }
-        }
-
-        public void DeviceWatcher_Updated(DeviceWatcher watcher, DeviceInformationUpdate info)
-        {
-            //Debug.WriteLine("Updated: " + info.Id);
-        }
-
-        public void DeviceWatcher_Removed(DeviceWatcher watcher, DeviceInformationUpdate info)
-        {
-            //Debug.WriteLine("Removed: " + info.Id);
-        }
-
-        public void DeviceWatcher_EnumerationCompleted(DeviceWatcher watcher, object obj)
-        {
-            Debug.WriteLine("Done enumerating");
+            Console.WriteLine("FOUND DEVICE! " + e.Advertisement.LocalName);
         }
 
         public void StartScanning()
         {
-            mBleDeviceWatcher.Start();
+            mBleWatcher.Start();
         }
 
         public void AddServiceFilter(Guid aServiceFilter)
