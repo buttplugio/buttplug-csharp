@@ -9,12 +9,18 @@ namespace Buttplug
     public class ButtplugService
     {
         private BluetoothManager mBluetooth;
+        public event EventHandler<DeviceFoundEventArgs> DeviceFound;
 
         public ButtplugService()
         {
             mBluetooth = new BluetoothManager();
-            mBluetooth.AddServiceFilter(Raunch.RAUNCH_SERVICE);
             mBluetooth.StartScanning();
+            mBluetooth.DeviceFound += OnDeviceFound;
+        }
+
+        private void OnDeviceFound(object mgr, DeviceFoundEventArgs e)
+        {
+            DeviceFound?.Invoke(this, e);
         }
     }
 }

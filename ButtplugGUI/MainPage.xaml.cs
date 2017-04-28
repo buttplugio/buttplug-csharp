@@ -32,6 +32,7 @@ namespace ButtplugGUI
     {
 
         private ButtplugService mButtplug;
+        private BluetoothLEAdvertisementWatcher BleWatcher;
         public MainPage()
         {
             this.InitializeComponent();
@@ -40,6 +41,12 @@ namespace ButtplugGUI
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             ApplicationView.PreferredLaunchViewSize = new Size(600, 400);
             mButtplug = new ButtplugService();
+            mButtplug.DeviceFound += DeviceFound_Handler;
+        }
+
+        private void DeviceFound_Handler(object sender, DeviceFoundEventArgs e)
+        {
+            Debug.WriteLine("Found a device! " + e.device.Name);
         }
 
         private void ScanButton_Click(object sender, RoutedEventArgs e)
