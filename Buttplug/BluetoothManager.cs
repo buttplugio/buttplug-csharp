@@ -34,7 +34,11 @@ namespace Buttplug
         public async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher o,
                                                   BluetoothLEAdvertisementReceivedEventArgs e)
         {
-            Console.WriteLine("FOUND DEVICE! " + e.Advertisement.LocalName + " " + e.Advertisement.ServiceUuids);
+            Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
+            if (dev.IsNone)
+            {
+                return;
+            } 
         }
 
         public void StartScanning()

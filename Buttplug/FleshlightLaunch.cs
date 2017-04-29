@@ -31,16 +31,12 @@ namespace Buttplug
             this.CommandChr = CommandChr;
         }
 
-        async static public Task<Option<IButtplugDevice>> CreateDevice(DeviceInformation d)
+        async static public Task<Option<IButtplugDevice>> CreateDevice(BluetoothLEDevice d)
         {
             // TODO don't just completely drop errors, return an Either instead of an Option
             // TODO Also clean up if/else blocks
-            BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(d.Id);
-            if (bleDevice == null)
-            {
-                return Option<IButtplugDevice>.None;
-            }
-            GattDeviceServicesResult srvResult = await bleDevice.GetGattServicesAsync();
+            
+            GattDeviceServicesResult srvResult = await d.GetGattServicesForUuidAsync(SERVICE);
             if (srvResult.Status != GattCommunicationStatus.Success)
             {
                 return Option<IButtplugDevice>.None;
@@ -91,7 +87,7 @@ namespace Buttplug
             {
                 return Option<IButtplugDevice>.None;
             }
-            return Option<IButtplugDevice>.Some(new FleshlightLaunch(bleDevice, tx, rx, cmd));
+            return Option<IButtplugDevice>.Some(new FleshlightLaunch(d, tx, rx, cmd));
         }
 
         public bool ParseMessage(ButtplugMessage msg)
