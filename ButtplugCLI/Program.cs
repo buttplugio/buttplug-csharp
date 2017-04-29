@@ -4,16 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Buttplug;
+using WebSocketSharp;
+using WebSocketSharp.Server;
 
 namespace ButtplugCLI
 {
+    public class ButtplugServer : WebSocketBehavior
+    {
+        protected override void OnMessage(MessageEventArgs e)
+        {
+            Console.WriteLine("Got a message!");
+            base.OnMessage(e);
+        }
+    }
+
     class Program
     {
         private ButtplugService mButtplug;
         static void Main(string[] args)
         {
             var p = new Program();
-            Console.ReadLine();
+            var wssv = new WebSocketServer(6868);
+            wssv.Log.Level = LogLevel.Trace;
+            wssv.AddWebSocketService<ButtplugServer>("/Buttplug");
+
+            wssv.Start();
+            Console.ReadKey(true);
+            wssv.Stop();
         }
 
         public Program()
