@@ -35,10 +35,9 @@ namespace Buttplug
                                                   BluetoothLEAdvertisementReceivedEventArgs e)
         {
             Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
-            if (dev.IsNone)
-            {
-                return;
-            } 
+            Option<IButtplugDevice> l = null;
+            dev.IfSome(async d => l = await FleshlightLaunch.CreateDevice(d));
+            l.IfSome(d => DeviceFound?.Invoke(this, new DeviceFoundEventArgs(d)));
         }
 
         public void StartScanning()

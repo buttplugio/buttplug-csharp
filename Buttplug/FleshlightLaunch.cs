@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
 using Windows.Devices.Enumeration;
@@ -34,59 +35,34 @@ namespace Buttplug
         async static public Task<Option<IButtplugDevice>> CreateDevice(BluetoothLEDevice d)
         {
             // TODO don't just completely drop errors, return an Either instead of an Option
-            // TODO Also clean up if/else blocks
-            
-            GattDeviceServicesResult srvResult = await d.GetGattServicesForUuidAsync(SERVICE);
-            if (srvResult.Status != GattCommunicationStatus.Success)
+            GattDeviceServicesResult srvResult = await d.GetGattServicesForUuidAsync(SERVICE, BluetoothCacheMode.Cached);
+            if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
             {
                 return Option<IButtplugDevice>.None;
             }
-            // TODO why can't I use IEnumerable.Where here?
-            Option<GattDeviceService> service = Option<GattDeviceService>.None;
-            foreach (GattDeviceService srv in srvResult.Services)
-            {
-                if (srv.Uuid == SERVICE)
-                {
-                    service = Option<GattDeviceService>.Some(srv);
-                    break;
-                }
-            }
-            if (service.IsNone)
-            {
-                return Option<IButtplugDevice>.None;
-            }
+            var service = srvResult.Services.First();
 
-            GattCharacteristicsResult chrResult = null;
-            service.IfSome(async x => chrResult = await x.GetCharacteristicsAsync());
+            GattCharacteristicsResult chrResult = await service.GetCharacteristicsAsync();
             if (chrResult.Status != GattCommunicationStatus.Success)
             {
                 return Option<IButtplugDevice>.None;
             }
-            GattCharacteristic tx = null;
-            GattCharacteristic rx = null;
-            GattCharacteristic cmd = null;
-            foreach (GattCharacteristic chr in chrResult.Characteristics)
-            {
-                if (chr.Uuid == RAUNCH_TX_CHAR)
-                {
-                    tx = chr;
-                    continue;
-                }
-                else if (chr.Uuid == RAUNCH_RX_CHAR)
-                {
-                    rx = chr;
-                    continue;
-                }
-                else if (chr.Uuid == RAUNCH_CMD_CHAR)
-                {
-                    cmd = chr;
-                    continue;
-                }
-            }
-            if (tx == null || rx == null || cmd == null)
+
+            var chrs =
+                (from x in chrResult.Characteristics where x.Uuid == RAUNCH_TX_CHAR
+                 from y in chrResult.Characteristics where y.Uuid == RAUNCH_RX_CHAR
+                 from z in chrResult.Characteristics where z.Uuid == RAUNCH_CMD_CHAR
+                 select (x, y, z));
+
+            if (!chrs.Any())
             {
                 return Option<IButtplugDevice>.None;
             }
+
+            GattCharacteristic tx = null;
+            GattCharacteristic rx = null;
+            GattCharacteristic cmd = null;
+            (tx, rx, cmd) = chrs.First().ToTuple();
             return Option<IButtplugDevice>.Some(new FleshlightLaunch(d, tx, rx, cmd));
         }
 

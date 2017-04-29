@@ -14,8 +14,8 @@ namespace Buttplug
         public ButtplugService()
         {
             mBluetooth = new BluetoothManager();
-            mBluetooth.StartScanning();
             mBluetooth.DeviceFound += OnDeviceFound;
+            mBluetooth.StartScanning();
         }
 
         private void OnDeviceFound(object mgr, DeviceFoundEventArgs e)
