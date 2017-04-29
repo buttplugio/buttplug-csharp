@@ -10,7 +10,7 @@ namespace ButtplugCLI
     class Program
     {
         private ButtplugService mButtplug;
-        static void Main(string[] args)   
+        static void Main(string[] args)
         {
             var p = new Program();
             Console.ReadLine();

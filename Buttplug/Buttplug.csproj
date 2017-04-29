@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FBCDA853-1821-4498-AB5D-DF845C640C5A}</ProjectGuid>
+    <ProjectGuid>{23D9EC18-2DBA-4149-A951-B84786D4BFA6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Buttplug</RootNamespace>

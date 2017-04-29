@@ -34,7 +34,7 @@ namespace Buttplug
         public async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher o,
                                                   BluetoothLEAdvertisementReceivedEventArgs e)
         {
-            Console.WriteLine("FOUND DEVICE! " + e.Advertisement.LocalName);
+            Console.WriteLine("FOUND DEVICE! " + e.Advertisement.LocalName + " " + e.Advertisement.ServiceUuids);
         }
 
         public void StartScanning()

@@ -1,4 +1,4 @@
-# Buttplug - C# Server Implementation
+# Buttplug - Windows 10 C# Server Implementation
 
 [![Patreon donate button](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/qdot)
 
@@ -37,6 +37,27 @@ The current implementation projects are in:
   support, and developers that want node or cordova support.
   
 Whether any of these will get done is a really good question.
+
+## Platform Support
+
+Buttplug C# currently only supports Windows 10 15063 (Creators
+Update). If enough noise is made, it is possible that we could also
+support everything back to the Anniversary update.
+
+Unfortunately, we cannot support Windows 7/8 through Buttplug C#. The
+Bluetooth LE APIs we need to function are only available in
+Windows 10. There is a chance we could support older versions of
+windows through node.js, but demand has not warrented that work at the
+moment.
+
+## Special Installation Steps
+
+Due to a bug in the Windows 15063 SDK, applications using the BLE APIs
+need to have an AppId in the registry with a special SDDL access
+string. I've included a registry command file that will allow users to
+use the executables this project compiles, and once we're to the point
+of having an installer, this step will be taken care of there. For
+more info on this bug, see [this msdn forums post](https://social.msdn.microsoft.com/Forums/en-US/58da3fdb-a0e1-4161-8af3-778b6839f4e1/bluetooth-bluetoothledevicefromidasync-does-not-complete-on-10015063?forum=wdk#ef927009-676c-47bb-8201-8a80d2323a7f).
 
 ## Support The Project
 
