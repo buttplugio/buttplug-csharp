@@ -1,12 +1,16 @@
 ﻿using System;
 using Buttplug;
+using Newtonsoft.Json;
 
 namespace Buttplug.Messages
 {
     public class FleshlightLaunchRawMessage : IButtplugDeviceMessage
     {
-        public UInt32 DeviceIndex { get; }
+        [JsonProperty(Required = Required.Always)]
+        public UInt32 DeviceIndex { get; set; }
+        [JsonProperty(Required = Required.Always)]
         public readonly UInt16 Speed;
+        [JsonProperty(Required = Required.Always)]
         public readonly UInt16 Position;
 
         FleshlightLaunchRawMessage(UInt32 aDeviceIndex, UInt16 aSpeed, UInt16 aPosition)
@@ -19,12 +23,15 @@ namespace Buttplug.Messages
 
     public class LovenseRawMessage : IButtplugDeviceMessage
     {
+        [JsonProperty(Required = Required.Always)]
         public UInt32 DeviceIndex { get; }
     }
 
     public class SingleMotorVibrateMessage : IButtplugDeviceMessage
     {
-        public UInt32 DeviceIndex { get; }
+        [JsonProperty(Required = Required.Always)]
+        public UInt32 DeviceIndex { get; set; }
+        [JsonProperty(Required = Required.Always)]
         public Double Speed { get; }
 
         public SingleMotorVibrateMessage(UInt32 d, Double speed)
@@ -36,6 +43,18 @@ namespace Buttplug.Messages
 
     public class VectorSpeedMessage : IButtplugDeviceMessage
     {
+        [JsonProperty(Required = Required.Always)]
         public UInt32 DeviceIndex { get; }
+    }
+
+    public class PingMessage : IButtplugMessage
+    {
+        [JsonProperty(Required = Required.Always)]
+        public bool PingBool { get; }
+
+        public PingMessage(bool b)
+        {
+            PingBool = b;
+        }
     }
 }
