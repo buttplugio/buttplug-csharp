@@ -1,9 +1,6 @@
 version: "0.0.1.{build}"
-environment:
-  install:
-    - git submodule update --init
+install:
+  - git submodule update --init
 skip_commits:
   files:
     - README.md
-    
-  
