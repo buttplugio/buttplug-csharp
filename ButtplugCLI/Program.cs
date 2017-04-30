@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Buttplug;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -36,10 +32,11 @@ namespace ButtplugCLI
         public Program()
         {
             mButtplug = new ButtplugService();
-            mButtplug.DeviceFound += DeviceFoundHandler;
+            mButtplug.DeviceAdded += DeviceAddedHandler;
+            mButtplug.StartScanning();
         }
 
-        public void DeviceFoundHandler(object o, DeviceFoundEventArgs e)
+        public void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
         {
             Console.WriteLine("Found a device!");
         }

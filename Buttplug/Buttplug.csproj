@@ -71,13 +71,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\BluetoothManager.cs" />
-    <Compile Include="Devices\ButtplugDevice.cs" />
-    <Compile Include="Messages\ButtplugMessage.cs" />
     <Compile Include="Core\ButtplugService.cs" />
+    <Compile Include="Devices\ButtplugDevice.cs" />
+    <Compile Include="Devices\GamepadDevice.cs" />
+    <Compile Include="Messages\ButtplugMessage.cs" />
     <Compile Include="Devices\FleshlightLaunch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\USBManager.cs" />
-    <Compile Include="Core\XInputManager.cs" />
+    <Compile Include="Core\GamepadManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

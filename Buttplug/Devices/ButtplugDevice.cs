@@ -7,17 +7,14 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth;
 using LanguageExt;
-using ButtplugMessages;
+using Buttplug.Messages;
 
 namespace Buttplug
 {
     public interface IButtplugDevice
     {
         String Name { get; }
-        UInt32 DeviceIndex { get; }
         bool ParseMessage(IButtplugDeviceMessage aMsg);
-        bool Connect();
-        bool Disconnect();
     }
 
     public abstract class ButtplugBluetoothDeviceFactory

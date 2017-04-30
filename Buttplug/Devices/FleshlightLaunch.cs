@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
-using Windows.Devices.Enumeration;
 using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using ButtplugMessages;
+using Buttplug.Messages;
 using Buttplug;
 
-namespace ButtplugDevices
+namespace Buttplug.Devices
 {
     struct FleshlightLaunchBluetoothInfo
     {
@@ -61,26 +58,23 @@ namespace ButtplugDevices
             GattCharacteristic rx = null;
             GattCharacteristic cmd = null;
             (tx, rx, cmd) = chrs.First().ToTuple();
-            return Option<IButtplugDevice>.Some(new FleshlightLaunch(0, aDevice, tx, rx, cmd));
+            return Option<IButtplugDevice>.Some(new FleshlightLaunch(aDevice, tx, rx, cmd));
         }
     }
 
     class FleshlightLaunch : IButtplugDevice
     {
         public String Name { get; }
-        public UInt32 DeviceIndex { get; }
         private BluetoothLEDevice LaunchDevice;
         private GattCharacteristic WriteChr;
         private GattCharacteristic ButtonNotifyChr;
         private GattCharacteristic CommandChr;
 
-        public FleshlightLaunch(UInt32 aDeviceIndex,
-                                BluetoothLEDevice aDevice,
+        public FleshlightLaunch(BluetoothLEDevice aDevice,
                                 GattCharacteristic aWriteChr,
                                 GattCharacteristic aButtonNotifyChr,
                                 GattCharacteristic aCommandChr)
         {
-            this.DeviceIndex = aDeviceIndex;
             this.Name = aDevice.Name;
             this.LaunchDevice = aDevice;
             this.WriteChr = aWriteChr;
@@ -94,19 +88,9 @@ namespace ButtplugDevices
             {
                 case FleshlightLaunchRawMessage m:
                     Console.WriteLine("Got a FleshlightLaunchRawMessage!");
-                    break;
+                    return true;
             }
 
-            return false;
-        }
-
-        public bool Connect()
-        {
-            return false;
-        }
-
-        public bool Disconnect()
-        {
             return false;
         }
     }

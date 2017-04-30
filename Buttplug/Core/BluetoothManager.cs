@@ -1,50 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 using Windows.Devices.Bluetooth.Advertisement;
-using Windows.Devices.Enumeration;
 using Windows.Devices.Bluetooth;
 using LanguageExt;
 
 namespace Buttplug
 {
-    public class DeviceFoundEventArgs : EventArgs
-    {
-        public DeviceFoundEventArgs(IButtplugDevice d)
-        {
-            this.device = d;
-        }
 
-        public IButtplugDevice device;
-    }
-
-    public class BluetoothManager
+    class BluetoothManager : IDeviceManager
     {
         const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
         private BluetoothLEAdvertisementWatcher BleWatcher = null;
         private List<ButtplugBluetoothDeviceFactory> DeviceFactories;
-        public event EventHandler<DeviceFoundEventArgs> DeviceFound;
+
 
         public BluetoothManager()
         {
-
-            // Introspect the ButtplugDevices namespace for all Factory classes.
+            // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             DeviceFactories = new List<ButtplugBluetoothDeviceFactory>();
-
             var factoryClasses = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(t => t.GetTypes())
-                .Where(t => t.IsClass && t.Namespace == "ButtplugDevices" && typeof(ButtplugBluetoothDeviceFactory).IsAssignableFrom(t));
-
-            foreach (var c in factoryClasses)
-            {
-                DeviceFactories.Add((ButtplugBluetoothDeviceFactory)Activator.CreateInstance(c));
-            }
+                .Where(t => t.IsClass && t.Namespace == "Buttplug.Devices" && typeof(ButtplugBluetoothDeviceFactory).IsAssignableFrom(t));
+            factoryClasses.ToList().ForEach(c => DeviceFactories.Add((ButtplugBluetoothDeviceFactory)Activator.CreateInstance(c)));
 
             BleWatcher = new BluetoothLEAdvertisementWatcher();
             BleWatcher.ScanningMode = BluetoothLEScanningMode.Active;
-            // We can't filter device advertisements because you can only add one LocalName filter at a time, meaning we would have to set up multiple watchers for multiple devices.
+            // We can't filter device advertisements because you can only add one LocalName filter at a time, meaning we 
+            // would have to set up multiple watchers for multiple devices. We'll handle our own filtering via the factory
+            // classes whenever we receive a device.
             BleWatcher.Received += OnAdvertisementReceived;
         }
 
@@ -65,19 +50,17 @@ namespace Buttplug
             Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
             Option<IButtplugDevice> l = null;
             dev.IfSome(async d => l = await factory.CreateDeviceAsync(d));
-            l.IfSome(d => DeviceFound?.Invoke(this, new DeviceFoundEventArgs(d)));
+            l.IfSome(d => InvokeDeviceAdded(new DeviceAddedEventArgs(d)));
         }
 
-        public void StartScanning()
+        public override void StartScanning()
         {
             BleWatcher.Start();
         }
 
-        public void AddServiceFilter(Guid aServiceFilter)
+        public override void StopScanning()
         {
+            BleWatcher.Stop();
         }
-
-        
-
     }
 }
