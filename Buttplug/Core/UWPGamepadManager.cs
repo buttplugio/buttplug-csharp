@@ -6,7 +6,7 @@ using Buttplug.Devices;
 
 namespace Buttplug
 {
-    class UWPGamepadManager : IDeviceManager
+    class UWPGamepadManager : DeviceManager
     {
         //TODO Pay attention to gamepad events
         List<UWPGamepadDevice> ConnectedGamepads;

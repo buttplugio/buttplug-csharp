@@ -5,7 +5,6 @@ using LanguageExt;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Messages;
-using Buttplug;
 
 namespace Buttplug.Devices
 {

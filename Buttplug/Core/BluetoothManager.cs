@@ -4,11 +4,12 @@ using System.Linq;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth;
 using LanguageExt;
+using Buttplug.Devices;
 
 namespace Buttplug
 {
 
-    class BluetoothManager : IDeviceManager
+    class BluetoothManager : DeviceManager
     {
         const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 

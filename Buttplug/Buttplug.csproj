@@ -33,6 +33,9 @@
     <Reference Include="LanguageExt.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LanguageExt.Core.2.0.60\lib\net451\LanguageExt.Core.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=3.1.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.3.1.1\lib\net45\SharpDX.dll</HintPath>
     </Reference>
@@ -78,8 +81,10 @@
   <ItemGroup>
     <Compile Include="Core\BluetoothManager.cs" />
     <Compile Include="Core\ButtplugService.cs" />
+    <Compile Include="Core\DeviceManager.cs" />
     <Compile Include="Core\XInputGamepadManager.cs" />
-    <Compile Include="Devices\ButtplugDevice.cs" />
+    <Compile Include="Core\ButtplugBluetoothDeviceFactory.cs" />
+    <Compile Include="Core\IButtplugDevice.cs" />
     <Compile Include="Devices\UWPGamepadDevice.cs" />
     <Compile Include="Devices\XInputGamepadDevice.cs" />
     <Compile Include="Messages\ButtplugMessage.cs" />

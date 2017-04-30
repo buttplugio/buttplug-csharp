@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Buttplug.Messages;
-using System.Threading.Tasks;
+using Buttplug.Devices;
 
 namespace Buttplug
 {
@@ -24,21 +23,9 @@ namespace Buttplug
         }
     }
 
-    abstract class IDeviceManager
-    {
-        public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
-        protected void InvokeDeviceAdded(DeviceAddedEventArgs args)
-        {
-            //Can't invoke this from child classes? Weird.
-            DeviceAdded?.Invoke(this, args);
-        }
-        abstract public void StartScanning();
-        abstract public void StopScanning();
-    }
-
     public class ButtplugService
     {
-        List<IDeviceManager> Managers;
+        List<DeviceManager> Managers;
         Dictionary<uint, IButtplugDevice> Devices;
         uint DeviceIndex;
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
@@ -50,7 +37,7 @@ namespace Buttplug
         {
             Devices = new Dictionary<uint, IButtplugDevice>();
             DeviceIndex = 0;
-            Managers = new List<IDeviceManager>();
+            Managers = new List<DeviceManager>();
             Managers.Add(new BluetoothManager());
             Managers.Add(new XInputGamepadManager());
             Managers.ForEach(m => m.DeviceAdded += DeviceAddedHandler);

@@ -2,6 +2,8 @@
 using Buttplug;
 using WebSocketSharp;
 using WebSocketSharp.Server;
+using System.Threading.Tasks;
+using Buttplug.Messages;
 
 namespace ButtplugCLI
 {
@@ -39,7 +41,29 @@ namespace ButtplugCLI
         public void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
         {
             Console.WriteLine("Found a device!");
+            Task.Delay(1000).ContinueWith(t => this.SendGamepadOn());
         }
 
+        public void SendGamepadOn()
+        {
+            SingleMotorVibrateMessage m = new SingleMotorVibrateMessage(0, 0.8);
+            if(!mButtplug.SendMessage(m))
+            {
+                Console.WriteLine("Can't send on message!");
+                return;
+            }
+            Task.Delay(1000).ContinueWith(t => this.SendGamepadOff());
+        }
+
+        public void SendGamepadOff()
+        {
+            SingleMotorVibrateMessage m = new SingleMotorVibrateMessage(0, 0);
+            if (!mButtplug.SendMessage(m))
+            {
+                Console.WriteLine("Can't send off message!");
+                return;
+            }
+            Task.Delay(1000).ContinueWith(t => this.SendGamepadOn());
+        }
     }
 }

@@ -8,9 +8,8 @@ using Buttplug.Devices;
 
 namespace Buttplug
 {
-    class XInputGamepadManager : IDeviceManager
+    class XInputGamepadManager : DeviceManager
     {
-        //TODO Pay attention to gamepad events
         List<XInputGamepadDevice> ConnectedGamepads;
 
         public XInputGamepadManager()

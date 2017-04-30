@@ -1,23 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Devices.Enumeration;
+using LanguageExt;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth;
-using LanguageExt;
-using Buttplug.Messages;
+using Buttplug.Devices;
 
 namespace Buttplug
 {
-    public interface IButtplugDevice
-    {
-        String Name { get; }
-        bool ParseMessage(IButtplugDeviceMessage aMsg);
-    }
-
-    public abstract class ButtplugBluetoothDeviceFactory
+    abstract class ButtplugBluetoothDeviceFactory
     {
         protected List<String> NameFilters { get; }
         protected List<Guid> ServiceFilters { get; }
@@ -43,6 +35,6 @@ namespace Buttplug
             }
             return true;
         }
-        abstract public Task<Option<IButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice);
+        public abstract Task<Option<IButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice);
     }
 }
