@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugCLI", "ButtplugCLI\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "websocket-sharp\websocket-sharp\websocket-sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugGUI", "ButtplugGUI\ButtplugGUI.csproj", "{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
@@ -43,14 +41,6 @@ Global
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release_Ubuntu|Any CPU.Build.0 = Release_Ubuntu|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
