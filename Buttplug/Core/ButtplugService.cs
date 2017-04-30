@@ -52,7 +52,7 @@ namespace Buttplug
             DeviceIndex = 0;
             Managers = new List<IDeviceManager>();
             Managers.Add(new BluetoothManager());
-            Managers.Add(new GamepadManager());
+            Managers.Add(new XInputGamepadManager());
             Managers.ForEach(m => m.DeviceAdded += DeviceAddedHandler);
         }
 

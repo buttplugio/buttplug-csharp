@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Gaming.Input;
+using SharpDX.XInput;
 using Buttplug.Messages;
-using Buttplug;
 
 namespace Buttplug.Devices
 {
-    class GamepadDevice : IButtplugDevice
+    class XInputGamepadDevice : IButtplugDevice
     {
-        public Gamepad Device { get; }
+        Controller Device;
         public String Name { get; }
 
-        public GamepadDevice(Gamepad d)
+        public XInputGamepadDevice(Controller d)
         {
-            Name = "XBox Compatible Gamepad";
+            Name = "XBox Compatible Gamepad (XInput)";
             Device = d;
         }
 
@@ -25,6 +24,10 @@ namespace Buttplug.Devices
             switch (aMsg)
             {
                 case SingleMotorVibrateMessage m:
+                    var v = new Vibration();
+                    v.LeftMotorSpeed = (ushort)(m.Speed * 65536);
+                    v.RightMotorSpeed = (ushort)(m.Speed * 65536);
+                    Device.SetVibration(v);
                     return true;
             }
             return false;

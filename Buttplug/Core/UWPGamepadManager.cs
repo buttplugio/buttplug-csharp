@@ -6,14 +6,14 @@ using Buttplug.Devices;
 
 namespace Buttplug
 {
-    class GamepadManager : IDeviceManager
+    class UWPGamepadManager : IDeviceManager
     {
         //TODO Pay attention to gamepad events
-        List<GamepadDevice> ConnectedGamepads;
+        List<UWPGamepadDevice> ConnectedGamepads;
 
-        public GamepadManager()
+        public UWPGamepadManager()
         {
-            ConnectedGamepads = new List<GamepadDevice>();
+            ConnectedGamepads = new List<UWPGamepadDevice>();
             Gamepad.GamepadAdded += GamepadAdded;
         }
 
@@ -24,8 +24,7 @@ namespace Buttplug
 
         public void GamepadAdded(object o, Gamepad e)
         {
-            Console.WriteLine("Found gamepad!");
-            var device = new GamepadDevice(e);
+            var device = new UWPGamepadDevice(e);
             ConnectedGamepads.Add(device);
             InvokeDeviceAdded(new DeviceAddedEventArgs(device));
         }

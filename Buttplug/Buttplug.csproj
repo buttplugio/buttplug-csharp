@@ -33,6 +33,12 @@
     <Reference Include="LanguageExt.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LanguageExt.Core.2.0.60\lib\net451\LanguageExt.Core.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX, Version=3.1.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.3.1.1\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XInput, Version=3.1.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.XInput.3.1.1\lib\net45\SharpDX.XInput.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Reactive.Core, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
@@ -72,13 +78,15 @@
   <ItemGroup>
     <Compile Include="Core\BluetoothManager.cs" />
     <Compile Include="Core\ButtplugService.cs" />
+    <Compile Include="Core\XInputGamepadManager.cs" />
     <Compile Include="Devices\ButtplugDevice.cs" />
-    <Compile Include="Devices\GamepadDevice.cs" />
+    <Compile Include="Devices\UWPGamepadDevice.cs" />
+    <Compile Include="Devices\XInputGamepadDevice.cs" />
     <Compile Include="Messages\ButtplugMessage.cs" />
     <Compile Include="Devices\FleshlightLaunch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\USBManager.cs" />
-    <Compile Include="Core\GamepadManager.cs" />
+    <Compile Include="Core\UWPGamepadManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

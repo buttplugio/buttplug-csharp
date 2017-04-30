@@ -39,6 +39,15 @@ namespace Buttplug.Messages
     {
         public String Name { get; }
         public UInt32 DeviceIndex { get; }
+        public Double Speed { get; }
+
+        public SingleMotorVibrateMessage(UInt32 d, Double speed)
+        {
+            Name = "SingleMotorVibrateMessage";
+            DeviceIndex = d;
+            Speed = speed;
+        }
+
     }
 
     public class VectorSpeedMessage : IButtplugDeviceMessage
