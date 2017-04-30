@@ -1,9 +1,12 @@
 ﻿using System;
-using Buttplug;
+using System.Collections.Generic;
+using System.Linq;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using System.Threading.Tasks;
+using Buttplug;
 using Buttplug.Messages;
+using System.Reflection;
 
 namespace ButtplugCLI
 {
@@ -19,6 +22,7 @@ namespace ButtplugCLI
     class Program
     {
         private ButtplugService mButtplug;
+        Dictionary<String, Type> MessageTypes;
         static void Main(string[] args)
         {
             var p = new Program();
@@ -33,9 +37,19 @@ namespace ButtplugCLI
 
         public Program()
         {
+            var messageClasses = from t in Assembly.GetAssembly(typeof(IButtplugMessage)).GetTypes()
+                                 where t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(IButtplugMessage).IsAssignableFrom(t)
+                                 select t;
+
+            Console.WriteLine("Message types: " + messageClasses.Count());
+            MessageTypes = new Dictionary<String, Type>();
+            messageClasses.ToList().ForEach(c => {
+                Console.WriteLine(c.Name);
+                MessageTypes.Add(c.Name, c);
+            });
             mButtplug = new ButtplugService();
             mButtplug.DeviceAdded += DeviceAddedHandler;
-            mButtplug.StartScanning();
+            //mButtplug.StartScanning();
         }
 
         public void DeviceAddedHandler(object o, DeviceAddedEventArgs e)

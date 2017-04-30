@@ -82,6 +82,7 @@
     <Compile Include="Core\BluetoothManager.cs" />
     <Compile Include="Core\ButtplugService.cs" />
     <Compile Include="Core\DeviceManager.cs" />
+    <Compile Include="Core\IButtplugMessage.cs" />
     <Compile Include="Core\XInputGamepadManager.cs" />
     <Compile Include="Core\ButtplugBluetoothDeviceFactory.cs" />
     <Compile Include="Core\IButtplugDevice.cs" />
