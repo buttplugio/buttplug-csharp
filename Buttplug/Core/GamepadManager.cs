@@ -14,29 +14,20 @@ namespace Buttplug
         public GamepadManager()
         {
             ConnectedGamepads = new List<GamepadDevice>();
+            Gamepad.GamepadAdded += GamepadAdded;
         }
 
         public override void StartScanning()
         {
-            Console.WriteLine("Number of gamepads: " + Gamepad.Gamepads.Count());
-            var newGamepads = Gamepad.Gamepads;
-            foreach (var g in newGamepads)
-            {
-                var d = from x in ConnectedGamepads
-                        where x.Device == g
-                        select x;
-                if (!d.Any())
-                {
-                    var device = new GamepadDevice(g);
-                    ConnectedGamepads.Add(device);
-                    InvokeDeviceAdded(new DeviceAddedEventArgs(device));
-                }
-            }
+            //Noop
         }
 
         public void GamepadAdded(object o, Gamepad e)
         {
             Console.WriteLine("Found gamepad!");
+            var device = new GamepadDevice(e);
+            ConnectedGamepads.Add(device);
+            InvokeDeviceAdded(new DeviceAddedEventArgs(device));
         }
 
         public override void StopScanning()
