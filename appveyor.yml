@@ -2,8 +2,12 @@ version: "0.0.1.{build}"
 install:
   - git submodule update --init
 image: Visual Studio 2017
+before_build:
+  - nuget restore
 build:
   project: buttplug-csharp.sln
 skip_commits:
   files:
     - README.md
+cache:
+  - packages -> **\packages.config
