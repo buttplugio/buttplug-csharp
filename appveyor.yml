@@ -17,7 +17,7 @@ skip_commits:
   files:
     - README.md
 after_test:
-  - set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
-  - iscc buttplug-installer.iss
+  - ps: If (($env:CONFIGURATION -imatch "Release")) { set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5" }
+  - ps: If (($env:CONFIGURATION -imatch "Release")) { iscc buttplug-installer.iss }
 cache:
   - packages -> **\packages.config
