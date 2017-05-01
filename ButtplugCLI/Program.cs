@@ -4,7 +4,6 @@ using WebSocketSharp.Server;
 using Buttplug;
 using CommandLine;
 using CommandLine.Text;
-using System.Text;
 
 namespace ButtplugCLI
 {
