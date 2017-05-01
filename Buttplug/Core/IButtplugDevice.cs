@@ -14,7 +14,7 @@ namespace Buttplug
     public interface IButtplugDevice
     {
         String Name { get; }
-        bool ParseMessage(IButtplugDeviceMessage aMsg);
+        Task<bool> ParseMessage(IButtplugDeviceMessage aMsg);
     }
 
 }

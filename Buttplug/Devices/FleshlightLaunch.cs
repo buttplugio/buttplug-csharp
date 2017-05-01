@@ -81,7 +81,7 @@ namespace Buttplug.Devices
             this.CommandChr = aCommandChr;
         }
 
-        public bool ParseMessage(IButtplugDeviceMessage msg)
+        public async Task<bool> ParseMessage(IButtplugDeviceMessage msg)
         {
             switch (msg)
             {

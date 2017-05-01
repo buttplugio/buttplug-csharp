@@ -19,7 +19,7 @@ namespace Buttplug.Devices
             Device = d;
         }
 
-        public bool ParseMessage(IButtplugDeviceMessage aMsg)
+        public async Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)
         {
             switch (aMsg)
             {

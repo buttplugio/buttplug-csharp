@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Buttplug
 {
@@ -49,7 +50,7 @@ namespace Buttplug
             DeviceAdded?.Invoke(this, e);
         }
 
-        public bool SendMessage(IButtplugMessage aMsg)
+        public async Task<bool> SendMessage(IButtplugMessage aMsg)
         {
             switch (aMsg)
             {
@@ -58,7 +59,7 @@ namespace Buttplug
                     {
                         return false;
                     }
-                    return Devices[m.DeviceIndex].ParseMessage(m);
+                    return await Devices[m.DeviceIndex].ParseMessage(m);
             }
             return false;
         }
