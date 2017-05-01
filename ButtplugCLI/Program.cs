@@ -25,6 +25,7 @@ namespace ButtplugCLI
         {
             Console.WriteLine("Got a message! " + e.Data);
             base.OnMessage(e);
+            mButtplug.SendMessage(e.Data);
         }
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)

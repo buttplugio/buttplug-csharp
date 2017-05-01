@@ -23,6 +23,7 @@ namespace Buttplug
 
     public class ButtplugService
     {
+        ButtplugJSONMessageParser Parser;
         List<DeviceManager> Managers;
         Dictionary<uint, IButtplugDevice> Devices;
         uint DeviceIndex;
@@ -33,6 +34,7 @@ namespace Buttplug
 
         public ButtplugService()
         {
+            Parser = new ButtplugJSONMessageParser();
             Devices = new Dictionary<uint, IButtplugDevice>();
             DeviceIndex = 0;
             Managers = new List<DeviceManager>();
@@ -58,6 +60,15 @@ namespace Buttplug
                     }
                     return Devices[m.DeviceIndex].ParseMessage(m);
             }
+            return false;
+        }
+
+        public bool SendMessage(String aJSONMsg)
+        {
+            Parser.Deserialize(aJSONMsg).IfSome(m =>
+            {
+                SendMessage(m);
+            });
             return false;
         }
 
