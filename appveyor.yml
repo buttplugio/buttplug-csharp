@@ -1,4 +1,10 @@
 version: "0.0.1.{build}"
+branches:
+ except:
+   - gh-pages
+configuration:
+  - Debug
+  - Release
 install:
   - choco install -y InnoSetup
   - git submodule update --init
