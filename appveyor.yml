@@ -1,5 +1,6 @@
 version: "0.0.1.{build}"
 install:
+  - choco install -y InnoSetup
   - git submodule update --init
 image: Visual Studio 2017
 before_build:
@@ -9,5 +10,8 @@ build:
 skip_commits:
   files:
     - README.md
+after_test:
+  - set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
+  - iscc buttplug-installer.iss
 cache:
   - packages -> **\packages.config
