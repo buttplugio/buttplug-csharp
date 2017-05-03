@@ -5,6 +5,7 @@ using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth;
 using LanguageExt;
 using Buttplug.Devices;
+using NLog;
 
 namespace Buttplug
 {
@@ -15,16 +16,25 @@ namespace Buttplug
 
         private BluetoothLEAdvertisementWatcher BleWatcher = null;
         private List<ButtplugBluetoothDeviceFactory> DeviceFactories;
-
+        Logger BPLogger;
 
         public BluetoothManager()
         {
+            BPLogger = LogManager.GetLogger("Buttplug");
+            BPLogger.Trace("Setting up Bluetooth Manager");
+
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             DeviceFactories = new List<ButtplugBluetoothDeviceFactory>();
-            var factoryClasses = AppDomain.CurrentDomain.GetAssemblies()
+            AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(t => t.GetTypes())
-                .Where(t => t.IsClass && t.Namespace == "Buttplug.Devices" && typeof(ButtplugBluetoothDeviceFactory).IsAssignableFrom(t));
-            factoryClasses.ToList().ForEach(c => DeviceFactories.Add((ButtplugBluetoothDeviceFactory)Activator.CreateInstance(c)));
+                .Where(t => t.IsClass && t.Namespace == "Buttplug.Devices" && typeof(ButtplugBluetoothDeviceFactory).IsAssignableFrom(t))
+                .ToList()
+                .ForEach(c =>
+                {
+                    BPLogger.Trace($"Loading Bluetooth Device Factory: {c.Name}");
+                    DeviceFactories.Add((ButtplugBluetoothDeviceFactory)Activator.CreateInstance(c));
+                });
+            
 
             BleWatcher = new BluetoothLEAdvertisementWatcher();
             BleWatcher.ScanningMode = BluetoothLEScanningMode.Active;
@@ -37,16 +47,26 @@ namespace Buttplug
         public async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher o,
                                                   BluetoothLEAdvertisementReceivedEventArgs e)
         {
+            BPLogger.Trace($"Got BLE Advertisement for device: e.Advertisement.LocalName / e.BluetoothAddress");
             var factories = from x in DeviceFactories
                             where x.MayBeDevice(e.Advertisement) == true
                             select x;
             // We should always have either 0 or 1 factories. 
-            // TODO If we have a multiple match, log.
             if (factories.Count() != 1)
             {
+                if (factories.Count() > 0)
+                {
+                    BPLogger.Warn($"Found multiple BLE factories for {e.Advertisement.LocalName} {e.BluetoothAddress}:");
+                    factories.ToList().ForEach(x => BPLogger.Warn(x.GetType().Name));
+                }
+                else
+                {
+                    BPLogger.Debug("No BLE factories found.");
+                }
                 return;
             }
             var factory = factories.First();
+            BPLogger.Trace($"Found BLE factory: {factory.GetType().Name}");
             // If we actually have a factory for this device, go ahead and create the device
             Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
             Option<IButtplugDevice> l = null;

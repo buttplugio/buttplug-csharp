@@ -20,7 +20,7 @@ network ports, to claim and interact with the hardware.
 
 ## C# Version
 
-Buttplug is currently coming together in 3 languages simulaniously.
+Buttplug is currently coming together in 3 languages simultaniously.
 This may sound stupid/nuts, and that's because it is. However,
 buttplug itself is fairly simple, so the goal here is to make the
 hardware support as transparent as possible for the user/developer.
