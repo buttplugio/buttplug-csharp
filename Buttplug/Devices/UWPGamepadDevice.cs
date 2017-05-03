@@ -9,18 +9,17 @@ using Buttplug;
 
 namespace Buttplug.Devices
 {
-    class UWPGamepadDevice : IButtplugDevice
+    class UWPGamepadDevice : ButtplugDevice
     {
         Gamepad Device;
-        public String Name { get; }
 
-        public UWPGamepadDevice(Gamepad d)
+        public UWPGamepadDevice(Gamepad d) :
+            base("XBox Compatible Gamepad (UWP)")
         {
-            Name = "XBox Compatible Gamepad (UWP)";
             Device = d;
         }
 
-        public async Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)
+        public override async Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)
         {
             switch (aMsg)
             {

@@ -46,7 +46,6 @@ namespace ButtplugCLI
         public ButtplugServer()
         {
             mButtplug = new ButtplugService();
-            mButtplug.DeviceAdded += DeviceAddedHandler;
             mButtplug.MessageReceived += OnMessageReceived;
             mButtplug.StartScanning();
         }

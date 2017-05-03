@@ -25,19 +25,19 @@ namespace Buttplug.Devices
             NameFilters.Add("LVS-Z001");
         }
 
-        async public override Task<Option<IButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice)
+        async public override Task<Option<ButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice)
         {
             GattDeviceServicesResult srvResult = await aDevice.GetGattServicesForUuidAsync(LovenseBluetoothInfo.SERVICE, BluetoothCacheMode.Cached);
             if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
             {
-                return Option<IButtplugDevice>.None;
+                return Option<ButtplugDevice>.None;
             }
             var service = srvResult.Services.First();
 
             GattCharacteristicsResult chrResult = await service.GetCharacteristicsAsync();
             if (chrResult.Status != GattCommunicationStatus.Success)
             {
-                return Option<IButtplugDevice>.None;
+                return Option<ButtplugDevice>.None;
             }
 
             var chrs =
@@ -49,35 +49,33 @@ namespace Buttplug.Devices
 
             if (!chrs.Any())
             {
-                return Option<IButtplugDevice>.None;
+                return Option<ButtplugDevice>.None;
             }
 
             GattCharacteristic tx = null;
             GattCharacteristic rx = null;
             (tx, rx) = chrs.First().ToTuple();
-            return Option<IButtplugDevice>.Some(new Lovense(aDevice, tx, rx));
+            return Option<ButtplugDevice>.Some(new Lovense(aDevice, tx, rx));
         }
     }
 
-    class Lovense : IButtplugDevice
+    class Lovense : ButtplugDevice
     {
-        public String Name { get; }
         private BluetoothLEDevice LovenseDevice;
         private GattCharacteristic WriteChr;
         private GattCharacteristic ReadChr;
-        private Logger BPLogger;
 
         public Lovense(BluetoothLEDevice aDevice,
                        GattCharacteristic aWriteChr,
-                       GattCharacteristic aReadChr)
+                       GattCharacteristic aReadChr) :
+            base($"Lovense Device ({aDevice.Name})")
         {
-            this.Name = aDevice.Name;
             this.LovenseDevice = aDevice;
             this.WriteChr = aWriteChr;
             this.ReadChr = aReadChr;
         }
 
-        public async Task<bool> ParseMessage(IButtplugDeviceMessage msg)
+        public override async Task<bool> ParseMessage(IButtplugDeviceMessage msg)
         {
             switch (msg)
             {

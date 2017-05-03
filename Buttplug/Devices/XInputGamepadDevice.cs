@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SharpDX.XInput;
 using Buttplug.Messages;
 
 namespace Buttplug.Devices
 {
-    class XInputGamepadDevice : IButtplugDevice
+    class XInputGamepadDevice : ButtplugDevice
     {
         Controller Device;
-        public String Name { get; }
 
-        public XInputGamepadDevice(Controller d)
+        public XInputGamepadDevice(Controller d) :
+            base("XBox Compatible Gamepad (XInput)")
         {
-            Name = "XBox Compatible Gamepad (XInput)";
             Device = d;
         }
 
-        public async Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)
+        public async override Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)
         {
             switch (aMsg)
             {

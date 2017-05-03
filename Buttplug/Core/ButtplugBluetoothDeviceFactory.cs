@@ -39,6 +39,6 @@ namespace Buttplug
             }
             return true;
         }
-        public abstract Task<Option<IButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice);
+        public abstract Task<Option<ButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice);
     }
 }

@@ -4,6 +4,20 @@ using Newtonsoft.Json;
 
 namespace Buttplug.Messages
 {
+    public class DeviceAddedMessage : IButtplugDeviceMessage
+    {
+        [JsonProperty(Required = Required.Always)]
+        public String DeviceName { get; }
+        [JsonProperty(Required = Required.Always)]
+        public UInt32 DeviceIndex { get; }
+
+        public DeviceAddedMessage(UInt32 aIndex, String aName)
+        {
+            DeviceName = aName;
+            DeviceIndex = aIndex;
+        }
+    }
+
     public class FleshlightLaunchRawMessage : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]

@@ -24,20 +24,20 @@ namespace Buttplug.Devices
             // For advertising, the launch only shows up as "Launch", and doesn't advertise any service Uuids.
             NameFilters.Add("Launch");
         }
- 
-        async public override Task<Option<IButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice)
+
+        public override async Task<Option<ButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice)
         {
             GattDeviceServicesResult srvResult = await aDevice.GetGattServicesForUuidAsync(FleshlightLaunchBluetoothInfo.SERVICE, BluetoothCacheMode.Cached);
             if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
             {
-                return Option<IButtplugDevice>.None;
+                return Option<ButtplugDevice>.None;
             }
             var service = srvResult.Services.First();
 
             GattCharacteristicsResult chrResult = await service.GetCharacteristicsAsync();
             if (chrResult.Status != GattCommunicationStatus.Success)
             {
-                return Option<IButtplugDevice>.None;
+                return Option<ButtplugDevice>.None;
             }
 
             var chrs =
@@ -51,40 +51,37 @@ namespace Buttplug.Devices
 
             if (!chrs.Any())
             {
-                return Option<IButtplugDevice>.None;
+                return Option<ButtplugDevice>.None;
             }
 
             GattCharacteristic tx = null;
             GattCharacteristic rx = null;
             GattCharacteristic cmd = null;
             (tx, rx, cmd) = chrs.First().ToTuple();
-            return Option<IButtplugDevice>.Some(new FleshlightLaunch(aDevice, tx, rx, cmd));
+            return Option<ButtplugDevice>.Some(new FleshlightLaunch(aDevice, tx, rx, cmd));
         }
     }
 
-    class FleshlightLaunch : IButtplugDevice
+    class FleshlightLaunch : ButtplugDevice
     {
-        public String Name { get; }
         private BluetoothLEDevice LaunchDevice;
         private GattCharacteristic WriteChr;
         private GattCharacteristic ButtonNotifyChr;
         private GattCharacteristic CommandChr;
-        private Logger BPLogger;
 
         public FleshlightLaunch(BluetoothLEDevice aDevice,
                                 GattCharacteristic aWriteChr,
                                 GattCharacteristic aButtonNotifyChr,
-                                GattCharacteristic aCommandChr)
+                                GattCharacteristic aCommandChr) :
+            base("Fleshlight Launch")
         {
-            BPLogger = LogManager.GetLogger("Buttplug");
-            this.Name = aDevice.Name;
             this.LaunchDevice = aDevice;
             this.WriteChr = aWriteChr;
             this.ButtonNotifyChr = aButtonNotifyChr;
             this.CommandChr = aCommandChr;
         }
 
-        public async Task<bool> ParseMessage(IButtplugDeviceMessage msg)
+        public override async Task<bool> ParseMessage(IButtplugDeviceMessage msg)
         {
             switch (msg)
             {

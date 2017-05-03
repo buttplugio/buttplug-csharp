@@ -63,7 +63,7 @@ namespace Buttplug
             BPLogger.Debug($"Found BLE factory: {factory.GetType().Name}");
             // If we actually have a factory for this device, go ahead and create the device
             Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
-            Option<IButtplugDevice> l = null;
+            Option<ButtplugDevice> l = null;
             dev.IfSome(async d => l = await factory.CreateDeviceAsync(d));
             l.IfSome(d => InvokeDeviceAdded(new DeviceAddedEventArgs(d)));
         }

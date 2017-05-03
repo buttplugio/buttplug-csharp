@@ -89,7 +89,7 @@
     <Compile Include="Core\IButtplugMessage.cs" />
     <Compile Include="Core\XInputGamepadManager.cs" />
     <Compile Include="Core\ButtplugBluetoothDeviceFactory.cs" />
-    <Compile Include="Core\IButtplugDevice.cs" />
+    <Compile Include="Core\ButtplugDevice.cs" />
     <Compile Include="Devices\Lovense.cs" />
     <Compile Include="Devices\UWPGamepadDevice.cs" />
     <Compile Include="Devices\XInputGamepadDevice.cs" />
