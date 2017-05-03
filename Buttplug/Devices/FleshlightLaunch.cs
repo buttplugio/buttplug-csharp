@@ -5,6 +5,7 @@ using LanguageExt;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Messages;
+using NLog;
 
 namespace Buttplug.Devices
 {
@@ -68,12 +69,14 @@ namespace Buttplug.Devices
         private GattCharacteristic WriteChr;
         private GattCharacteristic ButtonNotifyChr;
         private GattCharacteristic CommandChr;
+        private Logger BPLogger;
 
         public FleshlightLaunch(BluetoothLEDevice aDevice,
                                 GattCharacteristic aWriteChr,
                                 GattCharacteristic aButtonNotifyChr,
                                 GattCharacteristic aCommandChr)
         {
+            BPLogger = LogManager.GetLogger("Buttplug");
             this.Name = aDevice.Name;
             this.LaunchDevice = aDevice;
             this.WriteChr = aWriteChr;
@@ -85,8 +88,9 @@ namespace Buttplug.Devices
         {
             switch (msg)
             {
+                //TODO: Split into Command message and Control message? (Issue #17)
                 case FleshlightLaunchRawMessage m:
-                    Console.WriteLine("Got a FleshlightLaunchRawMessage!");
+                    BPLogger.Trace("Sending Fleshlight Launch Command");
                     return true;
             }
 

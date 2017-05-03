@@ -20,10 +20,12 @@ namespace Buttplug
         public override void StartScanning()
         {
             //Noop
+            BPLogger.Trace("UWPGamepadManager start scanning");
         }
 
         public void GamepadAdded(object o, Gamepad e)
         {
+            BPLogger.Trace("UWPGamepadManager GamepadAdded");
             var device = new UWPGamepadDevice(e);
             ConnectedGamepads.Add(device);
             InvokeDeviceAdded(new DeviceAddedEventArgs(device));
@@ -32,7 +34,8 @@ namespace Buttplug
         public override void StopScanning()
         {
             // noop
+            BPLogger.Trace("UWPGamepadManager stop scanning");
         }
-        
+
     }
 }

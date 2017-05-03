@@ -5,29 +5,33 @@ using LanguageExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
+using NLog;
 
 namespace Buttplug
 {
     public class ButtplugJSONMessageParser
     {
         Dictionary<String, Type> MessageTypes;
-
+        Logger BPLogger;
         public ButtplugJSONMessageParser()
         {
+            BPLogger = LogManager.GetLogger("Buttplug");
+            BPLogger.Debug($"Setting up {this.GetType().Name}");
             var messageClasses = from t in Assembly.GetAssembly(typeof(IButtplugMessage)).GetTypes()
                                  where t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(IButtplugMessage).IsAssignableFrom(t)
                                  select t;
 
-            Console.WriteLine("Message types: " + messageClasses.Count());
+            BPLogger.Debug($"Message type count: {messageClasses.Count()}");
             MessageTypes = new Dictionary<String, Type>();
             messageClasses.ToList().ForEach(c => {
-                Console.WriteLine(c.Name);
+                BPLogger.Debug($"- {c.Name}");
                 MessageTypes.Add(c.Name, c);
             });
         }
 
         public Option<IButtplugMessage> Deserialize(string aJSONMsg)
         {
+            BPLogger.Trace($"Got JSON Message: {aJSONMsg}");
             // TODO This is probably the place where the most stuff can go wrong. Test the shit out of it.... Soon. >.>
             JObject j;
             try
@@ -36,8 +40,8 @@ namespace Buttplug
             }
             catch (JsonReaderException e)
             {
-                Console.WriteLine("Not valid JSON!");
-                Console.WriteLine(e.Data);
+                BPLogger.Warn($"Not valid JSON: {aJSONMsg}");
+                BPLogger.Warn(e.Message);
                 return Option<IButtplugMessage>.None;
             }
             try
@@ -45,19 +49,20 @@ namespace Buttplug
                 String msgName = j.Properties().First().Name;
                 if (!MessageTypes.Keys.Contains(msgName))
                 {
-                    Console.WriteLine("Could not find message name!");
+                    BPLogger.Warn($"{msgName} is not a valid message class");
                     return Option<IButtplugMessage>.None;
                 }
                 JsonSerializer s = new JsonSerializer();
                 s.MissingMemberHandling = MissingMemberHandling.Error;
                 JObject r = j[msgName].Value<JObject>();
                 IButtplugMessage m = (IButtplugMessage)r.ToObject(MessageTypes[msgName], s);
+                BPLogger.Trace($"Message successfully parsed as {msgName} type");
                 return Option<IButtplugMessage>.Some(m);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Could not create message!");
-                Console.WriteLine(e.Data);
+                BPLogger.Warn($"Could not create message for JSON {aJSONMsg}");
+                BPLogger.Warn(e.Message);
                 return Option<IButtplugMessage>.None;
             };
         }

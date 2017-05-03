@@ -4,25 +4,19 @@ using System.Linq;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth;
 using LanguageExt;
-using Buttplug.Devices;
 using NLog;
 
 namespace Buttplug
 {
-
     class BluetoothManager : DeviceManager
     {
         const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
         private BluetoothLEAdvertisementWatcher BleWatcher = null;
         private List<ButtplugBluetoothDeviceFactory> DeviceFactories;
-        Logger BPLogger;
 
         public BluetoothManager()
         {
-            BPLogger = LogManager.GetLogger("Buttplug");
-            BPLogger.Trace("Setting up Bluetooth Manager");
-
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             DeviceFactories = new List<ButtplugBluetoothDeviceFactory>();
             AppDomain.CurrentDomain.GetAssemblies()
@@ -47,7 +41,7 @@ namespace Buttplug
         public async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher o,
                                                   BluetoothLEAdvertisementReceivedEventArgs e)
         {
-            BPLogger.Trace($"Got BLE Advertisement for device: e.Advertisement.LocalName / e.BluetoothAddress");
+            BPLogger.Trace($"Got BLE Advertisement for device: {e.Advertisement.LocalName} / {e.BluetoothAddress}");
             var factories = from x in DeviceFactories
                             where x.MayBeDevice(e.Advertisement) == true
                             select x;
@@ -61,12 +55,12 @@ namespace Buttplug
                 }
                 else
                 {
-                    BPLogger.Debug("No BLE factories found.");
+                    BPLogger.Trace("No BLE factories found for device.");
                 }
                 return;
             }
             var factory = factories.First();
-            BPLogger.Trace($"Found BLE factory: {factory.GetType().Name}");
+            BPLogger.Debug($"Found BLE factory: {factory.GetType().Name}");
             // If we actually have a factory for this device, go ahead and create the device
             Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
             Option<IButtplugDevice> l = null;
@@ -76,11 +70,13 @@ namespace Buttplug
 
         public override void StartScanning()
         {
+            BPLogger.Trace("Starting BLE Scanning");
             BleWatcher.Start();
         }
 
         public override void StopScanning()
         {
+            BPLogger.Trace("Stopping BLE Scanning");
             BleWatcher.Stop();
         }
     }

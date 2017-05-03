@@ -4,6 +4,9 @@ using WebSocketSharp.Server;
 using Buttplug;
 using CommandLine;
 using CommandLine.Text;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace ButtplugCLI
 {
@@ -71,6 +74,13 @@ namespace ButtplugCLI
     {
         static void Main(string[] args)
         {
+            var config = new LoggingConfiguration();
+            var consoleTarget = new ColoredConsoleTarget();
+            config.AddTarget("console", consoleTarget);
+            var rule1 = new LoggingRule("*", NLog.LogLevel.Trace, consoleTarget);
+            config.LoggingRules.Add(rule1);
+            LogManager.Configuration = config;
+            NLog.Logger BPLogger = LogManager.GetLogger("Buttplug");
             var options = new Options();
             if (!CommandLine.Parser.Default.ParseArguments(args, options))
             {
@@ -81,16 +91,17 @@ namespace ButtplugCLI
                 return;
             }
             var p = new Program();
-            Console.WriteLine("Buttplug v0.0.1 - Booting up...");
-            Console.WriteLine("Starting Websocket server on port " + options.WebsocketPort);
+            
+            BPLogger.Info("Buttplug v0.0.1 - Booting up...");
+            BPLogger.Info("Starting Websocket server on port " + options.WebsocketPort);
             var wssv = new WebSocketServer(options.WebsocketPort);
             if (options.Quiet)
             {
-                wssv.Log.Level = LogLevel.Fatal;
+                wssv.Log.Level = WebSocketSharp.LogLevel.Fatal;
             }
             else
             {
-                wssv.Log.Level = LogLevel.Warn;
+                wssv.Log.Level = WebSocketSharp.LogLevel.Warn;
             }
             
             wssv.AddWebSocketService<ButtplugServer>("/Buttplug");

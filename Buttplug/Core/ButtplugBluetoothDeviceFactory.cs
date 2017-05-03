@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using LanguageExt;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth;
-using Buttplug.Devices;
+using NLog;
 
 namespace Buttplug
 {
@@ -13,8 +13,11 @@ namespace Buttplug
     {
         protected List<String> NameFilters { get; }
         protected List<Guid> ServiceFilters { get; }
+        Logger BPLogger;
         public ButtplugBluetoothDeviceFactory()
         {
+            BPLogger = LogManager.GetLogger("Buttplug");
+            BPLogger.Trace($"Creating {this.GetType().Name}");
             NameFilters = new List<String>();
             ServiceFilters = new List<Guid>();
         }
@@ -22,6 +25,7 @@ namespace Buttplug
         {
             if (!NameFilters.Any() && !ServiceFilters.Any())
             {
+                BPLogger.Warn($"No filters exist for {this.GetType().Name}!");
                 return false;
             }
             if (NameFilters.Any() && !NameFilters.Contains(aAdvertisement.LocalName))

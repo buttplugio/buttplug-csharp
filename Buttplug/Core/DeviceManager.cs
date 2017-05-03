@@ -1,14 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NLog;
 
 namespace Buttplug
 {
     abstract class DeviceManager
     {
+        protected Logger BPLogger;
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
+        protected DeviceManager()
+        {
+            BPLogger = LogManager.GetLogger("Buttplug");
+            BPLogger.Trace($"Setting up Device Manager {this.GetType().Name}");
+        }
         protected void InvokeDeviceAdded(DeviceAddedEventArgs args)
         {
             //Can't invoke this from child classes? Weird.

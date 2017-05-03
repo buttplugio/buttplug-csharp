@@ -19,6 +19,7 @@ namespace Buttplug
 
         public override void StartScanning()
         {
+            BPLogger.Trace("XInputGamepadManager start scanning");
             var controllers = new[] { new Controller(UserIndex.One),
                                       new Controller(UserIndex.Two),
                                       new Controller(UserIndex.Three),
@@ -27,6 +28,7 @@ namespace Buttplug
             {
                 if (c.IsConnected)
                 {
+                    BPLogger.Debug($"Found connected XInput Gamepad for Index {c.UserIndex}");
                     var device = new XInputGamepadDevice(c);
                     ConnectedGamepads.Add(device);
                     InvokeDeviceAdded(new DeviceAddedEventArgs(device));
@@ -37,6 +39,7 @@ namespace Buttplug
         public override void StopScanning()
         {
             // noop
+            BPLogger.Trace("XInputGamepadManager stop scanning");
         }
 
     }
