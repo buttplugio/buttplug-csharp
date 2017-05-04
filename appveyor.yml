@@ -6,6 +6,7 @@ configuration:
   - Debug
   - Release
 install:
+  - ver
   - ps: If (($env:CONFIGURATION -imatch "Release")) { choco install -y InnoSetup }
   - git submodule update --init
 image: Visual Studio 2017
