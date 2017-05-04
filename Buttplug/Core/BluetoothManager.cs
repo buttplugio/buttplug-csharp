@@ -12,8 +12,8 @@ namespace Buttplug
     {
         const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
-        private BluetoothLEAdvertisementWatcher BleWatcher = null;
-        private List<ButtplugBluetoothDeviceFactory> DeviceFactories;
+        private readonly BluetoothLEAdvertisementWatcher BleWatcher;
+        private readonly List<ButtplugBluetoothDeviceFactory> DeviceFactories;
 
         public BluetoothManager()
         {
@@ -28,10 +28,9 @@ namespace Buttplug
                     BPLogger.Trace($"Loading Bluetooth Device Factory: {c.Name}");
                     DeviceFactories.Add((ButtplugBluetoothDeviceFactory)Activator.CreateInstance(c));
                 });
-            
 
-            BleWatcher = new BluetoothLEAdvertisementWatcher();
-            BleWatcher.ScanningMode = BluetoothLEScanningMode.Active;
+
+            BleWatcher = new BluetoothLEAdvertisementWatcher {ScanningMode = BluetoothLEScanningMode.Active};
             // We can't filter device advertisements because you can only add one LocalName filter at a time, meaning we 
             // would have to set up multiple watchers for multiple devices. We'll handle our own filtering via the factory
             // classes whenever we receive a device.
@@ -48,7 +47,7 @@ namespace Buttplug
             // We should always have either 0 or 1 factories. 
             if (factories.Count() != 1)
             {
-                if (factories.Count() > 0)
+                if (factories.Any())
                 {
                     BPLogger.Warn($"Found multiple BLE factories for {e.Advertisement.LocalName} {e.BluetoothAddress}:");
                     factories.ToList().ForEach(x => BPLogger.Warn(x.GetType().Name));

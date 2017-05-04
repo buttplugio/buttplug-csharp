@@ -65,7 +65,7 @@ namespace ButtplugCLI
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
         {
             Console.WriteLine(e.Message);
-            ButtplugJSONMessageParser.Serialize(e.Message).IfSome(x => Console.WriteLine(x));
+            ButtplugJsonMessageParser.Serialize(e.Message).IfSome(x => Console.WriteLine(x));
         }
     }
 

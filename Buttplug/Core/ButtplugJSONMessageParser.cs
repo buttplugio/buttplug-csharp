@@ -9,11 +9,11 @@ using NLog;
 
 namespace Buttplug
 {
-    public class ButtplugJSONMessageParser
+    public class ButtplugJsonMessageParser
     {
         Dictionary<String, Type> MessageTypes;
         Logger BPLogger;
-        public ButtplugJSONMessageParser()
+        public ButtplugJsonMessageParser()
         {
             BPLogger = LogManager.GetLogger("Buttplug");
             BPLogger.Debug($"Setting up {this.GetType().Name}");

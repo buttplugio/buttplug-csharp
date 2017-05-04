@@ -17,7 +17,7 @@ namespace Buttplug
 
     public class ButtplugService
     {
-        ButtplugJSONMessageParser Parser;
+        ButtplugJsonMessageParser Parser;
         List<DeviceManager> Managers;
         Dictionary<uint, ButtplugDevice> Devices;
         uint DeviceIndex;
@@ -27,7 +27,7 @@ namespace Buttplug
         public ButtplugService()
         {
             BPLogger = LogManager.GetLogger("Buttplug");
-            Parser = new ButtplugJSONMessageParser();
+            Parser = new ButtplugJsonMessageParser();
             Devices = new Dictionary<uint, ButtplugDevice>();
             DeviceIndex = 0;
 
