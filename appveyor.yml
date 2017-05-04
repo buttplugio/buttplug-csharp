@@ -18,7 +18,7 @@ skip_commits:
   files:
     - README.md
 test_script:
- - .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"Buttplug.dll -noshadow" -output:"coverage.xml"
+ - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"Buttplug\bin\$env:CONFIGURATION\Buttplug.dll -noshadow" -output:"coverage.xml"
 after_test:
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }

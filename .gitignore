@@ -4,3 +4,4 @@ obj
 *.pfx
 installer
 packages
+coverage.xml
