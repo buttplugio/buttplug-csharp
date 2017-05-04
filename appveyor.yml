@@ -17,8 +17,14 @@ build:
 skip_commits:
   files:
     - README.md
+test_script:
+ - .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"Buttplug.dll -noshadow" -output:"coverage.xml"
 after_test:
-  - ps: If (($env:CONFIGURATION -imatch "Release")) { set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5" }
-  - ps: If (($env:CONFIGURATION -imatch "Release")) { iscc buttplug-installer.iss }
+ - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
+ - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }
+ - ps: If (($env:CONFIGURATION -imatch "Debug")) { codecov -f "coverage.xml" }
+ - ps: If (($env:CONFIGURATION -imatch "Release")) { set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5" }
+ - ps: If (($env:CONFIGURATION -imatch "Release")) { iscc buttplug-installer.iss }
 cache:
   - packages -> **\packages.config
+
