@@ -5,7 +5,9 @@ using LanguageExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
+using Buttplug.Messages;
 using NLog;
+using Xunit;
 
 namespace Buttplug
 {
@@ -71,7 +73,19 @@ namespace Buttplug
         {
             // TODO There are so very many ways this could throw
             JObject o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
-            return o.ToString();
+            return o.ToString(Formatting.None);
         }
+        
+        #region xUnit Tests
+
+        [Fact]
+        public void JsonConversionTest()
+        {
+            TestMessage m = new TestMessage("ThisIsATest");
+            var msg = Serialize(m);
+            Assert.True(msg.IsSome);
+            msg.IfSome((x) => Assert.Equal(x, "{\"TestMessage\":{\"TestString\":\"ThisIsATest\"}}"));
+        }
+        #endregion
     }
 }

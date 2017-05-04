@@ -71,4 +71,15 @@ namespace Buttplug.Messages
             PingBool = b;
         }
     }
+
+    public class TestMessage : IButtplugMessage
+    {
+        [JsonProperty(Required = Required.Always)]
+        public String TestString { get; }
+
+        public TestMessage(String aString)
+        {
+            TestString = aString;
+        }
+    }
 }
