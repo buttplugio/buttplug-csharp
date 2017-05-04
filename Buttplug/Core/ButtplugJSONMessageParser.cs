@@ -19,20 +19,18 @@ namespace Buttplug
         {
             BPLogger = LogManager.GetLogger("Buttplug");
             BPLogger.Debug($"Setting up {this.GetType().Name}");
-            IEnumerable<Type> messageClasses = Assembly.GetAssembly(typeof(IButtplugMessage)).GetTypes()
-                .Where(t =>
-                {
-                    try
-                    {
-                        return t.IsClass && t.Namespace == "Buttplug.Messages" &&
-                               typeof(IButtplugMessage).IsAssignableFrom(t);
-                    }
-                    catch
-                    {
-                        BPLogger.Warn($"Class {t.Name} cannot be resolved!");
-                        return false;
-                    }
-                });
+            IEnumerable<Type> allTypes;
+            try
+            {
+                allTypes = Assembly.GetAssembly(typeof(IButtplugMessage)).GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                allTypes = e.Types;
+            }
+            IEnumerable<Type> messageClasses = from t in allTypes
+                                               where t != null && t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(IButtplugMessage).IsAssignableFrom(t)
+                                               select t;
 
             BPLogger.Debug($"Message type count: {messageClasses.Count()}");
             MessageTypes = new Dictionary<String, Type>();
