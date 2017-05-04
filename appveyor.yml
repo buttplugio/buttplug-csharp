@@ -22,7 +22,7 @@ test_script:
 after_test:
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }
- - ps: If (($env:CONFIGURATION -imatch "Debug")) { codecov -f "coverage.xml" }
+ - ps: If (($env:CONFIGURATION -imatch "Debug")) { codecov -f "coverage.xml" -X gcov }
  - ps: If (($env:CONFIGURATION -imatch "Release")) { set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5" }
  - ps: If (($env:CONFIGURATION -imatch "Release")) { iscc buttplug-installer.iss }
 cache:
