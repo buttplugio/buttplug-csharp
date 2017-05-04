@@ -5,14 +5,35 @@ using Buttplug.Messages;
 
 namespace Buttplug.Devices
 {
-    class XInputGamepadDevice : ButtplugDevice
+    class XInputGamepadDevice : ButtplugDevice, IEquatable<XInputGamepadDevice>
     {
-        Controller Device;
+        Controller Device { get; }
 
         public XInputGamepadDevice(Controller d) :
             base("XBox Compatible Gamepad (XInput)")
         {
             Device = d;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as XInputGamepadDevice);
+        }
+
+        public bool Equals(XInputGamepadDevice other)
+        {
+            if (Object.ReferenceEquals(other, null))
+            {
+                return false;
+            }
+
+            if (Object.ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            // This could get weird based on connects/disconnects?
+            return Device.UserIndex == other.Device.UserIndex;
         }
 
         public async override Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)

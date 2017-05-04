@@ -9,14 +9,34 @@ using Buttplug;
 
 namespace Buttplug.Devices
 {
-    class UWPGamepadDevice : ButtplugDevice
+    class UWPGamepadDevice : ButtplugDevice, IEquatable<UWPGamepadDevice>
     {
-        Gamepad Device;
+        Gamepad Device { get; }
 
         public UWPGamepadDevice(Gamepad d) :
             base("XBox Compatible Gamepad (UWP)")
         {
             Device = d;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as UWPGamepadDevice);
+        }
+
+        public bool Equals(UWPGamepadDevice other)
+        {
+            if (Object.ReferenceEquals(other, null))
+            {
+                return false;
+            }
+
+            if (Object.ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            // UWP Should always hand us matching devices.
+            return Device == other.Device;
         }
 
         public override async Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)

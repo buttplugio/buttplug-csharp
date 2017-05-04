@@ -62,9 +62,8 @@ namespace Buttplug.Devices
         }
     }
 
-    class FleshlightLaunch : ButtplugDevice
+    class FleshlightLaunch : ButtplugBluetoothDevice
     {
-        private BluetoothLEDevice LaunchDevice;
         private GattCharacteristic WriteChr;
         private GattCharacteristic ButtonNotifyChr;
         private GattCharacteristic CommandChr;
@@ -73,9 +72,9 @@ namespace Buttplug.Devices
                                 GattCharacteristic aWriteChr,
                                 GattCharacteristic aButtonNotifyChr,
                                 GattCharacteristic aCommandChr) :
-            base("Fleshlight Launch")
+            base("Fleshlight Launch", aDevice)
         {
-            this.LaunchDevice = aDevice;
+            this.BLEDevice = aDevice;
             this.WriteChr = aWriteChr;
             this.ButtonNotifyChr = aButtonNotifyChr;
             this.CommandChr = aCommandChr;

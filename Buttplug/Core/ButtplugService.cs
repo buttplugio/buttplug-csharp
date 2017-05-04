@@ -40,6 +40,11 @@ namespace Buttplug
 
         public void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
         {
+            if (Devices.ContainsValue(e.Device))
+            {
+                BPLogger.Trace($"Already have device {e.Device.Name} in Devices list");
+                return;
+            }
             BPLogger.Debug($"Adding Device {e.Device.Name} at index {DeviceIndex}");
             Devices.Add(DeviceIndex, e.Device);
             var msg = new DeviceAddedMessage(DeviceIndex, e.Device.Name);

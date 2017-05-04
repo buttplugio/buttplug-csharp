@@ -59,12 +59,15 @@ namespace ButtplugGUI
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
         {
-            switch (e.Message)
+            Dispatcher.InvokeAsync(() =>
             {
-                case DeviceAddedMessage m:
-                    Devices.Add(new Device(m.DeviceIndex, m.DeviceName));
-                    break;
-            }
+                switch (e.Message)
+                {
+                    case DeviceAddedMessage m:
+                        Devices.Add(new Device(m.DeviceIndex, m.DeviceName));
+                        break;
+                }
+            });
         }
 
         private void ScanButton_Click(object sender, RoutedEventArgs e)

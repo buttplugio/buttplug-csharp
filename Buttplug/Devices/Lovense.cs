@@ -6,7 +6,7 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Messages;
 using Windows.Storage.Streams;
 using LanguageExt;
-using NLog;
+
 
 namespace Buttplug.Devices
 {
@@ -59,18 +59,16 @@ namespace Buttplug.Devices
         }
     }
 
-    class Lovense : ButtplugDevice
+    class Lovense : ButtplugBluetoothDevice
     {
-        private BluetoothLEDevice LovenseDevice;
         private GattCharacteristic WriteChr;
         private GattCharacteristic ReadChr;
 
         public Lovense(BluetoothLEDevice aDevice,
                        GattCharacteristic aWriteChr,
                        GattCharacteristic aReadChr) :
-            base($"Lovense Device ({aDevice.Name})")
+            base($"Lovense Device ({aDevice.Name})", aDevice)
         {
-            this.LovenseDevice = aDevice;
             this.WriteChr = aWriteChr;
             this.ReadChr = aReadChr;
         }
