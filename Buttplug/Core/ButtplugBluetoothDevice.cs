@@ -12,7 +12,7 @@ namespace Buttplug
     {
         protected BluetoothLEDevice BLEDevice;
 
-        public ButtplugBluetoothDevice(String aName, BluetoothLEDevice aDevice) :
+        protected ButtplugBluetoothDevice(String aName, BluetoothLEDevice aDevice) :
             base(aName)
         {
             BLEDevice = aDevice;

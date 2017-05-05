@@ -108,6 +108,7 @@
     <Compile Include="Core\ButtplugJSONMessageParser.cs" />
     <Compile Include="Core\ButtplugService.cs" />
     <Compile Include="Core\DeviceManager.cs" />
+    <Compile Include="Core\IBluetoothDeviceInfo.cs" />
     <Compile Include="Core\IButtplugMessage.cs" />
     <Compile Include="Core\XInputGamepadManager.cs" />
     <Compile Include="Core\ButtplugBluetoothDeviceFactory.cs" />

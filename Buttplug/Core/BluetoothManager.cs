@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth;
+using Buttplug.Core;
 using LanguageExt;
 using NLog;
 
 namespace Buttplug
 {
-    class BluetoothManager : DeviceManager
+    internal class BluetoothManager : DeviceManager
     {
         const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
@@ -21,12 +22,12 @@ namespace Buttplug
             DeviceFactories = new List<ButtplugBluetoothDeviceFactory>();
             AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(t => t.GetTypes())
-                .Where(t => t.IsClass && t.Namespace == "Buttplug.Devices" && typeof(ButtplugBluetoothDeviceFactory).IsAssignableFrom(t))
+                .Where(t => t.IsClass && t.Namespace == "Buttplug.Devices" && typeof(IBluetoothDeviceInfo).IsAssignableFrom(t))
                 .ToList()
                 .ForEach(c =>
                 {
                     BPLogger.Trace($"Loading Bluetooth Device Factory: {c.Name}");
-                    DeviceFactories.Add((ButtplugBluetoothDeviceFactory)Activator.CreateInstance(c));
+                    DeviceFactories.Add(new ButtplugBluetoothDeviceFactory((IBluetoothDeviceInfo)Activator.CreateInstance(c)));
                 });
 
 

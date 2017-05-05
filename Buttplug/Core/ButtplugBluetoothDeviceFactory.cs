@@ -1,44 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Buttplug.Core;
+using LanguageExt;
+using NLog;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using LanguageExt;
-using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth;
-using NLog;
+using Windows.Devices.Bluetooth.Advertisement;
+using Windows.Devices.Bluetooth.GenericAttributeProfile;
 
 namespace Buttplug
 {
-    abstract class ButtplugBluetoothDeviceFactory
+    internal class ButtplugBluetoothDeviceFactory
     {
-        protected List<String> NameFilters { get; }
-        protected List<Guid> ServiceFilters { get; }
-        Logger BPLogger;
-        public ButtplugBluetoothDeviceFactory()
+        private readonly Logger _bpLogger;
+        private IBluetoothDeviceInfo _deviceInfo;
+        public ButtplugBluetoothDeviceFactory(IBluetoothDeviceInfo aInfo)
         {
-            BPLogger = LogManager.GetLogger("Buttplug");
-            BPLogger.Trace($"Creating {this.GetType().Name}");
-            NameFilters = new List<String>();
-            ServiceFilters = new List<Guid>();
+            _bpLogger = LogManager.GetLogger("Buttplug");
+            _bpLogger.Trace($"Creating {this.GetType().Name}");
+            _deviceInfo = aInfo;
         }
+
         public bool MayBeDevice(BluetoothLEAdvertisement aAdvertisement)
         {
-            if (!NameFilters.Any() && !ServiceFilters.Any())
-            {
-                BPLogger.Warn($"No filters exist for {this.GetType().Name}!");
-                return false;
-            }
-            if (NameFilters.Any() && !NameFilters.Contains(aAdvertisement.LocalName))
+            if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(aAdvertisement.LocalName))
             {
                 return false;
             }
-            if (ServiceFilters.Any() &&
-                !ServiceFilters.Union(aAdvertisement.ServiceUuids).Any())
-            {
-                return false;
-            }
-            return true;
+            return !aAdvertisement.ServiceUuids.Any() || _deviceInfo.Services.Union(aAdvertisement.ServiceUuids).Any();
         }
-        public abstract Task<Option<ButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice);
+
+        public async Task<Option<ButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice)
+        {
+            // GetGattServicesForUuidAsync is 15063 only
+            var srvResult = await aDevice.GetGattServicesForUuidAsync(_deviceInfo.Services[0], BluetoothCacheMode.Cached);
+            if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
+            {
+                return Option<ButtplugDevice>.None;
+            }
+            var service = srvResult.Services.First();
+
+            var chrResult = await service.GetCharacteristicsAsync();
+            if (chrResult.Status != GattCommunicationStatus.Success)
+            {
+                return Option<ButtplugDevice>.None;
+            }
+
+            var chrs = from x in chrResult.Characteristics
+                where _deviceInfo.Characteristics.Contains(x.Uuid)
+                select x;
+
+            var gattCharacteristics = chrs as GattCharacteristic[] ?? chrs.ToArray();
+            return !gattCharacteristics.Any() ? Option<ButtplugDevice>.None : Option<ButtplugDevice>.Some(_deviceInfo.CreateDevice(aDevice, gattCharacteristics.ToArray()));
+        }
     }
 }
