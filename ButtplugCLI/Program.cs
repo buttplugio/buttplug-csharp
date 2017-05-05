@@ -2,6 +2,7 @@
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using Buttplug;
+using Buttplug.Core;
 using CommandLine;
 using CommandLine.Text;
 using NLog;
@@ -32,7 +33,7 @@ namespace ButtplugCLI
         [HelpOption]
         public string GetUsage()
         {
-            HelpText t = HelpText.AutoBuild(this, (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+            var t = HelpText.AutoBuild(this, (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
             t.Heading = HeadingInfo;
             t.Copyright = "Command Line Server for Haptics Routing and Translation";
             return t;
@@ -42,12 +43,12 @@ namespace ButtplugCLI
     public class ButtplugServer : WebSocketBehavior
     {
 
-        private ButtplugService mButtplug;
+        private readonly ButtplugService _buttplug;
         public ButtplugServer()
         {
-            mButtplug = new ButtplugService();
-            mButtplug.MessageReceived += OnMessageReceived;
-            mButtplug.StartScanning();
+            _buttplug = new ButtplugService();
+            _buttplug.MessageReceived += OnMessageReceived;
+            _buttplug.StartScanning();
         }
 
         public void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
@@ -55,11 +56,11 @@ namespace ButtplugCLI
             Console.WriteLine("Found a device!");
         }
 
-        protected override void OnMessage(MessageEventArgs e)
+        protected override async void OnMessage(MessageEventArgs e)
         {
             Console.WriteLine("Got a message! " + e.Data);
             base.OnMessage(e);
-            mButtplug.SendMessage(e.Data);
+            await _buttplug.SendMessage(e.Data);
         }
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
@@ -69,9 +70,9 @@ namespace ButtplugCLI
         }
     }
 
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var config = new LoggingConfiguration();
             var consoleTarget = new ColoredConsoleTarget();
@@ -79,7 +80,7 @@ namespace ButtplugCLI
             var rule1 = new LoggingRule("*", NLog.LogLevel.Trace, consoleTarget);
             config.LoggingRules.Add(rule1);
             LogManager.Configuration = config;
-            NLog.Logger BPLogger = LogManager.GetLogger("Buttplug");
+            var bpLogger = LogManager.GetLogger("Buttplug");
             var options = new Options();
             if (!CommandLine.Parser.Default.ParseArguments(args, options))
             {
@@ -91,17 +92,10 @@ namespace ButtplugCLI
             }
             var p = new Program();
             
-            BPLogger.Info("Buttplug v0.0.1 - Booting up...");
-            BPLogger.Info("Starting Websocket server on port " + options.WebsocketPort);
+            bpLogger.Info("Buttplug v0.0.1 - Booting up...");
+            bpLogger.Info("Starting Websocket server on port " + options.WebsocketPort);
             var wssv = new WebSocketServer(options.WebsocketPort);
-            if (options.Quiet)
-            {
-                wssv.Log.Level = WebSocketSharp.LogLevel.Fatal;
-            }
-            else
-            {
-                wssv.Log.Level = WebSocketSharp.LogLevel.Warn;
-            }
+            wssv.Log.Level = options.Quiet ? WebSocketSharp.LogLevel.Fatal : WebSocketSharp.LogLevel.Warn;
             
             wssv.AddWebSocketService<ButtplugServer>("/Buttplug");
 

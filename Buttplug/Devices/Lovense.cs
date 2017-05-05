@@ -8,7 +8,7 @@ using Buttplug.Core;
 
 namespace Buttplug.Devices
 {
-    class LovenseBluetoothInfo : IBluetoothDeviceInfo
+    internal class LovenseBluetoothInfo : IBluetoothDeviceInfo
     {
         public Guid[] Services { get; } = {new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e")};
         public string[] Names { get; } = {"LVS-S001", "LVS-Z001"};
@@ -28,16 +28,16 @@ namespace Buttplug.Devices
 
     internal class Lovense : ButtplugBluetoothDevice
     {
-        private GattCharacteristic WriteChr;
-        private GattCharacteristic ReadChr;
+        private readonly GattCharacteristic _writeChr;
+        private GattCharacteristic _readChr;
 
         public Lovense(BluetoothLEDevice aDevice,
                        GattCharacteristic aWriteChr,
                        GattCharacteristic aReadChr) :
             base($"Lovense Device ({aDevice.Name})", aDevice)
         {
-            this.WriteChr = aWriteChr;
-            this.ReadChr = aReadChr;
+            _writeChr = aWriteChr;
+            _readChr = aReadChr;
         }
 
         public override async Task<bool> ParseMessage(IButtplugDeviceMessage msg)
@@ -45,12 +45,12 @@ namespace Buttplug.Devices
             switch (msg)
             {
                 case SingleMotorVibrateMessage m:
-                    BPLogger.Trace("Lovense toy got SingleMotorVibrateMessage");
+                    BpLogger.Trace("Lovense toy got SingleMotorVibrateMessage");
                     var writer = new DataWriter();
                     writer.WriteString($"Vibrate:{(int)(m.Speed * 20)};");
-                    IBuffer buf = writer.DetachBuffer();
-                    BPLogger.Trace(buf);
-                    await WriteChr.WriteValueAsync(buf);
+                    var buf = writer.DetachBuffer();
+                    BpLogger.Trace(buf);
+                    await _writeChr.WriteValueAsync(buf);
                     return true;
             }
 

@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Buttplug.Messages;
 using LanguageExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Reflection;
-using Buttplug.Messages;
 using NLog;
 using Xunit;
 
-namespace Buttplug
+namespace Buttplug.Core
 {
     public class ButtplugJsonMessageParser
     {
-        Dictionary<String, Type> MessageTypes;
-        Logger BPLogger;
+        private readonly Dictionary<String, Type> _messageTypes;
+        private readonly Logger _bpLogger;
         public ButtplugJsonMessageParser()
         {
-            BPLogger = LogManager.GetLogger("Buttplug");
-            BPLogger.Debug($"Setting up {this.GetType().Name}");
+            _bpLogger = LogManager.GetLogger("Buttplug");
+            _bpLogger.Debug($"Setting up {GetType().Name}");
             IEnumerable<Type> allTypes;
             try
             {
@@ -32,48 +32,48 @@ namespace Buttplug
                                                where t != null && t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(IButtplugMessage).IsAssignableFrom(t)
                                                select t;
 
-            BPLogger.Debug($"Message type count: {messageClasses.Count()}");
-            MessageTypes = new Dictionary<String, Type>();
-            messageClasses.ToList().ForEach(c => {
-                BPLogger.Debug($"- {c.Name}");
-                MessageTypes.Add(c.Name, c);
+            var enumerable = messageClasses as Type[] ?? messageClasses.ToArray();
+            _bpLogger.Debug($"Message type count: {enumerable.Count()}");
+            _messageTypes = new Dictionary<String, Type>();
+            enumerable.ToList().ForEach(c => {
+                _bpLogger.Debug($"- {c.Name}");
+                _messageTypes.Add(c.Name, c);
             });
         }
 
-        public Option<IButtplugMessage> Deserialize(string aJSONMsg)
+        public Option<IButtplugMessage> Deserialize(string aJsonMsg)
         {
-            BPLogger.Trace($"Got JSON Message: {aJSONMsg}");
+            _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
             // TODO This is probably the place where the most stuff can go wrong. Test the shit out of it.... Soon. >.>
             JObject j;
             try
             {
-                j = JObject.Parse(aJSONMsg);
+                j = JObject.Parse(aJsonMsg);
             }
             catch (JsonReaderException e)
             {
-                BPLogger.Warn($"Not valid JSON: {aJSONMsg}");
-                BPLogger.Warn(e.Message);
+                _bpLogger.Warn($"Not valid JSON: {aJsonMsg}");
+                _bpLogger.Warn(e.Message);
                 return Option<IButtplugMessage>.None;
             }
             try
             {
-                String msgName = j.Properties().First().Name;
-                if (!MessageTypes.Keys.Contains(msgName))
+                var msgName = j.Properties().First().Name;
+                if (!_messageTypes.Keys.Contains(msgName))
                 {
-                    BPLogger.Warn($"{msgName} is not a valid message class");
+                    _bpLogger.Warn($"{msgName} is not a valid message class");
                     return Option<IButtplugMessage>.None;
                 }
-                JsonSerializer s = new JsonSerializer();
-                s.MissingMemberHandling = MissingMemberHandling.Error;
-                JObject r = j[msgName].Value<JObject>();
-                IButtplugMessage m = (IButtplugMessage)r.ToObject(MessageTypes[msgName], s);
-                BPLogger.Trace($"Message successfully parsed as {msgName} type");
+                var s = new JsonSerializer {MissingMemberHandling = MissingMemberHandling.Error};
+                var r = j[msgName].Value<JObject>();
+                var m = (IButtplugMessage)r.ToObject(_messageTypes[msgName], s);
+                _bpLogger.Trace($"Message successfully parsed as {msgName} type");
                 return Option<IButtplugMessage>.Some(m);
             }
             catch (Exception e)
             {
-                BPLogger.Warn($"Could not create message for JSON {aJSONMsg}");
-                BPLogger.Warn(e.Message);
+                _bpLogger.Warn($"Could not create message for JSON {aJsonMsg}");
+                _bpLogger.Warn(e.Message);
                 return Option<IButtplugMessage>.None;
             };
         }
@@ -81,7 +81,7 @@ namespace Buttplug
         public static Option<string> Serialize(IButtplugMessage aMsg)
         {
             // TODO There are so very many ways this could throw
-            JObject o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
+            var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             return o.ToString(Formatting.None);
         }
         
@@ -90,7 +90,7 @@ namespace Buttplug
         [Fact]
         public void JsonConversionTest()
         {
-            TestMessage m = new TestMessage("ThisIsATest");
+            var m = new TestMessage("ThisIsATest");
             var msg = Serialize(m);
             Assert.True(msg.IsSome);
             msg.IfSome((x) => Assert.Equal(x, "{\"TestMessage\":{\"TestString\":\"ThisIsATest\"}}"));

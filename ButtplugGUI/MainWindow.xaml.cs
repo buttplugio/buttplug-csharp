@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Buttplug;
 using System.Collections.ObjectModel;
+using Buttplug.Core;
 using Buttplug.Messages;
 
 namespace ButtplugGUI
@@ -21,10 +22,10 @@ namespace ButtplugGUI
 
     public class Device
     {
-        public String Name { get; }
+        public string Name { get; }
         public uint Index { get; }
 
-        public Device(uint aIndex, String aName)
+        public Device(uint aIndex, string aName)
         {
             Index = aIndex;
             Name = aName;
@@ -46,15 +47,15 @@ namespace ButtplugGUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        ButtplugService BPServer;
-        DeviceList Devices;
+        readonly ButtplugService _bpServer;
+        readonly DeviceList _devices;
         public MainWindow()
         {
             InitializeComponent();
-            BPServer = new ButtplugService();
-            BPServer.MessageReceived += OnMessageReceived;
-            Devices = new DeviceList();
-            DeviceListBox.ItemsSource = Devices;
+            _bpServer = new ButtplugService();
+            _bpServer.MessageReceived += OnMessageReceived;
+            _devices = new DeviceList();
+            DeviceListBox.ItemsSource = _devices;
         }
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
@@ -64,7 +65,7 @@ namespace ButtplugGUI
                 switch (e.Message)
                 {
                     case DeviceAddedMessage m:
-                        Devices.Add(new Device(m.DeviceIndex, m.DeviceName));
+                        _devices.Add(new Device(m.DeviceIndex, m.DeviceName));
                         break;
                 }
             });
@@ -74,12 +75,12 @@ namespace ButtplugGUI
         {
             if ((string)ScanButton.Content == "Start Scanning")
             {
-                BPServer.StartScanning();
+                _bpServer.StartScanning();
                 ScanButton.Content = "Stop Scanning";
             }
             else
             {
-                BPServer.StopScanning();
+                _bpServer.StopScanning();
                 ScanButton.Content = "Start Scanning";
             }
            

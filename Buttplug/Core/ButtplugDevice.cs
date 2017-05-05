@@ -2,26 +2,26 @@
 using System.Threading.Tasks;
 using NLog;
 
-namespace Buttplug
+namespace Buttplug.Core
 {
     public class DeviceAddedEventArgs : EventArgs
     {
         public ButtplugDevice Device { get; }
         public DeviceAddedEventArgs(ButtplugDevice d)
         {
-            this.Device = d;
+            Device = d;
         }
     }
 
     public abstract class ButtplugDevice
     {
-        public String Name { get; }
+        public string Name { get; }
         public abstract Task<bool> ParseMessage(IButtplugDeviceMessage aMsg);
-        protected Logger BPLogger;
+        protected Logger BpLogger;
 
-        protected ButtplugDevice(String name)
+        protected ButtplugDevice(string name)
         {
-            BPLogger = LogManager.GetLogger("Buttplug");
+            BpLogger = LogManager.GetLogger("Buttplug");
             Name = name;
         }
     }

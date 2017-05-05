@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpDX.XInput;
+﻿using System.Collections.Generic;
 using Buttplug.Devices;
+using SharpDX.XInput;
 
-namespace Buttplug
+namespace Buttplug.Core
 {
-    class XInputGamepadManager : DeviceManager
+    internal class XInputGamepadManager : DeviceManager
     {
-        List<XInputGamepadDevice> ConnectedGamepads;
+        readonly List<XInputGamepadDevice> _connectedGamepads;
 
         public XInputGamepadManager()
         {
-            ConnectedGamepads = new List<XInputGamepadDevice>();
+            _connectedGamepads = new List<XInputGamepadDevice>();
         }
 
         public override void StartScanning()
         {
-            BPLogger.Trace("XInputGamepadManager start scanning");
+            BpLogger.Trace("XInputGamepadManager start scanning");
             var controllers = new[] { new Controller(UserIndex.One),
                                       new Controller(UserIndex.Two),
                                       new Controller(UserIndex.Three),
@@ -28,9 +24,9 @@ namespace Buttplug
             {
                 if (c.IsConnected)
                 {
-                    BPLogger.Debug($"Found connected XInput Gamepad for Index {c.UserIndex}");
+                    BpLogger.Debug($"Found connected XInput Gamepad for Index {c.UserIndex}");
                     var device = new XInputGamepadDevice(c);
-                    ConnectedGamepads.Add(device);
+                    _connectedGamepads.Add(device);
                     InvokeDeviceAdded(new DeviceAddedEventArgs(device));
                 }
             }
@@ -39,7 +35,7 @@ namespace Buttplug
         public override void StopScanning()
         {
             // noop
-            BPLogger.Trace("XInputGamepadManager stop scanning");
+            BpLogger.Trace("XInputGamepadManager stop scanning");
         }
 
     }

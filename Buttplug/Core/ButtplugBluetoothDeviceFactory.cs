@@ -1,23 +1,22 @@
-﻿using Buttplug.Core;
-using LanguageExt;
-using NLog;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using LanguageExt;
+using NLog;
 
-namespace Buttplug
+namespace Buttplug.Core
 {
     internal class ButtplugBluetoothDeviceFactory
     {
         private readonly Logger _bpLogger;
-        private IBluetoothDeviceInfo _deviceInfo;
+        private readonly IBluetoothDeviceInfo _deviceInfo;
         public ButtplugBluetoothDeviceFactory(IBluetoothDeviceInfo aInfo)
         {
             _bpLogger = LogManager.GetLogger("Buttplug");
-            _bpLogger.Trace($"Creating {this.GetType().Name}");
+            _bpLogger.Trace($"Creating {GetType().Name}");
             _deviceInfo = aInfo;
         }
 
@@ -36,6 +35,7 @@ namespace Buttplug
             var srvResult = await aDevice.GetGattServicesForUuidAsync(_deviceInfo.Services[0], BluetoothCacheMode.Cached);
             if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
             {
+                _bpLogger.Trace("Cannot find service for device");
                 return Option<ButtplugDevice>.None;
             }
             var service = srvResult.Services.First();

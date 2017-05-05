@@ -1,5 +1,6 @@
 ﻿using System;
 using Buttplug;
+using Buttplug.Core;
 using Newtonsoft.Json;
 
 namespace Buttplug.Messages
@@ -7,11 +8,11 @@ namespace Buttplug.Messages
     public class DeviceAddedMessage : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public String DeviceName { get; }
+        public string DeviceName { get; }
         [JsonProperty(Required = Required.Always)]
-        public UInt32 DeviceIndex { get; }
+        public uint DeviceIndex { get; }
 
-        public DeviceAddedMessage(UInt32 aIndex, String aName)
+        public DeviceAddedMessage(uint aIndex, string aName)
         {
             DeviceName = aName;
             DeviceIndex = aIndex;
@@ -21,13 +22,13 @@ namespace Buttplug.Messages
     public class FleshlightLaunchRawMessage : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public UInt32 DeviceIndex { get; set; }
+        public uint DeviceIndex { get; set; }
         [JsonProperty(Required = Required.Always)]
-        public readonly UInt16 Speed;
+        public readonly ushort Speed;
         [JsonProperty(Required = Required.Always)]
-        public readonly UInt16 Position;
+        public readonly ushort Position;
 
-        FleshlightLaunchRawMessage(UInt32 aDeviceIndex, UInt16 aSpeed, UInt16 aPosition)
+        FleshlightLaunchRawMessage(uint aDeviceIndex, ushort aSpeed, ushort aPosition)
         {
             DeviceIndex = aDeviceIndex;
             Speed = aSpeed;
@@ -38,17 +39,17 @@ namespace Buttplug.Messages
     public class LovenseRawMessage : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public UInt32 DeviceIndex { get; }
+        public uint DeviceIndex { get; }
     }
 
     public class SingleMotorVibrateMessage : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public UInt32 DeviceIndex { get; set; }
+        public uint DeviceIndex { get; set; }
         [JsonProperty(Required = Required.Always)]
-        public Double Speed { get; }
+        public double Speed { get; }
 
-        public SingleMotorVibrateMessage(UInt32 d, Double speed)
+        public SingleMotorVibrateMessage(uint d, double speed)
         {
             DeviceIndex = d;
             Speed = speed;
@@ -58,7 +59,7 @@ namespace Buttplug.Messages
     public class VectorSpeedMessage : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public UInt32 DeviceIndex { get; }
+        public uint DeviceIndex { get; }
     }
 
     public class PingMessage : IButtplugMessage
@@ -75,9 +76,9 @@ namespace Buttplug.Messages
     public class TestMessage : IButtplugMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public String TestString { get; }
+        public string TestString { get; }
 
-        public TestMessage(String aString)
+        public TestMessage(string aString)
         {
             TestString = aString;
         }

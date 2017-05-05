@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Buttplug
+namespace Buttplug.Core
 {
     public interface IButtplugMessage
     {
@@ -8,6 +8,6 @@ namespace Buttplug
 
     public interface IButtplugDeviceMessage : IButtplugMessage
     {
-        UInt32 DeviceIndex { get; }
+        uint DeviceIndex { get; }
     }
 }

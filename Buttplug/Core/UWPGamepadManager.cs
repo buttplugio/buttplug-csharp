@@ -1,40 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Windows.Gaming.Input;
 using Buttplug.Devices;
 
-namespace Buttplug
+namespace Buttplug.Core
 {
-    class UWPGamepadManager : DeviceManager
+    internal class UwpGamepadManager : DeviceManager
     {
         //TODO Pay attention to gamepad events
-        List<UWPGamepadDevice> ConnectedGamepads;
+        readonly List<UwpGamepadDevice> _connectedGamepads;
 
-        public UWPGamepadManager()
+        public UwpGamepadManager()
         {
-            ConnectedGamepads = new List<UWPGamepadDevice>();
+            _connectedGamepads = new List<UwpGamepadDevice>();
             Gamepad.GamepadAdded += GamepadAdded;
         }
 
         public override void StartScanning()
         {
             //Noop
-            BPLogger.Trace("UWPGamepadManager start scanning");
+            BpLogger.Trace("UWPGamepadManager start scanning");
         }
 
         public void GamepadAdded(object o, Gamepad e)
         {
-            BPLogger.Trace("UWPGamepadManager GamepadAdded");
-            var device = new UWPGamepadDevice(e);
-            ConnectedGamepads.Add(device);
+            BpLogger.Trace("UWPGamepadManager GamepadAdded");
+            var device = new UwpGamepadDevice(e);
+            _connectedGamepads.Add(device);
             InvokeDeviceAdded(new DeviceAddedEventArgs(device));
         }
 
         public override void StopScanning()
         {
             // noop
-            BPLogger.Trace("UWPGamepadManager stop scanning");
+            BpLogger.Trace("UWPGamepadManager stop scanning");
         }
 
     }

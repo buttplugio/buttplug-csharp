@@ -6,50 +6,53 @@ using System.Threading.Tasks;
 using Windows.Gaming.Input;
 using Buttplug.Messages;
 using Buttplug;
+using Buttplug.Core;
 
 namespace Buttplug.Devices
 {
-    class UWPGamepadDevice : ButtplugDevice, IEquatable<UWPGamepadDevice>
+    internal class UwpGamepadDevice : ButtplugDevice, IEquatable<UwpGamepadDevice>
     {
-        Gamepad Device { get; }
+        private readonly Gamepad _device;
 
-        public UWPGamepadDevice(Gamepad d) :
+        public UwpGamepadDevice(Gamepad d) :
             base("XBox Compatible Gamepad (UWP)")
         {
-            Device = d;
+            _device = d;
         }
 
         public override bool Equals(object obj)
         {
-            return this.Equals(obj as UWPGamepadDevice);
+            return Equals(obj as UwpGamepadDevice);
         }
-
-        public bool Equals(UWPGamepadDevice other)
+        
+        public bool Equals(UwpGamepadDevice other)
         {
-            if (Object.ReferenceEquals(other, null))
+            if (ReferenceEquals(other, null))
             {
                 return false;
             }
 
-            if (Object.ReferenceEquals(this, other))
+            if (ReferenceEquals(this, other))
             {
                 return true;
             }
             // UWP Should always hand us matching devices.
-            return Device == other.Device;
+            return _device == other._device;
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public override async Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             switch (aMsg)
             {
                 case SingleMotorVibrateMessage m:
-                    GamepadVibration v = new GamepadVibration()
+                    var v = new GamepadVibration()
                     {
                         LeftMotor = m.Speed,
                         RightMotor = m.Speed
                     };
-                    Device.Vibration = v;
+                    _device.Vibration = v;
                     return true;
             }
             return false;

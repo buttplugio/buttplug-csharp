@@ -1,23 +1,27 @@
 ﻿using System;
 using NLog;
 
-namespace Buttplug
+namespace Buttplug.Core
 {
-    abstract class DeviceManager
+    internal abstract class DeviceManager
     {
-        protected Logger BPLogger;
+        protected Logger BpLogger;
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
+
         protected DeviceManager()
         {
-            BPLogger = LogManager.GetLogger("Buttplug");
-            BPLogger.Trace($"Setting up Device Manager {this.GetType().Name}");
+            BpLogger = LogManager.GetLogger("Buttplug");
+            BpLogger.Trace($"Setting up Device Manager {GetType().Name}");
         }
+
         protected void InvokeDeviceAdded(DeviceAddedEventArgs args)
         {
             //Can't invoke this from child classes? Weird.
             DeviceAdded?.Invoke(this, args);
         }
-        abstract public void StartScanning();
-        abstract public void StopScanning();
+
+        public abstract void StartScanning();
+
+        public abstract void StopScanning();
     }
 }
