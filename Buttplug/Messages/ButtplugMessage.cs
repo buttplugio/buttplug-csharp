@@ -1,10 +1,11 @@
-﻿using System;
-using Buttplug;
+﻿using Buttplug;
 using Buttplug.Core;
 using Newtonsoft.Json;
+using LanguageExt;
 
 namespace Buttplug.Messages
 {
+
     public class DeviceAddedMessage : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
@@ -17,6 +18,8 @@ namespace Buttplug.Messages
             DeviceName = aName;
             DeviceIndex = aIndex;
         }
+
+        public Option<string> Check() { return new Option<string>(); }
     }
 
     public class FleshlightLaunchRawMessage : IButtplugDeviceMessage
@@ -28,11 +31,25 @@ namespace Buttplug.Messages
         [JsonProperty(Required = Required.Always)]
         public readonly ushort Position;
 
-        FleshlightLaunchRawMessage(uint aDeviceIndex, ushort aSpeed, ushort aPosition)
+        public FleshlightLaunchRawMessage(uint aDeviceIndex, ushort aSpeed, ushort aPosition)
         {
             DeviceIndex = aDeviceIndex;
             Speed = aSpeed;
             Position = aPosition;
+            Check();
+        }
+
+        public Option<string> Check()
+        {
+            if (Speed > 99)
+            {
+                return Option<string>.Some("FleshlightLaunchRawMessage cannot have a speed higher than 99!");
+            }
+            if (Position > 99)
+            {
+                return Option<string>.Some("FleshlightLaunchRawMessage cannot have a position higher than 99!");
+            }
+            return new Option<string>();
         }
     }
 
@@ -40,6 +57,11 @@ namespace Buttplug.Messages
     {
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; }
+
+        public Option<string> Check()
+        {
+            return new Option<string>();
+        }
     }
 
     public class SingleMotorVibrateMessage : IButtplugDeviceMessage
@@ -53,24 +75,26 @@ namespace Buttplug.Messages
         {
             DeviceIndex = d;
             Speed = speed;
+            Check();
         }
-    }
 
-    public class VectorSpeedMessage : IButtplugDeviceMessage
-    {
-        [JsonProperty(Required = Required.Always)]
-        public uint DeviceIndex { get; }
+        public Option<string> Check()
+        {
+            if (Speed < 0)
+            {
+                return Option<string>.Some("SingleMotorVibrateMessage Speed cannot be less than 0!");
+            }
+            if (Speed > 1)
+            {
+                return Option<string>.Some("SingleMotorVibrateMessage Speed cannot be greater than 1!");
+            }
+            return new Option<string>();
+        }
     }
 
     public class PingMessage : IButtplugMessage
     {
-        [JsonProperty(Required = Required.Always)]
-        public bool PingBool { get; }
-
-        public PingMessage(bool b)
-        {
-            PingBool = b;
-        }
+        public Option<string> Check() { return new Option<string>(); }
     }
 
     public class TestMessage : IButtplugMessage
@@ -82,5 +106,27 @@ namespace Buttplug.Messages
         {
             TestString = aString;
         }
+
+        public Option<string> Check()
+        {
+            if (TestString == "Error")
+            {
+                return Option<string>.Some("Got an error message!");
+            }
+            return new Option<string>();
+        }
+    }
+
+    public class ErrorMessage : IButtplugMessage
+    {
+        [JsonProperty(Required = Required.Always)]
+        public string ErrorString { get; }
+
+        public ErrorMessage(string aErrorString)
+        {
+            ErrorString = aErrorString;
+        }
+
+        public Option<string> Check() { return new Option<string>(); }
     }
 }

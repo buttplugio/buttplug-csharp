@@ -47,8 +47,8 @@ namespace ButtplugGUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        readonly ButtplugService _bpServer;
-        readonly DeviceList _devices;
+        private readonly ButtplugService _bpServer;
+        private readonly DeviceList _devices;
         public MainWindow()
         {
             InitializeComponent();

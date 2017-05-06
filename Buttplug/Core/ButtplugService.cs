@@ -54,6 +54,16 @@ namespace Buttplug.Core
         public async Task<bool> SendMessage(IButtplugMessage aMsg)
         {
             _bpLogger.Trace($"Got Message of type {aMsg.GetType().Name} to send.");
+            var err = aMsg.Check();
+            if (err.IsSome)
+            {
+                err.IfSome(x =>
+                {
+                    // TODO Send error replies based on message IDs
+                    _bpLogger.Warn($"Got a malformed IButtplugMessage: {x}");
+                });
+                return false;
+            }
             switch (aMsg)
             {
                 case IButtplugDeviceMessage m:

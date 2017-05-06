@@ -48,10 +48,7 @@ namespace Buttplug.Devices
             {
                 case SingleMotorVibrateMessage m:
                     BpLogger.Trace("Lovense toy got SingleMotorVibrateMessage");
-                    var writer = new DataWriter();
-                    writer.WriteString($"Vibrate:{(int)(m.Speed * 20)};");
-                    var buf = writer.DetachBuffer();
-                    BpLogger.Trace(buf);
+                    var buf = ButtplugUtils.WriteString($"Vibrate:{(int) (m.Speed * 20)};");
                     await _writeChr.WriteValueAsync(buf);
                     return true;
             }

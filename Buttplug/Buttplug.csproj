@@ -107,6 +107,7 @@
     <Compile Include="Core\ButtplugBluetoothDevice.cs" />
     <Compile Include="Core\ButtplugJsonMessageParser.cs" />
     <Compile Include="Core\ButtplugService.cs" />
+    <Compile Include="Core\ButtplugUtils.cs" />
     <Compile Include="Core\DeviceManager.cs" />
     <Compile Include="Core\IBluetoothDeviceInfo.cs" />
     <Compile Include="Core\IButtplugMessage.cs" />
