@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
@@ -27,7 +28,8 @@ namespace Buttplug.Devices
 
         public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice, GattCharacteristic[] aCharacteristics)
         {
-            return new FleshlightLaunch(aDevice, aCharacteristics[0], aCharacteristics[1], aCharacteristics[2]);
+            var d = aCharacteristics.ToDictionary(x => x.Uuid, x => x);
+            return new FleshlightLaunch(aDevice, d[Characteristics[0]], d[Characteristics[1]], d[Characteristics[2]]);
         }
     }
 

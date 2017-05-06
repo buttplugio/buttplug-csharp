@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
@@ -22,7 +23,8 @@ namespace Buttplug.Devices
 
         public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice, GattCharacteristic[] aCharacteristics)
         {
-            return new Lovense(aDevice, aCharacteristics[0], aCharacteristics[1]);
+            var d = aCharacteristics.ToDictionary(x => x.Uuid, x => x);
+            return new Lovense(aDevice, d[Characteristics[0]], d[Characteristics[1]]);
         }
     }
 
