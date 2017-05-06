@@ -7,7 +7,6 @@ using LanguageExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
-using Xunit;
 
 namespace Buttplug.Core
 {
@@ -84,17 +83,5 @@ namespace Buttplug.Core
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             return o.ToString(Formatting.None);
         }
-        
-        #region xUnit Tests
-
-        [Fact]
-        public void JsonConversionTest()
-        {
-            var m = new TestMessage("ThisIsATest");
-            var msg = Serialize(m);
-            Assert.True(msg.IsSome);
-            msg.IfSome((x) => Assert.Equal(x, "{\"TestMessage\":{\"TestString\":\"ThisIsATest\"}}"));
-        }
-        #endregion
     }
 }

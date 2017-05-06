@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "websocke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugGUI", "ButtplugGUI\ButtplugGUI.csproj", "{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugTest", "ButtplugTest\ButtplugTest.csproj", "{CADDB981-1F47-4BAF-8718-9970E46C3018}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
@@ -51,6 +53,14 @@ Global
 		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
 		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CADDB981-1F47-4BAF-8718-9970E46C3018}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{CADDB981-1F47-4BAF-8718-9970E46C3018}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{CADDB981-1F47-4BAF-8718-9970E46C3018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CADDB981-1F47-4BAF-8718-9970E46C3018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CADDB981-1F47-4BAF-8718-9970E46C3018}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{CADDB981-1F47-4BAF-8718-9970E46C3018}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{CADDB981-1F47-4BAF-8718-9970E46C3018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CADDB981-1F47-4BAF-8718-9970E46C3018}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
