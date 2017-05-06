@@ -35,18 +35,38 @@ namespace ButtplugTest.Core
         // Valid json but not an object
         [InlineData("[]")]
         // Not a message type
-        [InlineData("{ \"NotAMessage\": {}}")]
+        [InlineData("{\"NotAMessage\":{}}")]
         // Valid json and message type but not in correct format
-        [InlineData("{ \"TestMessage\" : []}")]
+        [InlineData("{\"TestMessage\":[]}")]
         // Valid json and message type but not in correct format
-        [InlineData("{ \"TestMessage\" : {}}")]
+        [InlineData("{\"TestMessage\":{}}")]
         // Valid json and message type but with erroneous content
-        [InlineData("{ \"TestMessage\" : {\"TestString\":\"Error\"}}")]
+        [InlineData("{\"TestMessage\":{\"TestString\":\"Error\"}}")]
         [Theory]
         public void DeserializeIncorrectMessages(string x)
         {
             var p = new ButtplugJsonMessageParser();
             Assert.True(p.Deserialize(x).IsLeft);
+        }
+
+        [Fact]
+        public void DeserializeCorrectMessage()
+        {
+            var p = new ButtplugJsonMessageParser();
+            var m = p.Deserialize("{\"TestMessage\":{\"TestString\":\"Test\"}}");
+            Assert.True(m.IsRight);
+            m.IfRight(x =>
+            {
+                switch (x)
+                {
+                    case TestMessage tm:
+                        Assert.True(tm.TestString == "Test");
+                        break;
+                    default:
+                        Assert.True(false);
+                        break;
+                }
+            });
         }
     }
 }
