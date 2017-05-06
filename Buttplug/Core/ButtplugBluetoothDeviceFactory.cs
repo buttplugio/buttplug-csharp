@@ -51,7 +51,10 @@ namespace Buttplug.Core
                 select x;
 
             var gattCharacteristics = chrs as GattCharacteristic[] ?? chrs.ToArray();
-            return !gattCharacteristics.Any() ? Option<ButtplugDevice>.None : Option<ButtplugDevice>.Some(_deviceInfo.CreateDevice(aDevice, gattCharacteristics.ToArray()));
+            return !gattCharacteristics.Any() ? 
+                Option<ButtplugDevice>.None : 
+                Option<ButtplugDevice>.Some(_deviceInfo.CreateDevice(aDevice, 
+                                                                     gattCharacteristics.ToDictionary(x => x.Uuid, x => x)));
         }
     }
 }

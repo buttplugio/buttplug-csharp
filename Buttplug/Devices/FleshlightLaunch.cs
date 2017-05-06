@@ -27,10 +27,13 @@ namespace Buttplug.Devices
             new Guid("88f80583-0000-01e6-aace-0002a5d5c51b")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice, GattCharacteristic[] aCharacteristics)
+        public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice, 
+                                                    Dictionary<Guid, GattCharacteristic> aCharacteristics)
         {
-            var d = aCharacteristics.ToDictionary(x => x.Uuid, x => x);
-            return new FleshlightLaunch(aDevice, d[Characteristics[0]], d[Characteristics[1]], d[Characteristics[2]]);
+            return new FleshlightLaunch(aDevice,
+                                        aCharacteristics[Characteristics[0]],
+                                        aCharacteristics[Characteristics[1]],
+                                        aCharacteristics[Characteristics[2]]);
         }
     }
 
