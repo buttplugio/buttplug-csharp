@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Buttplug.Messages;
 using LanguageExt;
+using static LanguageExt.Prelude;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
@@ -12,13 +13,15 @@ namespace Buttplug.Core
 {
     public class ButtplugJsonMessageParser
     {
-        private readonly Dictionary<String, Type> _messageTypes;
+        private readonly Dictionary<string, Type> _messageTypes;
         private readonly Logger _bpLogger;
         public ButtplugJsonMessageParser()
         {
             _bpLogger = LogManager.GetLogger("Buttplug");
             _bpLogger.Debug($"Setting up {GetType().Name}");
             IEnumerable<Type> allTypes;
+            // Some classes in the library may not load on certain platforms due to missing symbols.
+            // If this is the case, we should still find messages even though an exception was thrown.
             try
             {
                 allTypes = Assembly.GetAssembly(typeof(IButtplugMessage)).GetTypes();
@@ -27,23 +30,22 @@ namespace Buttplug.Core
             {
                 allTypes = e.Types;
             }
-            IEnumerable<Type> messageClasses = from t in allTypes
-                                               where t != null && t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(IButtplugMessage).IsAssignableFrom(t)
-                                               select t;
+            var messageClasses = from t in allTypes
+                                 where t != null && t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(IButtplugMessage).IsAssignableFrom(t)
+                                 select t;
 
             var enumerable = messageClasses as Type[] ?? messageClasses.ToArray();
             _bpLogger.Debug($"Message type count: {enumerable.Count()}");
-            _messageTypes = new Dictionary<String, Type>();
+            _messageTypes = new Dictionary<string, Type>();
             enumerable.ToList().ForEach(c => {
                 _bpLogger.Debug($"- {c.Name}");
                 _messageTypes.Add(c.Name, c);
             });
         }
 
-        public Option<IButtplugMessage> Deserialize(string aJsonMsg)
+        public Either<string, IButtplugMessage> Deserialize(string aJsonMsg)
         {
             _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
-            // TODO This is probably the place where the most stuff can go wrong. Test the shit out of it.... Soon. >.>
             JObject j;
             try
             {
@@ -51,34 +53,45 @@ namespace Buttplug.Core
             }
             catch (JsonReaderException e)
             {
-                _bpLogger.Warn($"Not valid JSON: {aJsonMsg}");
-                _bpLogger.Warn(e.Message);
-                return Option<IButtplugMessage>.None;
+                _bpLogger.Debug($"Not valid JSON: {aJsonMsg}");
+                _bpLogger.Debug(e.Message);
+                return "Not valid JSON";
             }
             try
             {
                 var msgName = j.Properties().First().Name;
                 if (!_messageTypes.Keys.Contains(msgName))
                 {
-                    _bpLogger.Warn($"{msgName} is not a valid message class");
-                    return Option<IButtplugMessage>.None;
+                    return $"{msgName} is not a valid message class";
                 }
+                // TODO These variable names? Really? Does this look like math code?
                 var s = new JsonSerializer {MissingMemberHandling = MissingMemberHandling.Error};
                 var r = j[msgName].Value<JObject>();
                 var m = (IButtplugMessage)r.ToObject(_messageTypes[msgName], s);
+                var validMsg = m.Check();
+                if (validMsg.IsSome)
+                {
+                    string err = null;
+                    validMsg.IfSome(x => err = x);
+                    return err;
+                }
                 _bpLogger.Trace($"Message successfully parsed as {msgName} type");
-                return Option<IButtplugMessage>.Some(m);
+                // Can't get Either<> to coerce m into a IButtplugMessage so we're having to pull in
+                // the internal type. I guess the cast doesn't resolve to a discernable type?
+                return Right<string, IButtplugMessage>(m);
             }
             catch (Exception e)
             {
-                _bpLogger.Warn($"Could not create message for JSON {aJsonMsg}");
-                _bpLogger.Warn(e.Message);
-                return Option<IButtplugMessage>.None;
+                return $"Could not create message for JSON {aJsonMsg}: {e.Message}";
             };
         }
 
         public static Option<string> Serialize(IButtplugMessage aMsg)
         {
+            if (aMsg.Check().IsSome)
+            {
+                return new OptionNone();
+            }
             // TODO There are so very many ways this could throw
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             return o.ToString(Formatting.None);

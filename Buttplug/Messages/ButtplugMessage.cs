@@ -19,7 +19,10 @@ namespace Buttplug.Messages
             DeviceIndex = aIndex;
         }
 
-        public Option<string> Check() { return new Option<string>(); }
+        public Option<string> Check()
+        {
+            return new OptionNone();
+        }
     }
 
     public class FleshlightLaunchRawMessage : IButtplugDeviceMessage
@@ -49,7 +52,7 @@ namespace Buttplug.Messages
             {
                 return Option<string>.Some("FleshlightLaunchRawMessage cannot have a position higher than 99!");
             }
-            return new Option<string>();
+            return new OptionNone();
         }
     }
 
@@ -60,7 +63,7 @@ namespace Buttplug.Messages
 
         public Option<string> Check()
         {
-            return new Option<string>();
+            return new OptionNone();
         }
     }
 
@@ -88,19 +91,19 @@ namespace Buttplug.Messages
             {
                 return Option<string>.Some("SingleMotorVibrateMessage Speed cannot be greater than 1!");
             }
-            return new Option<string>();
+            return new OptionNone();
         }
     }
 
     public class PingMessage : IButtplugMessage
     {
-        public Option<string> Check() { return new Option<string>(); }
+        public Option<string> Check() { return new OptionNone(); }
     }
 
     public class TestMessage : IButtplugMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public string TestString { get; }
+        public string TestString { get; set;  }
 
         public TestMessage(string aString)
         {
@@ -113,7 +116,7 @@ namespace Buttplug.Messages
             {
                 return Option<string>.Some("Got an error message!");
             }
-            return new Option<string>();
+            return new OptionNone();
         }
     }
 
@@ -127,6 +130,6 @@ namespace Buttplug.Messages
             ErrorString = aErrorString;
         }
 
-        public Option<string> Check() { return new Option<string>(); }
+        public Option<string> Check() { return new OptionNone(); }
     }
 }

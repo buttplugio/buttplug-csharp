@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Messages;
 using NLog;
+using LanguageExt;
 
 namespace Buttplug.Core
 {
@@ -78,17 +79,11 @@ namespace Buttplug.Core
             return false;
         }
 
-        public async Task<bool> SendMessage(String aJSONMsg)
+        public async Task SendMessage(string aJsonMsg)
         {
-            var msg = _parser.Deserialize(aJSONMsg);
-            if (msg.IsNone)
-            {
-                return false;
-            }
-            // TODO There has got to be a better way to extract values from Option, or get around scoping for pattern matching for returns.
-            IButtplugMessage m = null;
-            msg.IfSome(x => m = x);
-            return await SendMessage(m);
+            var msg = _parser.Deserialize(aJsonMsg);
+            await msg.Match(async x => _bpLogger.Warn($"Cannot deserialize json message: {x}"),
+                            async x => await SendMessage(x));
         }
 
         public void StartScanning()
