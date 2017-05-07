@@ -14,7 +14,7 @@ namespace ButtplugTest.Core
         [Fact]
         public async void RejectOutgoingOnlyMessage()
         {
-            Assert.False(await new ButtplugService().SendMessage(new Error("Error")));
+            Assert.True((await new ButtplugService().SendMessage(new Error("Error"))).IsLeft);
         }
 
         [Fact]
@@ -29,10 +29,11 @@ namespace ButtplugTest.Core
                     gotMessage = true;
                 }
             };
+            // Sending error messages will always cause an error, as they are outgoing, not incoming.
             await s.SendMessage(new Error("Error"));
             Assert.False(gotMessage);
-            await s.SendMessage(new RequestLog("Trace"));
-            await s.SendMessage(new Error("Error"));
+            Assert.True((await s.SendMessage(new RequestLog("Trace"))).IsRight);
+            Assert.True((await s.SendMessage(new Error("Error"))).IsLeft);
             Assert.True(gotMessage);
             await s.SendMessage(new RequestLog("Off"));
             gotMessage = false;

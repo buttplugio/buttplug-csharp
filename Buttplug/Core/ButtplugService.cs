@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Buttplug.Messages;
 using NLog;
 using NLog.Config;
+using LanguageExt;
 
 namespace Buttplug.Core
 {
@@ -80,31 +81,26 @@ namespace Buttplug.Core
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
 
-        private void SendDeviceList()
-        {
-            var msgDevices = _devices.Select(d => new DeviceMessageInfo(d.Key, d.Value.Name)).ToList();
-            MessageReceived?.Invoke(this, 
-                                    new MessageReceivedEventArgs(new DeviceList(msgDevices.ToArray())));
-        }
-
         //TODO Figure out how SendMessage API should work (Stay async? Trigger internal event?) (Issue #16)
-        public async Task<bool> SendMessage(IButtplugMessage aMsg)
+        public async Task<Either<Error, IButtplugMessage>> SendMessage(IButtplugMessage aMsg)
         {
             _bpLogger.Trace($"Got Message of type {aMsg.GetType().Name} to send.");
             var err = aMsg.Check();
+            string errStr = null;
             if (err.IsSome)
             {
                 err.IfSome(x =>
                 {
-                    // TODO Send error replies based on message IDs
-                    _bpLogger.Warn($"Got a malformed IButtplugMessage: {x}");
+                    errStr = $"Got a malformed IButtplugMessage: {x}";
+                    _bpLogger.Warn(errStr);
                 });
-                return false;
+                return new Error(errStr);
             }
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
-                _bpLogger.Warn($"Message of type {aMsg.GetType().Name} cannot be sent to server!");
-                return false;
+                errStr = $"Message of type {aMsg.GetType().Name} cannot be sent to server!";
+                _bpLogger.Warn(errStr);
+                return new Error(errStr);
             }
             switch (aMsg)
             {
@@ -114,19 +110,18 @@ namespace Buttplug.Core
                     _outgoingLoggingRule = new LoggingRule("*", m.LogLevelObj, _msgTarget);
                     c.LoggingRules.Add(_outgoingLoggingRule);
                     LogManager.Configuration = c;
-                    return true;
+                    return new Ok();
                 case StartScanning _:
                     StartScanning();
-                    return true;
+                    return new Ok();
                 case StopScanning _:
                     StopScanning();
-                    return true;
+                    return new Ok();
                 case RequestServerInfo _:
-                    MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new ServerInfo()));
-                    return true;
+                    return new ServerInfo();
                 case RequestDeviceList _:
-                    SendDeviceList();
-                    return true;
+                    var msgDevices = _devices.Select(d => new DeviceMessageInfo(d.Key, d.Value.Name)).ToList();
+                    return new DeviceList(msgDevices.ToArray());
                 // If it's a device message, it's most likely not ours.
                 case IButtplugDeviceMessage m:
                     _bpLogger.Trace($"Sending {aMsg.GetType().Name} to device index {m.DeviceIndex}");
@@ -134,18 +129,25 @@ namespace Buttplug.Core
                     {
                         return await _devices[m.DeviceIndex].ParseMessage(m);
                     }
-                    _bpLogger.Warn($"Dropping message for unknown device index {m.DeviceIndex}");
-                    return false;
+                    errStr = $"Dropping message for unknown device index {m.DeviceIndex}";
+                    _bpLogger.Warn(errStr);
+                    return new Error(errStr);
             }
+            errStr = $"Dropping unhandled message type {aMsg.GetType().Name}";
             _bpLogger.Warn($"Dropping unhandled message type {aMsg.GetType().Name}");
-            return false;
+            return new Error(errStr);
         }
 
-        public async Task SendMessage(string aJsonMsg)
+        public async Task<Either<Error, IButtplugMessage>> SendMessage(string aJsonMsg)
         {
             var msg = _parser.Deserialize(aJsonMsg);
-            await msg.Match(async x => _bpLogger.Warn($"Cannot deserialize json message: {x}"),
-                            async x => await SendMessage(x));
+            return await msg.MatchAsync(async x => await SendMessage(x),
+                x =>
+                {
+                    var errStr = $"Cannot deserialize json message: {x}";
+                    _bpLogger.Warn(errStr);
+                    return new Error(errStr);
+                });
         }
 
         private void StartScanning()

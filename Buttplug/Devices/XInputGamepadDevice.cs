@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using SharpDX.XInput;
 using Buttplug.Messages;
+using LanguageExt;
+using NLog;
 
 namespace Buttplug.Devices
 {
@@ -38,7 +40,7 @@ namespace Buttplug.Devices
         }
 
 #pragma warning disable 1998
-        public override async Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)
+        public override async Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage aMsg)
 #pragma warning restore 1998
         {
             switch (aMsg)
@@ -50,9 +52,9 @@ namespace Buttplug.Devices
                         RightMotorSpeed = (ushort)(m.Speed * 65536)
                     };
                     _device.SetVibration(v);
-                    return true;
+                    return new Ok();
             }
-            return false;
+            return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
         }
     }
 }

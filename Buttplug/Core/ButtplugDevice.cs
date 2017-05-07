@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NLog;
+using LanguageExt;
+using Buttplug.Messages;
 
 namespace Buttplug.Core
 {
@@ -16,7 +18,7 @@ namespace Buttplug.Core
     public abstract class ButtplugDevice
     {
         public string Name { get; }
-        public abstract Task<bool> ParseMessage(IButtplugDeviceMessage aMsg);
+        public abstract Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage aMsg);
         protected Logger BpLogger;
 
         protected ButtplugDevice(string name)

@@ -2,6 +2,9 @@
 using System.Threading.Tasks;
 using Windows.Gaming.Input;
 using Buttplug.Core;
+using Buttplug.Messages;
+using LanguageExt;
+using NLog;
 
 namespace Buttplug.Devices
 {
@@ -36,7 +39,7 @@ namespace Buttplug.Devices
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public override async Task<bool> ParseMessage(IButtplugDeviceMessage aMsg)
+        public override async Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage aMsg)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             switch (aMsg)
@@ -48,9 +51,9 @@ namespace Buttplug.Devices
                         RightMotor = m.Speed
                     };
                     _device.Vibration = v;
-                    return true;
+                    return new Ok();
             }
-            return false;
+            return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
         }
     }
 }

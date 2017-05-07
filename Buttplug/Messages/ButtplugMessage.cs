@@ -8,6 +8,8 @@ using NLog;
 
 namespace Buttplug.Messages
 {
+    public class Ok : ButtplugMessageNoBody, IButtplugMessageOutgoingOnly
+    {}
 
     public class Ping : IButtplugMessage
     {

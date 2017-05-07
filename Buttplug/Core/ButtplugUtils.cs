@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Buttplug.Messages;
 using Windows.Storage.Streams;
+using NLog;
 
 namespace Buttplug.Core
 {
-    internal class ButtplugUtils
+    public class ButtplugUtils
     {
         public static IBuffer WriteString(string s)
         {
@@ -21,6 +18,12 @@ namespace Buttplug.Core
             var w = new DataWriter();
             w.WriteBytes(b);
             return w.DetachBuffer();
+        }
+
+        public static Error LogAndError(Logger l, LogLevel level, string msg)
+        {
+            l.Log(level, msg);
+            return new Error(msg);
         }
     }
 }

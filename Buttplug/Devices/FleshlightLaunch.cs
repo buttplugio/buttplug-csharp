@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Storage.Streams;
 using Buttplug.Core;
+using Buttplug.Messages;
+using LanguageExt;
 using NLog;
 
 namespace Buttplug.Devices
@@ -54,39 +55,48 @@ namespace Buttplug.Devices
             _commandChr = aCommandChr;
         }
 
-        private async Task Initialize()
+        private async Task<Option<Error>> Initialize()
         {
             _isInitialized = true;
-            BpLogger.Debug("Initializing Fleshlight Launch");
+            BpLogger.Trace($"Initializing {Name}");
             var x = await _commandChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] {0}));
             if (x != GattCommunicationStatus.Success)
             {
-                BpLogger.Error("Cannot initialize fleshlight launch device!");
+                return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"Cannot initialize {Name}!");
             }
-            BpLogger.Debug("Fleshlight Launch Initialized");
+            BpLogger.Trace($"{Name} initialized");
+            return new OptionNone();
         }
 
 #pragma warning disable 1998
-        public override async Task<bool> ParseMessage(IButtplugDeviceMessage msg)
+        public override async Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage msg)
 #pragma warning restore 1998
         {
             if (!_isInitialized)
             {
-                await Initialize();
+                var err = await Initialize();
+
+                if (err.IsSome)
+                {
+                    // TODO No seriously extraction shouldn't be this hard. I'm missing something.
+                    var m = new Either<Error, IButtplugMessage>();
+                    err.IfSome(x => m = x);
+                    return m;
+                }
             }
             switch (msg)
             {
                 //TODO: Split into Command message and Control message? (Issue #17)
                 case Messages.FleshlightLaunchRawCmd m:
                     var x = await _writeChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] {(byte)m.Position, (byte)m.Speed}));
-                    if (x != GattCommunicationStatus.Success)
+                    if (x == GattCommunicationStatus.Success)
                     {
-                        BpLogger.Error("Cannot send data to fleshlight launch device!");
+                        return new Ok();
                     }
-                    return true;
+                    return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"Cannot send data to {Name}");
             }
 
-            return false;
+            return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {msg.GetType().Name}");
         }
     }
 }

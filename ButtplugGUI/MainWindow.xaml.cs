@@ -16,6 +16,7 @@ using Buttplug;
 using System.Collections.ObjectModel;
 using Buttplug.Core;
 using Buttplug.Messages;
+using LanguageExt;
 
 namespace ButtplugGUI
 {

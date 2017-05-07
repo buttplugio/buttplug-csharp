@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Core;
+using Buttplug.Messages;
+using LanguageExt;
+using NLog;
 
 namespace Buttplug.Devices
 {
@@ -42,18 +45,18 @@ namespace Buttplug.Devices
             _readChr = aReadChr;
         }
 
-        public override async Task<bool> ParseMessage(IButtplugDeviceMessage msg)
+        public override async Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage aMsg)
         {
-            switch (msg)
+            switch (aMsg)
             {
                 case Messages.SingleMotorVibrateCmd m:
                     BpLogger.Trace("Lovense toy got SingleMotorVibrateMessage");
                     var buf = ButtplugUtils.WriteString($"Vibrate:{(int) (m.Speed * 20)};");
                     await _writeChr.WriteValueAsync(buf);
-                    return true;
+                    return new Ok();
             }
 
-            return false;
+            return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
         }
     }
 }

@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using LanguageExt;
 using Newtonsoft.Json;
+using Xunit;
+using Buttplug;
 
-namespace Buttplug.Messages
+namespace ButtplugTest.Messages
 {
-
-
+    public class ButtplugMessageTests
+    {
+        [Fact]
+        public async void RequestLogJsonTest()
+        {
+            var s = new ButtplugService();
+            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Trace\"}}")).IsRight);
+        }
+    }
 }
