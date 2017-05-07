@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using Buttplug.Messages;
 using NLog;
@@ -23,7 +24,7 @@ namespace Buttplug.Core
         private readonly Dictionary<uint, ButtplugDevice> _devices;
         private uint _deviceIndex;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        readonly Logger _bpLogger;
+        private readonly Logger _bpLogger;
 
         public ButtplugService()
         {
@@ -33,7 +34,16 @@ namespace Buttplug.Core
             _deviceIndex = 0;
 
             //TODO Introspect managers based on project contents and OS version (#15)
-            _managers = new List<DeviceManager> {new BluetoothManager(), new XInputGamepadManager()};
+            _managers = new List<DeviceManager>();
+            try
+            {
+                _managers.Add(new BluetoothManager());
+            }
+            catch (ReflectionTypeLoadException)
+            {
+                _bpLogger.Warn("Cannot bring up UWP Bluetooth manager!");
+            }
+            _managers.Add(new XInputGamepadManager());
             _managers.ForEach(m => m.DeviceAdded += DeviceAddedHandler);
         }
 
