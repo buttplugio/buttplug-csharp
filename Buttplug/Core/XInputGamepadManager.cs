@@ -22,13 +22,14 @@ namespace Buttplug.Core
                                       new Controller(UserIndex.Four) };
             foreach (var c in controllers)
             {
-                if (c.IsConnected)
+                if (!c.IsConnected)
                 {
-                    BpLogger.Debug($"Found connected XInput Gamepad for Index {c.UserIndex}");
-                    var device = new XInputGamepadDevice(c);
-                    _connectedGamepads.Add(device);
-                    InvokeDeviceAdded(new DeviceAddedEventArgs(device));
+                    continue;
                 }
+                BpLogger.Debug($"Found connected XInput Gamepad for Index {c.UserIndex}");
+                var device = new XInputGamepadDevice(c);
+                _connectedGamepads.Add(device);
+                InvokeDeviceAdded(new DeviceAddedEventArgs(device));
             }
         }
 
