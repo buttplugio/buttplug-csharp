@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using LanguageExt;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
 using Buttplug.Core;
-using Buttplug.Messages;
 using NLog;
 
 namespace Buttplug.Devices
@@ -80,7 +77,7 @@ namespace Buttplug.Devices
             switch (msg)
             {
                 //TODO: Split into Command message and Control message? (Issue #17)
-                case FleshlightLaunchRawMessage m:
+                case Messages.FleshlightLaunchRawCmd m:
                     var x = await _writeChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] {(byte)m.Position, (byte)m.Speed}));
                     if (x != GattCommunicationStatus.Success)
                     {

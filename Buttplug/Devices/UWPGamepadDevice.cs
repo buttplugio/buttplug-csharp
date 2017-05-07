@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Gaming.Input;
-using Buttplug.Messages;
-using Buttplug;
 using Buttplug.Core;
 
 namespace Buttplug.Devices
@@ -46,7 +41,7 @@ namespace Buttplug.Devices
         {
             switch (aMsg)
             {
-                case SingleMotorVibrateMessage m:
+                case Messages.SingleMotorVibrateCmd m:
                     var v = new GamepadVibration()
                     {
                         LeftMotor = m.Speed,

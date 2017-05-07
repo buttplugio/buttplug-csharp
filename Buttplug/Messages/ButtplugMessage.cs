@@ -6,16 +6,84 @@ using LanguageExt;
 namespace Buttplug.Messages
 {
 
-    public class DeviceAddedMessage : IButtplugDeviceMessage
+    public class Ping : IButtplugMessage
+    {
+        public Option<string> Check() { return new OptionNone(); }
+    }
+
+    public class Test : IButtplugMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public string DeviceName { get; }
+        public string TestString { get; set; }
+
+        public Test(string aString)
+        {
+            TestString = aString;
+        }
+
+        public Option<string> Check()
+        {
+            return TestString == "Error" ? Option<string>.Some("Got an error message!") : new OptionNone();
+        }
+    }
+
+    public class Error : IButtplugMessageOutgoingOnly
+    {
         [JsonProperty(Required = Required.Always)]
+        public string ErrorString { get; }
+
+        public Error(string aErrorString)
+        {
+            ErrorString = aErrorString;
+        }
+
+        public Option<string> Check() { return new OptionNone(); }
+    }
+
+    public class DeviceMessageInfo
+    {
+        public string DeviceName { get; }
         public uint DeviceIndex { get; }
 
-        public DeviceAddedMessage(uint aIndex, string aName)
+        public DeviceMessageInfo(uint aIndex, string aName)
         {
             DeviceName = aName;
+            DeviceIndex = aIndex;
+        }
+    }
+
+    public class DeviceList : IButtplugMessageOutgoingOnly
+    {
+        public DeviceMessageInfo[] Devices;
+
+        public DeviceList(DeviceMessageInfo[] aDeviceList)
+        {
+            Devices = aDeviceList;
+        }
+
+        public Option<string> Check()
+        {
+            return new OptionNone();
+        }
+    }
+
+    public class DeviceAdded : DeviceMessageInfo, IButtplugMessageOutgoingOnly
+    {
+        public DeviceAdded(uint aIndex, string aName) : base(aIndex, aName)
+        {
+        }
+
+        public Option<string> Check()
+        {
+            return new OptionNone();
+        }
+    }
+
+    public class DeviceRemoved : IButtplugMessageOutgoingOnly
+    {
+        public uint DeviceIndex { get; }
+        public DeviceRemoved(uint aIndex)
+        {
             DeviceIndex = aIndex;
         }
 
@@ -25,7 +93,39 @@ namespace Buttplug.Messages
         }
     }
 
-    public class FleshlightLaunchRawMessage : IButtplugDeviceMessage
+    public class RequestDeviceList : ButtplugMessageNoBody
+    { }
+
+    public class StartScanning : ButtplugMessageNoBody
+    { }
+
+    public class StopScanning : ButtplugMessageNoBody
+    { }
+
+    public class ScanningFinished : ButtplugMessageNoBody, IButtplugMessageOutgoingOnly
+    { }
+
+    public class RequestServerInfo : ButtplugMessageNoBody
+    { }
+
+    public class ServerInfo : IButtplugMessageOutgoingOnly
+    {
+        public uint MajorVersion { get; }
+        public uint MinorVersion { get; }
+
+        public ServerInfo(uint aMajorVersion, uint aMinorVersion)
+        {
+            MajorVersion = aMajorVersion;
+            MinorVersion = aMinorVersion;
+        }
+
+        public Option<string> Check()
+        {
+            return new OptionNone();
+        }
+    }
+
+    public class FleshlightLaunchRawCmd : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; set; }
@@ -34,7 +134,7 @@ namespace Buttplug.Messages
         [JsonProperty(Required = Required.Always)]
         public readonly ushort Position;
 
-        public FleshlightLaunchRawMessage(uint aDeviceIndex, ushort aSpeed, ushort aPosition)
+        public FleshlightLaunchRawCmd(uint aDeviceIndex, ushort aSpeed, ushort aPosition)
         {
             DeviceIndex = aDeviceIndex;
             Speed = aSpeed;
@@ -56,7 +156,7 @@ namespace Buttplug.Messages
         }
     }
 
-    public class LovenseRawMessage : IButtplugDeviceMessage
+    public class LovenseRawCmd : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; }
@@ -67,14 +167,14 @@ namespace Buttplug.Messages
         }
     }
 
-    public class SingleMotorVibrateMessage : IButtplugDeviceMessage
+    public class SingleMotorVibrateCmd : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; set; }
         [JsonProperty(Required = Required.Always)]
         public double Speed { get; }
 
-        public SingleMotorVibrateMessage(uint d, double speed)
+        public SingleMotorVibrateCmd(uint d, double speed)
         {
             DeviceIndex = d;
             Speed = speed;
@@ -95,41 +195,4 @@ namespace Buttplug.Messages
         }
     }
 
-    public class PingMessage : IButtplugMessage
-    {
-        public Option<string> Check() { return new OptionNone(); }
-    }
-
-    public class TestMessage : IButtplugMessage
-    {
-        [JsonProperty(Required = Required.Always)]
-        public string TestString { get; set;  }
-
-        public TestMessage(string aString)
-        {
-            TestString = aString;
-        }
-
-        public Option<string> Check()
-        {
-            if (TestString == "Error")
-            {
-                return Option<string>.Some("Got an error message!");
-            }
-            return new OptionNone();
-        }
-    }
-
-    public class ErrorMessage : IButtplugMessage
-    {
-        [JsonProperty(Required = Required.Always)]
-        public string ErrorString { get; }
-
-        public ErrorMessage(string aErrorString)
-        {
-            ErrorString = aErrorString;
-        }
-
-        public Option<string> Check() { return new OptionNone(); }
-    }
 }

@@ -64,26 +64,28 @@ namespace ButtplugGUI
             {
                 switch (e.Message)
                 {
-                    case DeviceAddedMessage m:
+                    case Buttplug.Messages.DeviceAdded m:
                         _devices.Add(new Device(m.DeviceIndex, m.DeviceName));
                         break;
                 }
             });
         }
 
-        private void ScanButton_Click(object sender, RoutedEventArgs e)
+        private async void ScanButton_Click(object sender, RoutedEventArgs e)
         {
+            // Disable button until we're done here
+            ScanButton.Click -= ScanButton_Click;
             if ((string)ScanButton.Content == "Start Scanning")
             {
-                _bpServer.StartScanning();
+                await _bpServer.SendMessage(new StartScanning());
                 ScanButton.Content = "Stop Scanning";
             }
             else
             {
-                _bpServer.StopScanning();
+                await _bpServer.SendMessage(new StopScanning());
                 ScanButton.Content = "Start Scanning";
             }
-           
+            ScanButton.Click += ScanButton_Click;
         }
     }
 }

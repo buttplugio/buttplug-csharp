@@ -5,25 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Xunit;
-using Buttplug.Messages;
 
 namespace ButtplugTest.Core
 {
-    public partial class ButtplugJsonMessageParserTests
+    public class ButtplugJsonMessageParserTests
     {
         [Fact]
         public void JsonConversionTest()
         {
-            var m = new TestMessage("ThisIsATest");
+            var m = new Buttplug.Messages.Test("ThisIsATest");
             var msg = ButtplugJsonMessageParser.Serialize(m);
             Assert.True(msg.IsSome);
-            msg.IfSome((x) => Assert.Equal(x, "{\"TestMessage\":{\"TestString\":\"ThisIsATest\"}}"));
+            msg.IfSome((x) => Assert.Equal(x, "{\"Test\":{\"TestString\":\"ThisIsATest\"}}"));
         }
 
         [Fact]
         public void JsonConversionFailureTest()
         {
-            var m = new TestMessage("Error");
+            var m = new Buttplug.Messages.Test("Error");
             var msg = ButtplugJsonMessageParser.Serialize(m);
             Assert.True(msg.IsNone);
         }
@@ -37,11 +36,11 @@ namespace ButtplugTest.Core
         // Not a message type
         [InlineData("{\"NotAMessage\":{}}")]
         // Valid json and message type but not in correct format
-        [InlineData("{\"TestMessage\":[]}")]
+        [InlineData("{\"Test\":[]}")]
         // Valid json and message type but not in correct format
-        [InlineData("{\"TestMessage\":{}}")]
+        [InlineData("{\"Test\":{}}")]
         // Valid json and message type but with erroneous content
-        [InlineData("{\"TestMessage\":{\"TestString\":\"Error\"}}")]
+        [InlineData("{\"Test\":{\"TestString\":\"Error\"}}")]
         [Theory]
         public void DeserializeIncorrectMessages(string x)
         {
@@ -53,13 +52,13 @@ namespace ButtplugTest.Core
         public void DeserializeCorrectMessage()
         {
             var p = new ButtplugJsonMessageParser();
-            var m = p.Deserialize("{\"TestMessage\":{\"TestString\":\"Test\"}}");
+            var m = p.Deserialize("{\"Test\":{\"TestString\":\"Test\"}}");
             Assert.True(m.IsRight);
             m.IfRight(x =>
             {
                 switch (x)
                 {
-                    case TestMessage tm:
+                    case Buttplug.Messages.Test tm:
                         Assert.True(tm.TestString == "Test");
                         break;
                     default:

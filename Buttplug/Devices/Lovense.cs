@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Buttplug.Messages;
-using Windows.Storage.Streams;
 using Buttplug.Core;
 
 namespace Buttplug.Devices
@@ -49,7 +46,7 @@ namespace Buttplug.Devices
         {
             switch (msg)
             {
-                case SingleMotorVibrateMessage m:
+                case Messages.SingleMotorVibrateCmd m:
                     BpLogger.Trace("Lovense toy got SingleMotorVibrateMessage");
                     var buf = ButtplugUtils.WriteString($"Vibrate:{(int) (m.Speed * 20)};");
                     await _writeChr.WriteValueAsync(buf);

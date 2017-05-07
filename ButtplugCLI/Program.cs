@@ -40,35 +40,7 @@ namespace ButtplugCLI
         }
     }
 
-    public class ButtplugServer : WebSocketBehavior
-    {
 
-        private readonly ButtplugService _buttplug;
-        public ButtplugServer()
-        {
-            _buttplug = new ButtplugService();
-            _buttplug.MessageReceived += OnMessageReceived;
-            _buttplug.StartScanning();
-        }
-
-        public void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
-        {
-            Console.WriteLine("Found a device!");
-        }
-
-        protected override async void OnMessage(MessageEventArgs e)
-        {
-            Console.WriteLine("Got a message! " + e.Data);
-            base.OnMessage(e);
-            await _buttplug.SendMessage(e.Data);
-        }
-
-        public void OnMessageReceived(object o, MessageReceivedEventArgs e)
-        {
-            Console.WriteLine(e.Message);
-            ButtplugJsonMessageParser.Serialize(e.Message).IfSome(x => Console.WriteLine(x));
-        }
-    }
 
     internal class Program
     {
@@ -77,7 +49,7 @@ namespace ButtplugCLI
             var config = new LoggingConfiguration();
             var consoleTarget = new ColoredConsoleTarget();
             config.AddTarget("console", consoleTarget);
-            var rule1 = new LoggingRule("*", NLog.LogLevel.Trace, consoleTarget);
+            var rule1 = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);
             config.LoggingRules.Add(rule1);
             LogManager.Configuration = config;
             var bpLogger = LogManager.GetLogger("Buttplug");
@@ -97,7 +69,7 @@ namespace ButtplugCLI
             var wssv = new WebSocketServer(options.WebsocketPort);
             wssv.Log.Level = options.Quiet ? WebSocketSharp.LogLevel.Fatal : WebSocketSharp.LogLevel.Warn;
             
-            wssv.AddWebSocketService<ButtplugServer>("/Buttplug");
+            //wssv.AddWebSocketService<ButtplugServer>("/Buttplug");
 
             wssv.Start();
             Console.ReadKey(true);

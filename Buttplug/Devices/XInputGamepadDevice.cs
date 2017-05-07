@@ -43,7 +43,7 @@ namespace Buttplug.Devices
         {
             switch (aMsg)
             {
-                case SingleMotorVibrateMessage m:
+                case Messages.SingleMotorVibrateCmd m:
                     var v = new Vibration()
                     {
                         LeftMotorSpeed = (ushort)(m.Speed * 65536),

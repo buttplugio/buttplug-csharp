@@ -36,6 +36,9 @@
     <Reference Include="LanguageExt.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LanguageExt.Core.2.0.60\lib\net451\LanguageExt.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Reactive.Core, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
@@ -79,6 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ButtplugJsonMessageParserTests.cs" />
+    <Compile Include="Core\ButtplugServerTests.cs" />
+    <Compile Include="Messages\ButtplugMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

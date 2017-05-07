@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Buttplug.Messages;
@@ -47,7 +48,7 @@ namespace Buttplug.Core
             _managers.ForEach(m => m.DeviceAdded += DeviceAddedHandler);
         }
 
-        public void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
+        private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
         {
             if (_devices.ContainsValue(e.Device))
             {
@@ -56,9 +57,16 @@ namespace Buttplug.Core
             }
             _bpLogger.Debug($"Adding Device {e.Device.Name} at index {_deviceIndex}");
             _devices.Add(_deviceIndex, e.Device);
-            var msg = new DeviceAddedMessage(_deviceIndex, e.Device.Name);
+            var msg = new Messages.DeviceAdded(_deviceIndex, e.Device.Name);
             _deviceIndex += 1;
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
+        }
+
+        private void SendDeviceList()
+        {
+            var msgDevices = _devices.Select(d => new DeviceMessageInfo(d.Key, d.Value.Name)).ToList();
+            MessageReceived?.Invoke(this, 
+                                    new MessageReceivedEventArgs(new DeviceList(msgDevices.ToArray())));
         }
 
         //TODO Figure out how SendMessage API should work (Stay async? Trigger internal event?) (Issue #16)
@@ -75,8 +83,17 @@ namespace Buttplug.Core
                 });
                 return false;
             }
+            if (aMsg is IButtplugMessageOutgoingOnly)
+            {
+                _bpLogger.Warn($"Message of type {aMsg.GetType().Name} cannot be sent to server!");
+                return false;
+            }
             switch (aMsg)
             {
+                case RequestDeviceList m:
+                    SendDeviceList();
+                    return true;
+                // If it's a device message, it's most likely not ours.
                 case IButtplugDeviceMessage m:
                     _bpLogger.Trace($"Sending {aMsg.GetType().Name} to device index {m.DeviceIndex}");
                     if (_devices.ContainsKey(m.DeviceIndex))
@@ -86,6 +103,7 @@ namespace Buttplug.Core
                     _bpLogger.Warn($"Dropping message for unknown device index {m.DeviceIndex}");
                     return false;
             }
+            _bpLogger.Warn($"Dropping unhandled message type {aMsg.GetType().Name}");
             return false;
         }
 
@@ -96,12 +114,12 @@ namespace Buttplug.Core
                             async x => await SendMessage(x));
         }
 
-        public void StartScanning()
+        private void StartScanning()
         {
             _managers.ForEach(m => m.StartScanning());
         }
 
-        public void StopScanning()
+        private void StopScanning()
         {
             _managers.ForEach(m => m.StopScanning());
         }
