@@ -20,9 +20,6 @@ namespace Buttplug.Core
 
     public class ButtplugService
     {
-        public static readonly uint MajorVersion = 0;
-        public static readonly uint MinorVersion = 1;
-        public static readonly uint BuildVersion = 1;
         private readonly ButtplugJsonMessageParser _parser;
         private readonly List<DeviceManager> _managers;
         private readonly Dictionary<uint, ButtplugDevice> _devices;
@@ -125,7 +122,7 @@ namespace Buttplug.Core
                     StopScanning();
                     return true;
                 case RequestServerInfo _:
-                    MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new ServerInfo(MajorVersion, MinorVersion, BuildVersion)));
+                    MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new ServerInfo()));
                     return true;
                 case RequestDeviceList _:
                     SendDeviceList();

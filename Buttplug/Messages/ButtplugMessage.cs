@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Buttplug.Core;
 using Newtonsoft.Json;
 using LanguageExt;
@@ -164,14 +165,14 @@ namespace Buttplug.Messages
 
     public class ServerInfo : IButtplugMessageOutgoingOnly
     {
-        public uint MajorVersion { get; }
-        public uint MinorVersion { get; }
-        public uint BuildVersion { get; }
-        public ServerInfo(uint aMajorVersion, uint aMinorVersion, uint aBuildVersion)
+        public int MajorVersion { get; }
+        public int MinorVersion { get; }
+        public int BuildVersion { get; }
+        public ServerInfo()
         {
-            MajorVersion = aMajorVersion;
-            MinorVersion = aMinorVersion;
-            BuildVersion = aBuildVersion;
+            MajorVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major;
+            MinorVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor;
+            BuildVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build;
         }
 
         public Option<string> Check()
