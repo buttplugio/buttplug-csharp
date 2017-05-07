@@ -63,7 +63,19 @@ namespace Buttplug.Core
             // If we actually have a factory for this device, go ahead and create the device
             Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
             Option<ButtplugDevice> l = null;
-            dev.IfSome(async d => l = await factory.CreateDeviceAsync(d));
+            dev.IfSome(async d => {
+                // If a device is turned on after scanning has started, windows seems to lose the
+                // device handle the first couple of times it tries to deal with the advertisement.
+                // Just log the error and hope it reconnects on a later retry.
+                try
+                {
+                    l = await factory.CreateDeviceAsync(d);
+                }
+                catch (Exception ex)
+                {
+                    BpLogger.Error($"Cannot connect to device {e.Advertisement.LocalName} {e.BluetoothAddress}: {ex.Message}");
+                }
+            });
             l.IfSome(d => InvokeDeviceAdded(new DeviceAddedEventArgs(d)));
         }
 
