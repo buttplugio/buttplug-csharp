@@ -21,7 +21,7 @@ namespace Buttplug.Core
 
         protected ButtplugDevice(string name)
         {
-            BpLogger = LogManager.GetLogger("Buttplug");
+            BpLogger = LogManager.GetLogger(GetType().FullName);
             Name = name;
         }
     }

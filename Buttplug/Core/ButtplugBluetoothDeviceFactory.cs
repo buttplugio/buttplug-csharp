@@ -15,7 +15,7 @@ namespace Buttplug.Core
         private readonly IBluetoothDeviceInfo _deviceInfo;
         public ButtplugBluetoothDeviceFactory(IBluetoothDeviceInfo aInfo)
         {
-            _bpLogger = LogManager.GetLogger("Buttplug");
+            _bpLogger = LogManager.GetLogger(GetType().FullName);
             _bpLogger.Trace($"Creating {GetType().Name}");
             _deviceInfo = aInfo;
         }

@@ -10,7 +10,7 @@ namespace Buttplug.Core
 
         protected DeviceManager()
         {
-            BpLogger = LogManager.GetLogger("Buttplug");
+            BpLogger = LogManager.GetLogger(GetType().FullName);
             BpLogger.Trace($"Setting up Device Manager {GetType().Name}");
         }
 

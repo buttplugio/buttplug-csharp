@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Buttplug.Messages;
 using LanguageExt;
 using static LanguageExt.Prelude;
 using Newtonsoft.Json;
@@ -17,7 +16,7 @@ namespace Buttplug.Core
         private readonly Logger _bpLogger;
         public ButtplugJsonMessageParser()
         {
-            _bpLogger = LogManager.GetLogger("Buttplug");
+            _bpLogger = LogManager.GetLogger(GetType().FullName);
             _bpLogger.Debug($"Setting up {GetType().Name}");
             IEnumerable<Type> allTypes;
             // Some classes in the library may not load on certain platforms due to missing symbols.

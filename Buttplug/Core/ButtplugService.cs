@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Buttplug.Messages;
 using NLog;
-using LanguageExt;
+using NLog.Config;
 
 namespace Buttplug.Core
 {
@@ -26,13 +26,25 @@ namespace Buttplug.Core
         private uint _deviceIndex;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
         private readonly Logger _bpLogger;
+        private ButtplugMessageNLogTarget _msgTarget;
+        private LoggingRule _outgoingLoggingRule;
 
         public ButtplugService()
         {
-            _bpLogger = LogManager.GetLogger("Buttplug");
+            _bpLogger = LogManager.GetLogger(GetType().FullName);
+            _bpLogger.Trace("Setting up ButtplugService");
             _parser = new ButtplugJsonMessageParser();
             _devices = new Dictionary<uint, ButtplugDevice>();
             _deviceIndex = 0;
+            _msgTarget = new ButtplugMessageNLogTarget();
+            _msgTarget.LogMessageReceived += LogMessageReceivedHandler;
+
+            // External Logger Setup
+            var c = LogManager.Configuration ?? new LoggingConfiguration();
+            c.AddTarget("ButtplugLogger", _msgTarget);
+            _outgoingLoggingRule = new LoggingRule("*", LogLevel.Off, _msgTarget);
+            c.LoggingRules.Add(_outgoingLoggingRule);
+            LogManager.Configuration = c;
 
             //TODO Introspect managers based on project contents and OS version (#15)
             _managers = new List<DeviceManager>();
@@ -46,6 +58,12 @@ namespace Buttplug.Core
             }
             _managers.Add(new XInputGamepadManager());
             _managers.ForEach(m => m.DeviceAdded += DeviceAddedHandler);
+            _bpLogger.Trace("Finished setting up ButtplugService");
+        }
+
+        private void LogMessageReceivedHandler(object o, ButtplugMessageNLogTarget.NLogMessageEventArgs e)
+        {
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(e.LogMessage));
         }
 
         private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
@@ -90,7 +108,23 @@ namespace Buttplug.Core
             }
             switch (aMsg)
             {
-                case RequestDeviceList m:
+                case RequestLog m:
+                    var c = LogManager.Configuration;
+                    c.LoggingRules.Remove(_outgoingLoggingRule);
+                    _outgoingLoggingRule = new LoggingRule("*", m.LogLevelObj, _msgTarget);
+                    c.LoggingRules.Add(_outgoingLoggingRule);
+                    LogManager.Configuration = c;
+                    return true;
+                case StartScanning _:
+                    StartScanning();
+                    return true;
+                case StopScanning _:
+                    StopScanning();
+                    return true;
+                case RequestServerInfo _:
+                    MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new ServerInfo(MajorVersion, MinorVersion, BuildVersion)));
+                    return true;
+                case RequestDeviceList _:
                     SendDeviceList();
                     return true;
                 // If it's a device message, it's most likely not ours.

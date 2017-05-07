@@ -1,7 +1,9 @@
-﻿using Buttplug;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Buttplug.Core;
 using Newtonsoft.Json;
 using LanguageExt;
+using NLog;
 
 namespace Buttplug.Messages
 {
@@ -98,6 +100,58 @@ namespace Buttplug.Messages
 
     public class StartScanning : ButtplugMessageNoBody
     { }
+
+    public class RequestLog : IButtplugMessage
+    {
+        private static readonly Dictionary<string, NLog.LogLevel> Levels = new Dictionary<string, LogLevel>()
+        {
+            { "Off", NLog.LogLevel.Off },
+            { "Fatal", NLog.LogLevel.Fatal },
+            { "Error", NLog.LogLevel.Error },
+            { "Warn", NLog.LogLevel.Warn },
+            { "Info", NLog.LogLevel.Info },
+            { "Debug", NLog.LogLevel.Debug },
+            { "Trace", NLog.LogLevel.Trace }
+        };
+        public LogLevel LogLevelObj;
+        [JsonProperty(Required = Required.Always)]
+        public string LogLevel { get; set; }
+
+        public RequestLog(string aLogLevel)
+        {
+            LogLevel = aLogLevel;
+            if (Levels.Keys.Contains(LogLevel))
+            {
+                LogLevelObj = Levels[LogLevel];
+            }
+        }
+
+        public Option<string> Check()
+        {
+            if (!Levels.Keys.Contains(LogLevel))
+            {
+                return Option<string>.Some($"Log level {LogLevel} is not valid.");
+            }
+            return new OptionNone();
+        }
+    }
+
+    public class Log : IButtplugMessageOutgoingOnly
+    {
+        public string LogLevel { get; }
+        public string LogMessage { get; }
+
+        public Log(string aLogLevel, string aLogMessage)
+        {
+            LogLevel = aLogLevel;
+            LogMessage = aLogMessage;
+        }
+
+        public Option<string> Check()
+        {
+            return new OptionNone();
+        }
+    }
 
     public class StopScanning : ButtplugMessageNoBody
     { }
