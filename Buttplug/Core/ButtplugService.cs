@@ -20,6 +20,9 @@ namespace Buttplug.Core
 
     public class ButtplugService
     {
+        public static readonly uint MajorVersion = 0;
+        public static readonly uint MinorVersion = 1;
+        public static readonly uint BuildVersion = 1;
         private readonly ButtplugJsonMessageParser _parser;
         private readonly List<DeviceManager> _managers;
         private readonly Dictionary<uint, ButtplugDevice> _devices;

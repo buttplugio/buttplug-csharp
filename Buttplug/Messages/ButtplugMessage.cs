@@ -166,11 +166,12 @@ namespace Buttplug.Messages
     {
         public uint MajorVersion { get; }
         public uint MinorVersion { get; }
-
-        public ServerInfo(uint aMajorVersion, uint aMinorVersion)
+        public uint BuildVersion { get; }
+        public ServerInfo(uint aMajorVersion, uint aMinorVersion, uint aBuildVersion)
         {
             MajorVersion = aMajorVersion;
             MinorVersion = aMinorVersion;
+            BuildVersion = aBuildVersion;
         }
 
         public Option<string> Check()
