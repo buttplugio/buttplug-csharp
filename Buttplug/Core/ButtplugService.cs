@@ -153,7 +153,9 @@ namespace Buttplug.Core
             {
                 return;
             }
+            DeviceManager mgr = m as DeviceManager;
             _managers.Add(m as DeviceManager);
+            mgr.DeviceAdded += DeviceAddedHandler;
         }
     }
 }

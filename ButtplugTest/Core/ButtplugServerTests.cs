@@ -47,8 +47,10 @@ namespace ButtplugTest.Core
             var d = new TestDevice("TestDevice");
             var m = new TestDeviceManager(d);
             var s = new TestService(m);
+            var msgReceived = false;
             s.MessageReceived += (obj, msgArgs) =>
             {
+                msgReceived = true;
                 switch (msgArgs.Message)
                 {
                     case DeviceAdded da:
@@ -61,6 +63,7 @@ namespace ButtplugTest.Core
                 }
             };
             Assert.True((await s.SendMessage(new StartScanning())).IsRight);
+            Assert.True(msgReceived);
         }
     }
 }
