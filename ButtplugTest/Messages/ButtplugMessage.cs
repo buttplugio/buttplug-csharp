@@ -19,5 +19,12 @@ namespace ButtplugTest.Messages
             var s = new ButtplugService();
             Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Trace\"}}")).IsRight);
         }
+
+        [Fact]
+        public async void RequestLogWrongLevelTest()
+        {
+            var s = new ButtplugService();
+            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"NotALevel\"}}")).IsLeft);
+        }
     }
 }

@@ -19,14 +19,6 @@ namespace ButtplugTest.Core
             msg.IfSome((x) => Assert.Equal(x, "{\"Test\":{\"TestString\":\"ThisIsATest\"}}"));
         }
 
-        [Fact]
-        public void JsonConversionFailureTest()
-        {
-            var m = new Buttplug.Messages.Test("Error");
-            var msg = ButtplugJsonMessageParser.Serialize(m);
-            Assert.True(msg.IsNone);
-        }
-
         // Not valid JSON
         [InlineData("not a json message")]
         // Valid json object but no contents
@@ -41,6 +33,8 @@ namespace ButtplugTest.Core
         [InlineData("{\"Test\":{}}")]
         // Valid json and message type but with erroneous content
         [InlineData("{\"Test\":{\"TestString\":\"Error\"}}")]
+        // Valid json and message type but with extra content
+        [InlineData("{\"Test\":{\"TestString\":\"Yup\", \"NotAField\":\"NotAValue\"}}")]
         [Theory]
         public void DeserializeIncorrectMessages(string x)
         {

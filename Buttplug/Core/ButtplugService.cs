@@ -85,17 +85,7 @@ namespace Buttplug.Core
         public async Task<Either<Error, IButtplugMessage>> SendMessage(IButtplugMessage aMsg)
         {
             _bpLogger.Trace($"Got Message of type {aMsg.GetType().Name} to send.");
-            var err = aMsg.Check();
-            string errStr = null;
-            if (err.IsSome)
-            {
-                err.IfSome(x =>
-                {
-                    errStr = $"Got a malformed IButtplugMessage: {x}";
-                    _bpLogger.Warn(errStr);
-                });
-                return new Error(errStr);
-            }
+            string errStr;
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
                 errStr = $"Message of type {aMsg.GetType().Name} cannot be sent to server!";
@@ -140,14 +130,11 @@ namespace Buttplug.Core
 
         public async Task<Either<Error, IButtplugMessage>> SendMessage(string aJsonMsg)
         {
-            var msg = _parser.Deserialize(aJsonMsg);
-            return await msg.MatchAsync(async x => await SendMessage(x),
-                x =>
-                {
-                    var errStr = $"Cannot deserialize json message: {x}";
-                    _bpLogger.Warn(errStr);
-                    return new Error(errStr);
-                });
+             var msg = _parser.Deserialize(aJsonMsg);
+             return await msg.MatchAsync(
+                 async x => await SendMessage(x),
+                 x => ButtplugUtils.LogAndError(_bpLogger, LogLevel.Error, $"Cannot deserialize json message: {x}"));
+
         }
 
         private void StartScanning()

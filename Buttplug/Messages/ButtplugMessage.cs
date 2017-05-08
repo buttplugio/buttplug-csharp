@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using Buttplug.Core;
@@ -8,27 +10,33 @@ using NLog;
 
 namespace Buttplug.Messages
 {
-    public class Ok : ButtplugMessageNoBody, IButtplugMessageOutgoingOnly
+    public class Ok : IButtplugMessageOutgoingOnly
     {}
 
     public class Ping : IButtplugMessage
-    {
-        public Option<string> Check() { return new OptionNone(); }
-    }
+    {}
 
     public class Test : IButtplugMessage
     {
+        private string TestStringImpl;
+
         [JsonProperty(Required = Required.Always)]
-        public string TestString { get; set; }
+        public string TestString
+        {
+            get => TestStringImpl;
+            set
+            {
+                if (value == "Error")
+                {
+                    throw new ArgumentException("Got an Error Message");
+                }
+                TestStringImpl = value;
+            }
+        }
 
         public Test(string aString)
         {
             TestString = aString;
-        }
-
-        public Option<string> Check()
-        {
-            return TestString == "Error" ? Option<string>.Some("Got an error message!") : new OptionNone();
         }
     }
 
@@ -41,8 +49,6 @@ namespace Buttplug.Messages
         {
             ErrorString = aErrorString;
         }
-
-        public Option<string> Check() { return new OptionNone(); }
     }
 
     public class DeviceMessageInfo
@@ -65,22 +71,12 @@ namespace Buttplug.Messages
         {
             Devices = aDeviceList;
         }
-
-        public Option<string> Check()
-        {
-            return new OptionNone();
-        }
     }
 
     public class DeviceAdded : DeviceMessageInfo, IButtplugMessageOutgoingOnly
     {
         public DeviceAdded(uint aIndex, string aName) : base(aIndex, aName)
         {
-        }
-
-        public Option<string> Check()
-        {
-            return new OptionNone();
         }
     }
 
@@ -91,17 +87,12 @@ namespace Buttplug.Messages
         {
             DeviceIndex = aIndex;
         }
-
-        public Option<string> Check()
-        {
-            return new OptionNone();
-        }
     }
 
-    public class RequestDeviceList : ButtplugMessageNoBody
+    public class RequestDeviceList : IButtplugMessage
     { }
 
-    public class StartScanning : ButtplugMessageNoBody
+    public class StartScanning : IButtplugMessage
     { }
 
     public class RequestLog : IButtplugMessage
@@ -117,21 +108,45 @@ namespace Buttplug.Messages
             { "Trace", NLog.LogLevel.Trace }
         };
         public LogLevel LogLevelObj;
-        [JsonProperty(Required = Required.Always)]
-        public string LogLevel { get; set; }
+        private string _logLevelImpl;
+        [JsonProperty(Required = Required.Always)] 
+        public string LogLevel { get => _logLevelImpl;
+            set
+            {
+                if (value is null || !Levels.Keys.Contains(value))
+                {
+                    throw new ArgumentException($"Log level {value} is not valid.");
+                }
+                _logLevelImpl = value;
+                LogLevelObj = Levels[_logLevelImpl];
+            }
+        }
+
+        public RequestLog()
+        {
+            LogLevel = "Off";
+        }
 
         public RequestLog(string aLogLevel)
         {
             LogLevel = aLogLevel;
-            if (Levels.Keys.Contains(LogLevel))
+        }
+        
+        public static Either<string, RequestLog> CreateMessage(string LogLevel)
+        {
+            try
             {
-                LogLevelObj = Levels[LogLevel];
+                return new RequestLog(LogLevel);
+            }
+            catch (ArgumentException e)
+            {
+                return e.Message;
             }
         }
 
         public Option<string> Check()
         {
-            if (!Levels.Keys.Contains(LogLevel))
+            if (!Levels.Keys.Contains(_logLevelImpl) || LogLevelObj is null)
             {
                 return Option<string>.Some($"Log level {LogLevel} is not valid.");
             }
@@ -149,20 +164,15 @@ namespace Buttplug.Messages
             LogLevel = aLogLevel;
             LogMessage = aLogMessage;
         }
-
-        public Option<string> Check()
-        {
-            return new OptionNone();
-        }
     }
 
-    public class StopScanning : ButtplugMessageNoBody
+    public class StopScanning : IButtplugMessage
     { }
 
-    public class ScanningFinished : ButtplugMessageNoBody, IButtplugMessageOutgoingOnly
+    public class ScanningFinished : IButtplugMessageOutgoingOnly
     { }
 
-    public class RequestServerInfo : ButtplugMessageNoBody
+    public class RequestServerInfo : IButtplugMessage
     { }
 
     public class ServerInfo : IButtplugMessageOutgoingOnly
@@ -176,41 +186,50 @@ namespace Buttplug.Messages
             MinorVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor;
             BuildVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build;
         }
-
-        public Option<string> Check()
-        {
-            return new OptionNone();
-        }
     }
 
     public class FleshlightLaunchRawCmd : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; set; }
+
+        private ushort _speedImpl;
+
         [JsonProperty(Required = Required.Always)]
-        public readonly ushort Speed;
+        public ushort Speed
+        {
+            get => _speedImpl;
+            set
+            {
+                if (value > 99)
+                {
+                    throw new ArgumentException("FleshlightLaunchRawMessage cannot have a speed higher than 99!");
+                }
+                _speedImpl = value;
+            }
+        }
+
+        private ushort _positionImpl;
+
         [JsonProperty(Required = Required.Always)]
-        public readonly ushort Position;
+        public ushort Position
+        {
+            get => _positionImpl;
+            set
+            {
+                if (value > 99)
+                {
+                    throw new ArgumentException("FleshlightLaunchRawMessage cannot have a position higher than 99!");
+                }
+                _positionImpl = value;
+            }
+        }
 
         public FleshlightLaunchRawCmd(uint aDeviceIndex, ushort aSpeed, ushort aPosition)
         {
             DeviceIndex = aDeviceIndex;
             Speed = aSpeed;
             Position = aPosition;
-            Check();
-        }
-
-        public Option<string> Check()
-        {
-            if (Speed > 99)
-            {
-                return Option<string>.Some("FleshlightLaunchRawMessage cannot have a speed higher than 99!");
-            }
-            if (Position > 99)
-            {
-                return Option<string>.Some("FleshlightLaunchRawMessage cannot have a position higher than 99!");
-            }
-            return new OptionNone();
         }
     }
 
@@ -218,38 +237,37 @@ namespace Buttplug.Messages
     {
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; }
-
-        public Option<string> Check()
-        {
-            return new OptionNone();
-        }
     }
 
     public class SingleMotorVibrateCmd : IButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; set; }
-        [JsonProperty(Required = Required.Always)]
-        public double Speed { get; }
 
+        private double _speedImpl;
+
+        [JsonProperty(Required = Required.Always)]
+        public double Speed
+        {
+            get => _speedImpl;
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("SingleMotorVibrateMessage Speed cannot be less than 0!");
+                }
+                if (value > 1)
+                {
+                    throw new ArgumentException("SingleMotorVibrateMessage Speed cannot be greater than 1!");
+                }
+                _speedImpl = value;
+            }
+        }
+        
         public SingleMotorVibrateCmd(uint d, double speed)
         {
             DeviceIndex = d;
             Speed = speed;
-            Check();
-        }
-
-        public Option<string> Check()
-        {
-            if (Speed < 0)
-            {
-                return Option<string>.Some("SingleMotorVibrateMessage Speed cannot be less than 0!");
-            }
-            if (Speed > 1)
-            {
-                return Option<string>.Some("SingleMotorVibrateMessage Speed cannot be greater than 1!");
-            }
-            return new OptionNone();
         }
     }
 

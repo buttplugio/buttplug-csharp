@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using LanguageExt;
-using static LanguageExt.Prelude;
+﻿using LanguageExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using static LanguageExt.Prelude;
 
 namespace Buttplug.Core
 {
@@ -14,6 +14,7 @@ namespace Buttplug.Core
     {
         private readonly Dictionary<string, Type> _messageTypes;
         private readonly Logger _bpLogger;
+
         public ButtplugJsonMessageParser()
         {
             _bpLogger = LogManager.GetLogger(GetType().FullName);
@@ -36,7 +37,8 @@ namespace Buttplug.Core
             var enumerable = messageClasses as Type[] ?? messageClasses.ToArray();
             _bpLogger.Debug($"Message type count: {enumerable.Count()}");
             _messageTypes = new Dictionary<string, Type>();
-            enumerable.ToList().ForEach(c => {
+            enumerable.ToList().ForEach(c =>
+            {
                 _bpLogger.Debug($"- {c.Name}");
                 _messageTypes.Add(c.Name, c);
             });
@@ -56,42 +58,39 @@ namespace Buttplug.Core
                 _bpLogger.Debug(e.Message);
                 return "Not valid JSON";
             }
+            if (!j.Properties().Any())
+            {
+                return "No message name available";
+            }
+            var msgName = j.Properties().First().Name;
+            if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
+            {
+                return $"{msgName} is not a valid message class";
+            }
+            var s = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
+            IButtplugMessage m;
+            // This specifically could fail due to object conversion.
             try
             {
-                var msgName = j.Properties().First().Name;
-                if (!_messageTypes.Keys.Contains(msgName))
-                {
-                    return $"{msgName} is not a valid message class";
-                }
-                // TODO These variable names? Really? Does this look like math code?
-                var s = new JsonSerializer {MissingMemberHandling = MissingMemberHandling.Error};
                 var r = j[msgName].Value<JObject>();
-                var m = (IButtplugMessage)r.ToObject(_messageTypes[msgName], s);
-                var validMsg = m.Check();
-                if (validMsg.IsSome)
-                {
-                    string err = null;
-                    validMsg.IfSome(x => err = x);
-                    return err;
-                }
-                _bpLogger.Trace($"Message successfully parsed as {msgName} type");
-                // Can't get Either<> to coerce m into a IButtplugMessage so we're having to pull in
-                // the internal type. I guess the cast doesn't resolve to a discernable type?
-                return Right<string, IButtplugMessage>(m);
+                m = (IButtplugMessage) r.ToObject(_messageTypes[msgName], s);
             }
-            catch (Exception e)
+            catch (InvalidCastException e)
             {
                 return $"Could not create message for JSON {aJsonMsg}: {e.Message}";
-            };
+            }
+            catch (JsonSerializationException e)
+            {
+                return $"Could not create message for JSON {aJsonMsg}: {e.Message}";
+            }
+            _bpLogger.Trace($"Message successfully parsed as {msgName} type");
+            // Can't get Either<> to coerce m into a IButtplugMessage so we're having to pull in
+            // the internal type. I guess the cast doesn't resolve to a discernable type?
+            return Right<string, IButtplugMessage>(m);
         }
 
         public static Option<string> Serialize(IButtplugMessage aMsg)
         {
-            if (aMsg.Check().IsSome)
-            {
-                return new OptionNone();
-            }
-            // TODO There are so very many ways this could throw
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             return o.ToString(Formatting.None);
         }
