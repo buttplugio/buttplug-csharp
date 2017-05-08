@@ -18,7 +18,6 @@ namespace Buttplug.Core
     public abstract class ButtplugDevice
     {
         public string Name { get; }
-        public abstract Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage aMsg);
         protected Logger BpLogger;
 
         protected ButtplugDevice(string name)
@@ -26,5 +25,7 @@ namespace Buttplug.Core
             BpLogger = LogManager.GetLogger(GetType().FullName);
             Name = name;
         }
+
+        public abstract Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage aMsg);
     }
 }

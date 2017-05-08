@@ -40,5 +40,27 @@ namespace ButtplugTest.Core
             await s.SendMessage(new Error("Error"));
             Assert.False(gotMessage);
         }
+
+        [Fact]
+        public async void AddDeviceTest()
+        {
+            var d = new TestDevice("TestDevice");
+            var m = new TestDeviceManager(d);
+            var s = new TestService(m);
+            s.MessageReceived += (obj, msgArgs) =>
+            {
+                switch (msgArgs.Message)
+                {
+                    case DeviceAdded da:
+                        Assert.True(da.DeviceName == "TestDevice");
+                        Assert.True(da.DeviceIndex == 0);
+                        break;
+                    default:
+                        Assert.False(msgArgs.Message is DeviceAdded);
+                        break;
+                }
+            };
+            Assert.True((await s.SendMessage(new StartScanning())).IsRight);
+        }
     }
 }

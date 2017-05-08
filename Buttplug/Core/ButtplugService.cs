@@ -27,7 +27,7 @@ namespace Buttplug.Core
         private uint _deviceIndex;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
         private readonly Logger _bpLogger;
-        private ButtplugMessageNLogTarget _msgTarget;
+        private readonly ButtplugMessageNLogTarget _msgTarget;
         private LoggingRule _outgoingLoggingRule;
 
         public ButtplugService()
@@ -145,6 +145,15 @@ namespace Buttplug.Core
         private void StopScanning()
         {
             _managers.ForEach(m => m.StopScanning());
+        }
+
+        protected void AddManager(object m)
+        {
+            if ((m as DeviceManager) is null)
+            {
+                return;
+            }
+            _managers.Add(m as DeviceManager);
         }
     }
 }
