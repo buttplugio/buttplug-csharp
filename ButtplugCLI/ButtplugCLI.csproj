@@ -56,6 +56,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ButtplugWebsocketServer\ButtplugWebsocketServer.csproj">
+      <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
+      <Name>ButtplugWebsocketServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Buttplug\Buttplug.csproj">
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug</Name>

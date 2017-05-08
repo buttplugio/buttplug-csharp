@@ -40,8 +40,6 @@ namespace ButtplugCLI
         }
     }
 
-
-
     internal class Program
     {
         private static void Main(string[] args)
@@ -69,7 +67,7 @@ namespace ButtplugCLI
             var wssv = new WebSocketServer(options.WebsocketPort);
             wssv.Log.Level = options.Quiet ? WebSocketSharp.LogLevel.Fatal : WebSocketSharp.LogLevel.Warn;
             
-            //wssv.AddWebSocketService<ButtplugServer>("/Buttplug");
+            wssv.AddWebSocketService<ButtplugWebsocketServer.ButtplugWebsocketServer>("/Buttplug");
 
             wssv.Start();
             Console.ReadKey(true);
