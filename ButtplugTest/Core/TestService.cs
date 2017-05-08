@@ -9,6 +9,9 @@ namespace ButtplugTest.Core
 {
     internal class TestService : ButtplugService
     {
+        public TestService()
+        {
+        }
         public TestService(TestDeviceManager mgr)
         {
             AddManager(mgr);
