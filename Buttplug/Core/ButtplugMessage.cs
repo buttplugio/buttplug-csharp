@@ -1,5 +1,4 @@
-﻿using LanguageExt;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Buttplug.Core
 {
