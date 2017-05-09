@@ -1,19 +1,17 @@
-﻿using System;
-using WebSocketSharp;
-using WebSocketSharp.Server;
-using Buttplug;
-using Buttplug.Core;
-using CommandLine;
+﻿using CommandLine;
 using CommandLine.Text;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using System;
+using WebSocketSharp.Server;
 
 namespace ButtplugCLI
 {
     public class Options
     {
         private static readonly HeadingInfo HeadingInfo = new HeadingInfo("ButtplugCLI", "0.0.1");
+
         [Option('p', "port", DefaultValue = 6868,
                 HelpText = "Port for Websocket Server")]
         public int WebsocketPort { get; set; }
@@ -61,12 +59,12 @@ namespace ButtplugCLI
                 return;
             }
             var p = new Program();
-            
+
             bpLogger.Info("Buttplug v0.0.1 - Booting up...");
             bpLogger.Info("Starting Websocket server on port " + options.WebsocketPort);
             var wssv = new WebSocketServer(options.WebsocketPort);
             wssv.Log.Level = options.Quiet ? WebSocketSharp.LogLevel.Fatal : WebSocketSharp.LogLevel.Warn;
-            
+
             wssv.AddWebSocketService<ButtplugWebsocketServer.ButtplugWebsocketServer>("/Buttplug");
 
             wssv.Start();

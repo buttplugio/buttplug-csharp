@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using Buttplug.Devices;
+﻿using Buttplug.Devices;
 using SharpDX.XInput;
+using System.Collections.Generic;
 
 namespace Buttplug.Core
 {
     internal class XInputGamepadManager : DeviceManager
     {
-        readonly List<XInputGamepadDevice> _connectedGamepads;
+        private readonly List<XInputGamepadDevice> _connectedGamepads;
 
         public XInputGamepadManager()
         {
@@ -38,6 +38,5 @@ namespace Buttplug.Core
             // noop
             BpLogger.Trace("XInputGamepadManager stop scanning");
         }
-
     }
 }

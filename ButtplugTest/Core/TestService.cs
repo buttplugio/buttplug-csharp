@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -19,6 +14,7 @@ namespace ButtplugTest.Core
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
             LogManager.Configuration = LogManager.Configuration;
         }
+
         public TestService(TestDeviceManager mgr)
         {
             AddManager(mgr);

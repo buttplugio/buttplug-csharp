@@ -1,9 +1,9 @@
 ﻿using Buttplug.Core;
 using Buttplug.Messages;
+using ButtplugTest.Core;
 using LanguageExt;
 using System.Collections.Generic;
 using System.Reflection;
-using ButtplugTest.Core;
 using Xunit;
 
 namespace ButtplugTest.Messages
@@ -45,7 +45,6 @@ namespace ButtplugTest.Messages
         {
             public FakeMessage(uint aId) : base(aId)
             {
-                
             }
         };
 
@@ -109,11 +108,11 @@ namespace ButtplugTest.Messages
                                 Assert.True(si.MinorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor);
                                 Assert.True(si.BuildVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build);
                                 break;
+
                             default:
                                 Assert.True(false, $"Received message type {x.GetType()}, not ServerInfo");
                                 break;
                         }
-
                     })
                     .Left(x =>
                     {

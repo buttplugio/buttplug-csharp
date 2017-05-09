@@ -121,7 +121,7 @@ namespace Buttplug.Messages
     public class ScanningFinished : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         public ScanningFinished() : base(ButtplugConsts.SYSTEM_MSG_ID)
-        {            
+        {
         }
     }
 

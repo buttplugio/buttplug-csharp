@@ -1,14 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
-using Buttplug.Core;
-using SharpDX.XInput;
+﻿using Buttplug.Core;
 using Buttplug.Messages;
 using LanguageExt;
 using NLog;
+using SharpDX.XInput;
+using System;
+using System.Threading.Tasks;
 
 namespace Buttplug.Devices
 {
-    class XInputGamepadDevice : ButtplugDevice, IEquatable<XInputGamepadDevice>
+    internal class XInputGamepadDevice : ButtplugDevice, IEquatable<XInputGamepadDevice>
     {
         private readonly Controller _device;
 
@@ -40,6 +40,7 @@ namespace Buttplug.Devices
         }
 
 #pragma warning disable 1998
+
         public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage aMsg)
 #pragma warning restore 1998
         {

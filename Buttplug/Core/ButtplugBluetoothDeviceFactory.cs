@@ -1,11 +1,11 @@
-﻿using System;
+﻿using LanguageExt;
+using NLog;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using LanguageExt;
-using NLog;
 
 namespace Buttplug.Core
 {
@@ -13,6 +13,7 @@ namespace Buttplug.Core
     {
         private readonly Logger _bpLogger;
         private readonly IBluetoothDeviceInfo _deviceInfo;
+
         public ButtplugBluetoothDeviceFactory(IBluetoothDeviceInfo aInfo)
         {
             _bpLogger = LogManager.GetLogger(GetType().FullName);
@@ -47,13 +48,13 @@ namespace Buttplug.Core
             }
 
             var chrs = from x in chrResult.Characteristics
-                where _deviceInfo.Characteristics.Contains(x.Uuid)
-                select x;
+                       where _deviceInfo.Characteristics.Contains(x.Uuid)
+                       select x;
 
             var gattCharacteristics = chrs as GattCharacteristic[] ?? chrs.ToArray();
-            return !gattCharacteristics.Any() ? 
-                Option<ButtplugDevice>.None : 
-                Option<ButtplugDevice>.Some(_deviceInfo.CreateDevice(aDevice, 
+            return !gattCharacteristics.Any() ?
+                Option<ButtplugDevice>.None :
+                Option<ButtplugDevice>.Some(_deviceInfo.CreateDevice(aDevice,
                                                                      gattCharacteristics.ToDictionary(x => x.Uuid, x => x)));
         }
     }

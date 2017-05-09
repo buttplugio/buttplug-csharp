@@ -73,7 +73,7 @@ namespace Buttplug.Core
             try
             {
                 var r = j[msgName].Value<JObject>();
-                m = (ButtplugMessage) r.ToObject(_messageTypes[msgName], s);
+                m = (ButtplugMessage)r.ToObject(_messageTypes[msgName], s);
             }
             catch (InvalidCastException e)
             {

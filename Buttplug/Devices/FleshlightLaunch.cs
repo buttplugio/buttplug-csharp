@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Buttplug.Core;
+using Buttplug.Messages;
+using LanguageExt;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Buttplug.Core;
-using Buttplug.Messages;
-using LanguageExt;
-using NLog;
 
 namespace Buttplug.Devices
 {
     internal class FleshlightLaunchBluetoothInfo : IBluetoothDeviceInfo
     {
-        public string[] Names { get; } = {"Launch"};
-        public Guid[] Services { get; } = {new Guid("88f80580-0000-01e6-aace-0002a5d5c51b")};
+        public string[] Names { get; } = { "Launch" };
+        public Guid[] Services { get; } = { new Guid("88f80580-0000-01e6-aace-0002a5d5c51b") };
 
         public Guid[] Characteristics { get; } =
         {
@@ -25,7 +25,7 @@ namespace Buttplug.Devices
             new Guid("88f80583-0000-01e6-aace-0002a5d5c51b")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice, 
+        public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice,
                                                     Dictionary<Guid, GattCharacteristic> aCharacteristics)
         {
             return new FleshlightLaunch(aDevice,
@@ -59,7 +59,7 @@ namespace Buttplug.Devices
         {
             _isInitialized = true;
             BpLogger.Trace($"Initializing {Name}");
-            var x = await _commandChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] {0}));
+            var x = await _commandChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] { 0 }));
             if (x != GattCommunicationStatus.Success)
             {
                 return ButtplugUtils.LogAndError(aId, BpLogger, LogLevel.Error, $"Cannot initialize {Name}!");
@@ -69,10 +69,10 @@ namespace Buttplug.Devices
         }
 
 #pragma warning disable 1998
+
         public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage msg)
 #pragma warning restore 1998
         {
-
             switch (msg)
             {
                 //TODO: Split into Command message and Control message? (Issue #17)
@@ -89,7 +89,7 @@ namespace Buttplug.Devices
                             return m;
                         }
                     }
-                    var x = await _writeChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] {(byte)cmdMsg.Position, (byte)cmdMsg.Speed}));
+                    var x = await _writeChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));
                     if (x == GattCommunicationStatus.Success)
                     {
                         return new Ok(cmdMsg.Id);

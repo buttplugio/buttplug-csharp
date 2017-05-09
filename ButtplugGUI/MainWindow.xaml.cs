@@ -1,26 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Buttplug;
-using System.Collections.ObjectModel;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Messages;
-using LanguageExt;
+using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace ButtplugGUI
 {
-
     public class Device
     {
         public string Name { get; }
@@ -40,7 +24,6 @@ namespace ButtplugGUI
 
     public class DeviceList : ObservableCollection<Device>
     {
-
     }
 
     /// <summary>
@@ -50,6 +33,7 @@ namespace ButtplugGUI
     {
         private readonly ButtplugService _bpServer;
         private readonly DeviceList _devices;
+
         public MainWindow()
         {
             InitializeComponent();

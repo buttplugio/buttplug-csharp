@@ -1,11 +1,12 @@
-﻿using System;
-using NLog;
+﻿using NLog;
+using System;
 
 namespace Buttplug.Core
 {
     internal abstract class DeviceManager
     {
         protected Logger BpLogger;
+
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
 
         protected DeviceManager()

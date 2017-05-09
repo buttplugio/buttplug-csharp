@@ -1,15 +1,15 @@
-﻿using System;
+﻿using LanguageExt;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
-using LanguageExt;
 
 namespace Buttplug.Core
 {
     internal class BluetoothManager : DeviceManager
     {
-        const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
+        private const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
         private readonly BluetoothLEAdvertisementWatcher _bleWatcher;
         private readonly List<ButtplugBluetoothDeviceFactory> _deviceFactories;
@@ -28,9 +28,8 @@ namespace Buttplug.Core
                     _deviceFactories.Add(new ButtplugBluetoothDeviceFactory((IBluetoothDeviceInfo)Activator.CreateInstance(c)));
                 });
 
-
-            _bleWatcher = new BluetoothLEAdvertisementWatcher {ScanningMode = BluetoothLEScanningMode.Active};
-            // We can't filter device advertisements because you can only add one LocalName filter at a time, meaning we 
+            _bleWatcher = new BluetoothLEAdvertisementWatcher { ScanningMode = BluetoothLEScanningMode.Active };
+            // We can't filter device advertisements because you can only add one LocalName filter at a time, meaning we
             // would have to set up multiple watchers for multiple devices. We'll handle our own filtering via the factory
             // classes whenever we receive a device.
             _bleWatcher.Received += OnAdvertisementReceived;
@@ -43,7 +42,7 @@ namespace Buttplug.Core
             var factories = from x in _deviceFactories
                             where x.MayBeDevice(e.Advertisement)
                             select x;
-            // We should always have either 0 or 1 factories. 
+            // We should always have either 0 or 1 factories.
             var buttplugBluetoothDeviceFactories = factories as ButtplugBluetoothDeviceFactory[] ?? factories.ToArray();
             if (buttplugBluetoothDeviceFactories.Count() != 1)
             {
@@ -63,7 +62,8 @@ namespace Buttplug.Core
             // If we actually have a factory for this device, go ahead and create the device
             Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
             Option<ButtplugDevice> l = null;
-            dev.IfSome(async d => {
+            dev.IfSome(async d =>
+            {
                 // If a device is turned on after scanning has started, windows seems to lose the
                 // device handle the first couple of times it tries to deal with the advertisement.
                 // Just log the error and hope it reconnects on a later retry.

@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Buttplug.Devices;
+using System.Collections.Generic;
 using Windows.Gaming.Input;
-using Buttplug.Devices;
 
 namespace Buttplug.Core
 {
     internal class UwpGamepadManager : DeviceManager
     {
         //TODO Pay attention to gamepad events
-        readonly List<UwpGamepadDevice> _connectedGamepads;
+        private readonly List<UwpGamepadDevice> _connectedGamepads;
 
         public UwpGamepadManager()
         {
@@ -34,6 +34,5 @@ namespace Buttplug.Core
             // noop
             BpLogger.Trace("UWPGamepadManager stop scanning");
         }
-
     }
 }

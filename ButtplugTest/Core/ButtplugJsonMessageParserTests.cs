@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Xunit;
 
 namespace ButtplugTest.Core
@@ -55,6 +50,7 @@ namespace ButtplugTest.Core
                     case Buttplug.Messages.Test tm:
                         Assert.True(tm.TestString == "Test");
                         break;
+
                     default:
                         Assert.True(false);
                         break;

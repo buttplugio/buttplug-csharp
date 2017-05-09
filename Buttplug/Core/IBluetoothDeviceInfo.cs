@@ -10,7 +10,7 @@ namespace Buttplug.Core
         string[] Names { get; }
         Guid[] Services { get; }
         Guid[] Characteristics { get; }
+
         ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice, Dictionary<Guid, GattCharacteristic> aCharacteristics);
     }
-
 }

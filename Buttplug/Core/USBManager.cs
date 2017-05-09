@@ -1,6 +1,6 @@
 ﻿namespace Buttplug.Core
 {
-    class USBManager
+    internal class USBManager
     {
     }
 }

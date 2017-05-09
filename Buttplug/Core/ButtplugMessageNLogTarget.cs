@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Buttplug.Messages;
+﻿using Buttplug.Messages;
 using NLog;
-using NLog.Config;
 using NLog.Targets;
+using System;
 
 namespace Buttplug.Core
 {
@@ -16,6 +11,7 @@ namespace Buttplug.Core
         public class NLogMessageEventArgs : EventArgs
         {
             public Log LogMessage { get; }
+
             public NLogMessageEventArgs(LogEventInfo aLogEvent)
             {
                 LogMessage = new Log(aLogEvent.Level.Name, aLogEvent.Message);

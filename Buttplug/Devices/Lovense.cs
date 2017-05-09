@@ -1,19 +1,20 @@
-﻿using System;
+﻿using Buttplug.Core;
+using Buttplug.Messages;
+using LanguageExt;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Buttplug.Core;
-using Buttplug.Messages;
-using LanguageExt;
-using NLog;
 
 namespace Buttplug.Devices
 {
     internal class LovenseBluetoothInfo : IBluetoothDeviceInfo
     {
-        public Guid[] Services { get; } = {new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e")};
-        public string[] Names { get; } = {"LVS-S001", "LVS-Z001"};
+        public Guid[] Services { get; } = { new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e") };
+        public string[] Names { get; } = { "LVS-S001", "LVS-Z001" };
+
         public Guid[] Characteristics { get; } =
         {
             // tx characteristic
@@ -22,10 +23,10 @@ namespace Buttplug.Devices
             new Guid("6e400003-b5a3-f393-e0a9-e50e24dcca9e")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice, 
+        public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice,
                                                     Dictionary<Guid, GattCharacteristic> aCharacteristics)
         {
-            return new Lovense(aDevice, 
+            return new Lovense(aDevice,
                                aCharacteristics[Characteristics[0]],
                                aCharacteristics[Characteristics[1]]);
         }
@@ -51,7 +52,7 @@ namespace Buttplug.Devices
             {
                 case Messages.SingleMotorVibrateCmd m:
                     BpLogger.Trace("Lovense toy got SingleMotorVibrateMessage");
-                    var buf = ButtplugUtils.WriteString($"Vibrate:{(int) (m.Speed * 20)};");
+                    var buf = ButtplugUtils.WriteString($"Vibrate:{(int)(m.Speed * 20)};");
                     await _writeChr.WriteValueAsync(buf);
                     return new Ok(aMsg.Id);
             }

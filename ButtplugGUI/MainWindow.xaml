@@ -10,14 +10,13 @@
         <TabControl HorizontalAlignment="Left" Height="321" VerticalAlignment="Top" Width="519" Margin="0,0,-0.333,-0.333">
             <TabItem Header="Device List">
                 <Grid Background="#FFE5E5E5">
-                    <ListBox Name="DeviceListBox" HorizontalAlignment="Left" Height="245" Margin="10,10,0,0" VerticalAlignment="Top" Width="493"/>
-                    <Button Name="ScanButton" Content="Start Scanning" HorizontalAlignment="Left" Margin="10,263,0,0" VerticalAlignment="Top" Width="95" Click="ScanButton_Click"/>
+                    <ListBox Name="DeviceListBox" HorizontalAlignment="Left" Height="245" Margin="10,10,0,0" VerticalAlignment="Top" Width="493" />
+                    <Button Name="ScanButton" Content="Start Scanning" HorizontalAlignment="Left" Margin="10,263,0,0" VerticalAlignment="Top" Width="95" Click="ScanButton_Click" />
                 </Grid>
             </TabItem>
             <TabItem Header="Settings">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5" />
             </TabItem>
         </TabControl>
-
     </Grid>
 </Window>

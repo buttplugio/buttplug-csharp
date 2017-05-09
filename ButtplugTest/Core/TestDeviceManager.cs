@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using LanguageExt;
 
 namespace ButtplugTest.Core
 {
-    class TestDeviceManager : DeviceManager
+    internal class TestDeviceManager : DeviceManager
     {
         private Option<TestDevice> _device;
         public bool StartScanningCalled { get; private set; }

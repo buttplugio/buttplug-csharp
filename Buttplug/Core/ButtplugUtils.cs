@@ -1,6 +1,6 @@
 ﻿using Buttplug.Messages;
-using Windows.Storage.Streams;
 using NLog;
+using Windows.Storage.Streams;
 
 namespace Buttplug.Core
 {

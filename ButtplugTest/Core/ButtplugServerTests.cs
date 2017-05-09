@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Messages;
-using LanguageExt;
+using Xunit;
 
 namespace ButtplugTest.Core
 {
@@ -72,6 +66,7 @@ namespace ButtplugTest.Core
                         Assert.True(da.DeviceName == "TestDevice");
                         Assert.True(da.DeviceIndex == 0);
                         break;
+
                     default:
                         Assert.False(msgArgs.Message is DeviceAdded);
                         break;

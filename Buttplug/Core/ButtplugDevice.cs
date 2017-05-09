@@ -1,14 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using NLog;
+﻿using Buttplug.Messages;
 using LanguageExt;
-using Buttplug.Messages;
+using NLog;
+using System;
+using System.Threading.Tasks;
 
 namespace Buttplug.Core
 {
     public class DeviceAddedEventArgs : EventArgs
     {
         public ButtplugDevice Device { get; }
+
         public DeviceAddedEventArgs(ButtplugDevice d)
         {
             Device = d;

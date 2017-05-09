@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Windows.Gaming.Input;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Messages;
 using LanguageExt;
 using NLog;
+using System;
+using System.Threading.Tasks;
+using Windows.Gaming.Input;
 
 namespace Buttplug.Devices
 {
@@ -22,7 +22,7 @@ namespace Buttplug.Devices
         {
             return Equals(obj as UwpGamepadDevice);
         }
-        
+
         public bool Equals(UwpGamepadDevice other)
         {
             if (ReferenceEquals(other, null))
@@ -39,6 +39,7 @@ namespace Buttplug.Devices
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
         public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage aMsg)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
