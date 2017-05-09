@@ -13,15 +13,15 @@ namespace ButtplugTest.Messages
         [Fact]
         public async void RequestLogJsonTest()
         {
-            var s = new ButtplugService();
-            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Trace\"}}")).IsRight);
+            var s = new TestService();
+            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}")).IsRight);
         }
 
         [Fact]
         public async void RequestLogWrongLevelTest()
         {
-            var s = new ButtplugService();
-            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"NotALevel\"}}")).IsLeft);
+            var s = new TestService();
+            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}")).IsLeft);
         }
 
         [Fact]
@@ -41,27 +41,31 @@ namespace ButtplugTest.Messages
                 });
         }
 
-        public class FakeMessage : IButtplugMessage
+        public class FakeMessage : ButtplugMessage
         {
+            public FakeMessage(uint aId) : base(aId)
+            {
+                
+            }
         };
 
         [Fact]
         public async void SendUnhandledMessage()
         {
             var s = new ButtplugService();
-            var r = await s.SendMessage(new FakeMessage());
+            var r = await s.SendMessage(new FakeMessage(1));
             Assert.True(r.IsLeft);
         }
 
         [Fact]
         public async void SerializeUnhandledMessage()
         {
-            var r = ButtplugJsonMessageParser.Serialize(new FakeMessage());
+            var r = ButtplugJsonMessageParser.Serialize(new FakeMessage(1));
             // Even though the message is defined outside the core library, it should at least serialize
             Assert.True(r.IsSome);
             // However it shouldn't be taken by the server.
             var s = new ButtplugService();
-            Either<Error, IButtplugMessage> e = new Error("Yup");
+            Either<Error, ButtplugMessage> e = new Error("Yup", ButtplugConsts.DEFAULT_MSG_ID);
             await r.IfSomeAsync(async x => e = await s.SendMessage(x));
             Assert.True(e.IsLeft);
         }
@@ -87,10 +91,10 @@ namespace ButtplugTest.Messages
         public async void RequestServerInfoTest()
         {
             var s = new ButtplugService();
-            var results = new List<Either<Error, IButtplugMessage>>
+            var results = new List<Either<Error, ButtplugMessage>>
             {
                 await s.SendMessage(new RequestServerInfo()),
-                await s.SendMessage("{\"RequestServerInfo\":{}}")
+                await s.SendMessage("{\"RequestServerInfo\":{\"Id\":1}}")
             };
             foreach (var reply in results)
             {

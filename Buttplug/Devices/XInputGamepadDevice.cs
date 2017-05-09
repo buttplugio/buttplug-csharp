@@ -40,7 +40,7 @@ namespace Buttplug.Devices
         }
 
 #pragma warning disable 1998
-        public override async Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage aMsg)
+        public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage aMsg)
 #pragma warning restore 1998
         {
             switch (aMsg)
@@ -52,9 +52,9 @@ namespace Buttplug.Devices
                         RightMotorSpeed = (ushort)(m.Speed * 65536)
                     };
                     _device.SetVibration(v);
-                    return new Ok();
+                    return new Ok(aMsg.Id);
             }
-            return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
+            return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
         }
     }
 }

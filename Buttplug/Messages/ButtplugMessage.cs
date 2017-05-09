@@ -1,51 +1,55 @@
-﻿using System;
+﻿using Buttplug.Core;
+using Newtonsoft.Json;
+using NLog;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using Buttplug.Core;
-using Newtonsoft.Json;
-using LanguageExt;
-using NLog;
 
 namespace Buttplug.Messages
 {
-    public class Ok : IButtplugMessageOutgoingOnly
-    {}
-
-    public class Ping : IButtplugMessage
-    {}
-
-    public class Test : IButtplugMessage
+    public class Ok : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
-        private string TestStringImpl;
+        public Ok(uint aId) : base(aId)
+        { }
+    }
+
+    public class Ping : ButtplugMessage
+    {
+        public Ping(uint aId) : base(aId)
+        { }
+    }
+
+    public class Test : ButtplugMessage
+    {
+        private string _testStringImpl;
 
         [JsonProperty(Required = Required.Always)]
         public string TestString
         {
-            get => TestStringImpl;
+            get => _testStringImpl;
             set
             {
                 if (value == "Error")
                 {
                     throw new ArgumentException("Got an Error Message");
                 }
-                TestStringImpl = value;
+                _testStringImpl = value;
             }
         }
 
-        public Test(string aString)
+        public Test(string aString, uint aId) : base(aId)
         {
             TestString = aString;
         }
     }
 
-    public class Error : IButtplugMessageOutgoingOnly
+    public class Error : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         [JsonProperty(Required = Required.Always)]
         public string ErrorString { get; }
 
-        public Error(string aErrorString)
+        public Error(string aErrorString, uint aId) : base(aId)
         {
             ErrorString = aErrorString;
         }
@@ -63,39 +67,65 @@ namespace Buttplug.Messages
         }
     }
 
-    public class DeviceList : IButtplugMessageOutgoingOnly
+    public class DeviceList : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         public DeviceMessageInfo[] Devices;
 
-        public DeviceList(DeviceMessageInfo[] aDeviceList)
+        public DeviceList(DeviceMessageInfo[] aDeviceList, uint aId) : base(aId)
         {
             Devices = aDeviceList;
         }
     }
 
-    public class DeviceAdded : DeviceMessageInfo, IButtplugMessageOutgoingOnly
+    public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
     {
-        public DeviceAdded(uint aIndex, string aName) : base(aIndex, aName)
+        public string DeviceName { get; }
+
+        public DeviceAdded(uint aIndex, string aName) : base(ButtplugConsts.SYSTEM_MSG_ID, aIndex)
         {
+            DeviceName = aName;
         }
     }
 
-    public class DeviceRemoved : IButtplugMessageOutgoingOnly
+    public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         public uint DeviceIndex { get; }
-        public DeviceRemoved(uint aIndex)
+
+        public DeviceRemoved(uint aIndex) : base(ButtplugConsts.SYSTEM_MSG_ID)
         {
             DeviceIndex = aIndex;
         }
     }
 
-    public class RequestDeviceList : IButtplugMessage
-    { }
+    public class RequestDeviceList : ButtplugMessage
+    {
+        public RequestDeviceList(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
+        {
+        }
+    }
 
-    public class StartScanning : IButtplugMessage
-    { }
+    public class StartScanning : ButtplugMessage
+    {
+        public StartScanning(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
+        {
+        }
+    }
 
-    public class RequestLog : IButtplugMessage
+    public class StopScanning : ButtplugMessage
+    {
+        public StopScanning(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
+        {
+        }
+    }
+
+    public class ScanningFinished : ButtplugMessage, IButtplugMessageOutgoingOnly
+    {
+        public ScanningFinished() : base(ButtplugConsts.SYSTEM_MSG_ID)
+        {            
+        }
+    }
+
+    public class RequestLog : ButtplugMessage
     {
         private static readonly Dictionary<string, NLog.LogLevel> Levels = new Dictionary<string, LogLevel>()
         {
@@ -107,10 +137,14 @@ namespace Buttplug.Messages
             { "Debug", NLog.LogLevel.Debug },
             { "Trace", NLog.LogLevel.Trace }
         };
+
         public LogLevel LogLevelObj;
         private string _logLevelImpl;
-        [JsonProperty(Required = Required.Always)] 
-        public string LogLevel { get => _logLevelImpl;
+
+        [JsonProperty(Required = Required.Always)]
+        public string LogLevel
+        {
+            get => _logLevelImpl;
             set
             {
                 if (value is null || !Levels.Keys.Contains(value))
@@ -122,65 +156,44 @@ namespace Buttplug.Messages
             }
         }
 
-        public RequestLog()
+        // JSON.Net gets angry if it doesn't have a default initializer.
+        public RequestLog() : base(ButtplugConsts.DEFAULT_MSG_ID)
         {
-            LogLevel = "Off";
         }
 
-        public RequestLog(string aLogLevel)
+        public RequestLog(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId) => LogLevel = "Off";
+
+        public RequestLog(string aLogLevel, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
         {
             LogLevel = aLogLevel;
         }
-        
-        public static Either<string, RequestLog> CreateMessage(string LogLevel)
-        {
-            try
-            {
-                return new RequestLog(LogLevel);
-            }
-            catch (ArgumentException e)
-            {
-                return e.Message;
-            }
-        }
-
-        public Option<string> Check()
-        {
-            if (!Levels.Keys.Contains(_logLevelImpl) || LogLevelObj is null)
-            {
-                return Option<string>.Some($"Log level {LogLevel} is not valid.");
-            }
-            return new OptionNone();
-        }
     }
 
-    public class Log : IButtplugMessageOutgoingOnly
+    public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         public string LogLevel { get; }
         public string LogMessage { get; }
 
-        public Log(string aLogLevel, string aLogMessage)
+        public Log(string aLogLevel, string aLogMessage) : base(ButtplugConsts.SYSTEM_MSG_ID)
         {
             LogLevel = aLogLevel;
             LogMessage = aLogMessage;
         }
     }
 
-    public class StopScanning : IButtplugMessage
-    { }
+    public class RequestServerInfo : ButtplugMessage
+    {
+        public RequestServerInfo(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
+        { }
+    }
 
-    public class ScanningFinished : IButtplugMessageOutgoingOnly
-    { }
-
-    public class RequestServerInfo : IButtplugMessage
-    { }
-
-    public class ServerInfo : IButtplugMessageOutgoingOnly
+    public class ServerInfo : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         public int MajorVersion { get; }
         public int MinorVersion { get; }
         public int BuildVersion { get; }
-        public ServerInfo()
+
+        public ServerInfo(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
         {
             MajorVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major;
             MinorVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor;
@@ -188,11 +201,8 @@ namespace Buttplug.Messages
         }
     }
 
-    public class FleshlightLaunchRawCmd : IButtplugDeviceMessage
+    public class FleshlightLaunchRawCmd : ButtplugDeviceMessage
     {
-        [JsonProperty(Required = Required.Always)]
-        public uint DeviceIndex { get; set; }
-
         private ushort _speedImpl;
 
         [JsonProperty(Required = Required.Always)]
@@ -225,25 +235,22 @@ namespace Buttplug.Messages
             }
         }
 
-        public FleshlightLaunchRawCmd(uint aDeviceIndex, ushort aSpeed, ushort aPosition)
+        public FleshlightLaunchRawCmd(uint aDeviceIndex, ushort aSpeed, ushort aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
         {
-            DeviceIndex = aDeviceIndex;
             Speed = aSpeed;
             Position = aPosition;
         }
     }
 
-    public class LovenseRawCmd : IButtplugDeviceMessage
+    public class LovenseRawCmd : ButtplugDeviceMessage
     {
-        [JsonProperty(Required = Required.Always)]
-        public uint DeviceIndex { get; }
+        public LovenseRawCmd(uint aDeviceIndex, string aDeviceCmd, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
+        {
+        }
     }
 
-    public class SingleMotorVibrateCmd : IButtplugDeviceMessage
+    public class SingleMotorVibrateCmd : ButtplugDeviceMessage
     {
-        [JsonProperty(Required = Required.Always)]
-        public uint DeviceIndex { get; set; }
-
         private double _speedImpl;
 
         [JsonProperty(Required = Required.Always)]
@@ -263,12 +270,10 @@ namespace Buttplug.Messages
                 _speedImpl = value;
             }
         }
-        
-        public SingleMotorVibrateCmd(uint d, double speed)
+
+        public SingleMotorVibrateCmd(uint aDeviceIndex, double aSpeed, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
         {
-            DeviceIndex = d;
-            Speed = speed;
+            Speed = aSpeed;
         }
     }
-
 }

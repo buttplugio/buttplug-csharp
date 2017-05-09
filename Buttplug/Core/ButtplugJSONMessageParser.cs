@@ -24,14 +24,14 @@ namespace Buttplug.Core
             // If this is the case, we should still find messages even though an exception was thrown.
             try
             {
-                allTypes = Assembly.GetAssembly(typeof(IButtplugMessage)).GetTypes();
+                allTypes = Assembly.GetAssembly(typeof(ButtplugMessage)).GetTypes();
             }
             catch (ReflectionTypeLoadException e)
             {
                 allTypes = e.Types;
             }
             var messageClasses = from t in allTypes
-                                 where t != null && t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(IButtplugMessage).IsAssignableFrom(t)
+                                 where t != null && t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(ButtplugMessage).IsAssignableFrom(t)
                                  select t;
 
             var enumerable = messageClasses as Type[] ?? messageClasses.ToArray();
@@ -44,7 +44,7 @@ namespace Buttplug.Core
             });
         }
 
-        public Either<string, IButtplugMessage> Deserialize(string aJsonMsg)
+        public Either<string, ButtplugMessage> Deserialize(string aJsonMsg)
         {
             _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
             JObject j;
@@ -68,12 +68,12 @@ namespace Buttplug.Core
                 return $"{msgName} is not a valid message class";
             }
             var s = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
-            IButtplugMessage m;
+            ButtplugMessage m;
             // This specifically could fail due to object conversion.
             try
             {
                 var r = j[msgName].Value<JObject>();
-                m = (IButtplugMessage) r.ToObject(_messageTypes[msgName], s);
+                m = (ButtplugMessage) r.ToObject(_messageTypes[msgName], s);
             }
             catch (InvalidCastException e)
             {
@@ -86,10 +86,10 @@ namespace Buttplug.Core
             _bpLogger.Trace($"Message successfully parsed as {msgName} type");
             // Can't get Either<> to coerce m into a IButtplugMessage so we're having to pull in
             // the internal type. I guess the cast doesn't resolve to a discernable type?
-            return Right<string, IButtplugMessage>(m);
+            return Right<string, ButtplugMessage>(m);
         }
 
-        public static Option<string> Serialize(IButtplugMessage aMsg)
+        public static Option<string> Serialize(ButtplugMessage aMsg)
         {
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             return o.ToString(Formatting.None);

@@ -20,10 +20,10 @@ namespace Buttplug.Core
             return w.DetachBuffer();
         }
 
-        public static Error LogAndError(Logger l, LogLevel level, string msg)
+        public static Error LogAndError(uint aId, Logger l, LogLevel level, string msg)
         {
             l.Log(level, msg);
-            return new Error(msg);
+            return new Error(msg, aId);
         }
     }
 }

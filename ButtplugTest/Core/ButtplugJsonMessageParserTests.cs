@@ -13,10 +13,10 @@ namespace ButtplugTest.Core
         [Fact]
         public void JsonConversionTest()
         {
-            var m = new Buttplug.Messages.Test("ThisIsATest");
+            var m = new Buttplug.Messages.Test("ThisIsATest", ButtplugConsts.SYSTEM_MSG_ID);
             var msg = ButtplugJsonMessageParser.Serialize(m);
             Assert.True(msg.IsSome);
-            msg.IfSome((x) => Assert.Equal(x, "{\"Test\":{\"TestString\":\"ThisIsATest\"}}"));
+            msg.IfSome((x) => Assert.Equal("{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}", x));
         }
 
         // Not valid JSON
@@ -32,9 +32,9 @@ namespace ButtplugTest.Core
         // Valid json and message type but not in correct format
         [InlineData("{\"Test\":{}}")]
         // Valid json and message type but with erroneous content
-        [InlineData("{\"Test\":{\"TestString\":\"Error\"}}")]
+        [InlineData("{\"Test\":{\"TestString\":\"Error\",\"Id\":0}}")]
         // Valid json and message type but with extra content
-        [InlineData("{\"Test\":{\"TestString\":\"Yup\", \"NotAField\":\"NotAValue\"}}")]
+        [InlineData("{\"Test\":{\"TestString\":\"Yup\",\"NotAField\":\"NotAValue\",\"Id\":0}}")]
         [Theory]
         public void DeserializeIncorrectMessages(string x)
         {
@@ -46,7 +46,7 @@ namespace ButtplugTest.Core
         public void DeserializeCorrectMessage()
         {
             var p = new ButtplugJsonMessageParser();
-            var m = p.Deserialize("{\"Test\":{\"TestString\":\"Test\"}}");
+            var m = p.Deserialize("{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}");
             Assert.True(m.IsRight);
             m.IfRight(x =>
             {

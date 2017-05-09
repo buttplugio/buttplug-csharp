@@ -41,7 +41,7 @@ namespace Buttplug.Core
         {
             BpLogger.Trace($"Got BLE Advertisement for device: {e.Advertisement.LocalName} / {e.BluetoothAddress}");
             var factories = from x in _deviceFactories
-                            where x.MayBeDevice(e.Advertisement) == true
+                            where x.MayBeDevice(e.Advertisement)
                             select x;
             // We should always have either 0 or 1 factories. 
             var buttplugBluetoothDeviceFactories = factories as ButtplugBluetoothDeviceFactory[] ?? factories.ToArray();

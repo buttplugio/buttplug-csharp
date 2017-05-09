@@ -55,48 +55,49 @@ namespace Buttplug.Devices
             _commandChr = aCommandChr;
         }
 
-        private async Task<Option<Error>> Initialize()
+        private async Task<Option<Error>> Initialize(uint aId)
         {
             _isInitialized = true;
             BpLogger.Trace($"Initializing {Name}");
             var x = await _commandChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] {0}));
             if (x != GattCommunicationStatus.Success)
             {
-                return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"Cannot initialize {Name}!");
+                return ButtplugUtils.LogAndError(aId, BpLogger, LogLevel.Error, $"Cannot initialize {Name}!");
             }
             BpLogger.Trace($"{Name} initialized");
             return new OptionNone();
         }
 
 #pragma warning disable 1998
-        public override async Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage msg)
+        public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage msg)
 #pragma warning restore 1998
         {
-            if (!_isInitialized)
-            {
-                var err = await Initialize();
 
-                if (err.IsSome)
-                {
-                    // TODO No seriously extraction shouldn't be this hard. I'm missing something.
-                    var m = new Either<Error, IButtplugMessage>();
-                    err.IfSome(x => m = x);
-                    return m;
-                }
-            }
             switch (msg)
             {
                 //TODO: Split into Command message and Control message? (Issue #17)
-                case Messages.FleshlightLaunchRawCmd m:
-                    var x = await _writeChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] {(byte)m.Position, (byte)m.Speed}));
+                case Messages.FleshlightLaunchRawCmd cmdMsg:
+                    if (!_isInitialized)
+                    {
+                        var err = await Initialize(msg.Id);
+
+                        if (err.IsSome)
+                        {
+                            // TODO No seriously extraction shouldn't be this hard. I'm missing something.
+                            var m = new Either<Error, ButtplugMessage>();
+                            err.IfSome(z => m = z);
+                            return m;
+                        }
+                    }
+                    var x = await _writeChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] {(byte)cmdMsg.Position, (byte)cmdMsg.Speed}));
                     if (x == GattCommunicationStatus.Success)
                     {
-                        return new Ok();
+                        return new Ok(cmdMsg.Id);
                     }
-                    return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"Cannot send data to {Name}");
+                    return ButtplugUtils.LogAndError(cmdMsg.Id, BpLogger, LogLevel.Error, $"Cannot send data to {Name}");
             }
 
-            return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {msg.GetType().Name}");
+            return ButtplugUtils.LogAndError(msg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {msg.GetType().Name}");
         }
     }
 }

@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Core\BluetoothManager.cs" />
     <Compile Include="Core\ButtplugBluetoothDevice.cs" />
+    <Compile Include="Core\ButtplugConsts.cs" />
     <Compile Include="Core\ButtplugJsonMessageParser.cs" />
     <Compile Include="Core\ButtplugMessageNLogTarget.cs" />
     <Compile Include="Core\ButtplugService.cs" />

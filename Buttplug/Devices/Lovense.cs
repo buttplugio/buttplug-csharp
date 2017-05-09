@@ -45,7 +45,7 @@ namespace Buttplug.Devices
             _readChr = aReadChr;
         }
 
-        public override async Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage aMsg)
+        public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage aMsg)
         {
             switch (aMsg)
             {
@@ -53,10 +53,10 @@ namespace Buttplug.Devices
                     BpLogger.Trace("Lovense toy got SingleMotorVibrateMessage");
                     var buf = ButtplugUtils.WriteString($"Vibrate:{(int) (m.Speed * 20)};");
                     await _writeChr.WriteValueAsync(buf);
-                    return new Ok();
+                    return new Ok(aMsg.Id);
             }
 
-            return ButtplugUtils.LogAndError(BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
+            return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
         }
     }
 }

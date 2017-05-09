@@ -26,6 +26,6 @@ namespace Buttplug.Core
             Name = name;
         }
 
-        public abstract Task<Either<Error, IButtplugMessage>> ParseMessage(IButtplugDeviceMessage aMsg);
+        public abstract Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage aMsg);
     }
 }

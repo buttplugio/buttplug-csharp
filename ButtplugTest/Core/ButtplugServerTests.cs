@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Buttplug.Core;
 using Buttplug.Messages;
+using LanguageExt;
 
 namespace ButtplugTest.Core
 {
@@ -14,7 +15,7 @@ namespace ButtplugTest.Core
         [Fact]
         public async void RejectOutgoingOnlyMessage()
         {
-            Assert.True((await new ButtplugService().SendMessage(new Error("Error"))).IsLeft);
+            Assert.True((await new ButtplugService().SendMessage(new Error("Error", ButtplugConsts.DEFAULT_MSG_ID))).IsLeft);
         }
 
         [Fact]
@@ -30,15 +31,29 @@ namespace ButtplugTest.Core
                 }
             };
             // Sending error messages will always cause an error, as they are outgoing, not incoming.
-            await s.SendMessage(new Error("Error"));
+            await s.SendMessage(new Error("Error", ButtplugConsts.DEFAULT_MSG_ID));
             Assert.False(gotMessage);
             Assert.True((await s.SendMessage(new RequestLog("Trace"))).IsRight);
-            Assert.True((await s.SendMessage(new Error("Error"))).IsLeft);
+            Assert.True((await s.SendMessage(new Error("Error", ButtplugConsts.DEFAULT_MSG_ID))).IsLeft);
             Assert.True(gotMessage);
             await s.SendMessage(new RequestLog("Off"));
             gotMessage = false;
-            await s.SendMessage(new Error("Error"));
+            await s.SendMessage(new Error("Error", ButtplugConsts.DEFAULT_MSG_ID));
             Assert.False(gotMessage);
+        }
+
+        [Fact]
+        public async void CheckMessageReturnId()
+        {
+            var s = new ButtplugService();
+            s.MessageReceived += (obj, msg) =>
+            {
+                Assert.True(msg.Message is RequestServerInfo);
+                Assert.True(msg.Message.Id == 12345);
+            };
+            var m = new RequestServerInfo(12345);
+            await s.SendMessage(m);
+            await s.SendMessage("{\"RequestServerInfo\":{\"Id\":12345}}");
         }
 
         [Fact]
@@ -62,7 +77,7 @@ namespace ButtplugTest.Core
                         break;
                 }
             };
-            Assert.True((await s.SendMessage(new StartScanning())).IsRight);
+            Assert.True((await s.SendMessage(new StartScanning(1))).IsRight);
             Assert.True(msgReceived);
         }
     }
