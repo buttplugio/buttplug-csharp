@@ -2,6 +2,7 @@
 using Buttplug.Messages;
 using LanguageExt;
 using System.Threading.Tasks;
+using NLog;
 
 namespace ButtplugTest.Core
 {
@@ -14,7 +15,14 @@ namespace ButtplugTest.Core
 
         public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage aMsg)
         {
-            return new Ok(aMsg.Id);
+            switch (aMsg)
+            {
+                case SingleMotorVibrateCmd m:
+                    BpLogger.Trace("Test Device got SingleMotorVibrateMessage");
+                    return new Ok(aMsg.Id);
+            }
+
+            return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
         }
     }
 }

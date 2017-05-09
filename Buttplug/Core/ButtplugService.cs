@@ -119,9 +119,13 @@ namespace Buttplug.Core
                 case RequestServerInfo _:
                     return new ServerInfo(id);
 
+                case Test m:
+                    return new Test(m.TestString, id);
+
                 case RequestDeviceList _:
                     var msgDevices = _devices.Select(d => new DeviceMessageInfo(d.Key, d.Value.Name)).ToList();
                     return new DeviceList(msgDevices.ToArray(), id);
+
                 // If it's a device message, it's most likely not ours.
                 case ButtplugDeviceMessage m:
                     _bpLogger.Trace($"Sending {aMsg.GetType().Name} to device index {m.DeviceIndex}");
