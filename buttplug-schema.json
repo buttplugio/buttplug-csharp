@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Buttplug Messages",
+  "title": "Buttplug Message Schema",
+  "version": "0.0.1",
   "description": "The JSON Protocol format for the Buttplug Protocol",
   "components" : {
     "Id": {
@@ -8,6 +9,12 @@
       "type": "integer",
       "minimum": 0,
       "maximum": 4294967295
+    },
+    "SystemId": {
+      "description": "Used for non-direct-reply messages that can only be sent from server to client, using the reserved system message Id of 0.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 0
     },
     "DeviceName": {
       "description": "Name of the device",
@@ -21,6 +28,18 @@
     "IdMessage" : {
       "properties": {
         "Id": {"$ref": "#/components/Id"},
+      },
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "required": [
+        "Id"
+      ]
+    },
+    "SystemIdMessage" : {
+      "description": "Message sent by the server that is not in direct reply to a message send from the client, and always uses system Id.",
+      "properties": {
+        "Id": {"$ref": "#/components/SystemId"},
       },
       "additionalProperties": false,
       "minProperties": 1,
@@ -111,7 +130,7 @@
       "type": "object",
       "description": "Notifies client that a device of a certain type has been added to the server.",
       "properties": {
-        "Id": {"$ref": "#/components/Id"},
+        "Id": {"$ref": "#/components/SystemId"},
         "DeviceName": { "$ref" : "#/components/DeviceName" },
         "DeviceIndex":  { "$ref" : "#/components/DeviceIndex" }
       },
@@ -128,7 +147,7 @@
       "type": "object",
       "description": "Notifies client that a device of a certain type has been removed from the server.",
       "properties": {
-        "Id": {"$ref": "#/components/Id"},
+        "Id": {"$ref": "#/components/SystemId"},
         "DeviceIndex":  { "$ref" : "#/components/DeviceIndex" }
       },
       "minProperties": 2,
@@ -157,7 +176,7 @@
     "ScanningFinished": {
       "type": "object",
       "description": "Server notification to client that scanning has ended.",
-      "anyOf" : [{ "$ref" : "#/components/IdMessage" }]
+      "anyOf" : [{ "$ref" : "#/components/SystemIdMessage" }]
     },
     "RequestLog": {
       "type": "object",
@@ -181,7 +200,7 @@
       "type": "object",
       "description": "Log message from the server.",
       "properties": {
-        "Id": {"$ref": "#/components/Id"},
+        "Id": {"$ref": "#/components/SystemId"},
         "LogLevel": {
           "description": "Log level of message.",
           "enum": ["Off", "Fatal", "Error", "Warn", "Info", "Debug", "Trace"]
