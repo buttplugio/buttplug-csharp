@@ -68,10 +68,7 @@ namespace Buttplug.Devices
             return new OptionNone();
         }
 
-#pragma warning disable 1998
-
         public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage msg)
-#pragma warning restore 1998
         {
             switch (msg)
             {
