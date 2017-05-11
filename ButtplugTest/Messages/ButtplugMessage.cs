@@ -37,7 +37,7 @@ namespace ButtplugTest.Messages
                 })
                 .Left(x =>
                 {
-                    Assert.True(false, $"SendMessage returned error: {x.ErrorString}");
+                    Assert.True(false, $"SendMessage returned error: {x.ErrorMessage}");
                 });
         }
 
@@ -82,7 +82,7 @@ namespace ButtplugTest.Messages
                 })
                 .Left(x =>
                 {
-                    Assert.True(false, $"SendMessage returned error: {x.ErrorString}");
+                    Assert.True(false, $"SendMessage returned error: {x.ErrorMessage}");
                 });
         }
 
@@ -116,7 +116,7 @@ namespace ButtplugTest.Messages
                     })
                     .Left(x =>
                     {
-                        Assert.True(false, $"SendMessage returned error: {x.ErrorString}");
+                        Assert.True(false, $"SendMessage returned error: {x.ErrorMessage}");
                     });
             }
         }

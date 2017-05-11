@@ -47,11 +47,11 @@ namespace Buttplug.Messages
     public class Error : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         [JsonProperty(Required = Required.Always)]
-        public string ErrorString { get; }
+        public string ErrorMessage { get; }
 
-        public Error(string aErrorString, uint aId) : base(aId)
+        public Error(string aErrorMessage, uint aId) : base(aId)
         {
-            ErrorString = aErrorString;
+            ErrorMessage = aErrorMessage;
         }
     }
 

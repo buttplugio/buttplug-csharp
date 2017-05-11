@@ -154,7 +154,7 @@ namespace ButtplugTest.Core
                         }
                     }).Left(x =>
                         {
-                            Assert.True(false, $"Error getting device list: {x.ErrorString}");
+                            Assert.True(false, $"Error getting device list: {x.ErrorMessage}");
                         }
                     );
                 Assert.True(i == 0 ? msgReceived : !msgReceived, "DeviceAdded fired at incorrect time!");
