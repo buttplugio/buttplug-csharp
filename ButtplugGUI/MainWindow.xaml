@@ -14,8 +14,25 @@
                     <Button Name="ScanButton" Content="Start Scanning" HorizontalAlignment="Left" Margin="10,263,0,0" VerticalAlignment="Top" Width="95" Click="ScanButton_Click" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Settings">
-                <Grid Background="#FFE5E5E5" />
+            <TabItem Header="Applications">
+                <Grid Background="#FFE5E5E5" >
+                    <Grid Name="WebsocketSettingsGrid" HorizontalAlignment="Left" Height="242" Margin="10,41,0,0" VerticalAlignment="Top" Width="493" Visibility="Hidden">
+                        <CheckBox Content="WebsocketOn" HorizontalAlignment="Left" Margin="10,20,0,0" VerticalAlignment="Top"/>
+                        <TextBox HorizontalAlignment="Left" Height="23" Margin="49,45,0,0" TextWrapping="Wrap" Text="6868" VerticalAlignment="Top" Width="120"/>
+                        <Label Content="Port:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+                    </Grid>
+                    <Grid Name="KiirooSettingsGrid" HorizontalAlignment="Left" Height="242" Margin="10,41,0,0" VerticalAlignment="Top" Width="493" Visibility="Hidden">
+                        <CheckBox Content="KiirooOn" HorizontalAlignment="Left" Margin="34,24,0,0" VerticalAlignment="Top"/>
+                    </Grid>
+                    <Grid Margin="10,10,151.667,257.333">
+                        <ComboBox Name="ApplicationSelector" HorizontalAlignment="Left" Margin="121,4,0,0" VerticalAlignment="Top" Width="160" RenderTransformOrigin="-0.622,-1.083" SelectionChanged="ApplicationSelector_SelectionChanged">
+                            <ComboBoxItem Name="ApplicationNone" IsSelected="true">None</ComboBoxItem>
+                            <ComboBoxItem Name="ApplicationWebsockets">Websocket Server</ComboBoxItem>
+                            <ComboBoxItem Name="ApplicationKiiroo">Kiiroo Platform Emulator</ComboBoxItem>
+                        </ComboBox>
+                        <Label Content="Current Application:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    </Grid>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

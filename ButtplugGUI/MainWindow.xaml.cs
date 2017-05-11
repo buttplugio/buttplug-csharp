@@ -72,5 +72,19 @@ namespace ButtplugGUI
             }
             ScanButton.Click += ScanButton_Click;
         }
+
+        private void ApplicationSelector_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            WebsocketSettingsGrid.Visibility = Visibility.Hidden;
+            KiirooSettingsGrid.Visibility = Visibility.Hidden;
+            if (ApplicationSelector.SelectedItem == ApplicationWebsockets)
+            {
+                WebsocketSettingsGrid.Visibility = Visibility.Visible;
+            }
+            else if (ApplicationSelector.SelectedItem == ApplicationWebsockets)
+            {
+                KiirooSettingsGrid.Visibility = Visibility.Visible;
+            }
+        }
     }
 }
