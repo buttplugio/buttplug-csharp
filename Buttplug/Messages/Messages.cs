@@ -249,6 +249,30 @@ namespace Buttplug.Messages
         }
     }
 
+    public class KiirooRawCmd : ButtplugDeviceMessage
+    {
+        private ushort _positionImpl;
+
+        [JsonProperty(Required = Required.Always)]
+        public ushort Position
+        {
+            get => _positionImpl;
+            set
+            {
+                if (value > 4)
+                {
+                    throw new ArgumentException("KiirooRawCmd Position cannot be greater than 4");
+                }
+                _positionImpl = value;
+            }
+        }
+
+        public KiirooRawCmd(uint aDeviceIndex, ushort aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
+        {
+            Position = aPosition;
+        }
+    }
+
     public class SingleMotorVibrateCmd : ButtplugDeviceMessage
     {
         private double _speedImpl;
