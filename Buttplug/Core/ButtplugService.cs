@@ -2,6 +2,7 @@
 using LanguageExt;
 using NLog;
 using NLog.Config;
+using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,14 @@ namespace Buttplug.Core
             _outgoingLoggingRule = new LoggingRule("*", LogLevel.Off, _msgTarget);
             c.LoggingRules.Add(_outgoingLoggingRule);
             LogManager.Configuration = c;
+
+#if DEBUG
+            // Debug Logger Setup
+            var t = new DebuggerTarget();
+            LogManager.Configuration.AddTarget("debugger", t);
+            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
+            LogManager.Configuration = LogManager.Configuration;
+#endif
 
             //TODO Introspect managers based on project contents and OS version (#15)
             _managers = new List<DeviceManager>();
