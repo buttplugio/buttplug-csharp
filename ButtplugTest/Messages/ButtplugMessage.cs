@@ -1,4 +1,5 @@
-﻿using Buttplug.Core;
+﻿using System;
+using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugTest.Core;
 using LanguageExt;
@@ -14,14 +15,14 @@ namespace ButtplugTest.Messages
         public async void RequestLogJsonTest()
         {
             var s = new TestService();
-            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}")).IsRight);
+            Assert.False((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}")) is Error);
         }
 
         [Fact]
         public async void RequestLogWrongLevelTest()
         {
             var s = new TestService();
-            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}")).IsLeft);
+            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}")) is Error);
         }
 
         [Fact]
@@ -30,15 +31,8 @@ namespace ButtplugTest.Messages
             var dm = new TestDeviceManager();
             var s = new TestService(dm);
             var r = await s.SendMessage(new StartScanning());
-            r.Right(x =>
-                {
-                    Assert.True(x is Ok);
-                    Assert.True(dm.StartScanningCalled);
-                })
-                .Left(x =>
-                {
-                    Assert.True(false, $"SendMessage returned error: {x.ErrorMessage}");
-                });
+            Assert.True(r is Ok);
+            Assert.True(dm.StartScanningCalled);
         }
 
         public class FakeMessage : ButtplugMessage
@@ -53,7 +47,7 @@ namespace ButtplugTest.Messages
         {
             var s = new ButtplugService();
             var r = await s.SendMessage(new FakeMessage(1));
-            Assert.True(r.IsLeft);
+            Assert.True(r is Error);
         }
 
         [Fact]
@@ -64,9 +58,9 @@ namespace ButtplugTest.Messages
             Assert.True(r.IsSome);
             // However it shouldn't be taken by the server.
             var s = new ButtplugService();
-            Either<Error, ButtplugMessage> e = new Error("Yup", ButtplugConsts.DEFAULT_MSG_ID);
+            ButtplugMessage e = null;
             await r.IfSomeAsync(async x => e = await s.SendMessage(x));
-            Assert.True(e.IsLeft);
+            Assert.True(e is Error);
         }
 
         [Fact]
@@ -75,49 +69,30 @@ namespace ButtplugTest.Messages
             var dm = new TestDeviceManager();
             var s = new TestService(dm);
             var r = await s.SendMessage(new StopScanning());
-            r.Right(x =>
-                {
-                    Assert.True(x is Ok);
-                    Assert.True(dm.StopScanningCalled);
-                })
-                .Left(x =>
-                {
-                    Assert.True(false, $"SendMessage returned error: {x.ErrorMessage}");
-                });
+            Assert.True(r is Ok);
+            Assert.True(dm.StopScanningCalled);
         }
 
         [Fact]
         public async void RequestServerInfoTest()
         {
             var s = new ButtplugService();
-            var results = new List<Either<Error, ButtplugMessage>>
+            var results = new List<ButtplugMessage>
             {
                 await s.SendMessage(new RequestServerInfo()),
                 await s.SendMessage("{\"RequestServerInfo\":{\"Id\":1}}")
             };
             foreach (var reply in results)
             {
-                reply
-                    .Right(x =>
-                    {
-                        switch (x)
-                        {
-                            case ServerInfo si:
-                                Assert.True(true, "Got ServerInfo");
-                                Assert.True(si.MajorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major);
-                                Assert.True(si.MinorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor);
-                                Assert.True(si.BuildVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build);
-                                break;
-
-                            default:
-                                Assert.True(false, $"Received message type {x.GetType()}, not ServerInfo");
-                                break;
-                        }
-                    })
-                    .Left(x =>
-                    {
-                        Assert.True(false, $"SendMessage returned error: {x.ErrorMessage}");
-                    });
+                Assert.True(reply is ServerInfo);
+                var r = (ServerInfo)reply;
+                if (r is null)
+                {
+                    continue;
+                }
+                Assert.True(r.MajorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major);
+                Assert.True(r.MinorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor);
+                Assert.True(r.BuildVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build);
             }
         }
     }

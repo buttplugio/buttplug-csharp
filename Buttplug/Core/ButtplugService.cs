@@ -93,7 +93,7 @@ namespace Buttplug.Core
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
 
-        public async Task<Either<Error, ButtplugMessage>> SendMessage(ButtplugMessage aMsg)
+        public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
         {
             _bpLogger.Trace($"Got Message {aMsg.Id} of type {aMsg.GetType().Name} to send");
             var id = aMsg.Id;
@@ -149,7 +149,7 @@ namespace Buttplug.Core
                 $"Dropping unhandled message type {aMsg.GetType().Name}");
         }
 
-        public async Task<Either<Error, ButtplugMessage>> SendMessage(string aJsonMsg)
+        public async Task<ButtplugMessage> SendMessage(string aJsonMsg)
         {
             var msg = _parser.Deserialize(aJsonMsg);
             return await msg.MatchAsync(

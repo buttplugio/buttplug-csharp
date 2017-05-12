@@ -13,7 +13,7 @@ namespace ButtplugTest.Core
         {
         }
 
-        public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage aMsg)
+        public override async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg)
         {
             switch (aMsg)
             {

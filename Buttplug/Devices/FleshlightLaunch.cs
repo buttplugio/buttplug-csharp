@@ -37,7 +37,6 @@ namespace Buttplug.Devices
 
     internal class FleshlightLaunch : ButtplugBluetoothDevice
     {
-        private readonly GattCharacteristic _writeChr;
         private readonly GattCharacteristic _buttonNotifyChr;
         private readonly GattCharacteristic _commandChr;
         private bool _isInitialized;
@@ -46,16 +45,18 @@ namespace Buttplug.Devices
                                 GattCharacteristic aWriteChr,
                                 GattCharacteristic aButtonNotifyChr,
                                 GattCharacteristic aCommandChr) :
-            base("Fleshlight Launch", aDevice)
+            base("Fleshlight Launch",
+                 aDevice,
+                 aWriteChr,
+                 aButtonNotifyChr)
         {
             BleDevice = aDevice;
             _isInitialized = false;
-            _writeChr = aWriteChr;
-            _buttonNotifyChr = aButtonNotifyChr;
+            _buttonNotifyChr = _readChr;
             _commandChr = aCommandChr;
         }
 
-        private async Task<Option<Error>> Initialize(uint aId)
+        private async Task<ButtplugMessage> Initialize(uint aId)
         {
             _isInitialized = true;
             BpLogger.Trace($"Initializing {Name}");
@@ -65,10 +66,10 @@ namespace Buttplug.Devices
                 return ButtplugUtils.LogAndError(aId, BpLogger, LogLevel.Error, $"Cannot initialize {Name}!");
             }
             BpLogger.Trace($"{Name} initialized");
-            return new OptionNone();
+            return new Ok(aId);
         }
 
-        public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage msg)
+        public override async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage msg)
         {
             switch (msg)
             {
@@ -77,21 +78,12 @@ namespace Buttplug.Devices
                     if (!_isInitialized)
                     {
                         var err = await Initialize(msg.Id);
-
-                        if (err.IsSome)
+                        if (err is Error)
                         {
-                            // TODO No seriously extraction shouldn't be this hard. I'm missing something.
-                            var m = new Either<Error, ButtplugMessage>();
-                            err.IfSome(z => m = z);
-                            return m;
+                            return err;
                         }
                     }
-                    var x = await _writeChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));
-                    if (x == GattCommunicationStatus.Success)
-                    {
-                        return new Ok(cmdMsg.Id);
-                    }
-                    return ButtplugUtils.LogAndError(cmdMsg.Id, BpLogger, LogLevel.Error, $"Cannot send data to {Name}");
+                    return await WriteToDevice(msg, ButtplugUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));
             }
 
             return ButtplugUtils.LogAndError(msg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {msg.GetType().Name}");

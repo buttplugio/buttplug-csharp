@@ -1,12 +1,12 @@
 ﻿using Buttplug.Core;
 using Buttplug.Messages;
 using LanguageExt;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Foundation;
 
 namespace Buttplug.Devices
 {
@@ -34,30 +34,29 @@ namespace Buttplug.Devices
 
     internal class Lovense : ButtplugBluetoothDevice
     {
-        private readonly GattCharacteristic _writeChr;
-        private GattCharacteristic _readChr;
+
 
         public Lovense(BluetoothLEDevice aDevice,
                        GattCharacteristic aWriteChr,
                        GattCharacteristic aReadChr) :
-            base($"Lovense Device ({aDevice.Name})", aDevice)
+            base($"Lovense Device ({aDevice.Name})", 
+                 aDevice,
+                 aWriteChr,
+                 aReadChr)
         {
-            _writeChr = aWriteChr;
-            _readChr = aReadChr;
         }
 
-        public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage aMsg)
+        public override async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg)
         {
             switch (aMsg)
             {
                 case Messages.SingleMotorVibrateCmd m:
                     BpLogger.Trace("Lovense toy got SingleMotorVibrateMessage");
                     var buf = ButtplugUtils.WriteString($"Vibrate:{(int)(m.Speed * 20)};");
-                    await _writeChr.WriteValueAsync(buf);
-                    return new Ok(aMsg.Id);
+                    return await WriteToDevice(aMsg, buf);
             }
 
-            return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
+            return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, NLog.LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
         }
     }
 }

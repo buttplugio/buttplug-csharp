@@ -1,16 +1,31 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
+using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Foundation;
+using Windows.Storage.Streams;
+using Buttplug.Messages;
+using LanguageExt;
+using NLog;
 
 namespace Buttplug.Core
 {
-    internal abstract class ButtplugBluetoothDevice : ButtplugDevice, IEquatable<ButtplugBluetoothDevice>
+    internal abstract class ButtplugBluetoothDevice : ButtplugDevice
     {
         protected BluetoothLEDevice BleDevice;
+        protected readonly GattCharacteristic _writeChr;
+        protected readonly GattCharacteristic _readChr;
+        private Option<IAsyncOperation<GattCommunicationStatus>> _currentTask;
 
-        protected ButtplugBluetoothDevice(string aName, BluetoothLEDevice aDevice) :
+        protected ButtplugBluetoothDevice(string aName, 
+            BluetoothLEDevice aDevice,
+            GattCharacteristic aWriteChr,
+            GattCharacteristic aReadChr) :
             base(aName)
         {
             BleDevice = aDevice;
+            _writeChr = aWriteChr;
+            _readChr = aReadChr;
         }
 
         public override bool Equals(object obj)
@@ -35,6 +50,27 @@ namespace Buttplug.Core
         public ulong GetAddress()
         {
             return BleDevice.BluetoothAddress;
+        }
+
+        public async Task<ButtplugMessage> WriteToDevice(ButtplugMessage aMsg, IBuffer aBuffer)
+        {
+            if (_currentTask.IsSome)
+            {
+                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Debug, "Device is already has a transfer in progress.");
+            }
+            _currentTask =
+                Option<IAsyncOperation<GattCommunicationStatus>>.Some(_writeChr.WriteValueAsync(aBuffer));
+            GattCommunicationStatus status = GattCommunicationStatus.Success;
+            await _currentTask.IfSomeAsync(async x =>
+            {
+                status = await x;
+            });                    
+            _currentTask = new OptionNone();
+            if (status != GattCommunicationStatus.Success)
+            {
+                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Warn, $"GattCommunication Error: {status}");
+            }
+            return new Ok(aMsg.Id);
         }
     }
 }

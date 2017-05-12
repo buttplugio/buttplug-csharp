@@ -5,6 +5,7 @@ using LanguageExt;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Foundation;
 using Buttplug.Messages;
 using LogLevel = NLog.LogLevel;
 
@@ -34,33 +35,25 @@ namespace Buttplug.Devices
 
     internal class Kiiroo : ButtplugBluetoothDevice
     {
-        private readonly GattCharacteristic _writeChr;
-        private readonly GattCharacteristic _readChr;
-
         public Kiiroo(BluetoothLEDevice aDevice,
             GattCharacteristic aWriteChr,
             GattCharacteristic aReadChr) :
-            base($"Kiiroo {aDevice.Name}", aDevice)
+            base($"Kiiroo {aDevice.Name}", 
+                 aDevice,
+                 aWriteChr,
+                 aReadChr)
         {
-            _writeChr = aWriteChr;
-            _readChr = aReadChr;
         }
 
-        public override async Task<Either<Error, ButtplugMessage>> ParseMessage(ButtplugDeviceMessage msg)
+        public override async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage msg)
         {
             switch (msg)
             {
                 case KiirooRawCmd cmdMsg:
-                    var x = await _writeChr.WriteValueAsync(ButtplugUtils.WriteString($"{cmdMsg.Position},\n"));
-                    if (x == GattCommunicationStatus.Success)
-                    {
-                        return new Ok(cmdMsg.Id);
-                    }
-                    return ButtplugUtils.LogAndError(cmdMsg.Id, BpLogger, LogLevel.Error, $"Cannot send data to {Name}");
+                    return await WriteToDevice(cmdMsg, ButtplugUtils.WriteString($"{cmdMsg.Position},\n"));
             }
 
             return ButtplugUtils.LogAndError(msg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {msg.GetType().Name}");
-
         }
     }
 }
