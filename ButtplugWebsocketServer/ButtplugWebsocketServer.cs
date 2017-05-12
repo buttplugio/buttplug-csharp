@@ -25,7 +25,9 @@ namespace ButtplugWebsocketServer
         protected override async void OnMessage(MessageEventArgs e)
         {
             base.OnMessage(e);
-            await _buttplug.SendMessage(e.Data);
+            var msg = ButtplugJsonMessageParser.Serialize(await _buttplug.SendMessage(e.Data));
+            msg.IfSome(x => Sessions.Broadcast(Encoding.ASCII.GetBytes(x)));
+
         }
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
