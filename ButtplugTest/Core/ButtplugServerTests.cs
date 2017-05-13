@@ -55,6 +55,9 @@ namespace ButtplugTest.Core
         public async void TestAddListDevices()
         {
             var d = new TestDevice("TestDevice");
+            var msgarray = d.GetAllowedMessageTypes();
+            Assert.True(msgarray.Count() == 1);
+            Assert.True(msgarray.Contains(typeof(SingleMotorVibrateCmd)));
             var m = new TestDeviceManager(d);
             var s = new TestService(m);
             var msgReceived = false;
@@ -111,6 +114,17 @@ namespace ButtplugTest.Core
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
             Assert.True(await s.SendMessage(new SingleMotorVibrateCmd(0, .2)) is Ok);
+        }
+
+        [Fact]
+        public async void TestInvalidDeviceMessage()
+        {
+            var d = new TestDevice("TestDevice");
+            var m = new TestDeviceManager(d);
+            var s = new TestService(m);
+            Assert.True(await s.SendMessage(new StartScanning()) is Ok);
+            Assert.True(await s.SendMessage(new StopScanning()) is Ok);
+            Assert.True(await s.SendMessage(new FleshlightLaunchRawCmd(0, 0, 0)) is Error);
         }
 
         [Fact]
