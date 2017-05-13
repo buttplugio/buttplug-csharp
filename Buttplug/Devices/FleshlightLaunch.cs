@@ -54,6 +54,9 @@ namespace Buttplug.Devices
             _isInitialized = false;
             _buttonNotifyChr = _readChr;
             _commandChr = aCommandChr;
+
+            // Setup message function array
+            MsgFuncs.Add(typeof(FleshlightLaunchRawCmd), HandleFleshlightLaunchRawCmd);
         }
 
         private async Task<ButtplugMessage> Initialize(uint aId)
@@ -69,24 +72,23 @@ namespace Buttplug.Devices
             return new Ok(aId);
         }
 
-        public override async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage msg)
+        public async Task<ButtplugMessage> HandleFleshlightLaunchRawCmd(ButtplugDeviceMessage aMsg)
         {
-            switch (msg)
+            //TODO: Split into Command message and Control message? (Issue #17)
+            var cmdMsg = aMsg as FleshlightLaunchRawCmd;
+            if (cmdMsg is null)
             {
-                //TODO: Split into Command message and Control message? (Issue #17)
-                case Messages.FleshlightLaunchRawCmd cmdMsg:
-                    if (!_isInitialized)
-                    {
-                        var err = await Initialize(msg.Id);
-                        if (err is Error)
-                        {
-                            return err;
-                        }
-                    }
-                    return await WriteToDevice(msg, ButtplugUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));
+                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
             }
-
-            return ButtplugUtils.LogAndError(msg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {msg.GetType().Name}");
+            if (!_isInitialized)
+            {
+                var err = await Initialize(aMsg.Id);
+                if (err is Error)
+                {
+                    return err;
+                }
+            }
+            return await WriteToDevice(aMsg, ButtplugUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));            
         }
     }
 }

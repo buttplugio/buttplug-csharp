@@ -1,12 +1,10 @@
 ﻿using Buttplug.Core;
+using Buttplug.Messages;
 using System;
 using System.Collections.Generic;
-using LanguageExt;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Foundation;
-using Buttplug.Messages;
 using LogLevel = NLog.LogLevel;
 
 namespace Buttplug.Devices
@@ -38,22 +36,22 @@ namespace Buttplug.Devices
         public Kiiroo(BluetoothLEDevice aDevice,
             GattCharacteristic aWriteChr,
             GattCharacteristic aReadChr) :
-            base($"Kiiroo {aDevice.Name}", 
+            base($"Kiiroo {aDevice.Name}",
                  aDevice,
                  aWriteChr,
                  aReadChr)
         {
+            MsgFuncs.Add(typeof(KiirooRawCmd), HandleKiirooRawCmd);
         }
 
-        public override async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage msg)
+        public async Task<ButtplugMessage> HandleKiirooRawCmd(ButtplugDeviceMessage aMsg)
         {
-            switch (msg)
+            var cmdMsg = aMsg as KiirooRawCmd;
+            if (cmdMsg is null)
             {
-                case KiirooRawCmd cmdMsg:
-                    return await WriteToDevice(cmdMsg, ButtplugUtils.WriteString($"{cmdMsg.Position},\n"));
+                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
             }
-
-            return ButtplugUtils.LogAndError(msg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {msg.GetType().Name}");
+            return await WriteToDevice(cmdMsg, ButtplugUtils.WriteString($"{cmdMsg.Position},\n"));
         }
     }
 }

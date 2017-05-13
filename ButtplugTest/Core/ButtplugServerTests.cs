@@ -52,7 +52,7 @@ namespace ButtplugTest.Core
         }
 
         [Fact]
-        public async void AddDeviceTest()
+        public async void TestAddListDevices()
         {
             var d = new TestDevice("TestDevice");
             var m = new TestDeviceManager(d);
@@ -63,20 +63,29 @@ namespace ButtplugTest.Core
                 msgReceived = true;
                 switch (msgArgs.Message)
                 {
-                    case DeviceAdded da:
+                    case DeviceAdded da:                        
                         Assert.True(da.DeviceName == "TestDevice");
                         Assert.True(da.DeviceIndex == 0);
+                        Assert.True(da.DeviceMessages.Length == 1);
+                        Assert.True(da.DeviceMessages.Contains("SingleMotorVibrateCmd"));
                         break;
-
+                    case DeviceList dl:
+                        Assert.True(dl.Devices.Length == 1);
+                        var di = dl.Devices[0];
+                        Assert.True(di.DeviceName == "TestDevice");
+                        Assert.True(di.DeviceIndex == 0);
+                        Assert.True(di.DeviceMessages.Length == 1);
+                        Assert.True(di.DeviceMessages.Contains("SingleMotorVibrateCmd"));
+                        break;
                     default:
                         Assert.False(msgArgs.Message is DeviceAdded);
                         break;
                 }
             };
-            Assert.True((await s.SendMessage(new StartScanning())) is Ok);
+            Assert.True(await s.SendMessage(new StartScanning()) is Ok);
+            Assert.True(await s.SendMessage(new StopScanning()) is Ok);
             Assert.True(msgReceived);
         }
-
         [Fact]
         public async void TestIncomingSystemIdMessage()
         {

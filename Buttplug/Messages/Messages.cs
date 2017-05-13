@@ -59,11 +59,13 @@ namespace Buttplug.Messages
     {
         public string DeviceName { get; }
         public uint DeviceIndex { get; }
+        public string[] DeviceMessages { get; }
 
-        public DeviceMessageInfo(uint aIndex, string aName)
+        public DeviceMessageInfo(uint aIndex, string aName, string[] aMessages)
         {
             DeviceName = aName;
             DeviceIndex = aIndex;
+            DeviceMessages = aMessages;
         }
     }
 
@@ -80,10 +82,12 @@ namespace Buttplug.Messages
     public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
     {
         public string DeviceName { get; }
+        public string[] DeviceMessages { get; }
 
-        public DeviceAdded(uint aIndex, string aName) : base(ButtplugConsts.SYSTEM_MSG_ID, aIndex)
+        public DeviceAdded(uint aIndex, string aName, string[] aMessages) : base(ButtplugConsts.SYSTEM_MSG_ID, aIndex)
         {
             DeviceName = aName;
+            DeviceMessages = aMessages;
         }
     }
 

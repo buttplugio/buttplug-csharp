@@ -1,4 +1,5 @@
-﻿using Buttplug.Core;
+﻿using System;
+using Buttplug.Core;
 using Buttplug.Messages;
 using LanguageExt;
 using System.Threading.Tasks;
@@ -11,18 +12,13 @@ namespace ButtplugTest.Core
         public TestDevice(string aName) :
             base(aName)
         {
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
         }
 
-        public override async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg)
+        public async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            switch (aMsg)
-            {
-                case SingleMotorVibrateCmd m:
-                    BpLogger.Trace("Test Device got SingleMotorVibrateMessage");
-                    return new Ok(aMsg.Id);
-            }
-
-            return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
+            BpLogger.Trace("Test Device got SingleMotorVibrateMessage");
+            return new Ok(aMsg.Id);
         }
     }
 }

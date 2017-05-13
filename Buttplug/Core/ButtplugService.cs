@@ -6,6 +6,7 @@ using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -88,7 +89,7 @@ namespace Buttplug.Core
             }
             _bpLogger.Debug($"Adding Device {e.Device.Name} at index {_deviceIndex}");
             _devices.Add(_deviceIndex, e.Device);
-            var msg = new Messages.DeviceAdded(_deviceIndex, e.Device.Name);
+            var msg = new Messages.DeviceAdded(_deviceIndex, e.Device.Name, e.Device.GetAllowedMessageTypesAsStrings().ToArray());
             _deviceIndex += 1;
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
@@ -132,7 +133,7 @@ namespace Buttplug.Core
                     return new Test(m.TestString, id);
 
                 case RequestDeviceList _:
-                    var msgDevices = _devices.Select(d => new DeviceMessageInfo(d.Key, d.Value.Name)).ToList();
+                    var msgDevices = _devices.Select(d => new DeviceMessageInfo(d.Key, d.Value.Name, d.Value.GetAllowedMessageTypesAsStrings().ToArray())).ToList();
                     return new DeviceList(msgDevices.ToArray(), id);
 
                 // If it's a device message, it's most likely not ours.

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
+using LogLevel = NLog.LogLevel;
 
 namespace Buttplug.Devices
 {
@@ -44,19 +45,18 @@ namespace Buttplug.Devices
                  aWriteChr,
                  aReadChr)
         {
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
         }
 
-        public override async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg)
+        public async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            switch (aMsg)
+            var cmdMsg = aMsg as SingleMotorVibrateCmd;
+            if (cmdMsg is null)
             {
-                case Messages.SingleMotorVibrateCmd m:
-                    BpLogger.Trace("Lovense toy got SingleMotorVibrateMessage");
-                    var buf = ButtplugUtils.WriteString($"Vibrate:{(int)(m.Speed * 20)};");
-                    return await WriteToDevice(aMsg, buf);
+                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
             }
-
-            return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, NLog.LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
+            var buf = ButtplugUtils.WriteString($"Vibrate:{(int)(cmdMsg.Speed * 20)};");
+            return await WriteToDevice(aMsg, buf);
         }
     }
 }

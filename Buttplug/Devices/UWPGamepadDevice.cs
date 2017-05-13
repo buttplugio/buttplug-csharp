@@ -16,6 +16,7 @@ namespace Buttplug.Devices
             base("XBox Compatible Gamepad (UWP)")
         {
             _device = d;
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
         }
 
         public override bool Equals(object obj)
@@ -40,21 +41,21 @@ namespace Buttplug.Devices
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
-        public override async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg)
+        public async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            switch (aMsg)
+            var cmdMsg = aMsg as SingleMotorVibrateCmd;
+            if (cmdMsg is null)
             {
-                case Messages.SingleMotorVibrateCmd m:
-                    var v = new GamepadVibration()
-                    {
-                        LeftMotor = m.Speed,
-                        RightMotor = m.Speed
-                    };
-                    _device.Vibration = v;
-                    return new Ok(aMsg.Id);
+                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
             }
-            return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, $"{Name} cannot handle message of type {aMsg.GetType().Name}");
+            var v = new GamepadVibration()
+            {
+                LeftMotor = cmdMsg.Speed,
+                RightMotor = cmdMsg.Speed
+            };
+            _device.Vibration = v;
+            return new Ok(aMsg.Id);
         }
     }
 }
