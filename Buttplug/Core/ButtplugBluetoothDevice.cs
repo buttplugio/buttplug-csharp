@@ -26,6 +26,15 @@ namespace Buttplug.Core
             BleDevice = aDevice;
             _writeChr = aWriteChr;
             _readChr = aReadChr;
+            BleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
+        }
+
+        public void ConnectionStatusChangedHandler(BluetoothLEDevice device, object o)
+        {
+            if (BleDevice.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
+            {
+                // TODO ACTUALLY HANDLE THIS GOD DAMNIT
+            }
         }
 
         public override bool Equals(object obj)
@@ -71,6 +80,11 @@ namespace Buttplug.Core
                 return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Warn, $"GattCommunication Error: {status}");
             }
             return new Ok(aMsg.Id);
+        }
+
+        public virtual async Task<ButtplugMessage> Initialize()
+        {
+            return new Ok(0);
         }
     }
 }

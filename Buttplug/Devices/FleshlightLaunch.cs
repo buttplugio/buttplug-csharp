@@ -80,12 +80,8 @@ namespace Buttplug.Devices
             {
                 return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
             }
-            if (!_isInitialized)
             {
-                var err = await Initialize(aMsg.Id);
-                if (err is Error)
                 {
-                    return err;
                 }
             }
             return await WriteToDevice(aMsg, ButtplugUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));            

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Buttplug.Messages;
 
 namespace Buttplug.Core
 {
@@ -52,10 +53,17 @@ namespace Buttplug.Core
                        select x;
 
             var gattCharacteristics = chrs as GattCharacteristic[] ?? chrs.ToArray();
-            return !gattCharacteristics.Any() ?
-                Option<ButtplugDevice>.None :
-                Option<ButtplugDevice>.Some(_deviceInfo.CreateDevice(aDevice,
-                                                                     gattCharacteristics.ToDictionary(x => x.Uuid, x => x)));
+            if (!gattCharacteristics.Any())
+            {
+                return new OptionNone();
+            }
+            var device = _deviceInfo.CreateDevice(aDevice, gattCharacteristics.ToDictionary(x => x.Uuid, x => x));
+            if (await device.Initialize() is Ok)
+            {
+                return Option<ButtplugDevice>.Some(device);
+            }
+            // If initialization fails, don't actually send the message back. Just return null, we'll have the info in the logs.
+            return Option<ButtplugDevice>.None;
         }
     }
 }
