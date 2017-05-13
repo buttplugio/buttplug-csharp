@@ -123,6 +123,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ButtplugKiirooPlatformEmulator\ButtplugKiirooPlatformEmulator.csproj">
+      <Project>{c606b29a-ee61-452c-8557-9dc9b37e87d1}</Project>
+      <Name>ButtplugKiirooPlatformEmulator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ButtplugWebsocketServer\ButtplugWebsocketServer.csproj">
       <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
       <Name>ButtplugWebsocketServer</Name>
