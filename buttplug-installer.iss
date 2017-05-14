@@ -6,7 +6,7 @@ DefaultGroupName=Buttplug
 UninstallDisplayIcon={app}\ButtplugGUI.exe
 Compression=lzma2
 SolidCompression=yes
-OutputBaseFilename=Buttplug.v0.0.1
+OutputBaseFilename=buttplug-installer
 OutputDir=.\installer
 
 [Files]

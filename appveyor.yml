@@ -25,6 +25,6 @@ after_test:
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { codecov -f "coverage.xml" -X gcov }
  - ps: If (($env:CONFIGURATION -imatch "Release")) { set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5" }
  - ps: If (($env:CONFIGURATION -imatch "Release")) { iscc buttplug-installer.iss }
+ - ps: If (($env:CONFIGURATION -imatch "Release")) { Push-AppveyorArtifact installer\buttplug-installer.exe -FileName "Buttplug-{appveyor_build_version}-installer.exe" }
 cache:
   - packages -> **\packages.config
-
