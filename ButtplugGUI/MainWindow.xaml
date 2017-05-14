@@ -59,7 +59,7 @@
                         <ComboBoxItem Content="Off" />
                         <ComboBoxItem Content="Fatal" />
                         <ComboBoxItem Content="Error" />
-                        <ComboBoxItem Content="Warn"/> 
+                        <ComboBoxItem Content="Warn"/>
                         <ComboBoxItem Content="Info"/>
                         <ComboBoxItem IsSelected="true" Content="Debug" />
                         <ComboBoxItem Content="Trace"/>
@@ -68,7 +68,12 @@
                     <Button Grid.Row="1" Name="SaveLogFileButton" Content="Save Log To File" HorizontalAlignment="Right" Margin="403,3.667,0,0" VerticalAlignment="Top" Width="100" Click="SaveLogFileButton_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="About">
+            <TabItem Header="About" Margin="-2,-2,1.667,0">
+                <Grid Background="#FFE5E5E5">
+                    <Image Name="IconImage" Source="pack://application:,,,/Resources/buttplug-logo-1.png" HorizontalAlignment="Left" Height="128" Margin="10,10,0,0" VerticalAlignment="Top" Width="128">
+                    </Image>
+
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>
