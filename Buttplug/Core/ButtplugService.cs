@@ -26,7 +26,7 @@ namespace Buttplug.Core
     {
         private readonly ButtplugJsonMessageParser _parser;
         private readonly List<DeviceManager> _managers;
-        private readonly Dictionary<uint, ButtplugDevice> _devices;
+        protected Dictionary<uint, ButtplugDevice> _devices { get; }
         private uint _deviceIndex;
 
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
@@ -89,9 +89,35 @@ namespace Buttplug.Core
             }
             _bpLogger.Debug($"Adding Device {e.Device.Name} at index {_deviceIndex}");
             _devices.Add(_deviceIndex, e.Device);
-            var msg = new Messages.DeviceAdded(_deviceIndex, e.Device.Name, e.Device.GetAllowedMessageTypesAsStrings().ToArray());
+            e.Device.DeviceRemoved += DeviceRemovedHandler;
+            var msg = new DeviceAdded(_deviceIndex, e.Device.Name, e.Device.GetAllowedMessageTypesAsStrings().ToArray());
             _deviceIndex += 1;
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
+        }
+
+        private void DeviceRemovedHandler(object o, EventArgs e)
+        {
+            if ((o as ButtplugDevice) == null)
+            {
+                _bpLogger.Error("Got DeviceRemoved message from an object that is not a ButtplugDevice.");
+                return;
+            }
+            var device = (ButtplugDevice) o;
+            // The device itself will fire the remove event, so look it up in the dictionary and translate that for clients.
+            var entry = (from x in _devices where x.Value == device select x).ToList();
+            if (!entry.Any())
+            {
+                _bpLogger.Error("Got DeviceRemoved Event from object that is not in devices dictionary");
+            }
+            if (entry.Count() > 1)
+            {
+                _bpLogger.Error("Device being removed has multiple entries in device dictionary.");
+            }
+            foreach (var pair in entry.ToList())
+            {
+                _devices.Remove(pair.Key);
+                MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new DeviceRemoved(pair.Key)));
+            }
         }
 
         public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)

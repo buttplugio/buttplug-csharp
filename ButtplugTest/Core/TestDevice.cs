@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Buttplug.Core;
 using Buttplug.Messages;
 using LanguageExt;
@@ -20,5 +21,11 @@ namespace ButtplugTest.Core
             BpLogger.Trace("Test Device got SingleMotorVibrateMessage");
             return new Ok(aMsg.Id);
         }
+
+        public void RemoveDevice()
+        {
+            InvokeDeviceRemoved();
+        }
+
     }
 }

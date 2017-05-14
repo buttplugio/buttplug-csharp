@@ -51,8 +51,35 @@ namespace ButtplugTest.Core
             await s.SendMessage("{\"RequestServerInfo\":{\"Id\":12345}}");
         }
 
+        public void CheckDeviceMessages(ButtplugMessage msgArgs)
+        {
+            switch (msgArgs)
+            {
+                case DeviceAdded da:                        
+                    Assert.True(da.DeviceName == "TestDevice");
+                    Assert.True(da.DeviceIndex == 0);
+                    Assert.True(da.DeviceMessages.Length == 1);
+                    Assert.True(da.DeviceMessages.Contains("SingleMotorVibrateCmd"));
+                    break;
+                case DeviceList dl:
+                    Assert.True(dl.Devices.Length == 1);
+                    var di = dl.Devices[0];
+                    Assert.True(di.DeviceName == "TestDevice");
+                    Assert.True(di.DeviceIndex == 0);
+                    Assert.True(di.DeviceMessages.Length == 1);
+                    Assert.True(di.DeviceMessages.Contains("SingleMotorVibrateCmd"));
+                    break;
+                case DeviceRemoved dr:                        
+                    Assert.True(dr.DeviceIndex == 0);
+                    break;
+                default:
+                    Assert.True(false, "Shouldn't be here");
+                    break;
+            }
+        }
+
         [Fact]
-        public async void TestAddListDevices()
+        public async void TestAddListRemoveDevices()
         {
             var d = new TestDevice("TestDevice");
             var msgarray = d.GetAllowedMessageTypes();
@@ -60,35 +87,23 @@ namespace ButtplugTest.Core
             Assert.True(msgarray.Contains(typeof(SingleMotorVibrateCmd)));
             var m = new TestDeviceManager(d);
             var s = new TestService(m);
-            var msgReceived = false;
+            ButtplugMessage msgReceived = null;
             s.MessageReceived += (obj, msgArgs) =>
             {
-                msgReceived = true;
-                switch (msgArgs.Message)
-                {
-                    case DeviceAdded da:                        
-                        Assert.True(da.DeviceName == "TestDevice");
-                        Assert.True(da.DeviceIndex == 0);
-                        Assert.True(da.DeviceMessages.Length == 1);
-                        Assert.True(da.DeviceMessages.Contains("SingleMotorVibrateCmd"));
-                        break;
-                    case DeviceList dl:
-                        Assert.True(dl.Devices.Length == 1);
-                        var di = dl.Devices[0];
-                        Assert.True(di.DeviceName == "TestDevice");
-                        Assert.True(di.DeviceIndex == 0);
-                        Assert.True(di.DeviceMessages.Length == 1);
-                        Assert.True(di.DeviceMessages.Contains("SingleMotorVibrateCmd"));
-                        break;
-                    default:
-                        Assert.False(msgArgs.Message is DeviceAdded);
-                        break;
-                }
+                msgReceived = msgArgs.Message;
+                CheckDeviceMessages(msgReceived);
             };
+            Assert.False(s.GetDevices().Any());
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
-            Assert.True(msgReceived);
+            Assert.True(s.GetDevices().Count() == 1);
+            Assert.True(msgReceived is DeviceAdded);
+            msgReceived = await s.SendMessage(new RequestDeviceList());
+            d.RemoveDevice();
+            Assert.True(msgReceived is DeviceRemoved);
+            Assert.False(s.GetDevices().Any());
         }
+
         [Fact]
         public async void TestIncomingSystemIdMessage()
         {

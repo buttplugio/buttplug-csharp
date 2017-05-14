@@ -51,7 +51,7 @@ namespace ButtplugKiirooPlatformEmulator
                 var position = ushort.Parse(aContext.Request.Post.Parsed.GetByName("data"));
                 _handler?.Invoke(this, new KiirooPlatformEventArgs(position));
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 // Swallow format exceptions, as sometimes scripts can send "undefined". 
             }

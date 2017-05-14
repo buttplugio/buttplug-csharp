@@ -1,4 +1,5 @@
-﻿using Buttplug.Core;
+﻿using System.Collections.Generic;
+using Buttplug.Core;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -18,6 +19,11 @@ namespace ButtplugTest.Core
         public TestService(TestDeviceManager mgr)
         {
             AddManager(mgr);
+        }
+        
+        public Dictionary<uint, ButtplugDevice> GetDevices()
+        {
+            return _devices;
         }
     }
 }

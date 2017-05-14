@@ -26,6 +26,7 @@ namespace Buttplug.Core
             BleDevice = aDevice;
             _writeChr = aWriteChr;
             _readChr = aReadChr;
+            _isDisconnected = false;
             BleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
         }
 
@@ -33,7 +34,7 @@ namespace Buttplug.Core
         {
             if (BleDevice.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
             {
-                // TODO ACTUALLY HANDLE THIS GOD DAMNIT
+                InvokeDeviceRemoved();
             }
         }
 

@@ -19,8 +19,10 @@ namespace Buttplug.Core
     public abstract class ButtplugDevice
     {
         public string Name { get; }
+        public event EventHandler DeviceRemoved;
         protected Logger BpLogger;
         protected Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>> MsgFuncs;
+        protected bool _isDisconnected;
 
         protected ButtplugDevice(string name)
         {
@@ -34,6 +36,12 @@ namespace Buttplug.Core
             return MsgFuncs.Keys;
         }
 
+        protected void InvokeDeviceRemoved()
+        {
+            _isDisconnected = true;
+            DeviceRemoved?.Invoke(this, new EventArgs());
+        }
+
         public IEnumerable<string> GetAllowedMessageTypesAsStrings()
         {
             return from x in MsgFuncs.Keys select x.Name;
@@ -41,6 +49,11 @@ namespace Buttplug.Core
 
         public async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg)
         {
+            if (_isDisconnected)
+            {
+                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error,
+                    $"{Name} has disconnected and can no longer process messages.");
+            }
             if (!MsgFuncs.ContainsKey(aMsg.GetType()))
             {
                 return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error,

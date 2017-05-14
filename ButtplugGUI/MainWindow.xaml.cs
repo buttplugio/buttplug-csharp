@@ -66,6 +66,15 @@ namespace ButtplugGUI
                     case DeviceAdded m:
                         _devices.Add(new Device(m.DeviceIndex, m.DeviceName, m.DeviceMessages));
                         break;
+                    case DeviceRemoved d:
+                        var device = from dl in _devices
+                            where dl.Index == d.DeviceIndex
+                            select dl;
+                        foreach (var dr in device.ToList())
+                        {
+                            _devices.Remove(dr);
+                        }
+                        break;
                 }
             });
         }
