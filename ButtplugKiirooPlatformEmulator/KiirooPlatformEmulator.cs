@@ -78,11 +78,6 @@ namespace ButtplugKiirooPlatformEmulator
 
         public KiirooPlatformEmulator()
         {
-
-        }
-
-        public void StartServer()
-        {
             _tcpAdapter = new TcpListener(IPAddress.Loopback, 6969);
             _httpServer = new HttpServer(new HttpRequestProvider());
             // Normal port 80 :
@@ -92,11 +87,16 @@ namespace ButtplugKiirooPlatformEmulator
             _httpServer.Use(new HttpRouter()
                 .With("senddata", new SendDataHandler(OnKiirooPlatformEvent))
                 .With("status", new SendStatusHandler()));
+        }
+
+        public void StartServer()
+        {
             _httpServer.Start();
         }
 
         public void StopServer()
         {
+            _httpServer.Dispose();
         }
     }
 }

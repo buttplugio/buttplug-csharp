@@ -4,8 +4,15 @@ using Buttplug.Core;
 using Buttplug.Messages;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
 using ButtplugKiirooPlatformEmulator;
+using Microsoft.Win32;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace ButtplugGUI
 {
@@ -32,6 +39,30 @@ namespace ButtplugGUI
     {
     }
 
+    public class LogList : ObservableCollection<string>
+    {
+    }
+
+
+    [Target("ButtplugGUILogger")]
+    public sealed class ButtplugGUIMessageNLogTarget : TargetWithLayoutHeaderAndFooter
+    {
+        private readonly LogList _logs;
+        private readonly Thread _winThread;
+
+        public ButtplugGUIMessageNLogTarget(LogList l, Thread aWinThread)
+        {
+            // TODO This totally needs a mutex or something
+            _logs = l;
+            _winThread = aWinThread;
+        }
+
+        protected override void Write(LogEventInfo aLogEvent)
+        {
+            Dispatcher.FromThread(_winThread).Invoke(() => _logs.Add(this.Layout.Render(aLogEvent)));
+        }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -39,22 +70,35 @@ namespace ButtplugGUI
     {
         private readonly ButtplugService _bpServer;
         private readonly DeviceList _devices;
+        private readonly LogList _logs;
+        private readonly ButtplugGUIMessageNLogTarget _logTarget;
         private KiirooPlatformEmulator _kiirooEmulator;
+        private LoggingRule _outgoingLoggingRule;
 
         public MainWindow()
         {
+            _logs = new LogList();
+            _logTarget = new ButtplugGUIMessageNLogTarget(_logs, Dispatcher.Thread);
+            // External Logger Setup
+            var c = LogManager.Configuration ?? new LoggingConfiguration();
+            c.AddTarget("ButtplugGuiLogger", _logTarget);
+            _outgoingLoggingRule = new LoggingRule("*", LogLevel.Debug, _logTarget);
+            c.LoggingRules.Add(_outgoingLoggingRule);
+            LogManager.Configuration = c;
             // Set up internal services
             _bpServer = new ButtplugService();
             _bpServer.MessageReceived += OnMessageReceived;
             _devices = new DeviceList();
             _kiirooEmulator = new KiirooPlatformEmulator();
             _kiirooEmulator.OnKiirooPlatformEvent += HandleKiirooPlatformMessage;
-            _kiirooEmulator.StartServer();
+            
             
             // Set up GUI
             InitializeComponent();
+            LogLevelComboBox.SelectionChanged += LogLevelSelectionChangedHandler;
             DeviceListBox.ItemsSource = _devices;
             KiirooListBox.ItemsSource = _devices;
+            LogListBox.ItemsSource = _logs;
         }
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
@@ -118,14 +162,54 @@ namespace ButtplugGUI
             KiirooSettingsGrid.Visibility = Visibility.Hidden;
             if (ApplicationSelector.SelectedItem == ApplicationNone)
             {
+                _kiirooEmulator.StopServer();
             }
             else if (ApplicationSelector.SelectedItem == ApplicationWebsockets)
             {
                 WebsocketSettingsGrid.Visibility = Visibility.Visible;
+                _kiirooEmulator.StopServer();
             }
             else if (ApplicationSelector.SelectedItem == ApplicationKiiroo)
             {
                 KiirooSettingsGrid.Visibility = Visibility.Visible;
+                _kiirooEmulator.StartServer();
+            }
+        }
+
+        private void SaveLogFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog
+            {
+                CheckFileExists = false,
+                CheckPathExists = true,
+                OverwritePrompt = true
+            };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+            var sw = new System.IO.StreamWriter(dialog.FileName, false);
+            foreach (var line in _logs.ToList())
+            {
+                sw.WriteLine(line);
+            }
+            sw.Close();
+        }
+
+        private void LogLevelSelectionChangedHandler(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {            
+            var c = LogManager.Configuration;
+            var level = ((ComboBoxItem)LogLevelComboBox.SelectedValue).Content.ToString();
+            try
+            {
+                c.LoggingRules.Remove(_outgoingLoggingRule);
+                _outgoingLoggingRule = new LoggingRule("*", LogLevel.FromString(level), _logTarget);
+                c.LoggingRules.Add(_outgoingLoggingRule);
+                LogManager.Configuration = c;                
+            }
+            catch (ArgumentException)
+            {
+                LogManager.GetCurrentClassLogger().Error($"Log Level \"{level}\" is not a valid log level!");
             }
         }
     }
