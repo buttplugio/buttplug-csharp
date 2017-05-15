@@ -9,9 +9,14 @@ SolidCompression=yes
 OutputBaseFilename=buttplug-installer
 OutputDir=.\installer
 
+#define Configuration GetEnv('CONFIGURATION')
+#if Configuration == ""
+#define Configuration = "Release"
+#endif
+
 [Files]
-Source: "ButtplugGUI\bin\{%CONFIGURATION:Release}\ButtplugGUI.exe"; DestDir: "{app}"
-Source: "ButtplugGUI\bin\{%CONFIGURATION:Release}\*.dll"; DestDir: "{app}"
+Source: "ButtplugGUI\bin\{#Configuration}\ButtplugGUI.exe"; DestDir: "{app}"
+Source: "ButtplugGUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
 Source: "Readme.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme
 
 [Icons]
