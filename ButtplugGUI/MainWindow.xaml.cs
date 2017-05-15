@@ -4,6 +4,7 @@ using Buttplug.Core;
 using Buttplug.Messages;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -76,6 +77,7 @@ namespace ButtplugGUI
         private readonly ButtplugGUIMessageNLogTarget _logTarget;
         private KiirooPlatformEmulator _kiirooEmulator;
         private LoggingRule _outgoingLoggingRule;
+        private string _gitHash;
 
         public MainWindow()
         {
@@ -101,6 +103,15 @@ namespace ButtplugGUI
             DeviceListBox.ItemsSource = _devices;
             KiirooListBox.ItemsSource = _devices;
             LogListBox.ItemsSource = _logs;
+            AboutVersionNumber.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
+            _gitHash = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ResourceAssembly.Location)
+                .ProductVersion;
+            if (_gitHash.Length > 0)
+            {
+                AboutVersionNumber.Text += $"-{_gitHash.Substring(0, 8)}";
+                AboutVersionNumber.MouseDown += GithubRequestNavigate;
+            }
+            Title = $"Buttplug {AboutVersionNumber.Text}";
         }
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
@@ -213,6 +224,12 @@ namespace ButtplugGUI
             {
                 LogManager.GetCurrentClassLogger().Error($"Log Level \"{level}\" is not a valid log level!");
             }
+        }
+
+        private void GithubRequestNavigate(object o, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Process.Start(
+                new Uri($"http://github.com/metafetish/buttplug-csharp/commit/{_gitHash}").AbsoluteUri);
         }
 
         private void PatreonRequestNavigate(object o, MouseButtonEventArgs e)
