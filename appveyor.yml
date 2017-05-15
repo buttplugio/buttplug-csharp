@@ -4,20 +4,24 @@ branches:
 configuration:
   - Debug
   - Release
+image: Visual Studio 2017
 
 # Taken from https://boblokerse.github.io/2015/11/03/GitVersion-versioning-made-easy-and-dry/
-init:
-- ps: |
-    function gitVersion(){
-      $gitVersion=git describe --tags --abbrev=0 $env:APPVEYOR_REPO_BRANCH
-      
-      $newVersion="$gitVersion.$env:APPVEYOR_BUILD_NUMBER"
-      
-      write-host "Update appveyor build version to:$newVersion"
-      $env:appveyor_build_version="$newVersion"
-      appveyor UpdateBuild -Version "$newVersion"
-    }
-    gitVersion
+install:
+  - ver
+  - ps: If (($env:CONFIGURATION -imatch "Release")) { choco install -y InnoSetup }
+  - git submodule update --init
+  - ps: |
+      function gitVersion(){
+        $gitVersion=git describe --tags --abbrev=0 $env:APPVEYOR_REPO_BRANCH
+        
+        $newVersion="$gitVersion.$env:APPVEYOR_BUILD_NUMBER"
+        
+        write-host "Update appveyor build version to:$newVersion"
+        $env:appveyor_build_version="$newVersion"
+        appveyor UpdateBuild -Version "$newVersion"
+      }
+      gitVersion
 
 # patch the assembly version
 assembly_info:
@@ -27,11 +31,6 @@ assembly_info:
    assembly_file_version: '{version}'
    assembly_informational_version: '{version}'
 
-install:
-  - ver
-  - ps: If (($env:CONFIGURATION -imatch "Release")) { choco install -y InnoSetup }
-  - git submodule update --init
-image: Visual Studio 2017
 before_build:
   - nuget restore
 build:
