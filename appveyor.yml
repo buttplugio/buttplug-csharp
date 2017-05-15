@@ -9,7 +9,7 @@ image: Visual Studio 2017
 # Taken from https://boblokerse.github.io/2015/11/03/GitVersion-versioning-made-easy-and-dry/
 install:
   - ver
-  - ps: If (($env:CONFIGURATION -imatch "Release")) { choco install -y InnoSetup }
+  - ps: choco install -y InnoSetup
   - git submodule update --init
   - ps: |
       function gitVersion(){
@@ -24,10 +24,10 @@ install:
       }
       gitVersion
 
-# patch the assembly version
+# patch the assembly version, but only in our own directories
 assembly_info:
    patch: true
-   file: '**\AssemblyInfo.*'
+   file: 'Butt*\AssemblyInfo.*'
    assembly_version: '{version}'
    assembly_file_version: '{version}'
    assembly_informational_version: '{newhash}'
@@ -45,8 +45,8 @@ after_test:
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { codecov -f "coverage.xml" -X gcov }
- - ps: If (($env:CONFIGURATION -imatch "Release")) { set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5" }
- - ps: If (($env:CONFIGURATION -imatch "Release")) { iscc buttplug-installer.iss }
- - ps: If (($env:CONFIGURATION -imatch "Release")) { Push-AppveyorArtifact installer\buttplug-installer.exe -FileName Buttplug-$env:APPVEYOR_BUILD_VERSION-installer.exe }
+ - ps: set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
+ - ps: iscc buttplug-installer.iss
+ - ps: Push-AppveyorArtifact installer\buttplug-installer.exe -FileName Buttplug-$env:CONFIGURATION-$env:APPVEYOR_BUILD_VERSION-installer.exe
 cache:
   - packages -> **\packages.config
