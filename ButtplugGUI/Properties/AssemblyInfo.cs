@@ -6,9 +6,9 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ButtplugGUI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Haptics Control Software")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Metafetish.com")]
 [assembly: AssemblyProduct("ButtplugGUI")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]

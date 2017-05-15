@@ -16,8 +16,9 @@ install:
         $gitVersion=git describe --tags --abbrev=0 $env:APPVEYOR_REPO_BRANCH
         
         $newVersion="$gitVersion.$env:APPVEYOR_BUILD_NUMBER"
-        $newHash=git rev-parse HEAD
-        write-host "Update appveyor build version to:$newVersion"
+        $newhash=git rev-parse HEAD
+        write-host "Using hash for build version: $newhash"
+        write-host "Update appveyor build version to: $newVersion"
         $env:appveyor_build_version="$newVersion"
         appveyor UpdateBuild -Version "$newVersion"
       }
@@ -29,7 +30,7 @@ assembly_info:
    file: '**\AssemblyInfo.*'
    assembly_version: '{version}'
    assembly_file_version: '{version}'
-   assembly_informational_version: '{newHash}'
+   assembly_informational_version: '{newhash}'
 
 before_build:
   - nuget restore
