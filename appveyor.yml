@@ -27,7 +27,7 @@ install:
 # patch the assembly version, but only in our own directories
 assembly_info:
    patch: true
-   file: 'Butt*\AssemblyInfo.*'
+   file: '**\AssemblyInfo.*'
    assembly_version: '{version}'
    assembly_file_version: '{version}'
    assembly_informational_version: '{newhash}'
