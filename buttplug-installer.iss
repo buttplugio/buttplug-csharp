@@ -1,6 +1,16 @@
+#define Configuration GetEnv('CONFIGURATION')
+#if Configuration == ""
+#define Configuration "Release"
+#endif
+
+#define Version GetEnv('appveyor_build_version')
+#if Version == ""
+#define Version "x.x.x.x"
+#endif
+
 [Setup]
 AppName=Buttplug
-AppVersion=0.0.1
+AppVersion={#Version}
 DefaultDirName={pf}\Buttplug
 DefaultGroupName=Buttplug
 UninstallDisplayIcon={app}\ButtplugGUI.exe
@@ -8,11 +18,6 @@ Compression=lzma2
 SolidCompression=yes
 OutputBaseFilename=buttplug-installer
 OutputDir=.\installer
-
-#define Configuration GetEnv('CONFIGURATION')
-#if Configuration == ""
-#define Configuration = "Release"
-#endif
 
 [Files]
 Source: "ButtplugGUI\bin\{#Configuration}\ButtplugGUI.exe"; DestDir: "{app}"
