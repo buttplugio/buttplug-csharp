@@ -10,8 +10,8 @@ OutputBaseFilename=buttplug-installer
 OutputDir=.\installer
 
 [Files]
-Source: "ButtplugGUI\bin\{$CONFIGURATION:Release}\ButtplugGUI.exe"; DestDir: "{app}"
-Source: "ButtplugGUI\bin\{$CONFIGURATION:Release}\*.dll"; DestDir: "{app}"
+Source: "ButtplugGUI\bin\{%CONFIGURATION:Release}\ButtplugGUI.exe"; DestDir: "{app}"
+Source: "ButtplugGUI\bin\{%CONFIGURATION:Release}\*.dll"; DestDir: "{app}"
 Source: "Readme.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme
 
 [Icons]
