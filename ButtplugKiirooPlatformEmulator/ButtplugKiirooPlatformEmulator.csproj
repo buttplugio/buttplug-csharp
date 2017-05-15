@@ -35,12 +35,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
     <Reference Include="uhttpsharp, Version=0.1.5653.28566, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\uHttpSharp.0.1.6.22\lib\net40\uhttpsharp.dll</HintPath>
     </Reference>
@@ -52,12 +46,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Buttplug\Buttplug.csproj">
-      <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
-      <Name>Buttplug</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
