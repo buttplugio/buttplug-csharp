@@ -10,7 +10,7 @@ namespace Buttplug.Core
         //TODO Pay attention to gamepad events
         private readonly List<UwpGamepadDevice> _connectedGamepads;
 
-        public UWPGamepadManager()
+        public UWPGamepadManager(ButtplugLogManager aLogManager) : base(aLogManager)
         {
             _connectedGamepads = new List<UwpGamepadDevice>();
             Gamepad.GamepadAdded += GamepadAdded;
@@ -25,7 +25,7 @@ namespace Buttplug.Core
         public void GamepadAdded(object o, Gamepad e)
         {
             BpLogger.Trace("UWPGamepadManager GamepadAdded");
-            var device = new UwpGamepadDevice(e);
+            var device = new UwpGamepadDevice(LogManager, e);
             _connectedGamepads.Add(device);
             InvokeDeviceAdded(new DeviceAddedEventArgs(device));
         }

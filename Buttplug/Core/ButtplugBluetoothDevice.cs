@@ -16,11 +16,13 @@ namespace Buttplug.Core
         protected readonly GattCharacteristic _readChr;
         private Option<IAsyncOperation<GattCommunicationStatus>> _currentTask;
 
-        protected ButtplugBluetoothDevice(string aName, 
+        protected ButtplugBluetoothDevice(
+            ButtplugLogManager aLogManager,
+            string aName, 
             BluetoothLEDevice aDevice,
             GattCharacteristic aWriteChr,
             GattCharacteristic aReadChr) :
-            base(aName)
+            base(aLogManager, aName)
         {
             BleDevice = aDevice;
             _writeChr = aWriteChr;

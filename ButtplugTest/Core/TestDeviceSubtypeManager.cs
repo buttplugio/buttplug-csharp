@@ -9,12 +9,13 @@ namespace ButtplugTest.Core
         public bool StartScanningCalled { get; private set; }
         public bool StopScanningCalled { get; private set; }
 
-        public TestDeviceSubtypeManager()
+        public TestDeviceSubtypeManager(ButtplugLogManager aLogManager) :
+            base(aLogManager)
         {
             _device = new OptionNone();
         }
 
-        public TestDeviceSubtypeManager(TestDevice aDevice)
+        public TestDeviceSubtypeManager(ButtplugLogManager aLogManager, TestDevice aDevice) : base(aLogManager)
         {
             _device = aDevice;
         }

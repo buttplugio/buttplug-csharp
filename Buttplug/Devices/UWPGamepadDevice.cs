@@ -10,8 +10,8 @@ namespace Buttplug.Devices
     {
         private readonly Gamepad _device;
 
-        public UwpGamepadDevice(Gamepad d) :
-            base("XBox Compatible Gamepad (UWP)")
+        public UwpGamepadDevice(ButtplugLogManager aLogManager, Gamepad d) :
+            base(aLogManager, "XBox Compatible Gamepad (UWP)")
         {
             _device = d;
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);

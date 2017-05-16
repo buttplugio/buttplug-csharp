@@ -17,7 +17,7 @@ namespace ButtplugWebsocketServer
         private NLog.Logger _bpLogger;
         public ButtplugWebsocketServer()
         {
-            _bpLogger = LogManager.GetLogger(GetType().FullName);
+            _bpLogger = LogManager.GetCurrentClassLogger();
             _buttplug = new ButtplugService();
             _buttplug.MessageReceived += OnMessageReceived;
         }
@@ -25,15 +25,15 @@ namespace ButtplugWebsocketServer
         protected override async void OnMessage(MessageEventArgs e)
         {
             base.OnMessage(e);
-            var msg = ButtplugJsonMessageParser.Serialize(await _buttplug.SendMessage(e.Data));
-            msg.IfSome(x => Sessions.Broadcast(Encoding.ASCII.GetBytes(x)));
+            var msg = _buttplug.Serialize(await _buttplug.SendMessage(e.Data));
+            Sessions.Broadcast(Encoding.ASCII.GetBytes(msg));
 
         }
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
         {
-            var msg = ButtplugJsonMessageParser.Serialize(e.Message);
-            msg.IfSome(x => Sessions.Broadcast(Encoding.ASCII.GetBytes(x)));
+            var msg = _buttplug.Serialize(e.Message);
+            Sessions.Broadcast(Encoding.ASCII.GetBytes(msg));
         }
     }
 }

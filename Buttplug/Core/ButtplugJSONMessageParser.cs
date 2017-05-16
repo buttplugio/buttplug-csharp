@@ -11,14 +11,14 @@ using static LanguageExt.Prelude;
 
 namespace Buttplug.Core
 {
-    public class ButtplugJsonMessageParser
+    internal class ButtplugJsonMessageParser
     {
         private readonly Dictionary<string, Type> _messageTypes;
         private readonly ButtplugLog _bpLogger;
 
-        public ButtplugJsonMessageParser()
+        public ButtplugJsonMessageParser(ButtplugLogManager aLogManager)
         {
-            _bpLogger = ButtplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            _bpLogger = aLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
             _bpLogger.Debug($"Setting up {GetType().Name}");
             IEnumerable<Type> allTypes;
             // Some classes in the library may not load on certain platforms due to missing symbols.
@@ -90,7 +90,7 @@ namespace Buttplug.Core
             return Right<string, ButtplugMessage>(m);
         }
 
-        public static Option<string> Serialize(ButtplugMessage aMsg)
+        public static string Serialize(ButtplugMessage aMsg)
         {
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             return o.ToString(Formatting.None);

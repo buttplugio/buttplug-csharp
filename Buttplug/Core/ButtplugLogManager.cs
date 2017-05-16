@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using Buttplug.Logging;
 namespace Buttplug.Core
 {
-    internal static class ButtplugLogManager
+    internal class ButtplugLogManager
     {
-        public static event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
-        private static string _level = "Off";
+        public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
+        private string _level = "Off";
 
-        public static string Level
+        public string Level
         {
             get => _level;
             set
@@ -23,10 +23,16 @@ namespace Buttplug.Core
 
         public static readonly List<string> Levels = new List<string>()
         {
-            "Off", "Fatal", "Error", "Warn", "Info", "Debug", "Trace"
+            "Off",
+            "Fatal",
+            "Error",
+            "Warn",
+            "Info",
+            "Debug",
+            "Trace"
         };
 
-        private static void LogMessageHandler(object o, ButtplugLogMessageEventArgs m)
+        private void LogMessageHandler(object o, ButtplugLogMessageEventArgs m)
         {
             if (Levels.IndexOf(m.LogMessage.LogLevel) <= Levels.IndexOf(_level))
             {
@@ -34,7 +40,7 @@ namespace Buttplug.Core
             }
         }
 
-        public static ButtplugLog GetLogger(ILog aLogger)
+        public ButtplugLog GetLogger(ILog aLogger)
         {
             var logger = new ButtplugLog(aLogger);
             logger.LogMessageReceived += LogMessageHandler;

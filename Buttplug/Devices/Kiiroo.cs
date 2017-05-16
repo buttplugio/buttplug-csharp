@@ -21,10 +21,11 @@ namespace Buttplug.Devices
             new Guid("49535343-1e4d-4bd9-ba61-23c647249616")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice,
+        public ButtplugBluetoothDevice CreateDevice(ButtplugLogManager aLogManager,
+            BluetoothLEDevice aDevice,
             Dictionary<Guid, GattCharacteristic> aCharacteristics)
         {
-            return new Kiiroo(aDevice,
+            return new Kiiroo(aLogManager, aDevice,
                 aCharacteristics[Characteristics[0]],
                 aCharacteristics[Characteristics[1]]);
         }
@@ -32,10 +33,12 @@ namespace Buttplug.Devices
 
     internal class Kiiroo : ButtplugBluetoothDevice
     {
-        public Kiiroo(BluetoothLEDevice aDevice,
+        public Kiiroo(ButtplugLogManager aLogManager,
+            BluetoothLEDevice aDevice,
             GattCharacteristic aWriteChr,
             GattCharacteristic aReadChr) :
-            base($"Kiiroo {aDevice.Name}",
+            base(aLogManager,
+                $"Kiiroo {aDevice.Name}",
                  aDevice,
                  aWriteChr,
                  aReadChr)

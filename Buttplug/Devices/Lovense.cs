@@ -21,10 +21,12 @@ namespace Buttplug.Devices
             new Guid("6e400003-b5a3-f393-e0a9-e50e24dcca9e")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice,
+        public ButtplugBluetoothDevice CreateDevice(ButtplugLogManager aLogManager,
+                                                    BluetoothLEDevice aDevice,
                                                     Dictionary<Guid, GattCharacteristic> aCharacteristics)
         {
-            return new Lovense(aDevice,
+            return new Lovense(aLogManager,
+                               aDevice,
                                aCharacteristics[Characteristics[0]],
                                aCharacteristics[Characteristics[1]]);
         }
@@ -34,10 +36,12 @@ namespace Buttplug.Devices
     {
 
 
-        public Lovense(BluetoothLEDevice aDevice,
+        public Lovense(ButtplugLogManager aLogManager,
+                       BluetoothLEDevice aDevice,
                        GattCharacteristic aWriteChr,
                        GattCharacteristic aReadChr) :
-            base($"Lovense Device ({aDevice.Name})", 
+            base(aLogManager,
+                 $"Lovense Device ({aDevice.Name})", 
                  aDevice,
                  aWriteChr,
                  aReadChr)

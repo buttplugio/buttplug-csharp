@@ -10,18 +10,20 @@ namespace Buttplug.Core
     {
         private readonly ButtplugJsonMessageParser _parser;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        private readonly ButtplugLog _bpLogger;
+        internal readonly ButtplugLog _bpLogger;
         private readonly DeviceManager _deviceManager;
+        private readonly ButtplugLogManager _bpLogManager;
 
         public ButtplugService()
         {
-            _bpLogger = ButtplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            _bpLogManager = new ButtplugLogManager();
+            _bpLogger = _bpLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
             _bpLogger.Trace("Setting up ButtplugService");
-            _parser = new ButtplugJsonMessageParser();
-            _deviceManager = new DeviceManager();
+            _parser = new ButtplugJsonMessageParser(_bpLogManager);
+            _deviceManager = new DeviceManager(_bpLogManager);
             _bpLogger.Trace("Finished setting up ButtplugService");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
-            ButtplugLogManager.LogMessageReceived += LogMessageReceivedHandler;
+            _bpLogManager.LogMessageReceived += LogMessageReceivedHandler;
         }
 
         public void DeviceMessageReceivedHandler(object o, MessageReceivedEventArgs aMsg)
@@ -51,7 +53,7 @@ namespace Buttplug.Core
             switch (aMsg)
             {
                 case RequestLog m:
-                    ButtplugLogManager.Level = m.LogLevel;
+                    _bpLogManager.Level = m.LogLevel;
                     return new Ok(id);
 
                 case RequestServerInfo _:
@@ -70,6 +72,11 @@ namespace Buttplug.Core
                 async x => await SendMessage(x),
                 x => ButtplugUtils.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, _bpLogger,
                         $"Cannot deserialize json message: {x}"));
+        }
+
+        public string Serialize(ButtplugMessage aMsg)
+        {
+            return ButtplugJsonMessageParser.Serialize(aMsg);
         }
 
         internal DeviceManager GetDeviceManager()

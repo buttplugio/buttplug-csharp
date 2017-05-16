@@ -15,7 +15,7 @@ namespace Buttplug.Core
         private readonly BluetoothLEAdvertisementWatcher _bleWatcher;
         private readonly List<ButtplugBluetoothDeviceFactory> _deviceFactories;
 
-        public BluetoothManager()
+        public BluetoothManager(ButtplugLogManager aLogManager) : base(aLogManager)
         {
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             _deviceFactories = new List<ButtplugBluetoothDeviceFactory>();
@@ -26,7 +26,7 @@ namespace Buttplug.Core
                 .ForEach(c =>
                 {
                     BpLogger.Trace($"Loading Bluetooth Device Factory: {c.Name}");
-                    _deviceFactories.Add(new ButtplugBluetoothDeviceFactory((IBluetoothDeviceInfo)Activator.CreateInstance(c)));
+                    _deviceFactories.Add(new ButtplugBluetoothDeviceFactory(aLogManager, (IBluetoothDeviceInfo)Activator.CreateInstance(c)));
                 });
 
             _bleWatcher = new BluetoothLEAdvertisementWatcher { ScanningMode = BluetoothLEScanningMode.Active };

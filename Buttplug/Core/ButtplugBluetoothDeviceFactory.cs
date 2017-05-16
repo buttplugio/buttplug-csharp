@@ -14,10 +14,12 @@ namespace Buttplug.Core
     {
         private readonly ButtplugLog _bpLogger;
         private readonly IBluetoothDeviceInfo _deviceInfo;
+        private readonly ButtplugLogManager _buttplugLogManager;
 
-        public ButtplugBluetoothDeviceFactory(IBluetoothDeviceInfo aInfo)
+        public ButtplugBluetoothDeviceFactory(ButtplugLogManager aLogManager, IBluetoothDeviceInfo aInfo)
         {
-            _bpLogger = ButtplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            _buttplugLogManager = aLogManager;
+            _bpLogger = _buttplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
             _bpLogger.Trace($"Creating {GetType().Name}");
             _deviceInfo = aInfo;
         }
@@ -57,7 +59,7 @@ namespace Buttplug.Core
             {
                 return new OptionNone();
             }
-            var device = _deviceInfo.CreateDevice(aDevice, gattCharacteristics.ToDictionary(x => x.Uuid, x => x));
+            var device = _deviceInfo.CreateDevice(_buttplugLogManager, aDevice, gattCharacteristics.ToDictionary(x => x.Uuid, x => x));
             if (await device.Initialize() is Ok)
             {
                 return Option<ButtplugDevice>.Some(device);

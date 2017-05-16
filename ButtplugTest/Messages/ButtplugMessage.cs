@@ -28,7 +28,7 @@ namespace ButtplugTest.Messages
         [Fact]
         public async void CallStartScanning()
         {
-            var dm = new TestDeviceSubtypeManager();
+            var dm = new TestDeviceSubtypeManager(new ButtplugLogManager());
             var s = new TestService(dm);
             var r = await s.SendMessage(new StartScanning());
             Assert.True(r is Ok);
@@ -55,18 +55,18 @@ namespace ButtplugTest.Messages
         {
             var r = ButtplugJsonMessageParser.Serialize(new FakeMessage(1));
             // Even though the message is defined outside the core library, it should at least serialize
-            Assert.True(r.IsSome);
+            Assert.True(r.Length > 0);
             // However it shouldn't be taken by the server.
             var s = new ButtplugService();
             ButtplugMessage e = null;
-            await r.IfSomeAsync(async x => e = await s.SendMessage(x));
+            e = await s.SendMessage(r);
             Assert.True(e is Error);
         }
 
         [Fact]
         public async void CallStopScanning()
         {
-            var dm = new TestDeviceSubtypeManager();
+            var dm = new TestDeviceSubtypeManager(new ButtplugLogManager());
             var s = new TestService(dm);
             var r = await s.SendMessage(new StopScanning());
             Assert.True(r is Ok);

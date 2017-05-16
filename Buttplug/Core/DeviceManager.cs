@@ -15,11 +15,13 @@ namespace Buttplug.Core
         internal Dictionary<uint, ButtplugDevice> _devices { get; }
         private uint _deviceIndex;
         private readonly ButtplugLog _bpLogger;
+        private readonly ButtplugLogManager _bpLogManager;
         public event EventHandler<MessageReceivedEventArgs> DeviceMessageReceived;
 
-        public DeviceManager()
+        public DeviceManager(ButtplugLogManager aLogManager)
         {
-            _bpLogger = ButtplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            _bpLogManager = aLogManager;
+            _bpLogger = _bpLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
             _bpLogger.Trace("Setting up DeviceManager");
 
             _devices = new Dictionary<uint, ButtplugDevice>();
@@ -29,13 +31,13 @@ namespace Buttplug.Core
             _managers = new List<DeviceSubtypeManager>();
             try
             {
-                _managers.Add(new BluetoothManager());
+                _managers.Add(new BluetoothManager(_bpLogManager));
             }
             catch (ReflectionTypeLoadException)
             {
                 _bpLogger.Warn("Cannot bring up UWP Bluetooth manager!");
             }
-            _managers.Add(new XInputGamepadManager());
+            _managers.Add(new XInputGamepadManager(_bpLogManager));
             _managers.ForEach(m => m.DeviceAdded += DeviceAddedHandler);
         }
 

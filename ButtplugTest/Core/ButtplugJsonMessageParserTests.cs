@@ -10,8 +10,8 @@ namespace ButtplugTest.Core
         {
             var m = new Buttplug.Messages.Test("ThisIsATest", ButtplugConsts.SYSTEM_MSG_ID);
             var msg = ButtplugJsonMessageParser.Serialize(m);
-            Assert.True(msg.IsSome);
-            msg.IfSome((x) => Assert.Equal("{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}", x));
+            Assert.True(msg.Length > 0);
+            Assert.Equal("{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}", msg);
         }
 
         // Not valid JSON
@@ -33,14 +33,14 @@ namespace ButtplugTest.Core
         [Theory]
         public void DeserializeIncorrectMessages(string x)
         {
-            var p = new ButtplugJsonMessageParser();
+            var p = new ButtplugJsonMessageParser(new ButtplugLogManager());
             Assert.True(p.Deserialize(x).IsLeft);
         }
 
         [Fact]
         public void DeserializeCorrectMessage()
         {
-            var p = new ButtplugJsonMessageParser();
+            var p = new ButtplugJsonMessageParser(new ButtplugLogManager());
             var m = p.Deserialize("{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}");
             Assert.True(m.IsRight);
             m.IfRight(x =>

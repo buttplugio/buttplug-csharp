@@ -88,11 +88,11 @@ namespace ButtplugTest.Core
         [Fact]
         public async void TestAddListRemoveDevices()
         {
-            var d = new TestDevice("TestDevice");
+            var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var msgarray = d.GetAllowedMessageTypes();
             Assert.True(msgarray.Count() == 1);
             Assert.True(msgarray.Contains(typeof(SingleMotorVibrateCmd)));
-            var m = new TestDeviceSubtypeManager(d);
+            var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
             var s = new TestService(m);
             ButtplugMessage msgReceived = null;
             s.MessageReceived += (obj, msgArgs) =>
@@ -130,8 +130,8 @@ namespace ButtplugTest.Core
         [Fact]
         public async void TestValidDeviceMessage()
         {
-            var d = new TestDevice("TestDevice");
-            var m = new TestDeviceSubtypeManager(d);
+            var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
+            var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
             var s = new TestService(m);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
@@ -141,8 +141,8 @@ namespace ButtplugTest.Core
         [Fact]
         public async void TestInvalidDeviceMessage()
         {
-            var d = new TestDevice("TestDevice");
-            var m = new TestDeviceSubtypeManager(d);
+            var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
+            var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
             var s = new TestService(m);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
@@ -152,8 +152,8 @@ namespace ButtplugTest.Core
         [Fact]
         public async void TestDuplicateDeviceAdded()
         {
-            var d = new TestDevice("TestDevice");
-            var m = new TestDeviceSubtypeManager(d);
+            var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
+            var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
             var s = new TestService(m);
             var msgReceived = false;
             s.MessageReceived += (obj, msgArgs) =>

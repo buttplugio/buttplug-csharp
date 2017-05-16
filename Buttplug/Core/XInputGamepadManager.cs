@@ -9,7 +9,7 @@ namespace Buttplug.Core
     {
         private readonly List<XInputGamepadDevice> _connectedGamepads;
 
-        public XInputGamepadManager()
+        public XInputGamepadManager(ButtplugLogManager aLogManager) : base(aLogManager)
         {
             _connectedGamepads = new List<XInputGamepadDevice>();
         }
@@ -28,7 +28,7 @@ namespace Buttplug.Core
                     continue;
                 }
                 BpLogger.Debug($"Found connected XInput Gamepad for Index {c.UserIndex}");
-                var device = new XInputGamepadDevice(c);
+                var device = new XInputGamepadDevice(LogManager, c);
                 _connectedGamepads.Add(device);
                 InvokeDeviceAdded(new DeviceAddedEventArgs(device));
             }

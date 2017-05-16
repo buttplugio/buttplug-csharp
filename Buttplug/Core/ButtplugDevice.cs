@@ -10,12 +10,13 @@ namespace Buttplug.Core
     {
         public string Name { get; }
         public event EventHandler DeviceRemoved;
-        protected readonly ButtplugLog BpLogger = ButtplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+        protected readonly ButtplugLog BpLogger;
         protected Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>> MsgFuncs;
         protected bool IsDisconnected;
 
-        protected ButtplugDevice(string name)
+        protected ButtplugDevice(ButtplugLogManager aLogManager, string name)
         {
+            BpLogger = aLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
             MsgFuncs = new Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>>();
             Name = name;
         }

@@ -11,6 +11,6 @@ namespace Buttplug.Core
         Guid[] Services { get; }
         Guid[] Characteristics { get; }
 
-        ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice, Dictionary<Guid, GattCharacteristic> aCharacteristics);
+        ButtplugBluetoothDevice CreateDevice(ButtplugLogManager aLogManager, BluetoothLEDevice aDevice, Dictionary<Guid, GattCharacteristic> aCharacteristics);
     }
 }

@@ -25,10 +25,13 @@ namespace Buttplug.Devices
             new Guid("88f80583-0000-01e6-aace-0002a5d5c51b")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(BluetoothLEDevice aDevice,
-                                                    Dictionary<Guid, GattCharacteristic> aCharacteristics)
+        public ButtplugBluetoothDevice CreateDevice(
+            ButtplugLogManager aLogManager,
+            BluetoothLEDevice aDevice,
+            Dictionary<Guid, GattCharacteristic> aCharacteristics)
         {
-            return new FleshlightLaunch(aDevice,
+            return new FleshlightLaunch(aLogManager,
+                                        aDevice,
                                         aCharacteristics[Characteristics[0]],
                                         aCharacteristics[Characteristics[1]],
                                         aCharacteristics[Characteristics[2]]);
@@ -45,11 +48,13 @@ namespace Buttplug.Devices
         private ushort _previousKiirooPosition;
         private ushort _limitedSpeed;
 
-        public FleshlightLaunch(BluetoothLEDevice aDevice,
+        public FleshlightLaunch(ButtplugLogManager aLogManager,
+                                BluetoothLEDevice aDevice,
                                 GattCharacteristic aWriteChr,
                                 GattCharacteristic aButtonNotifyChr,
                                 GattCharacteristic aCommandChr) :
-            base("Fleshlight Launch",
+            base(aLogManager,
+                 "Fleshlight Launch",
                  aDevice,
                  aWriteChr,
                  aButtonNotifyChr)

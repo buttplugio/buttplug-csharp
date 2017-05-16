@@ -10,6 +10,7 @@ namespace ButtplugTest.Core
     {
         public TestService()
         {
+            // Build ourselves an NLog manager just so we can see what's going on.
             DebuggerTarget t = new DebuggerTarget();
             LogManager.Configuration = new LoggingConfiguration();
             LogManager.Configuration.AddTarget("debugger", t);
@@ -20,6 +21,6 @@ namespace ButtplugTest.Core
         public TestService(TestDeviceSubtypeManager mgr) : this()
         {
             GetDeviceManager().AddManager(mgr);
-        }        
+        }
     }
 }
