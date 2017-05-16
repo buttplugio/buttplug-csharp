@@ -20,19 +20,19 @@ namespace Buttplug.Core
             return w.DetachBuffer();
         }
 
-        public static Error LogErrorMsg(uint aId, ILog l, string msg)
+        public static Error LogErrorMsg(uint aId, ButtplugLog l, string msg)
         {
             l.Error(msg);
             return new Error(msg, aId);
         }
 
-        public static Error LogWarnMsg(uint aId, ILog l, string msg)
+        public static Error LogWarnMsg(uint aId, ButtplugLog l, string msg)
         {
             l.Warn(msg);
             return new Error(msg, aId);
         }
 
-        public static Error LogInfoMsg(uint aId, ILog l, string msg)
+        public static Error LogInfoMsg(uint aId, ButtplugLog l, string msg)
         {
             l.Info(msg);
             return new Error(msg, aId);

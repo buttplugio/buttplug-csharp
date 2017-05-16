@@ -5,13 +5,13 @@ namespace Buttplug.Core
 {
     internal abstract class DeviceSubtypeManager
     {
-        protected readonly ILog BpLogger;
+        protected readonly ButtplugLog BpLogger;
 
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
 
         protected DeviceSubtypeManager()
         {
-            BpLogger = LogProvider.GetCurrentClassLogger();
+            BpLogger = ButtplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
             BpLogger.Trace($"Setting up Device Manager {GetType().Name}");
         }
 

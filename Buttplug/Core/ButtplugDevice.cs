@@ -10,7 +10,7 @@ namespace Buttplug.Core
     {
         public string Name { get; }
         public event EventHandler DeviceRemoved;
-        protected readonly ILog BpLogger = LogProvider.GetCurrentClassLogger();
+        protected readonly ButtplugLog BpLogger = ButtplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
         protected Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>> MsgFuncs;
         protected bool IsDisconnected;
 

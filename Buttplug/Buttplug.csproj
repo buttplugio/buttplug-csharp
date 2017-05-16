@@ -87,6 +87,9 @@
     <Compile Include="Core\ButtplugConsts.cs" />
     <Compile Include="Core\ButtplugDeviceMessage.cs" />
     <Compile Include="Core\ButtplugJsonMessageParser.cs" />
+    <Compile Include="Core\ButtplugLog.cs" />
+    <Compile Include="Core\ButtplugLogManager.cs" />
+    <Compile Include="Core\ButtplugLogMessageEventArgs.cs" />
     <Compile Include="Core\ButtplugService.cs" />
     <Compile Include="Core\ButtplugUtils.cs" />
     <Compile Include="Core\DeviceAddedEventArgs.cs" />

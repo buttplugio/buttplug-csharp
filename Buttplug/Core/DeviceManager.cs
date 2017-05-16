@@ -14,12 +14,12 @@ namespace Buttplug.Core
         private readonly List<DeviceSubtypeManager> _managers;
         internal Dictionary<uint, ButtplugDevice> _devices { get; }
         private uint _deviceIndex;
-        private readonly ILog _bpLogger;
+        private readonly ButtplugLog _bpLogger;
         public event EventHandler<MessageReceivedEventArgs> DeviceMessageReceived;
 
         public DeviceManager()
         {
-            _bpLogger = LogProvider.GetCurrentClassLogger();
+            _bpLogger = ButtplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
             _bpLogger.Trace("Setting up DeviceManager");
 
             _devices = new Dictionary<uint, ButtplugDevice>();

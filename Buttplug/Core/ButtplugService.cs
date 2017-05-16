@@ -10,17 +10,18 @@ namespace Buttplug.Core
     {
         private readonly ButtplugJsonMessageParser _parser;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        private readonly ILog _bpLogger;
+        private readonly ButtplugLog _bpLogger;
         private readonly DeviceManager _deviceManager;
 
         public ButtplugService()
         {
-            _bpLogger = LogProvider.GetCurrentClassLogger();
+            _bpLogger = ButtplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
             _bpLogger.Trace("Setting up ButtplugService");
             _parser = new ButtplugJsonMessageParser();
             _deviceManager = new DeviceManager();
             _bpLogger.Trace("Finished setting up ButtplugService");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
+            ButtplugLogManager.LogMessageReceived += LogMessageReceivedHandler;
         }
 
         public void DeviceMessageReceivedHandler(object o, MessageReceivedEventArgs aMsg)
@@ -28,10 +29,10 @@ namespace Buttplug.Core
             MessageReceived?.Invoke(o, aMsg);
         }
 
-        //private void LogMessageReceivedHandler(object o, ButtplugMessageNLogTarget.NLogMessageEventArgs e)
-        //{
-        //    MessageReceived?.Invoke(this, new MessageReceivedEventArgs(e.LogMessage));
-        //}
+        private void LogMessageReceivedHandler(object o, ButtplugLogMessageEventArgs e)
+        {
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(e.LogMessage));
+        }
 
         public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
         {
@@ -50,12 +51,8 @@ namespace Buttplug.Core
             switch (aMsg)
             {
                 case RequestLog m:
-                    //var c = LogManager.Configuration;
-                    //c.LoggingRules.Remove(_outgoingLoggingRule);
-                    //_outgoingLoggingRule = new LoggingRule("*", m.LogLevelObj, _msgTarget);
-                    //c.LoggingRules.Add(_outgoingLoggingRule);
-                    //LogManager.Configuration = c;
-                    return new Error("Logging Disabled!", id);
+                    ButtplugLogManager.Level = m.LogLevel;
+                    return new Ok(id);
 
                 case RequestServerInfo _:
                     return new ServerInfo(id);

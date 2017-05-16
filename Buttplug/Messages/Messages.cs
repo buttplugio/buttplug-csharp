@@ -130,46 +130,33 @@ namespace Buttplug.Messages
 
     public class RequestLog : ButtplugMessage
     {
-        //private static readonly Dictionary<string, NLog.LogLevel> Levels = new Dictionary<string, LogLevel>()
-        //{
-        //    { "Off", NLog.LogLevel.Off },
-        //    { "Fatal", NLog.LogLevel.Fatal },
-        //    { "Error", NLog.LogLevel.Error },
-        //    { "Warn", NLog.LogLevel.Warn },
-        //    { "Info", NLog.LogLevel.Info },
-        //    { "Debug", NLog.LogLevel.Debug },
-        //    { "Trace", NLog.LogLevel.Trace }
-        //};
+        private string _logLevelImpl;
 
-        //public LogLevel LogLevelObj;
-        //private string _logLevelImpl;
+        [JsonProperty(Required = Required.Always)]
+        public string LogLevel
+        {
+            get => _logLevelImpl;
+            set
+            {
+                if (value is null || !ButtplugLogManager.Levels.Contains(value))
+                {
+                    throw new ArgumentException($"Log level {value} is not valid.");
+                }
+                _logLevelImpl = value;
+            }
+        }
 
-        //[JsonProperty(Required = Required.Always)]
-        //public string LogLevel
-        //{
-        //    get => _logLevelImpl;
-        //    set
-        //    {
-        //        if (value is null || !Levels.Keys.Contains(value))
-        //        {
-        //            throw new ArgumentException($"Log level {value} is not valid.");
-        //        }
-        //        _logLevelImpl = value;
-        //        LogLevelObj = Levels[_logLevelImpl];
-        //    }
-        //}
-
-        //// JSON.Net gets angry if it doesn't have a default initializer.
+        // JSON.Net gets angry if it doesn't have a default initializer.
         public RequestLog() : base(ButtplugConsts.DEFAULT_MSG_ID)
         {
         }
 
-        //public RequestLog(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId) => LogLevel = "Off";
+        public RequestLog(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId) => LogLevel = "Off";
 
-        //public RequestLog(string aLogLevel, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
-        //{
-        //    LogLevel = aLogLevel;
-        //}
+        public RequestLog(string aLogLevel, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
+        {
+            LogLevel = aLogLevel;
+        }
     }
 
     public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly

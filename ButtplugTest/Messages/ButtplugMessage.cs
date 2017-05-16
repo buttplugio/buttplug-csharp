@@ -11,14 +11,14 @@ namespace ButtplugTest.Messages
 {
     public class ButtplugMessageTests
     {
-        [Fact(Skip="Logging broken")]
+        [Fact]
         public async void RequestLogJsonTest()
         {
             var s = new TestService();
-            Assert.False((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}")) is Error);
+            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}")) is Ok);
         }
 
-        [Fact(Skip="Logging broken")]
+        [Fact]
         public async void RequestLogWrongLevelTest()
         {
             var s = new TestService();
