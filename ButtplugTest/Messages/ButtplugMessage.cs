@@ -15,7 +15,7 @@ namespace ButtplugTest.Messages
         public async void RequestLogJsonTest()
         {
             var s = new TestService();
-            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}")) is Ok);
+            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}")) is Ok);
         }
 
         [Fact]

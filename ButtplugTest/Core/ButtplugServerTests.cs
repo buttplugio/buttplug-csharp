@@ -73,7 +73,7 @@ namespace ButtplugTest.Core
                     Assert.True(dr.DeviceIndex == 0);
                     break;
                 default:
-                    Assert.True(false, "Shouldn't be here");
+                    Assert.True(false, $"Shouldn't be here {msgArgs.GetType().Name}");
                     break;
             }
         }
