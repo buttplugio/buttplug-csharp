@@ -1,11 +1,12 @@
 ﻿using LanguageExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Buttplug.Logging;
+using Buttplug.Messages;
 using static LanguageExt.Prelude;
 
 namespace Buttplug.Core
@@ -13,11 +14,11 @@ namespace Buttplug.Core
     public class ButtplugJsonMessageParser
     {
         private readonly Dictionary<string, Type> _messageTypes;
-        private readonly Logger _bpLogger;
+        private readonly ILog _bpLogger;
 
         public ButtplugJsonMessageParser()
         {
-            _bpLogger = LogManager.GetLogger(GetType().FullName);
+            _bpLogger = LogProvider.GetCurrentClassLogger();
             _bpLogger.Debug($"Setting up {GetType().Name}");
             IEnumerable<Type> allTypes;
             // Some classes in the library may not load on certain platforms due to missing symbols.

@@ -1,23 +1,23 @@
 ﻿using LanguageExt;
-using NLog;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Buttplug.Logging;
 using Buttplug.Messages;
 
 namespace Buttplug.Core
 {
     internal class ButtplugBluetoothDeviceFactory
     {
-        private readonly Logger _bpLogger;
+        private readonly ILog _bpLogger;
         private readonly IBluetoothDeviceInfo _deviceInfo;
 
         public ButtplugBluetoothDeviceFactory(IBluetoothDeviceInfo aInfo)
         {
-            _bpLogger = LogManager.GetLogger(GetType().FullName);
+            _bpLogger = LogProvider.GetCurrentClassLogger();
             _bpLogger.Trace($"Creating {GetType().Name}");
             _deviceInfo = aInfo;
         }

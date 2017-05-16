@@ -1,14 +1,12 @@
 ﻿using Buttplug.Messages;
 using LanguageExt;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading.Tasks;
+using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
@@ -26,39 +24,20 @@ namespace Buttplug.Core
     {
         private readonly ButtplugJsonMessageParser _parser;
         private readonly List<DeviceManager> _managers;
-        protected Dictionary<uint, ButtplugDevice> _devices { get; }
+        private Dictionary<uint, ButtplugDevice> _devices { get; }
         private uint _deviceIndex;
 
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
-        private readonly Logger _bpLogger;
-        private readonly ButtplugMessageNLogTarget _msgTarget;
-        private LoggingRule _outgoingLoggingRule;
+        private readonly ILog _bpLogger;
 
         public ButtplugService()
         {
-            _bpLogger = LogManager.GetLogger(GetType().FullName);
+            _bpLogger = LogProvider.GetCurrentClassLogger();
             _bpLogger.Trace("Setting up ButtplugService");
             _parser = new ButtplugJsonMessageParser();
             _devices = new Dictionary<uint, ButtplugDevice>();
             _deviceIndex = 0;
-            _msgTarget = new ButtplugMessageNLogTarget();
-            _msgTarget.LogMessageReceived += LogMessageReceivedHandler;
-
-            // External Logger Setup
-            var c = LogManager.Configuration ?? new LoggingConfiguration();
-            c.AddTarget("ButtplugLogger", _msgTarget);
-            _outgoingLoggingRule = new LoggingRule("*", LogLevel.Off, _msgTarget);
-            c.LoggingRules.Add(_outgoingLoggingRule);
-            LogManager.Configuration = c;
-
-#if DEBUG
-            // Debug Logger Setup
-            var t = new DebuggerTarget();
-            LogManager.Configuration.AddTarget("debugger", t);
-            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
-            LogManager.Configuration = LogManager.Configuration;
-#endif
 
             //TODO Introspect managers based on project contents and OS version (#15)
             _managers = new List<DeviceManager>();
@@ -75,10 +54,10 @@ namespace Buttplug.Core
             _bpLogger.Trace("Finished setting up ButtplugService");
         }
 
-        private void LogMessageReceivedHandler(object o, ButtplugMessageNLogTarget.NLogMessageEventArgs e)
-        {
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(e.LogMessage));
-        }
+        //private void LogMessageReceivedHandler(object o, ButtplugMessageNLogTarget.NLogMessageEventArgs e)
+        //{
+        //    MessageReceived?.Invoke(this, new MessageReceivedEventArgs(e.LogMessage));
+        //}
 
         private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
         {
@@ -126,23 +105,23 @@ namespace Buttplug.Core
             var id = aMsg.Id;
             if (id == 0)
             {
-                return ButtplugUtils.LogAndError(id, _bpLogger, LogLevel.Warn,
+                return ButtplugUtils.LogWarnMsg(id, _bpLogger,
                     $"Message Id 0 is reserved for outgoing system messages. Please use another Id.");
             }
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
-                return ButtplugUtils.LogAndError(id, _bpLogger, LogLevel.Warn,
+                return ButtplugUtils.LogWarnMsg(id, _bpLogger,
                     $"Message of type {aMsg.GetType().Name} cannot be sent to server");
             }
             switch (aMsg)
             {
                 case RequestLog m:
-                    var c = LogManager.Configuration;
-                    c.LoggingRules.Remove(_outgoingLoggingRule);
-                    _outgoingLoggingRule = new LoggingRule("*", m.LogLevelObj, _msgTarget);
-                    c.LoggingRules.Add(_outgoingLoggingRule);
-                    LogManager.Configuration = c;
-                    return new Ok(id);
+                    //var c = LogManager.Configuration;
+                    //c.LoggingRules.Remove(_outgoingLoggingRule);
+                    //_outgoingLoggingRule = new LoggingRule("*", m.LogLevelObj, _msgTarget);
+                    //c.LoggingRules.Add(_outgoingLoggingRule);
+                    //LogManager.Configuration = c;
+                    return new Error("Logging Disabled!", id);
 
                 case StartScanning _:
                     StartScanning();
@@ -169,10 +148,10 @@ namespace Buttplug.Core
                     {
                         return await _devices[m.DeviceIndex].ParseMessage(m);
                     }
-                    return ButtplugUtils.LogAndError(id, _bpLogger, LogLevel.Warn,
+                    return ButtplugUtils.LogWarnMsg(id, _bpLogger,
                         $"Dropping message for unknown device index {m.DeviceIndex}");
             }
-            return ButtplugUtils.LogAndError(id, _bpLogger, LogLevel.Warn,
+            return ButtplugUtils.LogWarnMsg(id, _bpLogger,
                 $"Dropping unhandled message type {aMsg.GetType().Name}");
         }
 
@@ -181,7 +160,7 @@ namespace Buttplug.Core
             var msg = _parser.Deserialize(aJsonMsg);
             return await msg.MatchAsync(
                 async x => await SendMessage(x),
-                x => ButtplugUtils.LogAndError(ButtplugConsts.SYSTEM_MSG_ID, _bpLogger, LogLevel.Error,
+                x => ButtplugUtils.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, _bpLogger,
                         $"Cannot deserialize json message: {x}"));
         }
 

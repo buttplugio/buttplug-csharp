@@ -18,7 +18,7 @@ namespace ButtplugTest.Core
 
         public async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            BpLogger.Trace("Test Device got SingleMotorVibrateMessage");
+            //BpLogger.Trace("Test Device got SingleMotorVibrateMessage");
             return new Ok(aMsg.Id);
         }
 

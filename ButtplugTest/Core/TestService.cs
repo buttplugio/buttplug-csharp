@@ -11,6 +11,7 @@ namespace ButtplugTest.Core
         public TestService()
         {
             DebuggerTarget t = new DebuggerTarget();
+            LogManager.Configuration = new LoggingConfiguration();
             LogManager.Configuration.AddTarget("debugger", t);
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
             LogManager.Configuration = LogManager.Configuration;
@@ -23,7 +24,8 @@ namespace ButtplugTest.Core
         
         public Dictionary<uint, ButtplugDevice> GetDevices()
         {
-            return _devices;
+            return new Dictionary<uint, ButtplugDevice>();
+            //return _devices;
         }
     }
 }

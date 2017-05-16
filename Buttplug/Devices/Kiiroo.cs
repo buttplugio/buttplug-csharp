@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using LogLevel = NLog.LogLevel;
 
 namespace Buttplug.Devices
 {
@@ -49,7 +48,7 @@ namespace Buttplug.Devices
             var cmdMsg = aMsg as KiirooRawCmd;
             if (cmdMsg is null)
             {
-                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
+                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
             }
             return await WriteToDevice(cmdMsg, ButtplugUtils.WriteString($"{cmdMsg.Position},\n"));
         }

@@ -1,6 +1,7 @@
 ﻿using Buttplug.Devices;
 using System.Collections.Generic;
 using Windows.Gaming.Input;
+using Buttplug.Logging;
 
 namespace Buttplug.Core
 {

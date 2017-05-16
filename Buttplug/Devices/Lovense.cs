@@ -1,13 +1,10 @@
 ﻿using Buttplug.Core;
 using Buttplug.Messages;
-using LanguageExt;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Foundation;
-using LogLevel = NLog.LogLevel;
 
 namespace Buttplug.Devices
 {
@@ -53,7 +50,7 @@ namespace Buttplug.Devices
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
             {
-                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
+                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
             }
             var buf = ButtplugUtils.WriteString($"Vibrate:{(int)(cmdMsg.Speed * 20)};");
             return await WriteToDevice(aMsg, buf);

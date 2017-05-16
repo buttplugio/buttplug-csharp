@@ -1,17 +1,17 @@
-﻿using NLog;
-using System;
+﻿using System;
+using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
     internal abstract class DeviceManager
     {
-        protected Logger BpLogger;
+        protected readonly ILog BpLogger;
 
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
 
         protected DeviceManager()
         {
-            BpLogger = LogManager.GetLogger(GetType().FullName);
+            BpLogger = LogProvider.GetCurrentClassLogger();
             BpLogger.Trace($"Setting up Device Manager {GetType().Name}");
         }
 

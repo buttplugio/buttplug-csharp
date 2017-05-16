@@ -6,7 +6,6 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Buttplug.Messages;
 using LanguageExt;
-using NLog;
 
 namespace Buttplug.Core
 {
@@ -26,7 +25,7 @@ namespace Buttplug.Core
             BleDevice = aDevice;
             _writeChr = aWriteChr;
             _readChr = aReadChr;
-            _isDisconnected = false;
+            IsDisconnected = false;
             BleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
         }
 
@@ -66,7 +65,7 @@ namespace Buttplug.Core
         {
             if (_currentTask.IsSome)
             {
-                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Debug, "Device is already has a transfer in progress.");
+                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Device is already has a transfer in progress.");
             }
             _currentTask =
                 Option<IAsyncOperation<GattCommunicationStatus>>.Some(_writeChr.WriteValueAsync(aBuffer));
@@ -78,7 +77,7 @@ namespace Buttplug.Core
             _currentTask = new OptionNone();
             if (status != GattCommunicationStatus.Success)
             {
-                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Warn, $"GattCommunication Error: {status}");
+                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, $"GattCommunication Error: {status}");
             }
             return new Ok(aMsg.Id);
         }

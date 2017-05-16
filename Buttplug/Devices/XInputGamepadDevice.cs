@@ -1,7 +1,5 @@
 ﻿using Buttplug.Core;
 using Buttplug.Messages;
-using LanguageExt;
-using NLog;
 using SharpDX.XInput;
 using System;
 using System.Threading.Tasks;
@@ -48,7 +46,7 @@ namespace Buttplug.Devices
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
             {
-                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
+                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
             }
             var v = new Vibration()
             {

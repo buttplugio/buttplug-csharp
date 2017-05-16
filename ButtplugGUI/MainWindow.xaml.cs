@@ -89,6 +89,22 @@ namespace ButtplugGUI
             _outgoingLoggingRule = new LoggingRule("*", LogLevel.Debug, _logTarget);
             c.LoggingRules.Add(_outgoingLoggingRule);
             LogManager.Configuration = c;
+
+            // External Logger Setup
+            //_msgTarget = new ButtplugMessageNLogTarget();
+            //_msgTarget.LogMessageReceived += LogMessageReceivedHandler;
+            //c.AddTarget("ButtplugLogger", _msgTarget);
+            //_outgoingLoggingRule = new LoggingRule("*", LogLevel.Off, _msgTarget);
+            //c.LoggingRules.Add(_outgoingLoggingRule);
+
+#if DEBUG
+            // Debug Logger Setup
+            var t = new DebuggerTarget();
+            LogManager.Configuration.AddTarget("debugger", t);
+            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
+            LogManager.Configuration = LogManager.Configuration;
+#endif
+
             // Set up internal services
             _bpServer = new ButtplugService();
             _bpServer.MessageReceived += OnMessageReceived;

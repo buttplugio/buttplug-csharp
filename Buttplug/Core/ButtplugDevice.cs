@@ -1,12 +1,12 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
-    public class DeviceAddedEventArgs : EventArgs
+    internal class DeviceAddedEventArgs : EventArgs
     {
         public ButtplugDevice Device { get; }
 
@@ -16,18 +16,17 @@ namespace Buttplug.Core
         }
     }
 
-    public abstract class ButtplugDevice
+    internal abstract class ButtplugDevice
     {
         public string Name { get; }
         public event EventHandler DeviceRemoved;
-        protected Logger BpLogger;
+        protected readonly ILog BpLogger = LogProvider.GetCurrentClassLogger();
         protected Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>> MsgFuncs;
-        protected bool _isDisconnected;
+        protected bool IsDisconnected;
 
         protected ButtplugDevice(string name)
         {
             MsgFuncs = new Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>>();
-            BpLogger = LogManager.GetLogger(GetType().FullName);
             Name = name;
         }
 
@@ -38,7 +37,7 @@ namespace Buttplug.Core
 
         protected void InvokeDeviceRemoved()
         {
-            _isDisconnected = true;
+            IsDisconnected = true;
             DeviceRemoved?.Invoke(this, new EventArgs());
         }
 
@@ -49,14 +48,14 @@ namespace Buttplug.Core
 
         public async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg)
         {
-            if (_isDisconnected)
+            if (IsDisconnected)
             {
-                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error,
+                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger,
                     $"{Name} has disconnected and can no longer process messages.");
             }
             if (!MsgFuncs.ContainsKey(aMsg.GetType()))
             {
-                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error,
+                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger,
                     $"{Name} cannot handle message of type {aMsg.GetType().Name}");
             }
             return await MsgFuncs[aMsg.GetType()](aMsg);

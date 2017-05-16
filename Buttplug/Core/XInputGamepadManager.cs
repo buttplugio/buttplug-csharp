@@ -1,4 +1,5 @@
 ﻿using Buttplug.Devices;
+using Buttplug.Logging;
 using SharpDX.XInput;
 using System.Collections.Generic;
 

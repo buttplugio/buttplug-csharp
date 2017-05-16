@@ -38,9 +38,6 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.9\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX, Version=3.1.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.3.1.1\lib\net45\SharpDX.dll</HintPath>
     </Reference>
@@ -84,12 +81,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
     <Compile Include="Core\BluetoothManager.cs" />
     <Compile Include="Core\ButtplugBluetoothDevice.cs" />
     <Compile Include="Core\ButtplugConsts.cs" />
     <Compile Include="Core\ButtplugDeviceMessage.cs" />
     <Compile Include="Core\ButtplugJsonMessageParser.cs" />
-    <Compile Include="Core\ButtplugMessageNLogTarget.cs" />
     <Compile Include="Core\ButtplugService.cs" />
     <Compile Include="Core\ButtplugUtils.cs" />
     <Compile Include="Core\DeviceManager.cs" />

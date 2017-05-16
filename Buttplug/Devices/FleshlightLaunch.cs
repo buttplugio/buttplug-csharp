@@ -1,7 +1,6 @@
 ﻿using Buttplug.Core;
 using Buttplug.Messages;
-using LanguageExt;
-using NLog;
+using Buttplug.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -73,7 +72,7 @@ namespace Buttplug.Devices
             var x = await _commandChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] { 0 }));
             if (x != GattCommunicationStatus.Success)
             {
-                return ButtplugUtils.LogAndError(0, BpLogger, LogLevel.Error, $"Cannot initialize {Name}!");
+                return ButtplugUtils.LogErrorMsg(0, BpLogger, $"Cannot initialize {Name}!");
             }
             BpLogger.Trace($"{Name} initialized");
             return new Ok(0);
@@ -84,7 +83,7 @@ namespace Buttplug.Devices
             var kiirooCmd = aMsg as KiirooRawCmd;
             if (kiirooCmd is null)
             {
-                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
+                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
             }
 
             var elapsed = _stopwatch.ElapsedMilliseconds;
@@ -147,7 +146,7 @@ namespace Buttplug.Devices
             var cmdMsg = aMsg as FleshlightLaunchRawCmd;
             if (cmdMsg is null)
             {
-                return ButtplugUtils.LogAndError(aMsg.Id, BpLogger, LogLevel.Error, "Wrong Handler");
+                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
             }
             return await WriteToDevice(aMsg, ButtplugUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));            
         }

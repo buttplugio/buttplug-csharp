@@ -1,10 +1,10 @@
 ﻿using Buttplug.Messages;
-using NLog;
+using Buttplug.Logging;
 using Windows.Storage.Streams;
 
 namespace Buttplug.Core
 {
-    public class ButtplugUtils
+    internal class ButtplugUtils
     {
         public static IBuffer WriteString(string s)
         {
@@ -20,9 +20,21 @@ namespace Buttplug.Core
             return w.DetachBuffer();
         }
 
-        public static Error LogAndError(uint aId, Logger l, LogLevel level, string msg)
+        public static Error LogErrorMsg(uint aId, ILog l, string msg)
         {
-            l.Log(level, msg);
+            l.Error(msg);
+            return new Error(msg, aId);
+        }
+
+        public static Error LogWarnMsg(uint aId, ILog l, string msg)
+        {
+            l.Warn(msg);
+            return new Error(msg, aId);
+        }
+
+        public static Error LogInfoMsg(uint aId, ILog l, string msg)
+        {
+            l.Info(msg);
             return new Error(msg, aId);
         }
     }

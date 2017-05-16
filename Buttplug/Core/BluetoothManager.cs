@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
+using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
