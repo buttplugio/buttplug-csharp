@@ -5,12 +5,12 @@ using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
-    internal class UwpGamepadManager : DeviceManager
+    internal class UWPGamepadManager : DeviceSubtypeManager
     {
         //TODO Pay attention to gamepad events
         private readonly List<UwpGamepadDevice> _connectedGamepads;
 
-        public UwpGamepadManager()
+        public UWPGamepadManager()
         {
             _connectedGamepads = new List<UwpGamepadDevice>();
             Gamepad.GamepadAdded += GamepadAdded;

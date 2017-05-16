@@ -3,7 +3,7 @@ using LanguageExt;
 
 namespace ButtplugTest.Core
 {
-    internal class TestDeviceManager : DeviceManager
+    internal class TestDeviceManager : DeviceSubtypeManager
     {
         private Option<TestDevice> _device;
         public bool StartScanningCalled { get; private set; }

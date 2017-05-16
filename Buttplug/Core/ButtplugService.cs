@@ -23,7 +23,7 @@ namespace Buttplug.Core
     public class ButtplugService
     {
         private readonly ButtplugJsonMessageParser _parser;
-        private readonly List<DeviceManager> _managers;
+        private readonly List<DeviceSubtypeManager> _managers;
         private Dictionary<uint, ButtplugDevice> _devices { get; }
         private uint _deviceIndex;
 
@@ -40,7 +40,7 @@ namespace Buttplug.Core
             _deviceIndex = 0;
 
             //TODO Introspect managers based on project contents and OS version (#15)
-            _managers = new List<DeviceManager>();
+            _managers = new List<DeviceSubtypeManager>();
             try
             {
                 _managers.Add(new BluetoothManager());
@@ -176,12 +176,12 @@ namespace Buttplug.Core
 
         protected void AddManager(object m)
         {
-            if ((m as DeviceManager) is null)
+            if ((m as DeviceSubtypeManager) is null)
             {
                 return;
             }
-            DeviceManager mgr = m as DeviceManager;
-            _managers.Add(m as DeviceManager);
+            DeviceSubtypeManager mgr = m as DeviceSubtypeManager;
+            _managers.Add(m as DeviceSubtypeManager);
             mgr.DeviceAdded += DeviceAddedHandler;
         }
     }

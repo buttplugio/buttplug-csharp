@@ -3,13 +3,13 @@ using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
-    internal abstract class DeviceManager
+    internal abstract class DeviceSubtypeManager
     {
         protected readonly ILog BpLogger;
 
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
 
-        protected DeviceManager()
+        protected DeviceSubtypeManager()
         {
             BpLogger = LogProvider.GetCurrentClassLogger();
             BpLogger.Trace($"Setting up Device Manager {GetType().Name}");

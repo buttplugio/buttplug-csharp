@@ -8,7 +8,7 @@ using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
-    internal class BluetoothManager : DeviceManager
+    internal class BluetoothManager : DeviceSubtypeManager
     {
         private const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
