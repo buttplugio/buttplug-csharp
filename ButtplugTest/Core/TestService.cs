@@ -17,15 +17,9 @@ namespace ButtplugTest.Core
             LogManager.Configuration = LogManager.Configuration;
         }
 
-        public TestService(TestDeviceManager mgr)
+        public TestService(TestDeviceSubtypeManager mgr) : this()
         {
-            AddManager(mgr);
-        }
-        
-        public Dictionary<uint, ButtplugDevice> GetDevices()
-        {
-            return new Dictionary<uint, ButtplugDevice>();
-            //return _devices;
-        }
+            GetDeviceManager().AddManager(mgr);
+        }        
     }
 }

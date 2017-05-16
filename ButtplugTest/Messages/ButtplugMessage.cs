@@ -28,7 +28,7 @@ namespace ButtplugTest.Messages
         [Fact]
         public async void CallStartScanning()
         {
-            var dm = new TestDeviceManager();
+            var dm = new TestDeviceSubtypeManager();
             var s = new TestService(dm);
             var r = await s.SendMessage(new StartScanning());
             Assert.True(r is Ok);
@@ -66,7 +66,7 @@ namespace ButtplugTest.Messages
         [Fact]
         public async void CallStopScanning()
         {
-            var dm = new TestDeviceManager();
+            var dm = new TestDeviceSubtypeManager();
             var s = new TestService(dm);
             var r = await s.SendMessage(new StopScanning());
             Assert.True(r is Ok);

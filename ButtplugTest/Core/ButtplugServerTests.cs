@@ -78,14 +78,21 @@ namespace ButtplugTest.Core
             }
         }
 
-        [Fact(Skip="Device retreival broken.")]
+        public async void CheckDeviceCount(ButtplugService s, int expectedCount)
+        {
+            var deviceListMsg = await s.SendMessage(new RequestDeviceList());
+            Assert.True(deviceListMsg is DeviceList);
+            Assert.Equal(((DeviceList)deviceListMsg).Devices.Count(), expectedCount);
+        }
+
+        [Fact]
         public async void TestAddListRemoveDevices()
         {
             var d = new TestDevice("TestDevice");
             var msgarray = d.GetAllowedMessageTypes();
             Assert.True(msgarray.Count() == 1);
             Assert.True(msgarray.Contains(typeof(SingleMotorVibrateCmd)));
-            var m = new TestDeviceManager(d);
+            var m = new TestDeviceSubtypeManager(d);
             var s = new TestService(m);
             ButtplugMessage msgReceived = null;
             s.MessageReceived += (obj, msgArgs) =>
@@ -93,15 +100,15 @@ namespace ButtplugTest.Core
                 msgReceived = msgArgs.Message;
                 CheckDeviceMessages(msgReceived);
             };
-            Assert.False(s.GetDevices().Any());
+            CheckDeviceCount(s, 0);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
-            Assert.True(s.GetDevices().Count() == 1);
             Assert.True(msgReceived is DeviceAdded);
+            CheckDeviceCount(s, 1);
             msgReceived = await s.SendMessage(new RequestDeviceList());
             d.RemoveDevice();
             Assert.True(msgReceived is DeviceRemoved);
-            Assert.False(s.GetDevices().Any());
+            CheckDeviceCount(s, 0);
         }
 
         [Fact]
@@ -124,7 +131,7 @@ namespace ButtplugTest.Core
         public async void TestValidDeviceMessage()
         {
             var d = new TestDevice("TestDevice");
-            var m = new TestDeviceManager(d);
+            var m = new TestDeviceSubtypeManager(d);
             var s = new TestService(m);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
@@ -135,7 +142,7 @@ namespace ButtplugTest.Core
         public async void TestInvalidDeviceMessage()
         {
             var d = new TestDevice("TestDevice");
-            var m = new TestDeviceManager(d);
+            var m = new TestDeviceSubtypeManager(d);
             var s = new TestService(m);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
@@ -146,7 +153,7 @@ namespace ButtplugTest.Core
         public async void TestDuplicateDeviceAdded()
         {
             var d = new TestDevice("TestDevice");
-            var m = new TestDeviceManager(d);
+            var m = new TestDeviceSubtypeManager(d);
             var s = new TestService(m);
             var msgReceived = false;
             s.MessageReceived += (obj, msgArgs) =>

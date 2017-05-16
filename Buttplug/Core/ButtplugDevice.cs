@@ -6,17 +6,7 @@ using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
-    internal class DeviceAddedEventArgs : EventArgs
-    {
-        public ButtplugDevice Device { get; }
-
-        public DeviceAddedEventArgs(ButtplugDevice d)
-        {
-            Device = d;
-        }
-    }
-
-    internal abstract class ButtplugDevice
+    internal class ButtplugDevice
     {
         public string Name { get; }
         public event EventHandler DeviceRemoved;

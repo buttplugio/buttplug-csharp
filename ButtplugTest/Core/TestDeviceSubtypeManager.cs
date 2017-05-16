@@ -3,18 +3,18 @@ using LanguageExt;
 
 namespace ButtplugTest.Core
 {
-    internal class TestDeviceManager : DeviceSubtypeManager
+    internal class TestDeviceSubtypeManager : DeviceSubtypeManager
     {
         private Option<TestDevice> _device;
         public bool StartScanningCalled { get; private set; }
         public bool StopScanningCalled { get; private set; }
 
-        public TestDeviceManager()
+        public TestDeviceSubtypeManager()
         {
             _device = new OptionNone();
         }
 
-        public TestDeviceManager(TestDevice aDevice)
+        public TestDeviceSubtypeManager(TestDevice aDevice)
         {
             _device = aDevice;
         }

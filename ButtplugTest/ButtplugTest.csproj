@@ -87,7 +87,7 @@
     <Compile Include="Core\ButtplugJsonMessageParserTests.cs" />
     <Compile Include="Core\ButtplugServerTests.cs" />
     <Compile Include="Core\TestDevice.cs" />
-    <Compile Include="Core\TestDeviceManager.cs" />
+    <Compile Include="Core\TestDeviceSubtypeManager.cs" />
     <Compile Include="Core\TestService.cs" />
     <Compile Include="Messages\ButtplugMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
