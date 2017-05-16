@@ -35,12 +35,16 @@
     <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="LanguageExt.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LanguageExt.Core.2.0.60\lib\net451\LanguageExt.Core.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.8\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +59,10 @@
     <ProjectReference Include="..\ButtplugWebsocketServer\ButtplugWebsocketServer.csproj">
       <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
       <Name>ButtplugWebsocketServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug\Buttplug.csproj">
+      <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
+      <Name>Buttplug</Name>
     </ProjectReference>
     <ProjectReference Include="..\websocket-sharp\websocket-sharp\websocket-sharp.csproj">
       <Project>{b357bac7-529e-4d81-a0d2-71041b19c8de}</Project>
