@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using ButtplugUWPBluetoothManager.Core;
 
 namespace Buttplug.Devices
 {
@@ -74,7 +75,7 @@ namespace Buttplug.Devices
         public override async Task<ButtplugMessage> Initialize()
         {
             BpLogger.Trace($"Initializing {Name}");
-            var x = await _commandChr.WriteValueAsync(ButtplugUtils.WriteByteArray(new byte[] { 0 }));
+            var x = await _commandChr.WriteValueAsync(ButtplugBluetoothUtils.WriteByteArray(new byte[] { 0 }));
             if (x != GattCommunicationStatus.Success)
             {
                 return ButtplugUtils.LogErrorMsg(0, BpLogger, $"Cannot initialize {Name}!");
@@ -153,7 +154,7 @@ namespace Buttplug.Devices
             {
                 return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
             }
-            return await WriteToDevice(aMsg, ButtplugUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));            
+            return await WriteToDevice(aMsg, ButtplugBluetoothUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));            
         }
     }
 }

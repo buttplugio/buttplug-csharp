@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using ButtplugUWPBluetoothManager.Core;
 
 namespace Buttplug.Devices
 {
@@ -53,7 +54,7 @@ namespace Buttplug.Devices
             {
                 return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
             }
-            return await WriteToDevice(cmdMsg, ButtplugUtils.WriteString($"{cmdMsg.Position},\n"));
+            return await WriteToDevice(cmdMsg, ButtplugBluetoothUtils.WriteString($"{cmdMsg.Position},\n"));
         }
     }
 }

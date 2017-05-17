@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using ButtplugUWPBluetoothManager.Core;
 
 namespace Buttplug.Devices
 {
@@ -56,7 +57,7 @@ namespace Buttplug.Devices
             {
                 return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
             }
-            var buf = ButtplugUtils.WriteString($"Vibrate:{(int)(cmdMsg.Speed * 20)};");
+            var buf = ButtplugBluetoothUtils.WriteString($"Vibrate:{(int)(cmdMsg.Speed * 20)};");
             return await WriteToDevice(aMsg, buf);
         }
     }

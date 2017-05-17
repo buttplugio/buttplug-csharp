@@ -1,25 +1,9 @@
 ﻿using Buttplug.Messages;
-using Buttplug.Logging;
-using Windows.Storage.Streams;
 
 namespace Buttplug.Core
 {
     public class ButtplugUtils
     {
-        public static IBuffer WriteString(string s)
-        {
-            var w = new DataWriter();
-            w.WriteString(s);
-            return w.DetachBuffer();
-        }
-
-        public static IBuffer WriteByteArray(byte[] b)
-        {
-            var w = new DataWriter();
-            w.WriteBytes(b);
-            return w.DetachBuffer();
-        }
-
         public static Error LogErrorMsg(uint aId, ButtplugLog l, string msg)
         {
             l.Error(msg);
