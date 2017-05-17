@@ -11,7 +11,7 @@ namespace Buttplug.Core
 {
     internal class DeviceManager
     {
-        private readonly List<DeviceSubtypeManager> _managers;
+        private readonly List<IDeviceSubtypeManager> _managers;
         internal Dictionary<uint, ButtplugDevice> _devices { get; }
         private uint _deviceIndex;
         private readonly ButtplugLog _bpLogger;
@@ -27,18 +27,7 @@ namespace Buttplug.Core
             _devices = new Dictionary<uint, ButtplugDevice>();
             _deviceIndex = 0;
 
-            //TODO Introspect managers based on project contents and OS version (#15)
-            _managers = new List<DeviceSubtypeManager>();
-            try
-            {
-                _managers.Add(new BluetoothManager(_bpLogManager));
-            }
-            catch (ReflectionTypeLoadException)
-            {
-                _bpLogger.Warn("Cannot bring up UWP Bluetooth manager!");
-            }
-            _managers.Add(new XInputGamepadManager(_bpLogManager));
-            _managers.ForEach(m => m.DeviceAdded += DeviceAddedHandler);
+            _managers = new List<IDeviceSubtypeManager>();
         }
 
         private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
@@ -123,13 +112,13 @@ namespace Buttplug.Core
             _managers.ForEach(m => m.StopScanning());
         }
 
-        internal void AddManager(object m)
+        public void AddDeviceSubtypeManager<T>(Func<ButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
         {
-            if ((m as DeviceSubtypeManager) is null)
-            {
-                return;
-            }
-            DeviceSubtypeManager mgr = (DeviceSubtypeManager) m;
+            AddDeviceSubtypeManager(aCreateMgrFunc(_bpLogManager));
+        }
+
+        internal void AddDeviceSubtypeManager(IDeviceSubtypeManager mgr)
+        {
             _managers.Add(mgr);
             mgr.DeviceAdded += DeviceAddedHandler;
         }

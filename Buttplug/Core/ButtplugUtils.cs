@@ -4,7 +4,7 @@ using Windows.Storage.Streams;
 
 namespace Buttplug.Core
 {
-    internal class ButtplugUtils
+    public class ButtplugUtils
     {
         public static IBuffer WriteString(string s)
         {

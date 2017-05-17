@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Buttplug.Core
 {
-    internal class XInputGamepadManager : DeviceSubtypeManager
+    public class XInputGamepadManager : DeviceSubtypeManager
     {
         private readonly List<XInputGamepadDevice> _connectedGamepads;
 

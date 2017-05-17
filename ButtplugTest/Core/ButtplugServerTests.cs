@@ -93,7 +93,8 @@ namespace ButtplugTest.Core
             Assert.True(msgarray.Count() == 1);
             Assert.True(msgarray.Contains(typeof(SingleMotorVibrateCmd)));
             var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
-            var s = new TestService(m);
+            var s = new TestService();
+            s.AddDeviceSubtypeManager(m);
             ButtplugMessage msgReceived = null;
             s.MessageReceived += (obj, msgArgs) =>
             {
@@ -132,7 +133,8 @@ namespace ButtplugTest.Core
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
-            var s = new TestService(m);
+            var s = new TestService();
+            s.AddDeviceSubtypeManager(m);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
             Assert.True(await s.SendMessage(new SingleMotorVibrateCmd(0, .2)) is Ok);
@@ -143,7 +145,8 @@ namespace ButtplugTest.Core
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
-            var s = new TestService(m);
+            var s = new TestService();
+            s.AddDeviceSubtypeManager(m);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
             Assert.True(await s.SendMessage(new FleshlightLaunchRawCmd(0, 0, 0)) is Error);
@@ -154,7 +157,8 @@ namespace ButtplugTest.Core
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
-            var s = new TestService(m);
+            var s = new TestService();
+            s.AddDeviceSubtypeManager(m);
             var msgReceived = false;
             s.MessageReceived += (obj, msgArgs) =>
             {

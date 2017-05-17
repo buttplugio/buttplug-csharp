@@ -1,5 +1,6 @@
 ﻿using Buttplug.Messages;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Logging;
 
@@ -77,6 +78,16 @@ namespace Buttplug.Core
         public string Serialize(ButtplugMessage aMsg)
         {
             return ButtplugJsonMessageParser.Serialize(aMsg);
+        }
+
+        public void AddDeviceSubtypeManager<T>(Func<ButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
+        {
+            _deviceManager.AddDeviceSubtypeManager(aCreateMgrFunc);
+        }
+
+        internal void AddDeviceSubtypeManager(IDeviceSubtypeManager mgr)
+        {
+            _deviceManager.AddDeviceSubtypeManager(mgr);
         }
 
         internal DeviceManager GetDeviceManager()

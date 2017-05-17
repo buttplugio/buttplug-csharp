@@ -2,7 +2,7 @@
 
 namespace Buttplug.Core
 {
-    internal class DeviceAddedEventArgs : EventArgs
+    public class DeviceAddedEventArgs : EventArgs
     {
         public ButtplugDevice Device { get; }
 

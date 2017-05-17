@@ -17,10 +17,5 @@ namespace ButtplugTest.Core
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
             LogManager.Configuration = LogManager.Configuration;
         }
-
-        public TestService(TestDeviceSubtypeManager mgr) : this()
-        {
-            GetDeviceManager().AddManager(mgr);
-        }
     }
 }

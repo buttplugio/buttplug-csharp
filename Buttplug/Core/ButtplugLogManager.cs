@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Buttplug.Logging;
 namespace Buttplug.Core
 {
-    internal class ButtplugLogManager
+    public class ButtplugLogManager
     {
         public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
         private string _level = "Off";

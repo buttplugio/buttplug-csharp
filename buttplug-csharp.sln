@@ -17,6 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugWebsocketServer", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugKiirooPlatformEmulator", "ButtplugKiirooPlatformEmulator\ButtplugKiirooPlatformEmulator.csproj", "{C606B29A-EE61-452C-8557-9DC9B37E87D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugUWPBluetoothManager", "ButtplugUWPBluetoothManager\ButtplugUWPBluetoothManager.csproj", "{223EA194-8318-4189-BEC8-73734C3F4A78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugUWPGamepadManager", "ButtplugUWPGamepad\ButtplugUWPGamepadManager.csproj", "{521AED4A-AB69-4712-99BA-02EFDF99DEB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugXInputGamepdManager", "ButtplugXInputGamepdManager\ButtplugXInputGamepdManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
@@ -81,6 +87,30 @@ Global
 		{C606B29A-EE61-452C-8557-9DC9B37E87D1}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
 		{C606B29A-EE61-452C-8557-9DC9B37E87D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C606B29A-EE61-452C-8557-9DC9B37E87D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{223EA194-8318-4189-BEC8-73734C3F4A78}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{223EA194-8318-4189-BEC8-73734C3F4A78}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{223EA194-8318-4189-BEC8-73734C3F4A78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{223EA194-8318-4189-BEC8-73734C3F4A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{223EA194-8318-4189-BEC8-73734C3F4A78}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{223EA194-8318-4189-BEC8-73734C3F4A78}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{223EA194-8318-4189-BEC8-73734C3F4A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{223EA194-8318-4189-BEC8-73734C3F4A78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

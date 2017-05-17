@@ -38,6 +38,9 @@
 
 #pragma warning disable 1591
 
+// TODO Remove this
+#define LIBLOG_PUBLIC
+
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "Buttplug.Logging")]

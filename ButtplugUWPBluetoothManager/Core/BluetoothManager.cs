@@ -8,7 +8,7 @@ using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
-    internal class BluetoothManager : DeviceSubtypeManager
+    public class BluetoothManager : DeviceSubtypeManager
     {
         private const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
@@ -25,7 +25,7 @@ namespace Buttplug.Core
                 .ToList()
                 .ForEach(c =>
                 {
-                    BpLogger.Trace($"Loading Bluetooth Device Factory: {c.Name}");
+                    BpLogger.Debug($"Loading Bluetooth Device Factory: {c.Name}");
                     _deviceFactories.Add(new ButtplugBluetoothDeviceFactory(aLogManager, (IBluetoothDeviceInfo)Activator.CreateInstance(c)));
                 });
 

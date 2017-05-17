@@ -3,7 +3,7 @@ using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
-    internal class ButtplugLog
+    public class ButtplugLog
     {
         private readonly ILog _log;
         public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
