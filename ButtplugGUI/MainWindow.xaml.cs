@@ -108,9 +108,12 @@ namespace ButtplugGUI
             // Set up internal services
             _bpServer = new ButtplugService();
             _bpServer.MessageReceived += OnMessageReceived;
+#if (!WIN7)
             _bpServer.AddDeviceSubtypeManager((x) => new BluetoothManager(x));
+#endif
             _bpServer.AddDeviceSubtypeManager((x) => new XInputGamepadManager(x));
             _devices = new DeviceList();
+
             _kiirooEmulator = new KiirooPlatformEmulator();
             _kiirooEmulator.OnKiirooPlatformEvent += HandleKiirooPlatformMessage;
             
