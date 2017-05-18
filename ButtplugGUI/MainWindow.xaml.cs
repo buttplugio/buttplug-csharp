@@ -10,7 +10,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ButtplugKiirooPlatformEmulator;
+#if (!WIN7)
 using ButtplugUWPBluetoothManager.Core;
+#endif
 using ButtplugXInputGamepadManager.Core;
 using Microsoft.Win32;
 using NLog;
