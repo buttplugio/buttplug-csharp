@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugUWPBluetoothManager
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugUWPGamepadManager", "ButtplugUWPGamepad\ButtplugUWPGamepadManager.csproj", "{521AED4A-AB69-4712-99BA-02EFDF99DEB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugXInputGamepdManager", "ButtplugXInputGamepdManager\ButtplugXInputGamepdManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugXInputGamepadManager", "ButtplugXInputGamepdManager\ButtplugXInputGamepadManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugGUIWin7", "ButtplugGUIWin7\ButtplugGUIWin7.csproj", "{4783B3EB-D0D1-45BF-BE90-03701E092980}"
 EndProject

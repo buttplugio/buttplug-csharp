@@ -7,8 +7,8 @@
     <ProjectGuid>{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ButtplugXInputGamepdManager</RootNamespace>
-    <AssemblyName>ButtplugXInputGamepdManager</AssemblyName>
+    <RootNamespace>ButtplugXInputGamepadManager</RootNamespace>
+    <AssemblyName>ButtplugXInputGamepadManager</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

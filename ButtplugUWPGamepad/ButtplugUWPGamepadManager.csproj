@@ -7,8 +7,8 @@
     <ProjectGuid>{521AED4A-AB69-4712-99BA-02EFDF99DEB8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ButtplugUWPGamepad</RootNamespace>
-    <AssemblyName>ButtplugUWPGamepad</AssemblyName>
+    <RootNamespace>ButtplugUWPGamepadManager</RootNamespace>
+    <AssemblyName>ButtplugUWPGamepadManager</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
