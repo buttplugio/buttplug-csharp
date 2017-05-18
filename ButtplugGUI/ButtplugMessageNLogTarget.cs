@@ -1,9 +1,10 @@
-﻿using Buttplug.Messages;
+﻿using System;
+using Buttplug.Core;
+using Buttplug.Messages;
 using NLog;
 using NLog.Targets;
-using System;
 
-namespace Buttplug.Core
+namespace ButtplugGUI
 {
     [Target("ButtplugLogger")]
     public sealed class ButtplugMessageNLogTarget : TargetWithLayout

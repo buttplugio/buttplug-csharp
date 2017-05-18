@@ -1,10 +1,10 @@
-﻿using Buttplug.Core;
+﻿using System;
+using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Messages;
 using SharpDX.XInput;
-using System;
-using System.Threading.Tasks;
 
-namespace Buttplug.Devices
+namespace ButtplugXInputGamepadManager.Devices
 {
     internal class XInputGamepadDevice : ButtplugDevice, IEquatable<XInputGamepadDevice>
     {

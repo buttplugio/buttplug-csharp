@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Buttplug.Logging;
-using Buttplug.Messages;
 using static LanguageExt.Prelude;
 
 namespace Buttplug.Core

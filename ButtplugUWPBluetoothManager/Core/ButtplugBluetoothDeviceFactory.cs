@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Buttplug.Logging;
 using Buttplug.Messages;
+using Buttplug.Core;
 
-namespace Buttplug.Core
+namespace ButtplugUWPBluetoothManager.Core
 {
     internal class ButtplugBluetoothDeviceFactory
     {

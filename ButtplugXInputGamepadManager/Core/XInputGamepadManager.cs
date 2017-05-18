@@ -1,9 +1,9 @@
-﻿using Buttplug.Devices;
-using Buttplug.Logging;
+﻿using System.Collections.Generic;
+using Buttplug.Core;
+using ButtplugXInputGamepadManager.Devices;
 using SharpDX.XInput;
-using System.Collections.Generic;
 
-namespace Buttplug.Core
+namespace ButtplugXInputGamepadManager.Core
 {
     public class XInputGamepadManager : DeviceSubtypeManager
     {

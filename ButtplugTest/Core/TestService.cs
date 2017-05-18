@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using NLog;
 using NLog.Config;
 using NLog.Targets;

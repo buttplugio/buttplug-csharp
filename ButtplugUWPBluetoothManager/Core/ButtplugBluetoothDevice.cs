@@ -5,9 +5,10 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Buttplug.Messages;
+using Buttplug.Core;
 using LanguageExt;
 
-namespace Buttplug.Core
+namespace ButtplugUWPBluetoothManager.Core
 {
     internal abstract class ButtplugBluetoothDevice : ButtplugDevice
     {

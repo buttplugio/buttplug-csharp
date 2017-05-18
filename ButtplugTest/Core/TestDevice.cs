@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Messages;
-using LanguageExt;
 using System.Threading.Tasks;
-using NLog;
 
 namespace ButtplugTest.Core
 {

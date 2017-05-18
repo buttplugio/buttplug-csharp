@@ -1,15 +1,14 @@
-﻿using Buttplug.Core;
-using Buttplug.Messages;
-using Buttplug.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Buttplug.Core;
+using Buttplug.Messages;
 using ButtplugUWPBluetoothManager.Core;
 
-namespace Buttplug.Devices
+namespace ButtplugUWPBluetoothManager.Devices
 {
     internal class FleshlightLaunchBluetoothInfo : IBluetoothDeviceInfo
     {

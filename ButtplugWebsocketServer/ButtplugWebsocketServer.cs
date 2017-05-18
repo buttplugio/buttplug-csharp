@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Buttplug.Core;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using NLog;
-using LanguageExt;
 
 namespace ButtplugWebsocketServer
 {

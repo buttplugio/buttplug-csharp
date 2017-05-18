@@ -1,8 +1,6 @@
-﻿using System;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugTest.Core;
-using LanguageExt;
 using System.Collections.Generic;
 using System.Reflection;
 using Xunit;

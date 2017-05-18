@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Buttplug.Core;
 using Buttplug.Messages;
 using System.Collections.ObjectModel;
@@ -9,9 +8,10 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 using ButtplugKiirooPlatformEmulator;
+using ButtplugUWPBluetoothManager.Core;
+using ButtplugXInputGamepadManager.Core;
 using Microsoft.Win32;
 using NLog;
 using NLog.Config;

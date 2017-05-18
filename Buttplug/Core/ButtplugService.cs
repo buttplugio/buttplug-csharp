@@ -1,8 +1,6 @@
 ﻿using Buttplug.Messages;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Buttplug.Logging;
 
 namespace Buttplug.Core
 {

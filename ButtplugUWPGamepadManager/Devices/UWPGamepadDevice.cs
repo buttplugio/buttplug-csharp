@@ -1,10 +1,10 @@
-﻿using Buttplug.Core;
-using Buttplug.Messages;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Windows.Gaming.Input;
+using Buttplug.Core;
+using Buttplug.Messages;
 
-namespace Buttplug.Devices
+namespace ButtplugUWPGamepadManager.Devices
 {
     internal class UwpGamepadDevice : ButtplugDevice, IEquatable<UwpGamepadDevice>
     {

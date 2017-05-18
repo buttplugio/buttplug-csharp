@@ -1,9 +1,9 @@
-﻿using Buttplug.Devices;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Windows.Gaming.Input;
-using Buttplug.Logging;
+using Buttplug.Core;
+using ButtplugUWPGamepadManager.Devices;
 
-namespace Buttplug.Core
+namespace ButtplugUWPGamepadManager.Core
 {
     internal class UWPGamepadManager : DeviceSubtypeManager
     {
