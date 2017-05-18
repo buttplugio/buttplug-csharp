@@ -7,7 +7,7 @@ namespace Buttplug.Core
     {
         public Log LogMessage { get; }
 
-        public ButtplugLogMessageEventArgs(string aLogLevel, string aMessage)
+        public ButtplugLogMessageEventArgs(ButtplugLogLevel aLogLevel, string aMessage)
         {
             LogMessage = new Log(aLogLevel, aMessage);
         }

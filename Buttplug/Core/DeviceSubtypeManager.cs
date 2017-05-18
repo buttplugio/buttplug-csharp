@@ -3,24 +3,17 @@ using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
-    public interface IDeviceSubtypeManager
-    {
-        event EventHandler<DeviceAddedEventArgs> DeviceAdded;  
-        void StartScanning();
-        void StopScanning();
-    }
-
     public abstract class DeviceSubtypeManager : IDeviceSubtypeManager
     {
-        protected readonly ButtplugLog BpLogger;
-        protected readonly ButtplugLogManager LogManager;
+        protected readonly IButtplugLog BpLogger;
+        protected readonly IButtplugLogManager LogManager;
 
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
 
-        protected DeviceSubtypeManager(ButtplugLogManager aLogManager)
+        protected DeviceSubtypeManager(IButtplugLogManager aLogManager)
         {
             LogManager = aLogManager;
-            BpLogger = aLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            BpLogger = aLogManager.GetLogger(GetType());
             BpLogger.Trace($"Setting up Device Manager {GetType().Name}");
         }
 

@@ -15,7 +15,7 @@ namespace Buttplug.Core
         private readonly BluetoothLEAdvertisementWatcher _bleWatcher;
         private readonly List<ButtplugBluetoothDeviceFactory> _deviceFactories;
 
-        public BluetoothManager(ButtplugLogManager aLogManager) : base(aLogManager)
+        public BluetoothManager(IButtplugLogManager aLogManager) : base(aLogManager)
         {
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             _deviceFactories = new List<ButtplugBluetoothDeviceFactory>();

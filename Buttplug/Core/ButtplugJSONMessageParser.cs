@@ -14,11 +14,11 @@ namespace Buttplug.Core
     internal class ButtplugJsonMessageParser
     {
         private readonly Dictionary<string, Type> _messageTypes;
-        private readonly ButtplugLog _bpLogger;
+        private readonly IButtplugLog _bpLogger;
 
-        public ButtplugJsonMessageParser(ButtplugLogManager aLogManager)
+        public ButtplugJsonMessageParser(IButtplugLogManager aLogManager)
         {
-            _bpLogger = aLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            _bpLogger = aLogManager.GetLogger(GetType());
             _bpLogger.Debug($"Setting up {GetType().Name}");
             IEnumerable<Type> allTypes;
             // Some classes in the library may not load on certain platforms due to missing symbols.

@@ -17,7 +17,7 @@ namespace Buttplug.Core
         private Option<IAsyncOperation<GattCommunicationStatus>> _currentTask;
 
         protected ButtplugBluetoothDevice(
-            ButtplugLogManager aLogManager,
+            IButtplugLogManager aLogManager,
             string aName, 
             BluetoothLEDevice aDevice,
             GattCharacteristic aWriteChr,
@@ -67,7 +67,7 @@ namespace Buttplug.Core
         {
             if (_currentTask.IsSome)
             {
-                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Device is already has a transfer in progress.");
+                return BpLogger.LogErrorMsg(aMsg.Id, "Device already has a transfer in progress.");
             }
             _currentTask =
                 Option<IAsyncOperation<GattCommunicationStatus>>.Some(_writeChr.WriteValueAsync(aBuffer));
@@ -79,7 +79,7 @@ namespace Buttplug.Core
             _currentTask = new OptionNone();
             if (status != GattCommunicationStatus.Success)
             {
-                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, $"GattCommunication Error: {status}");
+                return BpLogger.LogErrorMsg(aMsg.Id, $"GattCommunication Error: {status}");
             }
             return new Ok(aMsg.Id);
         }

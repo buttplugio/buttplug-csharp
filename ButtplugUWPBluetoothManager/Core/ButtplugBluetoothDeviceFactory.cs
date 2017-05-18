@@ -12,14 +12,14 @@ namespace Buttplug.Core
 {
     internal class ButtplugBluetoothDeviceFactory
     {
-        private readonly ButtplugLog _bpLogger;
+        private readonly IButtplugLog _bpLogger;
         private readonly IBluetoothDeviceInfo _deviceInfo;
-        private readonly ButtplugLogManager _buttplugLogManager;
+        private readonly IButtplugLogManager _buttplugLogManager;
 
-        public ButtplugBluetoothDeviceFactory(ButtplugLogManager aLogManager, IBluetoothDeviceInfo aInfo)
+        public ButtplugBluetoothDeviceFactory(IButtplugLogManager aLogManager, IBluetoothDeviceInfo aInfo)
         {
             _buttplugLogManager = aLogManager;
-            _bpLogger = _buttplugLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            _bpLogger = _buttplugLogManager.GetLogger(GetType());
             _bpLogger.Trace($"Creating {GetType().Name}");
             _deviceInfo = aInfo;
         }

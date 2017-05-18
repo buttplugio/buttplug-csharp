@@ -22,7 +22,7 @@ namespace Buttplug.Devices
             new Guid("49535343-1e4d-4bd9-ba61-23c647249616")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(ButtplugLogManager aLogManager,
+        public ButtplugBluetoothDevice CreateDevice(IButtplugLogManager aLogManager,
             BluetoothLEDevice aDevice,
             Dictionary<Guid, GattCharacteristic> aCharacteristics)
         {
@@ -34,7 +34,7 @@ namespace Buttplug.Devices
 
     internal class Kiiroo : ButtplugBluetoothDevice
     {
-        public Kiiroo(ButtplugLogManager aLogManager,
+        public Kiiroo(IButtplugLogManager aLogManager,
             BluetoothLEDevice aDevice,
             GattCharacteristic aWriteChr,
             GattCharacteristic aReadChr) :
@@ -52,7 +52,7 @@ namespace Buttplug.Devices
             var cmdMsg = aMsg as KiirooRawCmd;
             if (cmdMsg is null)
             {
-                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
+                return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
             return await WriteToDevice(cmdMsg, ButtplugBluetoothUtils.WriteString($"{cmdMsg.Position},\n"));
         }

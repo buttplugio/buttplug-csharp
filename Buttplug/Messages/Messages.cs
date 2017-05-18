@@ -130,41 +130,33 @@ namespace Buttplug.Messages
 
     public class RequestLog : ButtplugMessage
     {
-        private string _logLevelImpl;
-
         [JsonProperty(Required = Required.Always)]
-        public string LogLevel
-        {
-            get => _logLevelImpl;
-            set
-            {
-                if (value is null || !ButtplugLogManager.Levels.Contains(value))
-                {
-                    throw new ArgumentException($"Log level {value} is not valid.");
-                }
-                _logLevelImpl = value;
-            }
-        }
+        public ButtplugLogLevel LogLevel { get; set; }
 
         // JSON.Net gets angry if it doesn't have a default initializer.
         public RequestLog() : base(ButtplugConsts.DEFAULT_MSG_ID)
         {
         }
 
-        public RequestLog(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId) => LogLevel = "Off";
+        public RequestLog(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId) => LogLevel = ButtplugLogLevel.Off;
 
         public RequestLog(string aLogLevel, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
         {
-            LogLevel = aLogLevel;
+            ButtplugLogLevel level;
+            if (!Enum.TryParse(aLogLevel, out level))
+            {
+                throw new ArgumentException("Invalid log level");
+            }
+            LogLevel = level;
         }
     }
 
     public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
-        public string LogLevel { get; }
+        public ButtplugLogLevel LogLevel { get; }
         public string LogMessage { get; }
 
-        public Log(string aLogLevel, string aLogMessage) : base(ButtplugConsts.SYSTEM_MSG_ID)
+        public Log(ButtplugLogLevel aLogLevel, string aLogMessage) : base(ButtplugConsts.SYSTEM_MSG_ID)
         {
             LogLevel = aLogLevel;
             LogMessage = aLogMessage;

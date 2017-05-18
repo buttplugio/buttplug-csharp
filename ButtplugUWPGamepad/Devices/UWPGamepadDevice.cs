@@ -10,7 +10,7 @@ namespace Buttplug.Devices
     {
         private readonly Gamepad _device;
 
-        public UwpGamepadDevice(ButtplugLogManager aLogManager, Gamepad d) :
+        public UwpGamepadDevice(IButtplugLogManager aLogManager, Gamepad d) :
             base(aLogManager, "XBox Compatible Gamepad (UWP)")
         {
             _device = d;
@@ -45,7 +45,7 @@ namespace Buttplug.Devices
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
             {
-                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
+                return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
             var v = new GamepadVibration()
             {

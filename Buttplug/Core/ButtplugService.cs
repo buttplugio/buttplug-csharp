@@ -11,14 +11,14 @@ namespace Buttplug.Core
     {
         private readonly ButtplugJsonMessageParser _parser;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        internal readonly ButtplugLog _bpLogger;
+        internal readonly IButtplugLog _bpLogger;
         private readonly DeviceManager _deviceManager;
-        private readonly ButtplugLogManager _bpLogManager;
+        private readonly IButtplugLogManager _bpLogManager;
 
         public ButtplugService()
         {
             _bpLogManager = new ButtplugLogManager();
-            _bpLogger = _bpLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Trace("Setting up ButtplugService");
             _parser = new ButtplugJsonMessageParser(_bpLogManager);
             _deviceManager = new DeviceManager(_bpLogManager);
@@ -43,12 +43,12 @@ namespace Buttplug.Core
             var id = aMsg.Id;
             if (id == 0)
             {
-                return ButtplugUtils.LogWarnMsg(id, _bpLogger,
+                return _bpLogger.LogWarnMsg(id,
                     $"Message Id 0 is reserved for outgoing system messages. Please use another Id.");
             }
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
-                return ButtplugUtils.LogWarnMsg(id, _bpLogger,
+                return _bpLogger.LogWarnMsg(id,
                     $"Message of type {aMsg.GetType().Name} cannot be sent to server");
             }
             switch (aMsg)
@@ -71,7 +71,7 @@ namespace Buttplug.Core
             var msg = _parser.Deserialize(aJsonMsg);
             return await msg.MatchAsync(
                 async x => await SendMessage(x),
-                x => ButtplugUtils.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, _bpLogger,
+                x => _bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID,
                         $"Cannot deserialize json message: {x}"));
         }
 
@@ -80,7 +80,7 @@ namespace Buttplug.Core
             return ButtplugJsonMessageParser.Serialize(aMsg);
         }
 
-        public void AddDeviceSubtypeManager<T>(Func<ButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
+        public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
         {
             _deviceManager.AddDeviceSubtypeManager(aCreateMgrFunc);
         }

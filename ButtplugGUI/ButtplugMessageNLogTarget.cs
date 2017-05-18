@@ -14,7 +14,12 @@ namespace Buttplug.Core
 
             public NLogMessageEventArgs(LogEventInfo aLogEvent)
             {
-                LogMessage = new Log(aLogEvent.Level.Name, aLogEvent.Message);
+                ButtplugLogLevel level;
+                if (!Enum.TryParse(aLogEvent.Level.ToString(), out level))
+                {
+                    throw new ArgumentException("Cannot parse log level");
+                }
+                LogMessage = new Log(level, aLogEvent.Message);
             }
         }
 

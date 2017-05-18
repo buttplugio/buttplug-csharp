@@ -22,7 +22,7 @@ namespace Buttplug.Devices
             new Guid("6e400003-b5a3-f393-e0a9-e50e24dcca9e")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(ButtplugLogManager aLogManager,
+        public ButtplugBluetoothDevice CreateDevice(IButtplugLogManager aLogManager,
                                                     BluetoothLEDevice aDevice,
                                                     Dictionary<Guid, GattCharacteristic> aCharacteristics)
         {
@@ -37,7 +37,7 @@ namespace Buttplug.Devices
     {
 
 
-        public Lovense(ButtplugLogManager aLogManager,
+        public Lovense(IButtplugLogManager aLogManager,
                        BluetoothLEDevice aDevice,
                        GattCharacteristic aWriteChr,
                        GattCharacteristic aReadChr) :
@@ -55,7 +55,7 @@ namespace Buttplug.Devices
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
             {
-                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
+                return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
             var buf = ButtplugBluetoothUtils.WriteString($"Vibrate:{(int)(cmdMsg.Speed * 20)};");
             return await WriteToDevice(aMsg, buf);

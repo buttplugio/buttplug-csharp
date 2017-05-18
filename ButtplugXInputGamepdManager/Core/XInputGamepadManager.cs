@@ -9,7 +9,7 @@ namespace Buttplug.Core
     {
         private readonly List<XInputGamepadDevice> _connectedGamepads;
 
-        public XInputGamepadManager(ButtplugLogManager aLogManager) : base(aLogManager)
+        public XInputGamepadManager(IButtplugLogManager aLogManager) : base(aLogManager)
         {
             _connectedGamepads = new List<XInputGamepadDevice>();
         }

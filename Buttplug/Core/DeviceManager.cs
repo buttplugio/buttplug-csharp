@@ -14,14 +14,14 @@ namespace Buttplug.Core
         private readonly List<IDeviceSubtypeManager> _managers;
         internal Dictionary<uint, ButtplugDevice> _devices { get; }
         private uint _deviceIndex;
-        private readonly ButtplugLog _bpLogger;
-        private readonly ButtplugLogManager _bpLogManager;
+        private readonly IButtplugLog _bpLogger;
+        private readonly IButtplugLogManager _bpLogManager;
         public event EventHandler<MessageReceivedEventArgs> DeviceMessageReceived;
 
-        public DeviceManager(ButtplugLogManager aLogManager)
+        public DeviceManager(IButtplugLogManager aLogManager)
         {
             _bpLogManager = aLogManager;
-            _bpLogger = _bpLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Trace("Setting up DeviceManager");
 
             _devices = new Dictionary<uint, ButtplugDevice>();
@@ -96,10 +96,9 @@ namespace Buttplug.Core
                     {
                         return await _devices[m.DeviceIndex].ParseMessage(m);
                     }
-                    return ButtplugUtils.LogErrorMsg(id, _bpLogger,
-                        $"Dropping message for unknown device index {m.DeviceIndex}");
+                    return _bpLogger.LogErrorMsg(id, $"Dropping message for unknown device index {m.DeviceIndex}");
             }
-            return ButtplugUtils.LogErrorMsg(id, _bpLogger, $"Message type {aMsg.GetType().Name} unhandled by this server.");
+            return _bpLogger.LogErrorMsg(id, $"Message type {aMsg.GetType().Name} unhandled by this server.");
         }
 
         private void StartScanning()
@@ -112,7 +111,7 @@ namespace Buttplug.Core
             _managers.ForEach(m => m.StopScanning());
         }
 
-        public void AddDeviceSubtypeManager<T>(Func<ButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
+        public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
         {
             AddDeviceSubtypeManager(aCreateMgrFunc(_bpLogManager));
         }

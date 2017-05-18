@@ -10,13 +10,13 @@ namespace Buttplug.Core
     {
         public string Name { get; }
         public event EventHandler DeviceRemoved;
-        protected readonly ButtplugLog BpLogger;
+        protected readonly IButtplugLog BpLogger;
         protected Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>> MsgFuncs;
         protected bool IsDisconnected;
 
-        protected ButtplugDevice(ButtplugLogManager aLogManager, string name)
+        protected ButtplugDevice(IButtplugLogManager aLogManager, string name)
         {
-            BpLogger = aLogManager.GetLogger(LogProvider.GetCurrentClassLogger());
+            BpLogger = aLogManager.GetLogger(this.GetType());
             MsgFuncs = new Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>>();
             Name = name;
         }
@@ -41,12 +41,12 @@ namespace Buttplug.Core
         {
             if (IsDisconnected)
             {
-                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger,
+                return BpLogger.LogErrorMsg(aMsg.Id,
                     $"{Name} has disconnected and can no longer process messages.");
             }
             if (!MsgFuncs.ContainsKey(aMsg.GetType()))
             {
-                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger,
+                return BpLogger.LogErrorMsg(aMsg.Id,
                     $"{Name} cannot handle message of type {aMsg.GetType().Name}");
             }
             return await MsgFuncs[aMsg.GetType()](aMsg);

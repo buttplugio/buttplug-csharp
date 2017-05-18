@@ -3,46 +3,24 @@ using System.Collections.Generic;
 using Buttplug.Logging;
 namespace Buttplug.Core
 {
-    public class ButtplugLogManager
+    internal class ButtplugLogManager : IButtplugLogManager
     {
         public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
-        private string _level = "Off";
 
-        public string Level
-        {
-            get => _level;
-            set
-            {
-                if (value is null || !Levels.Contains(value))
-                {
-                    throw new ArgumentException("Invalid Log Level");
-                }
-                _level = value;
-            }
-        }
-
-        public static readonly List<string> Levels = new List<string>()
-        {
-            "Off",
-            "Fatal",
-            "Error",
-            "Warn",
-            "Info",
-            "Debug",
-            "Trace"
-        };
+        public ButtplugLogLevel Level { get; set; }
 
         private void LogMessageHandler(object o, ButtplugLogMessageEventArgs m)
         {
-            if (Levels.IndexOf(m.LogMessage.LogLevel) <= Levels.IndexOf(_level))
+            if (m.LogMessage.LogLevel <= Level)
             {
                 LogMessageReceived?.Invoke(o, m);   
             }
         }
 
-        public ButtplugLog GetLogger(ILog aLogger)
+        public IButtplugLog GetLogger(Type aType)
         {
-            var logger = new ButtplugLog(aLogger);
+            // Just pass the type in instead of traversing the stack to find it.
+            var logger = new ButtplugLog(LogProvider.GetLogger(aType.Name));
             logger.LogMessageReceived += LogMessageHandler;
             return logger;
         }

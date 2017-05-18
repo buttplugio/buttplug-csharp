@@ -27,7 +27,7 @@ namespace Buttplug.Devices
         };
 
         public ButtplugBluetoothDevice CreateDevice(
-            ButtplugLogManager aLogManager,
+            IButtplugLogManager aLogManager,
             BluetoothLEDevice aDevice,
             Dictionary<Guid, GattCharacteristic> aCharacteristics)
         {
@@ -49,7 +49,7 @@ namespace Buttplug.Devices
         private ushort _previousKiirooPosition;
         private ushort _limitedSpeed;
 
-        public FleshlightLaunch(ButtplugLogManager aLogManager,
+        public FleshlightLaunch(IButtplugLogManager aLogManager,
                                 BluetoothLEDevice aDevice,
                                 GattCharacteristic aWriteChr,
                                 GattCharacteristic aButtonNotifyChr,
@@ -78,7 +78,7 @@ namespace Buttplug.Devices
             var x = await _commandChr.WriteValueAsync(ButtplugBluetoothUtils.WriteByteArray(new byte[] { 0 }));
             if (x != GattCommunicationStatus.Success)
             {
-                return ButtplugUtils.LogErrorMsg(0, BpLogger, $"Cannot initialize {Name}!");
+                return BpLogger.LogErrorMsg(0, $"Cannot initialize {Name}!");
             }
             BpLogger.Trace($"{Name} initialized");
             return new Ok(0);
@@ -89,7 +89,7 @@ namespace Buttplug.Devices
             var kiirooCmd = aMsg as KiirooRawCmd;
             if (kiirooCmd is null)
             {
-                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
+                return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
 
             var elapsed = _stopwatch.ElapsedMilliseconds;
@@ -152,7 +152,7 @@ namespace Buttplug.Devices
             var cmdMsg = aMsg as FleshlightLaunchRawCmd;
             if (cmdMsg is null)
             {
-                return ButtplugUtils.LogErrorMsg(aMsg.Id, BpLogger, "Wrong Handler");
+                return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
             return await WriteToDevice(aMsg, ButtplugBluetoothUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));            
         }
