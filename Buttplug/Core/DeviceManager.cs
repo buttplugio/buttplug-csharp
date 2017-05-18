@@ -12,7 +12,7 @@ namespace Buttplug.Core
     internal class DeviceManager
     {
         private readonly List<IDeviceSubtypeManager> _managers;
-        internal Dictionary<uint, ButtplugDevice> _devices { get; }
+        internal Dictionary<uint, IButtplugDevice> _devices { get; }
         private uint _deviceIndex;
         private readonly IButtplugLog _bpLogger;
         private readonly IButtplugLogManager _bpLogManager;
@@ -24,10 +24,15 @@ namespace Buttplug.Core
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Trace("Setting up DeviceManager");
 
-            _devices = new Dictionary<uint, ButtplugDevice>();
+            _devices = new Dictionary<uint, IButtplugDevice>();
             _deviceIndex = 0;
 
             _managers = new List<IDeviceSubtypeManager>();
+        }
+        
+        protected IEnumerable<string> GetAllowedMessageTypesAsStrings(IButtplugDevice aDevice)
+        {
+            return from x in aDevice.GetAllowedMessageTypes() select x.Name;
         }
 
         private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
@@ -40,7 +45,7 @@ namespace Buttplug.Core
             _bpLogger.Debug($"Adding Device {e.Device.Name} at index {_deviceIndex}");
             _devices.Add(_deviceIndex, e.Device);
             e.Device.DeviceRemoved += DeviceRemovedHandler;
-            var msg = new DeviceAdded(_deviceIndex, e.Device.Name, e.Device.GetAllowedMessageTypesAsStrings().ToArray());
+            var msg = new DeviceAdded(_deviceIndex, e.Device.Name, GetAllowedMessageTypesAsStrings(e.Device).ToArray());
             _deviceIndex += 1;
             DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
@@ -86,7 +91,7 @@ namespace Buttplug.Core
                 case RequestDeviceList _:
                     var msgDevices = _devices
                         .Select(d => new DeviceMessageInfo(d.Key, d.Value.Name,
-                            d.Value.GetAllowedMessageTypesAsStrings().ToArray())).ToList();
+                            GetAllowedMessageTypesAsStrings(d.Value).ToArray())).ToList();
                     return new DeviceList(msgDevices.ToArray(), id);
 
                 // If it's a device message, it's most likely not ours.

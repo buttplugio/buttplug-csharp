@@ -80,6 +80,7 @@
     <Compile Include="Core\DeviceManager.cs" />
     <Compile Include="Core\DeviceSubtypeManager.cs" />
     <Compile Include="Core\ButtplugMessage.cs" />
+    <Compile Include="Core\IButtplugDevice.cs" />
     <Compile Include="Core\IButtplugLog.cs" />
     <Compile Include="Core\IButtplugLogManager.cs" />
     <Compile Include="Core\IDeviceSubtypeManager.cs" />

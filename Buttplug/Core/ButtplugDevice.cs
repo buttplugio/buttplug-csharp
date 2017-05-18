@@ -6,7 +6,7 @@ using Buttplug.Logging;
 
 namespace Buttplug.Core
 {
-    public class ButtplugDevice
+    internal class ButtplugDevice : IButtplugDevice
     {
         public string Name { get; }
         public event EventHandler DeviceRemoved;
@@ -30,11 +30,6 @@ namespace Buttplug.Core
         {
             IsDisconnected = true;
             DeviceRemoved?.Invoke(this, new EventArgs());
-        }
-
-        public IEnumerable<string> GetAllowedMessageTypesAsStrings()
-        {
-            return from x in MsgFuncs.Keys select x.Name;
         }
 
         public async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg)
