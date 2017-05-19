@@ -7,6 +7,7 @@ namespace Buttplug.Core
     public interface IButtplugDevice
     {
         string Name { get; }
+        string Identifier { get; }
         event EventHandler DeviceRemoved;
         IEnumerable<Type> GetAllowedMessageTypes();
         Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg);

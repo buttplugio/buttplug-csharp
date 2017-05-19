@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Core;
 
-namespace ButtplugUWPBluetoothManager.Core
+namespace Buttplug.Bluetooth
 {
-    interface IBluetoothDeviceInterface
+    public interface IBluetoothDeviceInterface
     {
         string Name { get; }
         Task<ButtplugMessage> WriteValue(uint aMsgId, uint aCharacteristicIndex, byte[] aValue);

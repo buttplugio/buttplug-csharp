@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Buttplug.Core;
 using Buttplug.Messages;
+using Buttplug.Bluetooth;
 
 namespace ButtplugUWPBluetoothManager.Core
 {
@@ -16,14 +16,16 @@ namespace ButtplugUWPBluetoothManager.Core
 
         private readonly BluetoothLEAdvertisementWatcher _bleWatcher;
         private readonly List<ButtplugBluetoothDeviceFactory> _deviceFactories;
+        private List<ulong> _currentlyConnecting;
 
         public UWPBluetoothManager(IButtplugLogManager aLogManager) : base(aLogManager)
         {
+            _currentlyConnecting = new List<ulong>();
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             _deviceFactories = new List<ButtplugBluetoothDeviceFactory>();
             AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(t => t.GetTypes())
-                .Where(t => t.IsClass && t.Namespace == "Buttplug.Devices" && typeof(IBluetoothDeviceInfo).IsAssignableFrom(t))
+                .Where(t => t.IsClass && t.Namespace == "Buttplug.Bluetooth.Devices" && typeof(IBluetoothDeviceInfo).IsAssignableFrom(t))
                 .ToList()
                 .ForEach(c =>
                 {
@@ -41,7 +43,12 @@ namespace ButtplugUWPBluetoothManager.Core
         private async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher o,
                                                   BluetoothLEAdvertisementReceivedEventArgs e)
         {
-            BpLogger.Trace($"Got BLE Advertisement for device: {e.Advertisement.LocalName} / {e.BluetoothAddress}");
+            //BpLogger.Trace($"Got BLE Advertisement for device: {e.Advertisement.LocalName} / {e.BluetoothAddress}");
+            if (_currentlyConnecting.Contains(e.BluetoothAddress))
+            {
+                //BpLogger.Trace($"Ignoring advertisement for already connecting device: {e.Advertisement.LocalName} / {e.BluetoothAddress}");
+                return;
+            }
             var factories = from x in _deviceFactories
                             where x.MayBeDevice(e.Advertisement)
                             select x;
@@ -56,10 +63,11 @@ namespace ButtplugUWPBluetoothManager.Core
                 }
                 else
                 {
-                    BpLogger.Trace("No BLE factories found for device.");
+                    //BpLogger.Trace("No BLE factories found for device.");
                 }
                 return;
             }
+            _currentlyConnecting.Add(e.BluetoothAddress);
             var factory = buttplugBluetoothDeviceFactories.First();
             BpLogger.Debug($"Found BLE factory: {factory.GetType().Name}");
             // If we actually have a factory for this device, go ahead and create the device
@@ -80,15 +88,8 @@ namespace ButtplugUWPBluetoothManager.Core
                 }
             });
 
-            await l.IfSomeAsync(async d =>
-            {
-                if (await d.Initialize() is Error)
-                {
-                    return;
-                }
-                InvokeDeviceAdded(new DeviceAddedEventArgs(d));
-            });
-
+            l.IfSome(d => InvokeDeviceAdded(new DeviceAddedEventArgs(d)));
+            _currentlyConnecting.Remove(e.BluetoothAddress);
         }
 
         public override void StartScanning()

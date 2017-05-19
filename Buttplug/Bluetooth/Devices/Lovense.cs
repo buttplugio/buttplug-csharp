@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Core;
 using Buttplug.Messages;
-using ButtplugUWPBluetoothManager.Core;
 
-namespace Buttplug.Devices
+namespace Buttplug.Bluetooth.Devices
 {
     internal class LovenseBluetoothInfo : IBluetoothDeviceInfo
     {
@@ -37,16 +33,14 @@ namespace Buttplug.Devices
         }
     }
 
-    internal class Lovense : ButtplugDevice
+    internal class Lovense : ButtplugBluetoothDevice
     {
-        private IBluetoothDeviceInterface _interface;
-
         public Lovense(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface) :
             base(aLogManager,
-                 $"Lovense Device ({aInterface.Name})")
+                 $"Lovense Device ({aInterface.Name})",
+                 aInterface)
         {
-            _interface = aInterface;
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
         }
 
@@ -57,15 +51,9 @@ namespace Buttplug.Devices
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
-            var buf = ButtplugBluetoothUtils.WriteString($"Vibrate:{(int)(cmdMsg.Speed * 20)};");
-            return await _interface.WriteValue(aMsg.Id, 
+            return await Interface.WriteValue(aMsg.Id, 
                 (uint)LovenseBluetoothInfo.Chrs.Tx,
                 Encoding.ASCII.GetBytes($"Vibrate:{(int)(cmdMsg.Speed * 20)};"));
-        }
-
-        public override async Task<ButtplugMessage> Initialize()
-        {
-            return new Ok(ButtplugConsts.SYSTEM_MSG_ID);
         }
     }
 }

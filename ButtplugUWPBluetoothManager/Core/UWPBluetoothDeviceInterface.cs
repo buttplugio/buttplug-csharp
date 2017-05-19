@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
-using Windows.Storage.Streams;
 using Buttplug.Messages;
 using Buttplug.Core;
 using LanguageExt;
+using Buttplug.Bluetooth;
 
 namespace ButtplugUWPBluetoothManager.Core
 {
@@ -19,11 +18,10 @@ namespace ButtplugUWPBluetoothManager.Core
             get => _bleDevice.Name;
             set => throw new ArgumentException("Name cannot be set");
         }
-        private BluetoothLEDevice _bleDevice;
-        private GattCharacteristic[] _gattCharacteristics;
+        private readonly BluetoothLEDevice _bleDevice;
+        private readonly GattCharacteristic[] _gattCharacteristics;
         private Option<IAsyncOperation<GattCommunicationStatus>> _currentTask;
-        private bool _isDisconnected;
-        private IButtplugLog _bpLogger;
+        private readonly IButtplugLog _bpLogger;
         public event EventHandler DeviceRemoved;
 
         public UWPBluetoothDeviceInterface(
@@ -34,7 +32,6 @@ namespace ButtplugUWPBluetoothManager.Core
             _bpLogger = aLogManager.GetLogger(GetType());
             _bleDevice = aDevice;
             _gattCharacteristics = aCharacteristics;
-            _isDisconnected = false;
             _bleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
         }
 
@@ -66,7 +63,7 @@ namespace ButtplugUWPBluetoothManager.Core
 
             _currentTask =
                 Option<IAsyncOperation<GattCommunicationStatus>>.Some(_gattCharacteristics[aCharacteristicIndex].WriteValueAsync(aValue.AsBuffer()));
-            GattCommunicationStatus status = GattCommunicationStatus.Success;
+            var status = GattCommunicationStatus.Success;
             await _currentTask.IfSomeAsync(async x =>
             {
                 status = await x;

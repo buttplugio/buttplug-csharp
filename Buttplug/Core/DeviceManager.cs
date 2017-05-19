@@ -34,7 +34,10 @@ namespace Buttplug.Core
 
         private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
         {
-            if (_devices.ContainsValue(e.Device))
+            var duplicates = from x in _devices.Values
+                where x.Identifier == e.Device.Identifier
+                select x;
+            if (duplicates.Any())
             {
                 _bpLogger.Trace($"Already have device {e.Device.Name} in Devices list");
                 return;

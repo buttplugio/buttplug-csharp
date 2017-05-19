@@ -7,26 +7,20 @@ namespace ButtplugTest.Core
     internal class TestDevice : ButtplugDevice
     {
         public TestDevice(ButtplugLogManager aLogManager, string aName) :
-            base(aLogManager, aName)
+            base(aLogManager, aName, "Test")
         {
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
         }
 
-        public async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
+        public Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
             //BpLogger.Trace("Test Device got SingleMotorVibrateMessage");
-            return new Ok(aMsg.Id);
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
         public void RemoveDevice()
         {
             InvokeDeviceRemoved();
         }
-
-        public override async Task<ButtplugMessage> Initialize()
-        {
-            return new Ok(ButtplugConsts.SYSTEM_MSG_ID);
-        }
-
     }
 }

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Core;
 using Buttplug.Messages;
-using ButtplugUWPBluetoothManager.Core;
 
-namespace Buttplug.Devices
+namespace Buttplug.Bluetooth.Devices
 {
     internal class KiirooBluetoothInfo : IBluetoothDeviceInfo
     {
@@ -35,17 +31,14 @@ namespace Buttplug.Devices
         }
     }
 
-    internal class Kiiroo : ButtplugDevice
+    internal class Kiiroo : ButtplugBluetoothDevice
     {
-        private IBluetoothDeviceInterface _interface;
-
         public Kiiroo(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface) :
             base(aLogManager,
-                $"Kiiroo {aInterface.Name}"
-                 )
+                $"Kiiroo {aInterface.Name}",
+                aInterface)
         {
-            _interface = aInterface;
             MsgFuncs.Add(typeof(KiirooRawCmd), HandleKiirooRawCmd);
         }
 
@@ -56,14 +49,9 @@ namespace Buttplug.Devices
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
-            return await _interface.WriteValue(cmdMsg.Id,
+            return await Interface.WriteValue(cmdMsg.Id,
                 (uint)KiirooBluetoothInfo.Chrs.Tx,
                 Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"));
-        }
-
-        public override async Task<ButtplugMessage> Initialize()
-        {
-            return new Ok(ButtplugConsts.SYSTEM_MSG_ID);
         }
     }
 }

@@ -6,36 +6,15 @@ using SharpDX.XInput;
 
 namespace ButtplugXInputGamepadManager.Devices
 {
-    internal class XInputGamepadDevice : ButtplugDevice, IEquatable<XInputGamepadDevice>
+    internal class XInputGamepadDevice : ButtplugDevice
     {
         private readonly Controller _device;
 
         public XInputGamepadDevice(IButtplugLogManager aLogManager, Controller d) :
-            base(aLogManager, "XBox Compatible Gamepad (XInput)")
+            base(aLogManager, "XBox Compatible Gamepad (XInput)", d.UserIndex.ToString())
         {
             _device = d;
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as XInputGamepadDevice);
-        }
-
-        public bool Equals(XInputGamepadDevice other)
-        {
-            if (ReferenceEquals(other, null))
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            // This could get weird based on connects/disconnects?
-            return _device.UserIndex == other._device.UserIndex;
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -55,11 +34,6 @@ namespace ButtplugXInputGamepadManager.Devices
             };
             _device.SetVibration(v);
             return new Ok(aMsg.Id);
-        }
-
-        public override async Task<ButtplugMessage> Initialize()
-        {
-            return new Ok(ButtplugConsts.SYSTEM_MSG_ID);
         }
     }
 }

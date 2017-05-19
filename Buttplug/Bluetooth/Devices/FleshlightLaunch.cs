@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Core;
 using Buttplug.Messages;
-using ButtplugUWPBluetoothManager.Core;
 
-namespace Buttplug.Devices
+namespace Buttplug.Bluetooth.Devices
 {
-
     internal class FleshlightLaunchBluetoothInfo : IBluetoothDeviceInfo
     {
         public enum Chrs : uint
@@ -42,9 +37,8 @@ namespace Buttplug.Devices
         }
     }
 
-    internal class FleshlightLaunch : ButtplugDevice
+    internal class FleshlightLaunch : ButtplugBluetoothDevice
     {
-        private IBluetoothDeviceInterface _bleInterface;
         private readonly Stopwatch _stopwatch;
         private readonly ushort _previousSpeed;
         private readonly ushort _previousPosition;
@@ -54,9 +48,9 @@ namespace Buttplug.Devices
         public FleshlightLaunch(IButtplugLogManager aLogManager,
                                 IBluetoothDeviceInterface aInterface) :
             base(aLogManager,
-                 "Fleshlight Launch")
+                 "Fleshlight Launch",
+                 aInterface)
         {
-            _bleInterface = aInterface;
             _stopwatch = new Stopwatch();
             _previousSpeed = 0;
             _previousPosition = 0;
@@ -69,7 +63,7 @@ namespace Buttplug.Devices
         public override async Task<ButtplugMessage> Initialize()
         {
             BpLogger.Trace($"Initializing {Name}");
-            return await _bleInterface.WriteValue(ButtplugConsts.SYSTEM_MSG_ID,
+            return await Interface.WriteValue(ButtplugConsts.SYSTEM_MSG_ID,
                 (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd,
                 new byte[] { 0 });
         }
@@ -144,7 +138,7 @@ namespace Buttplug.Devices
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
-            return await _bleInterface.WriteValue(aMsg.Id, 
+            return await Interface.WriteValue(aMsg.Id, 
                 (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx,
                 new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed });            
         }

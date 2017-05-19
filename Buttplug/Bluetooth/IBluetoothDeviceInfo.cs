@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Core;
 
-namespace ButtplugUWPBluetoothManager.Core
+namespace Buttplug.Bluetooth
 {
     internal interface IBluetoothDeviceInfo
     {

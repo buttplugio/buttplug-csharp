@@ -8,16 +8,20 @@ namespace Buttplug.Core
     internal abstract class ButtplugDevice : IButtplugDevice
     {
         public string Name { get; }
+        public string Identifier { get; }
         public event EventHandler DeviceRemoved;
         protected readonly IButtplugLog BpLogger;
         protected Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>> MsgFuncs;
         protected bool IsDisconnected;
 
-        protected ButtplugDevice(IButtplugLogManager aLogManager, string name)
+        protected ButtplugDevice(IButtplugLogManager aLogManager, 
+            string aName,
+            string aIdentifier)
         {
             BpLogger = aLogManager.GetLogger(this.GetType());
             MsgFuncs = new Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>>();
-            Name = name;
+            Name = aName;
+            Identifier = aIdentifier;
         }
 
         public IEnumerable<Type> GetAllowedMessageTypes()
@@ -46,6 +50,9 @@ namespace Buttplug.Core
             return await MsgFuncs[aMsg.GetType()](aMsg);
         }
 
-        public abstract Task<ButtplugMessage> Initialize();
+        public virtual Task<ButtplugMessage> Initialize()
+        {
+            return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SYSTEM_MSG_ID));
+        }
     }
 }

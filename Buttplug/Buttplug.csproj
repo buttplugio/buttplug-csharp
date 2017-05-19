@@ -54,6 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
+    <Compile Include="Bluetooth\ButtplugBluetoothDevice.cs" />
+    <Compile Include="Bluetooth\Devices\FleshlightLaunch.cs" />
+    <Compile Include="Bluetooth\Devices\Kiiroo.cs" />
+    <Compile Include="Bluetooth\Devices\Lovense.cs" />
+    <Compile Include="Bluetooth\IBluetoothDeviceInfo.cs" />
+    <Compile Include="Bluetooth\IBluetoothDeviceInterface.cs" />
     <Compile Include="Core\ButtplugConsts.cs" />
     <Compile Include="Core\ButtplugDeviceMessage.cs" />
     <Compile Include="Core\ButtplugJsonMessageParser.cs" />

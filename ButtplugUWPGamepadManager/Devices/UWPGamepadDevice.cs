@@ -6,35 +6,15 @@ using Buttplug.Messages;
 
 namespace ButtplugUWPGamepadManager.Devices
 {
-    internal class UwpGamepadDevice : ButtplugDevice, IEquatable<UwpGamepadDevice>
+    internal class UwpGamepadDevice : ButtplugDevice
     {
         private readonly Gamepad _device;
 
         public UwpGamepadDevice(IButtplugLogManager aLogManager, Gamepad d) :
-            base(aLogManager, "XBox Compatible Gamepad (UWP)")
+            base(aLogManager, "XBox Compatible Gamepad (UWP)", d.User.ToString())
         {
             _device = d;
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as UwpGamepadDevice);
-        }
-
-        public bool Equals(UwpGamepadDevice other)
-        {
-            if (ReferenceEquals(other, null))
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-            // UWP Should always hand us matching devices.
-            return _device == other._device;
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -54,11 +34,6 @@ namespace ButtplugUWPGamepadManager.Devices
             };
             _device.Vibration = v;
             return new Ok(aMsg.Id);
-        }
-
-        public override async Task<ButtplugMessage> Initialize()
-        {
-            return new Ok(ButtplugConsts.SYSTEM_MSG_ID);
         }
     }
 }

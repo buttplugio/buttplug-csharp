@@ -7,6 +7,7 @@ using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Buttplug.Messages;
 using Buttplug.Core;
+using Buttplug.Bluetooth;
 
 namespace ButtplugUWPBluetoothManager.Core
 {
