@@ -2,20 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Buttplug.Core;
+using Buttplug.Messages;
 
 namespace ButtplugUWPBluetoothManager.Core
 {
-    public class BluetoothManager : DeviceSubtypeManager
+    public class UWPBluetoothManager : DeviceSubtypeManager
     {
         private const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
         private readonly BluetoothLEAdvertisementWatcher _bleWatcher;
         private readonly List<ButtplugBluetoothDeviceFactory> _deviceFactories;
 
-        public BluetoothManager(IButtplugLogManager aLogManager) : base(aLogManager)
+        public UWPBluetoothManager(IButtplugLogManager aLogManager) : base(aLogManager)
         {
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             _deviceFactories = new List<ButtplugBluetoothDeviceFactory>();
@@ -36,7 +38,7 @@ namespace ButtplugUWPBluetoothManager.Core
             _bleWatcher.Received += OnAdvertisementReceived;
         }
 
-        public async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher o,
+        private async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher o,
                                                   BluetoothLEAdvertisementReceivedEventArgs e)
         {
             BpLogger.Trace($"Got BLE Advertisement for device: {e.Advertisement.LocalName} / {e.BluetoothAddress}");
@@ -62,7 +64,7 @@ namespace ButtplugUWPBluetoothManager.Core
             BpLogger.Debug($"Found BLE factory: {factory.GetType().Name}");
             // If we actually have a factory for this device, go ahead and create the device
             Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
-            Option<ButtplugDevice> l = null;
+            Option<IButtplugDevice> l = null;
             dev.IfSome(async d =>
             {
                 // If a device is turned on after scanning has started, windows seems to lose the
@@ -77,7 +79,16 @@ namespace ButtplugUWPBluetoothManager.Core
                     BpLogger.Error($"Cannot connect to device {e.Advertisement.LocalName} {e.BluetoothAddress}: {ex.Message}");
                 }
             });
-            l.IfSome(d => InvokeDeviceAdded(new DeviceAddedEventArgs(d)));
+
+            await l.IfSomeAsync(async d =>
+            {
+                if (await d.Initialize() is Error)
+                {
+                    return;
+                }
+                InvokeDeviceAdded(new DeviceAddedEventArgs(d));
+            });
+
         }
 
         public override void StartScanning()

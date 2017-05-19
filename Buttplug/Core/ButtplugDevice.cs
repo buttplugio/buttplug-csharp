@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Buttplug.Messages;
 
 namespace Buttplug.Core
 {
-    internal class ButtplugDevice : IButtplugDevice
+    internal abstract class ButtplugDevice : IButtplugDevice
     {
         public string Name { get; }
         public event EventHandler DeviceRemoved;
@@ -44,5 +45,7 @@ namespace Buttplug.Core
             }
             return await MsgFuncs[aMsg.GetType()](aMsg);
         }
+
+        public abstract Task<ButtplugMessage> Initialize();
     }
 }

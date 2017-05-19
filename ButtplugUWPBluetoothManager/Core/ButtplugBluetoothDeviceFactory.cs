@@ -33,21 +33,21 @@ namespace ButtplugUWPBluetoothManager.Core
             return !aAdvertisement.ServiceUuids.Any() || _deviceInfo.Services.Union(aAdvertisement.ServiceUuids).Any();
         }
 
-        public async Task<Option<ButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice)
+        public async Task<Option<IButtplugDevice>> CreateDeviceAsync(BluetoothLEDevice aDevice)
         {
             // GetGattServicesForUuidAsync is 15063 only
             var srvResult = await aDevice.GetGattServicesForUuidAsync(_deviceInfo.Services[0], BluetoothCacheMode.Cached);
             if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
             {
                 _bpLogger.Trace("Cannot find service for device");
-                return Option<ButtplugDevice>.None;
+                return Option<IButtplugDevice>.None;
             }
             var service = srvResult.Services.First();
 
             var chrResult = await service.GetCharacteristicsAsync();
             if (chrResult.Status != GattCommunicationStatus.Success)
             {
-                return Option<ButtplugDevice>.None;
+                return Option<IButtplugDevice>.None;
             }
 
             var chrs = from x in chrResult.Characteristics
@@ -59,13 +59,17 @@ namespace ButtplugUWPBluetoothManager.Core
             {
                 return new OptionNone();
             }
-            var device = _deviceInfo.CreateDevice(_buttplugLogManager, aDevice, gattCharacteristics.ToDictionary(x => x.Uuid, x => x));
+             
+            var bleInterface = new UWPBluetoothDeviceInterface(_buttplugLogManager, 
+                aDevice, gattCharacteristics);
+
+            var device = _deviceInfo.CreateDevice(_buttplugLogManager, bleInterface);
             if (await device.Initialize() is Ok)
             {
-                return Option<ButtplugDevice>.Some(device);
+                return Option<IButtplugDevice>.Some(device);
             }
             // If initialization fails, don't actually send the message back. Just return null, we'll have the info in the logs.
-            return Option<ButtplugDevice>.None;
+            return Option<IButtplugDevice>.None;
         }
     }
 }

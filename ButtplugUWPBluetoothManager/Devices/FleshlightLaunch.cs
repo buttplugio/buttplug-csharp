@@ -8,10 +8,18 @@ using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugUWPBluetoothManager.Core;
 
-namespace ButtplugUWPBluetoothManager.Devices
+namespace Buttplug.Devices
 {
+
     internal class FleshlightLaunchBluetoothInfo : IBluetoothDeviceInfo
     {
+        public enum Chrs : uint
+        {
+            Tx = 0,
+            Rx,
+            Cmd,
+            Battery
+        }
         public string[] Names { get; } = { "Launch" };
         public Guid[] Services { get; } = { new Guid("88f80580-0000-01e6-aace-0002a5d5c51b") };
 
@@ -25,23 +33,18 @@ namespace ButtplugUWPBluetoothManager.Devices
             new Guid("88f80583-0000-01e6-aace-0002a5d5c51b")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(
+        public IButtplugDevice CreateDevice(
             IButtplugLogManager aLogManager,
-            BluetoothLEDevice aDevice,
-            Dictionary<Guid, GattCharacteristic> aCharacteristics)
+            IBluetoothDeviceInterface aInterface)
         {
             return new FleshlightLaunch(aLogManager,
-                                        aDevice,
-                                        aCharacteristics[Characteristics[0]],
-                                        aCharacteristics[Characteristics[1]],
-                                        aCharacteristics[Characteristics[2]]);
+                                        aInterface);
         }
     }
 
-    internal class FleshlightLaunch : ButtplugBluetoothDevice
+    internal class FleshlightLaunch : ButtplugDevice
     {
-        private readonly GattCharacteristic _buttonNotifyChr;
-        private readonly GattCharacteristic _commandChr;
+        private IBluetoothDeviceInterface _bleInterface;
         private readonly Stopwatch _stopwatch;
         private readonly ushort _previousSpeed;
         private readonly ushort _previousPosition;
@@ -49,19 +52,11 @@ namespace ButtplugUWPBluetoothManager.Devices
         private ushort _limitedSpeed;
 
         public FleshlightLaunch(IButtplugLogManager aLogManager,
-                                BluetoothLEDevice aDevice,
-                                GattCharacteristic aWriteChr,
-                                GattCharacteristic aButtonNotifyChr,
-                                GattCharacteristic aCommandChr) :
+                                IBluetoothDeviceInterface aInterface) :
             base(aLogManager,
-                 "Fleshlight Launch",
-                 aDevice,
-                 aWriteChr,
-                 aButtonNotifyChr)
+                 "Fleshlight Launch")
         {
-            BleDevice = aDevice;
-            _buttonNotifyChr = _readChr;
-            _commandChr = aCommandChr;
+            _bleInterface = aInterface;
             _stopwatch = new Stopwatch();
             _previousSpeed = 0;
             _previousPosition = 0;
@@ -74,13 +69,9 @@ namespace ButtplugUWPBluetoothManager.Devices
         public override async Task<ButtplugMessage> Initialize()
         {
             BpLogger.Trace($"Initializing {Name}");
-            var x = await _commandChr.WriteValueAsync(ButtplugBluetoothUtils.WriteByteArray(new byte[] { 0 }));
-            if (x != GattCommunicationStatus.Success)
-            {
-                return BpLogger.LogErrorMsg(0, $"Cannot initialize {Name}!");
-            }
-            BpLogger.Trace($"{Name} initialized");
-            return new Ok(0);
+            return await _bleInterface.WriteValue(ButtplugConsts.SYSTEM_MSG_ID,
+                (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd,
+                new byte[] { 0 });
         }
 
         public async Task<ButtplugMessage> HandleKiirooRawCmd(ButtplugDeviceMessage aMsg)
@@ -153,7 +144,9 @@ namespace ButtplugUWPBluetoothManager.Devices
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
-            return await WriteToDevice(aMsg, ButtplugBluetoothUtils.WriteByteArray(new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }));            
+            return await _bleInterface.WriteValue(aMsg.Id, 
+                (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx,
+                new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed });            
         }
     }
 }

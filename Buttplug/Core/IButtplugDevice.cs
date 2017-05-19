@@ -10,5 +10,6 @@ namespace Buttplug.Core
         event EventHandler DeviceRemoved;
         IEnumerable<Type> GetAllowedMessageTypes();
         Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg);
+        Task<ButtplugMessage> Initialize();
     }
 }

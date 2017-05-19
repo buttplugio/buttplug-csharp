@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
@@ -7,10 +8,16 @@ using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugUWPBluetoothManager.Core;
 
-namespace ButtplugUWPBluetoothManager.Devices
+namespace Buttplug.Devices
 {
     internal class LovenseBluetoothInfo : IBluetoothDeviceInfo
     {
+        public enum Chrs : uint
+        {
+            Tx = 0,
+            Rx
+        }
+
         public Guid[] Services { get; } = { new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e") };
         public string[] Names { get; } = { "LVS-S001", "LVS-Z001" };
 
@@ -22,31 +29,24 @@ namespace ButtplugUWPBluetoothManager.Devices
             new Guid("6e400003-b5a3-f393-e0a9-e50e24dcca9e")
         };
 
-        public ButtplugBluetoothDevice CreateDevice(IButtplugLogManager aLogManager,
-                                                    BluetoothLEDevice aDevice,
-                                                    Dictionary<Guid, GattCharacteristic> aCharacteristics)
+        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
+            IBluetoothDeviceInterface aInterface)
         {
             return new Lovense(aLogManager,
-                               aDevice,
-                               aCharacteristics[Characteristics[0]],
-                               aCharacteristics[Characteristics[1]]);
+                               aInterface);
         }
     }
 
-    internal class Lovense : ButtplugBluetoothDevice
+    internal class Lovense : ButtplugDevice
     {
-
+        private IBluetoothDeviceInterface _interface;
 
         public Lovense(IButtplugLogManager aLogManager,
-                       BluetoothLEDevice aDevice,
-                       GattCharacteristic aWriteChr,
-                       GattCharacteristic aReadChr) :
+                       IBluetoothDeviceInterface aInterface) :
             base(aLogManager,
-                 $"Lovense Device ({aDevice.Name})", 
-                 aDevice,
-                 aWriteChr,
-                 aReadChr)
+                 $"Lovense Device ({aInterface.Name})")
         {
+            _interface = aInterface;
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
         }
 
@@ -58,7 +58,14 @@ namespace ButtplugUWPBluetoothManager.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
             }
             var buf = ButtplugBluetoothUtils.WriteString($"Vibrate:{(int)(cmdMsg.Speed * 20)};");
-            return await WriteToDevice(aMsg, buf);
+            return await _interface.WriteValue(aMsg.Id, 
+                (uint)LovenseBluetoothInfo.Chrs.Tx,
+                Encoding.ASCII.GetBytes($"Vibrate:{(int)(cmdMsg.Speed * 20)};"));
+        }
+
+        public override async Task<ButtplugMessage> Initialize()
+        {
+            return new Ok(ButtplugConsts.SYSTEM_MSG_ID);
         }
     }
 }

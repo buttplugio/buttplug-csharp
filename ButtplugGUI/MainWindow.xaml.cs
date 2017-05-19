@@ -111,7 +111,7 @@ namespace ButtplugGUI
             _bpServer = new ButtplugService();
             _bpServer.MessageReceived += OnMessageReceived;
 #if (!WIN7)
-            _bpServer.AddDeviceSubtypeManager((x) => new BluetoothManager(x));
+            _bpServer.AddDeviceSubtypeManager((x) => new UWPBluetoothManager(x));
 #endif
             _bpServer.AddDeviceSubtypeManager((x) => new XInputGamepadManager(x));
             _devices = new DeviceList();

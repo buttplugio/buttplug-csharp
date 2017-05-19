@@ -55,5 +55,10 @@ namespace ButtplugUWPGamepadManager.Devices
             _device.Vibration = v;
             return new Ok(aMsg.Id);
         }
+
+        public override async Task<ButtplugMessage> Initialize()
+        {
+            return new Ok(ButtplugConsts.SYSTEM_MSG_ID);
+        }
     }
 }

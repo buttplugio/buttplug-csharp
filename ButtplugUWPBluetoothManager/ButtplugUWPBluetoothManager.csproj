@@ -64,11 +64,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\BluetoothManager.cs" />
-    <Compile Include="Core\ButtplugBluetoothDevice.cs" />
+    <Compile Include="Core\UWPBluetoothManager.cs" />
+    <Compile Include="Core\UWPBluetoothDeviceInterface.cs" />
     <Compile Include="Core\ButtplugBluetoothDeviceFactory.cs" />
     <Compile Include="Core\ButtplugBluetoothUtils.cs" />
     <Compile Include="Core\IBluetoothDeviceInfo.cs" />
+    <Compile Include="Core\IBluetoothDeviceInterface.cs" />
     <Compile Include="Devices\FleshlightLaunch.cs" />
     <Compile Include="Devices\Kiiroo.cs" />
     <Compile Include="Devices\Lovense.cs" />

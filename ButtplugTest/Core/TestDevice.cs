@@ -23,5 +23,10 @@ namespace ButtplugTest.Core
             InvokeDeviceRemoved();
         }
 
+        public override async Task<ButtplugMessage> Initialize()
+        {
+            return new Ok(ButtplugConsts.SYSTEM_MSG_ID);
+        }
+
     }
 }

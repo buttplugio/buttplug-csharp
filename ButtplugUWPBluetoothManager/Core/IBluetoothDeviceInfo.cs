@@ -12,6 +12,6 @@ namespace ButtplugUWPBluetoothManager.Core
         Guid[] Services { get; }
         Guid[] Characteristics { get; }
 
-        ButtplugBluetoothDevice CreateDevice(IButtplugLogManager aLogManager, BluetoothLEDevice aDevice, Dictionary<Guid, GattCharacteristic> aCharacteristics);
+        IButtplugDevice CreateDevice(IButtplugLogManager aLogManager, IBluetoothDeviceInterface aDeviceInterface);
     }
 }
