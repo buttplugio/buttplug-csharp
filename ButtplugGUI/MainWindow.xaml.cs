@@ -18,6 +18,8 @@ using Microsoft.Win32;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using SharpRaven;
+using SharpRaven.Data;
 
 namespace ButtplugGUI
 {
@@ -83,6 +85,9 @@ namespace ButtplugGUI
 
         public MainWindow()
         {
+            // Add the event handler for handling non-UI thread exceptions to the event. 
+            AppDomain.CurrentDomain.UnhandledException += SendExceptionToSentry;
+
             _logs = new LogList();
             _logTarget = new ButtplugGUIMessageNLogTarget(_logs, Dispatcher.Thread);
             // External Logger Setup
@@ -135,6 +140,12 @@ namespace ButtplugGUI
                 AboutVersionNumber.MouseDown += GithubRequestNavigate;
             }
             Title = $"Buttplug {AboutVersionNumber.Text}";
+        }
+
+        public static void SendExceptionToSentry(object o, UnhandledExceptionEventArgs e)
+        {
+            var _ravenClient = new RavenClient("https://2e376d00cdcb44bfb2140c1cf000d73b:1fa6980aeefa4b048b866a450ee9ad71@sentry.io/170313");
+            _ravenClient.Capture(new SentryEvent(e.ExceptionObject as Exception));
         }
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
