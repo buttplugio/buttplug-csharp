@@ -76,21 +76,21 @@ namespace ButtplugUWPBluetoothManager.Core
             return new Ok(aMsgId);
         }
 
-        public async Task<byte[]> ReadValue(uint aCharacteristicIndex)
+        public Task<byte[]> ReadValue(uint aCharacteristicIndex)
         {
-            return new byte[]{};
+            return Task.FromResult(new byte[]{});
         }
 
-        public async Task<ButtplugMessage> Subscribe(uint aMsgId,
+        public Task<ButtplugMessage> Subscribe(uint aMsgId,
             uint aCharacertisticIndex)
         {
-            return _bpLogger.LogErrorMsg(aMsgId, "Not implemented.");
+            return Task.FromResult<ButtplugMessage>(_bpLogger.LogErrorMsg(aMsgId, "Not implemented."));
         }
 
-        public async Task<ButtplugMessage> Unsubscribe(uint aMsgId,
+        public Task<ButtplugMessage> Unsubscribe(uint aMsgId,
             uint aCharacertisticIndex)
         {
-            return _bpLogger.LogErrorMsg(aMsgId, "Not implemented.");
+            return Task.FromResult<ButtplugMessage>(_bpLogger.LogErrorMsg(aMsgId, "Not implemented."));
         }
     }
 }
