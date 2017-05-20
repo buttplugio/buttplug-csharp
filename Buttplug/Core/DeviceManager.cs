@@ -59,7 +59,7 @@ namespace Buttplug.Core
             }
             var device = (ButtplugDevice) o;
             // The device itself will fire the remove event, so look it up in the dictionary and translate that for clients.
-            var entry = (from x in _devices where x.Value == device select x).ToList();
+            var entry = (from x in _devices where x.Value.Identifier == device.Identifier select x).ToList();
             if (!entry.Any())
             {
                 _bpLogger.Error("Got DeviceRemoved Event from object that is not in devices dictionary");
@@ -70,6 +70,8 @@ namespace Buttplug.Core
             }
             foreach (var pair in entry.ToList())
             {
+                pair.Value.DeviceRemoved -= DeviceRemovedHandler;
+                _bpLogger.Info($"Device removed: {pair.Key} - {pair.Value.Name}");
                 _devices.Remove(pair.Key);
                 DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(new DeviceRemoved(pair.Key)));
             }

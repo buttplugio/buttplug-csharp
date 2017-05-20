@@ -18,7 +18,6 @@ namespace Buttplug.Core
 
         protected void InvokeDeviceAdded(DeviceAddedEventArgs args)
         {
-            //Can't invoke this from child classes? Weird.
             DeviceAdded?.Invoke(this, args);
         }
 

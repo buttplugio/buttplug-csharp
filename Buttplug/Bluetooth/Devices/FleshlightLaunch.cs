@@ -64,8 +64,8 @@ namespace Buttplug.Bluetooth.Devices
         {
             BpLogger.Trace($"Initializing {Name}");
             return await Interface.WriteValue(ButtplugConsts.SYSTEM_MSG_ID,
-                (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd,
-                new byte[] { 0 });
+                (uint) FleshlightLaunchBluetoothInfo.Chrs.Cmd,
+                new byte[] {0});
         }
 
         public async Task<ButtplugMessage> HandleKiirooRawCmd(ButtplugDeviceMessage aMsg)
