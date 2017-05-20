@@ -86,8 +86,7 @@ namespace ButtplugGUI
         public MainWindow()
         {
             // Add the event handler for handling non-UI thread exceptions to the event. 
-            
-            //AppDomain.CurrentDomain.UnhandledException += SendExceptionToSentry;
+            AppDomain.CurrentDomain.UnhandledException += SendExceptionToSentry;
 
             _logs = new LogList();
             _logTarget = new ButtplugGUIMessageNLogTarget(_logs, Dispatcher.Thread);
