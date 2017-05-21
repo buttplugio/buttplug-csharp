@@ -34,8 +34,8 @@ Source: "Readme.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme
 Source: "LICENSE"; DestDir: "{app}"; DestName: "License.txt"
 
 [Icons]
-Name: "{group}\Buttplug"; Filename: "{app}\ButtplugGUI.exe"
-Name: "{group}\Buttplug"; Filename: "{app}\ButtplugCLI.exe"
+Name: "{group}\ButtplugGUI"; Filename: "{app}\ButtplugGUI.exe"
+Name: "{group}\ButtplugCLI"; Filename: "{app}\ButtplugCLI.exe"
 
 ; Windows 10 15063 Patch BLE security sadness
 [Registry]
