@@ -1,17 +1,15 @@
-﻿using LanguageExt;
+﻿using Buttplug.Bluetooth;
+using Buttplug.Core;
+using LanguageExt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
-using Buttplug.Core;
-using Buttplug.Messages;
-using Buttplug.Bluetooth;
 
 namespace ButtplugUWPBluetoothManager.Core
 {
-    public class UWPBluetoothManager : DeviceSubtypeManager
+    public class UWPBluetoothManager : BluetoothSubtypeManager
     {
         private const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
@@ -24,29 +22,10 @@ namespace ButtplugUWPBluetoothManager.Core
             _currentlyConnecting = new List<ulong>();
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             _deviceFactories = new List<ButtplugBluetoothDeviceFactory>();
-            IEnumerable<Type> factories = new List<Type>();
-            try
-            {
-                factories = AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(asm => asm.GetName().Name.Contains("Buttplug"))
-                    .SelectMany(t => t.GetTypes())
-                    .Where(t => t.IsClass && t.Namespace == "Buttplug.Bluetooth.Devices" &&
-                                typeof(IBluetoothDeviceInfo).IsAssignableFrom(t));
-            }
-            catch(ReflectionTypeLoadException e)
-            {
-                BpLogger.Info($"Could not load the following assemblies:");
-                foreach (var asm in e.LoaderExceptions)
+            BuiltinDevices.ForEach(c =>
                 {
-                    BpLogger.Info(asm.Message);
-                }
-            }
-            factories
-                .ToList()
-                .ForEach(c =>
-                {
-                    BpLogger.Debug($"Loading Bluetooth Device Factory: {c.Name}");
-                    _deviceFactories.Add(new ButtplugBluetoothDeviceFactory(aLogManager, (IBluetoothDeviceInfo)Activator.CreateInstance(c)));
+                    BpLogger.Debug($"Loading Bluetooth Device Factory: {c.GetType().Name}");
+                    _deviceFactories.Add(new ButtplugBluetoothDeviceFactory(aLogManager, c));
                 });
 
             _bleWatcher = new BluetoothLEAdvertisementWatcher { ScanningMode = BluetoothLEScanningMode.Active };

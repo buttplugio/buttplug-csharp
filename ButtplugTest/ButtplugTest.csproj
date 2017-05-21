@@ -52,8 +52,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ButtplugDeviceTests.cs" />
     <Compile Include="Core\ButtplugJsonMessageParserTests.cs" />
     <Compile Include="Core\ButtplugServerTests.cs" />
+    <Compile Include="Core\TestBluetoothSubtypeManager.cs" />
     <Compile Include="Core\TestDevice.cs" />
     <Compile Include="Core\TestDeviceSubtypeManager.cs" />
     <Compile Include="Core\TestService.cs" />

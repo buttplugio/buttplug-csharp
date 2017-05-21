@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
+    <Compile Include="Bluetooth\BluetoothSubtypeManager.cs" />
     <Compile Include="Bluetooth\ButtplugBluetoothDevice.cs" />
     <Compile Include="Bluetooth\Devices\FleshlightLaunch.cs" />
     <Compile Include="Bluetooth\Devices\Kiiroo.cs" />

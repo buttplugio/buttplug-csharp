@@ -3,7 +3,7 @@ using Buttplug.Core;
 
 namespace Buttplug.Bluetooth
 {
-    internal interface IBluetoothDeviceInfo
+    public interface IBluetoothDeviceInfo
     {
         string[] Names { get; }
         Guid[] Services { get; }

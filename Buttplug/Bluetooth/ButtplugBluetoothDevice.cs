@@ -7,7 +7,7 @@ using Buttplug.Core;
 
 namespace Buttplug.Bluetooth
 {
-    class ButtplugBluetoothDevice : ButtplugDevice
+    internal class ButtplugBluetoothDevice : ButtplugDevice
     {
         protected IBluetoothDeviceInterface Interface;
 
