@@ -11,6 +11,11 @@
 [Setup]
 AppName=Buttplug
 AppVersion={#Version}
+AppPublisher=Metafetish
+AppPublisherURL=www.buttplug.io
+SetupIconFile=ButtplugGUI\Resources\buttplug-icon-1.ico
+WizardImageFile=ButtplugGUI\Resources\buttplug-logo-1.bmp
+WizardSmallImageFile=ButtplugGUI\Resources\buttplug-logo-1.bmp
 DefaultDirName={pf}\Buttplug
 DefaultGroupName=Buttplug
 UninstallDisplayIcon={app}\ButtplugGUI.exe
