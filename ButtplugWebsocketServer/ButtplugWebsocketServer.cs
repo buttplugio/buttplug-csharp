@@ -2,17 +2,14 @@
 using Buttplug.Core;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-using NLog;
 
 namespace ButtplugWebsocketServer
 {
     public class ButtplugWebsocketServer : WebSocketBehavior
     {
         private readonly ButtplugService _buttplug;
-        private NLog.Logger _bpLogger;
         public ButtplugWebsocketServer()
         {
-            _bpLogger = LogManager.GetCurrentClassLogger();
             _buttplug = new ButtplugService();
             _buttplug.MessageReceived += OnMessageReceived;
         }
