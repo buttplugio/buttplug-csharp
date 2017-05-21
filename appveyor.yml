@@ -41,7 +41,7 @@ skip_commits:
   files:
     - README.md
 test_script:
- - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"ButtplugTest\bin\$env:CONFIGURATION\ButtplugTest.dll -noshadow" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
+ - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"ButtplugTest\bin\$env:CONFIGURATION\ButtplugTest.dll ButtplugGUITest\bin\$env:CONFIGURATION\ButtplugGUITest.dll -noshadow" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
 after_test:
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }
