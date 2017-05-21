@@ -18,11 +18,13 @@ Compression=lzma2
 SolidCompression=yes
 OutputBaseFilename=buttplug-installer
 OutputDir=.\installer
+LicenseFile=LICENSE
 
 [Files]
 Source: "ButtplugGUI\bin\{#Configuration}\ButtplugGUI.exe"; DestDir: "{app}"
 Source: "ButtplugGUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
 Source: "Readme.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme
+Source: "LICENSE"; DestDir: "{app}"; DestName: "License.txt"
 
 [Icons]
 Name: "{group}\Buttplug"; Filename: "{app}\ButtplugGUI.exe"
