@@ -2,6 +2,7 @@
 using Buttplug.Core;
 using Buttplug.Messages;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -131,15 +132,24 @@ namespace ButtplugGUI
             DeviceListBox.ItemsSource = _devices;
             KiirooListBox.ItemsSource = _devices;
             LogListBox.ItemsSource = _logs;
-            AboutVersionNumber.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            _gitHash = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ResourceAssembly.Location)
-                .ProductVersion;
-            if (_gitHash.Length > 0)
+            try
             {
-                AboutVersionNumber.Text += $"-{_gitHash.Substring(0, 8)}";
-                AboutVersionNumber.MouseDown += GithubRequestNavigate;
+                AboutVersionNumber.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
+                _gitHash = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ResourceAssembly.Location)
+                    .ProductVersion;
+                if (_gitHash.Length > 0)
+                {
+                    AboutVersionNumber.Text += $"-{_gitHash.Substring(0, 8)}";
+                    AboutVersionNumber.MouseDown += GithubRequestNavigate;
+                }
+                Title = $"Buttplug {AboutVersionNumber.Text}";
             }
-            Title = $"Buttplug {AboutVersionNumber.Text}";
+            catch (Exception e)
+            {
+                // TODO Make this catch far more granular
+                var log = LogManager.GetCurrentClassLogger();
+                log.Info("Can't load assembly file, no version info available!");
+            }
         }
 
         public static void SendExceptionToSentry(object o, UnhandledExceptionEventArgs e)

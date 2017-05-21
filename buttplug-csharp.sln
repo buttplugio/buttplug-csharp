@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugXInputGamepadManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LanguageExt.Core", "language-ext\LanguageExt.Core\LanguageExt.Core.csproj", "{F4B97822-467D-4145-B0C6-C24161E82C6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugGUITest", "ButtplugGUITest\ButtplugGUITest.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
@@ -131,6 +133,14 @@ Global
 		{F4B97822-467D-4145-B0C6-C24161E82C6E}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
 		{F4B97822-467D-4145-B0C6-C24161E82C6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4B97822-467D-4145-B0C6-C24161E82C6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
