@@ -14,11 +14,11 @@ using ButtplugKiirooPlatformEmulator;
 using ButtplugUWPBluetoothManager.Core;
 #endif
 using ButtplugXInputGamepadManager.Core;
-using JetBrains.Annotations;
-using Microsoft.Win32;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using JetBrains.Annotations;
+using Microsoft.Win32;
 using SharpRaven;
 using SharpRaven.Data;
 
@@ -79,16 +79,17 @@ namespace ButtplugGUI
         private readonly ButtplugService _bpServer;
         private readonly DeviceList _devices;
         private readonly LogList _logs;
+        private readonly KiirooPlatformEmulator _kiirooEmulator;
         private readonly ButtplugGUIMessageNLogTarget _logTarget;
-        private KiirooPlatformEmulator _kiirooEmulator;
         private LoggingRule _outgoingLoggingRule;
-        private string _gitHash;
-        private bool _sentCrashLog = false;
+        private readonly string _gitHash;
+        private bool _sentCrashLog;
         private byte _clickCounter;
 
         public MainWindow()
         {
             _logs = new LogList();
+            var c = LogManager.Configuration ?? new LoggingConfiguration();
 
             // Cover all of the possible bases for WPF failure
             // http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
@@ -105,13 +106,11 @@ namespace ButtplugGUI
                 Dispatcher.UnhandledException += DispatcherOnUnhandledException;
 
                 _logTarget = new ButtplugGUIMessageNLogTarget(_logs, Dispatcher.Thread);
+                c.AddTarget("ButtplugGuiLogger", _logTarget);
+                _outgoingLoggingRule = new LoggingRule("*", LogLevel.Debug, _logTarget);
+                c.LoggingRules.Add(_outgoingLoggingRule);
+                LogManager.Configuration = c;
             }
-            // External Logger Setup
-            var c = LogManager.Configuration ?? new LoggingConfiguration();
-            c.AddTarget("ButtplugGuiLogger", _logTarget);
-            _outgoingLoggingRule = new LoggingRule("*", LogLevel.Debug, _logTarget);
-            c.LoggingRules.Add(_outgoingLoggingRule);
-            LogManager.Configuration = c;
 
             // External Logger Setup
             //_msgTarget = new ButtplugMessageNLogTarget();
@@ -132,9 +131,9 @@ namespace ButtplugGUI
             _bpServer = new ButtplugService();
             _bpServer.MessageReceived += OnMessageReceived;
 #if (!WIN7)
-            _bpServer.AddDeviceSubtypeManager((x) => new UWPBluetoothManager(x));
+            _bpServer.AddDeviceSubtypeManager(aLogger => new UWPBluetoothManager(aLogger));
 #endif
-            _bpServer.AddDeviceSubtypeManager((x) => new XInputGamepadManager(x));
+            _bpServer.AddDeviceSubtypeManager(aLogger => new XInputGamepadManager(aLogger));
             _devices = new DeviceList();
 
             _kiirooEmulator = new KiirooPlatformEmulator();
@@ -202,7 +201,7 @@ namespace ButtplugGUI
             SendExceptionToSentry(aEx.Exception);
         }
 
-        public void OnMessageReceived(object o, MessageReceivedEventArgs e)
+        private void OnMessageReceived(object o, MessageReceivedEventArgs e)
         {
             Dispatcher.InvokeAsync(() =>
             {
