@@ -13,6 +13,7 @@ AppName=Buttplug
 AppVersion={#Version}
 AppPublisher=Metafetish
 AppPublisherURL=www.buttplug.io
+AppId={{415579bd-5399-48ef-8521-775ebcd647af}
 SetupIconFile=ButtplugGUI\Resources\buttplug-icon-1.ico
 WizardImageFile=ButtplugGUI\Resources\buttplug-logo-1.bmp
 WizardSmallImageFile=ButtplugGUI\Resources\buttplug-logo-1.bmp
@@ -39,7 +40,7 @@ Name: "{group}\ButtplugCLI"; Filename: "{app}\ButtplugCLI.exe"
 
 ; Windows 10 15063 Patch BLE security sadness
 [Registry]
-Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\{{415579bd-5399-48ef-8521-775ebcd647af}}"; ValueType: binary; ValueName: "ApplicationPermission"; ValueData: 01 00 04 80 9C 00 00 00 AC 00 00 00 00 00 00 00 14 00 00 00 02 00 88 00 06 00 00 00 00 00 14 00 07 00 00 00 01 01 00 00 00 00 00 05 0A 00 00 00 00 00 14 00 03 00 00 00 01 01 00 00 00 00 00 05 12 00 00 00 00 00 18 00 07 00 00 00 01 02 00 00 00 00 00 05 20 00 00 00 20 02 00 00 00 00 18 00 03 00 00 00 01 02 00 00 00 00 00 0F 02 00 00 00 01 00 00 00 00 00 14 00 03 00 00 00 01 01 00 00 00 00 00 05 13 00 00 00 00 00 14 00 03 00 00 00 01 01 00 00 00 00 00 05 14 00 00 00 01 02 00 00 00 00 00 05 20 00 00 00 20 02 00 00 01 02 00 00 00 00 00 05 20 00 00 00 20 02 00 00; Flags: uninsdeletekey
-Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\Buttplug.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\ButtplugCLI.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\ButtplugGUI.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\{{415579bd-5399-48ef-8521-775ebcd647af}"; ValueType: binary; ValueName: "AccessPermission"; ValueData: 01 00 04 80 9C 00 00 00 AC 00 00 00 00 00 00 00 14 00 00 00 02 00 88 00 06 00 00 00 00 00 14 00 07 00 00 00 01 01 00 00 00 00 00 05 0A 00 00 00 00 00 14 00 03 00 00 00 01 01 00 00 00 00 00 05 12 00 00 00 00 00 18 00 07 00 00 00 01 02 00 00 00 00 00 05 20 00 00 00 20 02 00 00 00 00 18 00 03 00 00 00 01 02 00 00 00 00 00 0F 02 00 00 00 01 00 00 00 00 00 14 00 03 00 00 00 01 01 00 00 00 00 00 05 13 00 00 00 00 00 14 00 03 00 00 00 01 01 00 00 00 00 00 05 14 00 00 00 01 02 00 00 00 00 00 05 20 00 00 00 20 02 00 00 01 02 00 00 00 00 00 05 20 00 00 00 20 02 00 00; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\Buttplug.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\ButtplugCLI.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\ButtplugGUI.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}"; Flags: uninsdeletekey

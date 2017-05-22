@@ -47,7 +47,10 @@ after_test:
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }
  - ps: If (($env:CONFIGURATION -imatch "Debug")) { codecov -f "coverage.xml" -X gcov }
  - ps: set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
- - ps: iscc buttplug-installer.iss
+ - ps: iscc buttplug-installer.iss   
+ - ps: installer\buttplug-installer.exe /VERYSILENT
+# Test currently doesn't work, possibly because installer is blocked by access control dialog?
+#- ps: test\check-registry.ps1
  - ps: Push-AppveyorArtifact installer\buttplug-installer.exe -FileName Buttplug-$env:CONFIGURATION-$env:APPVEYOR_BUILD_VERSION-installer.exe
 cache:
   - packages -> **\packages.config
