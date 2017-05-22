@@ -45,9 +45,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SharpRaven, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpRaven.2.2.0\lib\net45\SharpRaven.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
@@ -122,6 +119,10 @@
     <ProjectReference Include="..\Buttplug\Buttplug.csproj">
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\raven-csharp\src\app\SharpRaven\SharpRaven.csproj">
+      <Project>{cc80a2e1-ae39-44de-8da3-4eef42f90fb1}</Project>
+      <Name>SharpRaven</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

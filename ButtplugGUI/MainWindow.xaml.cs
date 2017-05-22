@@ -83,6 +83,7 @@ namespace ButtplugGUI
         private KiirooPlatformEmulator _kiirooEmulator;
         private LoggingRule _outgoingLoggingRule;
         private string _gitHash;
+        private bool _sentCrashLog = false;
 
         public MainWindow()
         {
@@ -164,10 +165,25 @@ namespace ButtplugGUI
             }
         }
 
-        private static void SendExceptionToSentry(Exception aEx)
+        private void SendExceptionToSentry(Exception aEx)
         {
+            if (_sentCrashLog)
+            {
+                return;
+            }
+            _sentCrashLog = true;
+            AppDomain.CurrentDomain.UnhandledException -= CurrentDomainOnUnhandledException;
+            if (Application.Current != null)
+            {
+                Application.Current.DispatcherUnhandledException -= CurrentOnDispatcherUnhandledException;
+            }
+            if (Dispatcher != null)
+            {
+                Dispatcher.UnhandledException -= DispatcherOnUnhandledException;
+            }
+
             var _ravenClient = new RavenClient("https://2e376d00cdcb44bfb2140c1cf000d73b:1fa6980aeefa4b048b866a450ee9ad71@sentry.io/170313");
-            _ravenClient.Capture(new SentryEvent(aEx));            
+            _ravenClient.Capture(new SentryEvent(aEx));
         }
 
         private void DispatcherOnUnhandledException(object aObj, DispatcherUnhandledExceptionEventArgs aEx)
