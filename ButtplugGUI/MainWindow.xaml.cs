@@ -84,6 +84,7 @@ namespace ButtplugGUI
         private LoggingRule _outgoingLoggingRule;
         private string _gitHash;
         private bool _sentCrashLog = false;
+        private byte _clickCounter;
 
         public MainWindow()
         {
@@ -332,6 +333,17 @@ namespace ButtplugGUI
         private void CrashButton_Click(object sender, RoutedEventArgs e)
         {
             throw new Exception("Should be caught and sent to sentry!");
+        }
+
+        private void IconImage_Click(object sender, RoutedEventArgs e)
+        {
+            _clickCounter += 1;
+            if (_clickCounter < 5)
+            {
+                return;
+            }
+            DeveloperTab.Visibility = Visibility.Visible;
+            IconImage.MouseDown -= IconImage_Click;
         }
     }
 }

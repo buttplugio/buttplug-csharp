@@ -70,7 +70,7 @@
             </TabItem>
             <TabItem Header="About">
                 <Grid Background="#FFE5E5E5">
-                    <Image Name="IconImage" Source="pack://application:,,,/Resources/buttplug-logo-1.png" HorizontalAlignment="Left" Height="128" Margin="10,10,0,0" VerticalAlignment="Top" Width="128">
+                    <Image Name="IconImage" Source="pack://application:,,,/Resources/buttplug-logo-1.png" HorizontalAlignment="Left" Height="128" Margin="10,10,0,0" VerticalAlignment="Top" Width="128" MouseDown="IconImage_Click">
                     </Image>
                     <TextBlock HorizontalAlignment="Left" Margin="143,10,0,0" VerticalAlignment="Top" Height="128" Width="360">
                         <Span FontSize="19" FontWeight="Bold">Buttplug <Run Name="AboutVersionNumber">1.0.0.0-ffffffff</Run> (C# Edition)</Span><LineBreak />
@@ -88,7 +88,7 @@
                     <Image Source="pack://application:,,,/Resources/buttplugin-with-qdot-intro-patreon-image.png"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="116" Height="65" Margin="0,10,0,10" MouseDown="PatreonRequestNavigate" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Developer">
+            <TabItem Name="DeveloperTab" Header="Developer" Visibility="Hidden">
                 <Grid Background="#FFE5E5E5">
                     <Button Name="CrashButton" Content="Crash Application" Margin="10,10,0,259.667" HorizontalAlignment="Left" Click="CrashButton_Click" Width="108"/>
                 </Grid>
