@@ -86,14 +86,24 @@ namespace ButtplugGUI
 
         public MainWindow()
         {
+            _logs = new LogList();
+
             // Cover all of the possible bases for WPF failure
             // http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
-            Application.Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-            Dispatcher.UnhandledException += DispatcherOnUnhandledException;
 
-            _logs = new LogList();
-            _logTarget = new ButtplugGUIMessageNLogTarget(_logs, Dispatcher.Thread);
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+            // Null check application, otherwise test bringup for GUI tests will fail
+            if (Application.Current != null)
+            {
+                Application.Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
+            }
+            // Null check Dispatcher, otherwise test bringup for GUI tests will fail.
+            if (Dispatcher != null)
+            {
+                Dispatcher.UnhandledException += DispatcherOnUnhandledException;
+
+                _logTarget = new ButtplugGUIMessageNLogTarget(_logs, Dispatcher.Thread);
+            }
             // External Logger Setup
             var c = LogManager.Configuration ?? new LoggingConfiguration();
             c.AddTarget("ButtplugGuiLogger", _logTarget);
