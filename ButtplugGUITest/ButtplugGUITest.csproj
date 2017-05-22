@@ -37,12 +37,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
@@ -65,10 +59,6 @@
     <ProjectReference Include="..\ButtplugGUI\ButtplugGUI.csproj">
       <Project>{76e03b47-dca6-49d1-99c2-2ea28d3a8e78}</Project>
       <Name>ButtplugGUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Buttplug\Buttplug.csproj">
-      <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
-      <Name>Buttplug</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

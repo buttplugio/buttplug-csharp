@@ -2,7 +2,6 @@
 using Buttplug.Core;
 using Buttplug.Messages;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
