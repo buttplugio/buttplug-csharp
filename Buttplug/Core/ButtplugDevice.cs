@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Messages;
+using JetBrains.Annotations;
 
 namespace Buttplug.Core
 {
@@ -9,16 +10,19 @@ namespace Buttplug.Core
     {
         public string Name { get; }
         public string Identifier { get; }
+        [CanBeNull]
         public event EventHandler DeviceRemoved;
+        [NotNull]
         protected readonly IButtplugLog BpLogger;
-        protected Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>> MsgFuncs;
-        protected bool IsDisconnected;
+        [NotNull]
+        protected readonly Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>> MsgFuncs;
+        private bool _isDisconnected;
 
-        protected ButtplugDevice(IButtplugLogManager aLogManager, 
-            string aName,
-            string aIdentifier)
+        protected ButtplugDevice([NotNull] IButtplugLogManager aLogManager, 
+            [NotNull] string aName,
+            [NotNull] string aIdentifier)
         {
-            BpLogger = aLogManager.GetLogger(this.GetType());
+            BpLogger = aLogManager.GetLogger(GetType());
             MsgFuncs = new Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>>();
             Name = aName;
             Identifier = aIdentifier;
@@ -31,13 +35,13 @@ namespace Buttplug.Core
 
         protected void InvokeDeviceRemoved()
         {
-            IsDisconnected = true;
+            _isDisconnected = true;
             DeviceRemoved?.Invoke(this, new EventArgs());
         }
 
-        public async Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg)
+        public async Task<ButtplugMessage> ParseMessage([NotNull] ButtplugDeviceMessage aMsg)
         {
-            if (IsDisconnected)
+            if (_isDisconnected)
             {
                 return BpLogger.LogErrorMsg(aMsg.Id,
                     $"{Name} has disconnected and can no longer process messages.");
@@ -47,11 +51,14 @@ namespace Buttplug.Core
                 return BpLogger.LogErrorMsg(aMsg.Id,
                     $"{Name} cannot handle message of type {aMsg.GetType().Name}");
             }
-            return await MsgFuncs[aMsg.GetType()](aMsg);
+            // We just checked whether the key exists above, so we're ok.
+            // ReSharper disable once PossibleNullReferenceException
+            return await MsgFuncs[aMsg.GetType()].Invoke(aMsg);
         }
 
         public virtual Task<ButtplugMessage> Initialize()
         {
+            // ReSharper disable once AssignNullToNotNullAttribute
             return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SYSTEM_MSG_ID));
         }
     }

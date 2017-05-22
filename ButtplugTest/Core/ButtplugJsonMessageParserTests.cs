@@ -1,4 +1,5 @@
 ﻿using Buttplug.Core;
+using Buttplug.Messages;
 using Xunit;
 
 namespace ButtplugTest.Core
@@ -34,7 +35,7 @@ namespace ButtplugTest.Core
         public void DeserializeIncorrectMessages(string x)
         {
             var p = new ButtplugJsonMessageParser(new ButtplugLogManager());
-            Assert.True(p.Deserialize(x).IsLeft);
+            Assert.True(p.Deserialize(x) is Error);
         }
 
         [Fact]
@@ -42,20 +43,18 @@ namespace ButtplugTest.Core
         {
             var p = new ButtplugJsonMessageParser(new ButtplugLogManager());
             var m = p.Deserialize("{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}");
-            Assert.True(m.IsRight);
-            m.IfRight(x =>
+            switch (m)
             {
-                switch (x)
-                {
-                    case Buttplug.Messages.Test tm:
-                        Assert.True(tm.TestString == "Test");
-                        break;
-
-                    default:
-                        Assert.True(false);
-                        break;
-                }
-            });
+                case Error e:
+                    Assert.True(false, $"Got Error: {e.ErrorMessage}");
+                    break;
+                case Test tm:
+                    Assert.True(tm.TestString == "Test");
+                    break;
+                default:
+                    Assert.True(false, $"Got wrong message type {m.GetType().Name}");
+                    break;
+            }
         }
     }
 }

@@ -1,22 +1,24 @@
 ﻿using System;
 using Buttplug.Logging;
+using JetBrains.Annotations;
+
 namespace Buttplug.Core
 {
     internal class ButtplugLogManager : IButtplugLogManager
     {
+        [CanBeNull]
         public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
-
         public ButtplugLogLevel Level { get; set; }
 
-        private void LogMessageHandler(object o, ButtplugLogMessageEventArgs m)
+        private void LogMessageHandler([NotNull] object aObject, [NotNull] ButtplugLogMessageEventArgs aMsg)
         {
-            if (m.LogMessage.LogLevel <= Level)
+            if (aMsg.LogMessage.LogLevel <= Level)
             {
-                LogMessageReceived?.Invoke(o, m);   
+                LogMessageReceived?.Invoke(aObject, aMsg);   
             }
         }
 
-        public IButtplugLog GetLogger(Type aType)
+        public IButtplugLog GetLogger([NotNull] Type aType)
         {
             // Just pass the type in instead of traversing the stack to find it.
             var logger = new ButtplugLog(LogProvider.GetLogger(aType.Name));

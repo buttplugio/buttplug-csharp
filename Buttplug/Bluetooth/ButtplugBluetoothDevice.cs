@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Buttplug.Core;
+using JetBrains.Annotations;
 
 namespace Buttplug.Bluetooth
 {
     internal class ButtplugBluetoothDevice : ButtplugDevice
     {
+        [NotNull]
         protected IBluetoothDeviceInterface Interface;
 
         protected ButtplugBluetoothDevice(IButtplugLogManager aLogManager,

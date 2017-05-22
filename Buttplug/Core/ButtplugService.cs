@@ -1,16 +1,21 @@
 ﻿using Buttplug.Messages;
+using JetBrains.Annotations;
 using System;
 using System.Threading.Tasks;
 
 namespace Buttplug.Core
 {
-
     public class ButtplugService
     {
+        [NotNull]
         private readonly ButtplugJsonMessageParser _parser;
+        [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        internal readonly IButtplugLog _bpLogger;
+        [NotNull]
+        private readonly IButtplugLog _bpLogger;
+        [NotNull]
         private readonly DeviceManager _deviceManager;
+        [NotNull]
         private readonly IButtplugLogManager _bpLogManager;
 
         public ButtplugService()
@@ -25,17 +30,18 @@ namespace Buttplug.Core
             _bpLogManager.LogMessageReceived += LogMessageReceivedHandler;
         }
 
-        public void DeviceMessageReceivedHandler(object o, MessageReceivedEventArgs aMsg)
+        private void DeviceMessageReceivedHandler([NotNull] object aObj, [NotNull] MessageReceivedEventArgs aMsg)
         {
-            MessageReceived?.Invoke(o, aMsg);
+            MessageReceived?.Invoke(aObj, aMsg);
         }
 
-        private void LogMessageReceivedHandler(object o, ButtplugLogMessageEventArgs e)
+        private void LogMessageReceivedHandler([NotNull] object aObj, [NotNull] ButtplugLogMessageEventArgs e)
         {
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(e.LogMessage));
         }
 
-        public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
+        [NotNull]
+        public async Task<ButtplugMessage> SendMessage([NotNull] ButtplugMessage aMsg)
         {
             _bpLogger.Trace($"Got Message {aMsg.Id} of type {aMsg.GetType().Name} to send");
             var id = aMsg.Id;
@@ -64,16 +70,20 @@ namespace Buttplug.Core
             return await _deviceManager.SendMessage(aMsg);
         }
 
+        [ItemNotNull]
         public async Task<ButtplugMessage> SendMessage(string aJsonMsg)
         {
             var msg = _parser.Deserialize(aJsonMsg);
-            return await msg.MatchAsync(
-                async x => await SendMessage(x),
-                x => _bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID,
-                        $"Cannot deserialize json message: {x}"));
+            switch (msg)
+            {
+                case Error errorMsg:
+                    return errorMsg;
+                default:
+                    return await SendMessage(msg);
+            }
         }
 
-        public string Serialize(ButtplugMessage aMsg)
+        public static string Serialize(ButtplugMessage aMsg)
         {
             return ButtplugJsonMessageParser.Serialize(aMsg);
         }
@@ -88,6 +98,7 @@ namespace Buttplug.Core
             _deviceManager.AddDeviceSubtypeManager(mgr);
         }
 
+        [NotNull]
         internal DeviceManager GetDeviceManager()
         {
             return _deviceManager;

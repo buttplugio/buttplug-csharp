@@ -1,11 +1,11 @@
 ﻿using Buttplug.Bluetooth;
 using Buttplug.Core;
-using LanguageExt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
+using JetBrains.Annotations;
 
 namespace ButtplugUWPBluetoothManager.Core
 {
@@ -13,8 +13,11 @@ namespace ButtplugUWPBluetoothManager.Core
     {
         private const int BLEWATCHER_STOP_TIMEOUT = 1;          // minute
 
+        [NotNull]
         private readonly BluetoothLEAdvertisementWatcher _bleWatcher;
+        [NotNull]
         private readonly List<ButtplugBluetoothDeviceFactory> _deviceFactories;
+        [NotNull]
         private readonly List<ulong> _currentlyConnecting;
 
         public UWPBluetoothManager(IButtplugLogManager aLogManager) : base(aLogManager)
@@ -66,24 +69,26 @@ namespace ButtplugUWPBluetoothManager.Core
             var factory = buttplugBluetoothDeviceFactories.First();
             BpLogger.Debug($"Found BLE factory: {factory.GetType().Name}");
             // If we actually have a factory for this device, go ahead and create the device
-            Option<BluetoothLEDevice> dev = await BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
-            Option<IButtplugDevice> l = null;
-            dev.IfSome(async d =>
+            var fromBluetoothAddressAsync = BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
+            if (fromBluetoothAddressAsync != null)
             {
+                BluetoothLEDevice dev = await fromBluetoothAddressAsync;
                 // If a device is turned on after scanning has started, windows seems to lose the
                 // device handle the first couple of times it tries to deal with the advertisement.
                 // Just log the error and hope it reconnects on a later retry.
                 try
                 {
-                    l = await factory.CreateDeviceAsync(d);
+                    var d = await factory.CreateDeviceAsync(dev);
+                    InvokeDeviceAdded(new DeviceAddedEventArgs(d));
                 }
                 catch (Exception ex)
                 {
-                    BpLogger.Error($"Cannot connect to device {e.Advertisement.LocalName} {e.BluetoothAddress}: {ex.Message}");
+                    BpLogger.Error(
+                        $"Cannot connect to device {e.Advertisement.LocalName} {e.BluetoothAddress}: {ex.Message}");
+                    _currentlyConnecting.Remove(e.BluetoothAddress);
+                    return;
                 }
-            });
-
-            l.IfSome(d => InvokeDeviceAdded(new DeviceAddedEventArgs(d)));
+            }
             _currentlyConnecting.Remove(e.BluetoothAddress);
         }
 

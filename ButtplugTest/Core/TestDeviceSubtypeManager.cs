@@ -1,21 +1,21 @@
 ﻿using Buttplug.Core;
-using LanguageExt;
+using JetBrains.Annotations;
 
 namespace ButtplugTest.Core
 {
     internal class TestDeviceSubtypeManager : DeviceSubtypeManager
     {
-        private Option<TestDevice> _device;
+        [CanBeNull]
+        private readonly TestDevice _device;
         public bool StartScanningCalled { get; private set; }
         public bool StopScanningCalled { get; private set; }
 
-        public TestDeviceSubtypeManager(ButtplugLogManager aLogManager) :
+        public TestDeviceSubtypeManager([NotNull] IButtplugLogManager aLogManager) :
             base(aLogManager)
         {
-            _device = new OptionNone();
         }
 
-        public TestDeviceSubtypeManager(ButtplugLogManager aLogManager, TestDevice aDevice) : base(aLogManager)
+        public TestDeviceSubtypeManager([NotNull] IButtplugLogManager aLogManager, [NotNull] TestDevice aDevice) : base(aLogManager)
         {
             _device = aDevice;
         }
@@ -23,7 +23,10 @@ namespace ButtplugTest.Core
         public override void StartScanning()
         {
             StartScanningCalled = true;
-            _device.IfSome(x => this.InvokeDeviceAdded(new DeviceAddedEventArgs(x)));
+            if (!(_device is null))
+            {
+                InvokeDeviceAdded(new DeviceAddedEventArgs(_device));
+            }
         }
 
         public override void StopScanning()

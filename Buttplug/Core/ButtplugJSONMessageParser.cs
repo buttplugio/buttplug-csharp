@@ -1,20 +1,22 @@
-﻿using LanguageExt;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using static LanguageExt.Prelude;
+using JetBrains.Annotations;
+using Buttplug.Messages;
 
 namespace Buttplug.Core
 {
     internal class ButtplugJsonMessageParser
     {
+        [NotNull]
         private readonly Dictionary<string, Type> _messageTypes;
+        [NotNull]
         private readonly IButtplugLog _bpLogger;
 
-        public ButtplugJsonMessageParser(IButtplugLogManager aLogManager)
+        public ButtplugJsonMessageParser([NotNull] IButtplugLogManager aLogManager)
         {
             _bpLogger = aLogManager.GetLogger(GetType());
             _bpLogger.Debug($"Setting up {GetType().Name}");
@@ -43,7 +45,8 @@ namespace Buttplug.Core
             });
         }
 
-        public Either<string, ButtplugMessage> Deserialize(string aJsonMsg)
+        [NotNull]
+        public ButtplugMessage Deserialize(string aJsonMsg)
         {
             _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
             JObject j;
@@ -55,16 +58,16 @@ namespace Buttplug.Core
             {
                 _bpLogger.Debug($"Not valid JSON: {aJsonMsg}");
                 _bpLogger.Debug(e.Message);
-                return "Not valid JSON";
+                return new Error("Not valid JSON", ButtplugConsts.SYSTEM_MSG_ID);
             }
             if (!j.Properties().Any())
             {
-                return "No message name available";
+                return new Error("No message name available", ButtplugConsts.SYSTEM_MSG_ID);
             }
             var msgName = j.Properties().First().Name;
             if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
             {
-                return $"{msgName} is not a valid message class";
+                return new Error($"{msgName} is not a valid message class", ButtplugConsts.SYSTEM_MSG_ID);
             }
             var s = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
             ButtplugMessage m;
@@ -76,16 +79,14 @@ namespace Buttplug.Core
             }
             catch (InvalidCastException e)
             {
-                return $"Could not create message for JSON {aJsonMsg}: {e.Message}";
+                return _bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, $"Could not create message for JSON {aJsonMsg}: {e.Message}");
             }
             catch (JsonSerializationException e)
             {
-                return $"Could not create message for JSON {aJsonMsg}: {e.Message}";
+                return _bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, $"Could not create message for JSON {aJsonMsg}: {e.Message}");
             }
             _bpLogger.Trace($"Message successfully parsed as {msgName} type");
-            // Can't get Either<> to coerce m into a IButtplugMessage so we're having to pull in
-            // the internal type. I guess the cast doesn't resolve to a discernable type?
-            return Right<string, ButtplugMessage>(m);
+            return m;
         }
 
         public static string Serialize(ButtplugMessage aMsg)

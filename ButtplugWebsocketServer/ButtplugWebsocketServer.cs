@@ -17,15 +17,15 @@ namespace ButtplugWebsocketServer
         protected override async void OnMessage(MessageEventArgs e)
         {
             base.OnMessage(e);
-            var msg = _buttplug.Serialize(await _buttplug.SendMessage(e.Data));
-            Sessions.Broadcast(Encoding.ASCII.GetBytes(msg));
+            var msg = ButtplugService.Serialize(await _buttplug.SendMessage(e.Data));
+            Sessions?.Broadcast(Encoding.ASCII.GetBytes(msg));
 
         }
 
-        public void OnMessageReceived(object o, MessageReceivedEventArgs e)
+        private void OnMessageReceived(object o, MessageReceivedEventArgs e)
         {
-            var msg = _buttplug.Serialize(e.Message);
-            Sessions.Broadcast(Encoding.ASCII.GetBytes(msg));
+            var msg = ButtplugService.Serialize(e.Message);
+            Sessions?.Broadcast(Encoding.ASCII.GetBytes(msg));
         }
     }
 }

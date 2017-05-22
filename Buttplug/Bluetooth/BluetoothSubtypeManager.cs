@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Buttplug.Bluetooth.Devices;
 using Buttplug.Core;
+using JetBrains.Annotations;
 
 namespace Buttplug.Bluetooth
 {
     public abstract class BluetoothSubtypeManager : DeviceSubtypeManager
     {
-        protected List<IBluetoothDeviceInfo> BuiltinDevices;
+        [ItemNotNull]
+        protected readonly List<IBluetoothDeviceInfo> BuiltinDevices;
 
-        protected BluetoothSubtypeManager(IButtplugLogManager aLogManager) : base(aLogManager)
+        protected BluetoothSubtypeManager([NotNull] IButtplugLogManager aLogManager) : base(aLogManager)
         {
             // This used to go through all assemblies looking for IBluetoothDeviceInfo, but that
             // ended up constantly breaking due to Reflection issues on different platforms/setups.
@@ -24,6 +22,5 @@ namespace Buttplug.Bluetooth
                 new LovenseBluetoothInfo()
             };
         }
-
     }
 }

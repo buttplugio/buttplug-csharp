@@ -144,7 +144,7 @@ namespace ButtplugGUI
                 }
                 Title = $"Buttplug {AboutVersionNumber.Text}";
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // TODO Make this catch far more granular
                 var log = LogManager.GetCurrentClassLogger();
