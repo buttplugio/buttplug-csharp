@@ -14,6 +14,7 @@ using ButtplugKiirooPlatformEmulator;
 using ButtplugUWPBluetoothManager.Core;
 #endif
 using ButtplugXInputGamepadManager.Core;
+using JetBrains.Annotations;
 using Microsoft.Win32;
 using NLog;
 using NLog.Config;
@@ -85,8 +86,11 @@ namespace ButtplugGUI
 
         public MainWindow()
         {
-            // Add the event handler for handling non-UI thread exceptions to the event. 
-            AppDomain.CurrentDomain.UnhandledException += SendExceptionToSentry;
+            // Cover all of the possible bases for WPF failure
+            // http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
+            Application.Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+            Dispatcher.UnhandledException += DispatcherOnUnhandledException;
 
             _logs = new LogList();
             _logTarget = new ButtplugGUIMessageNLogTarget(_logs, Dispatcher.Thread);
@@ -123,8 +127,7 @@ namespace ButtplugGUI
 
             _kiirooEmulator = new KiirooPlatformEmulator();
             _kiirooEmulator.OnKiirooPlatformEvent += HandleKiirooPlatformMessage;
-            
-            
+
             // Set up GUI
             InitializeComponent();
             LogLevelComboBox.SelectionChanged += LogLevelSelectionChangedHandler;
@@ -151,10 +154,25 @@ namespace ButtplugGUI
             }
         }
 
-        public static void SendExceptionToSentry(object o, UnhandledExceptionEventArgs e)
+        private static void SendExceptionToSentry(Exception aEx)
         {
             var _ravenClient = new RavenClient("https://2e376d00cdcb44bfb2140c1cf000d73b:1fa6980aeefa4b048b866a450ee9ad71@sentry.io/170313");
-            _ravenClient.Capture(new SentryEvent(e.ExceptionObject as Exception));
+            _ravenClient.Capture(new SentryEvent(aEx));            
+        }
+
+        private void DispatcherOnUnhandledException(object aObj, DispatcherUnhandledExceptionEventArgs aEx)
+        {
+            SendExceptionToSentry(aEx.Exception);
+        }
+
+        private void CurrentDomainOnUnhandledException(object aObj, UnhandledExceptionEventArgs aEx)
+        {
+            SendExceptionToSentry(aEx.ExceptionObject as Exception);
+        }
+
+        private void CurrentOnDispatcherUnhandledException(object aObj, DispatcherUnhandledExceptionEventArgs aEx)
+        {
+            SendExceptionToSentry(aEx.Exception);
         }
 
         public void OnMessageReceived(object o, MessageReceivedEventArgs e)
@@ -283,6 +301,11 @@ namespace ButtplugGUI
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
+        }
+
+        private void CrashButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new Exception("Should be caught and sent to sentry!");
         }
     }
 }

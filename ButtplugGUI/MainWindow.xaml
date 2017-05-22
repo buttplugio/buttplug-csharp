@@ -88,6 +88,11 @@
                     <Image Source="pack://application:,,,/Resources/buttplugin-with-qdot-intro-patreon-image.png"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="116" Height="65" Margin="0,10,0,10" MouseDown="PatreonRequestNavigate" />
                 </Grid>
             </TabItem>
+            <TabItem Header="Developer">
+                <Grid Background="#FFE5E5E5">
+                    <Button Name="CrashButton" Content="Crash Application" Margin="10,10,0,259.667" HorizontalAlignment="Left" Click="CrashButton_Click" Width="108"/>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>
