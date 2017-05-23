@@ -98,6 +98,7 @@ namespace Buttplug.Core
             _deviceManager.AddDeviceSubtypeManager(mgr);
         }
 
+        // ReSharper disable once UnusedMember.Global
         [NotNull]
         internal DeviceManager GetDeviceManager()
         {
@@ -105,3 +106,4 @@ namespace Buttplug.Core
         }
     }
 }
+

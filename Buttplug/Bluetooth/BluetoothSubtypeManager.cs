@@ -7,6 +7,7 @@ namespace Buttplug.Bluetooth
 {
     public abstract class BluetoothSubtypeManager : DeviceSubtypeManager
     {
+        [NotNull]
         [ItemNotNull]
         protected readonly List<IBluetoothDeviceInfo> BuiltinDevices;
 
