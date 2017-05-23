@@ -112,6 +112,10 @@
       <Project>{223ea194-8318-4189-bec8-73734c3f4a78}</Project>
       <Name>ButtplugUWPBluetoothManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ButtplugWebsockets\ButtplugWebsockets.csproj">
+      <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
+      <Name>ButtplugWebsockets</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ButtplugXInputGamepadManager\ButtplugXInputGamepadManager.csproj">
       <Project>{c7d040e1-e18e-4f51-859f-cff8aa57bd64}</Project>
       <Name>ButtplugXInputGamepadManager</Name>

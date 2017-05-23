@@ -65,7 +65,7 @@ namespace ButtplugCLI
             var wssv = new WebSocketServer(options.WebsocketPort);
             wssv.Log.Level = options.Quiet ? WebSocketSharp.LogLevel.Fatal : WebSocketSharp.LogLevel.Warn;
 
-            wssv.AddWebSocketService<ButtplugWebsocketServer.ButtplugWebsocketServer>("/Buttplug");
+            //wssv.AddWebSocketService<ButtplugWebsocketServer.ButtplugWebsocketServer>("/Buttplug");
 
             wssv.Start();
             Console.ReadKey(true);

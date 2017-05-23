@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using ButtplugKiirooPlatformEmulator;
 using ButtplugUWPBluetoothManager.Core;
+using ButtplugWebsockets;
 using ButtplugXInputGamepadManager.Core;
 using NLog;
 using NLog.Config;
@@ -85,6 +86,7 @@ namespace ButtplugGUI
         private bool _sentCrashLog;
         private byte _clickCounter;
         private Logger _guiLog;
+        private ButtplugWebsocketServer _wsServer;
 
         public MainWindow()
         {
@@ -183,6 +185,7 @@ namespace ButtplugGUI
 
             _kiirooEmulator = new KiirooPlatformEmulator();
             _kiirooEmulator.OnKiirooPlatformEvent += HandleKiirooPlatformMessage;
+            _wsServer = new ButtplugWebsocketServer();
 
             // Set up GUI
             InitializeComponent();
@@ -307,16 +310,19 @@ namespace ButtplugGUI
             if (ApplicationSelector.SelectedItem == ApplicationNone)
             {
                 _kiirooEmulator.StopServer();
+                _wsServer.StopServer();
             }
             else if (ApplicationSelector.SelectedItem == ApplicationWebsockets)
             {
                 WebsocketSettingsGrid.Visibility = Visibility.Visible;
                 _kiirooEmulator.StopServer();
+                _wsServer.StartServer(_bpServer);
             }
             else if (ApplicationSelector.SelectedItem == ApplicationKiiroo)
             {
                 KiirooSettingsGrid.Visibility = Visibility.Visible;
                 _kiirooEmulator.StartServer();
+                _wsServer.StopServer();
             }
         }
 
