@@ -159,6 +159,11 @@ namespace ButtplugGUI
             // Make sure we're on the Creators update before even trying to load the UWP Bluetooth Manager
             if (releaseId >= 1703)
             {
+                if (!UWPBluetoothManager.HasRegistryKeysSet())
+                {
+                    _guiLog.Error("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
+                    MessageBox.Show("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
+                }
                 try
                 {
                     _bpServer.AddDeviceSubtypeManager(aLogger => new UWPBluetoothManager(aLogger));

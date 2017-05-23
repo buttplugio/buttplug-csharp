@@ -6,6 +6,7 @@ using System.Linq;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 
 namespace ButtplugUWPBluetoothManager.Core
 {
@@ -19,6 +20,18 @@ namespace ButtplugUWPBluetoothManager.Core
         private readonly List<ButtplugBluetoothDeviceFactory> _deviceFactories;
         [NotNull]
         private readonly List<ulong> _currentlyConnecting;
+
+        public static bool HasRegistryKeysSet()
+        {
+            var accessPerm = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Classes\AppID\{415579bd-5399-48ef-8521-775ebcd647af}", "AccessPermission", "");
+            if (accessPerm == null || accessPerm.ToString().Length == 0)
+            {
+                return false;
+            }
+            // ReSharper disable once PossibleNullReferenceException
+            var appId = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Classes\AppID\" + AppDomain.CurrentDomain.FriendlyName, "AppId", "");
+            return appId != null && appId.ToString() == "{415579bd-5399-48ef-8521-775ebcd647af}";
+        }
 
         public UWPBluetoothManager(IButtplugLogManager aLogManager) : base(aLogManager)
         {
