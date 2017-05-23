@@ -11,6 +11,7 @@ namespace ButtplugXInputGamepadManager.Core
 
         public XInputGamepadManager(IButtplugLogManager aLogManager) : base(aLogManager)
         {
+            BpLogger.Debug("Loading XInput Gamepad Manager");
             _connectedGamepads = new List<XInputGamepadDevice>();
         }
 

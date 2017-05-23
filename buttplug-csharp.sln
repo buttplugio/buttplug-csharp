@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugKiirooPlatformEmula
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugUWPBluetoothManager", "ButtplugUWPBluetoothManager\ButtplugUWPBluetoothManager.csproj", "{223EA194-8318-4189-BEC8-73734C3F4A78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugGUIWin7", "ButtplugGUIWin7\ButtplugGUIWin7.csproj", "{4783B3EB-D0D1-45BF-BE90-03701E092980}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugUWPGamepadManager", "ButtplugUWPGamepadManager\ButtplugUWPGamepadManager.csproj", "{521AED4A-AB69-4712-99BA-02EFDF99DEB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugXInputGamepadManager", "ButtplugXInputGamepadManager\ButtplugXInputGamepadManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
@@ -203,26 +201,6 @@ Global
 		{223EA194-8318-4189-BEC8-73734C3F4A78}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
 		{223EA194-8318-4189-BEC8-73734C3F4A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{223EA194-8318-4189-BEC8-73734C3F4A78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug 3.5|Any CPU.ActiveCfg = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug 3.5|Any CPU.Build.0 = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug 4.0|Any CPU.ActiveCfg = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug 4.0|Any CPU.Build.0 = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug 4.5|Any CPU.ActiveCfg = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug 4.5|Any CPU.Build.0 = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release 3.5|Any CPU.ActiveCfg = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release 3.5|Any CPU.Build.0 = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release 4.0|Any CPU.ActiveCfg = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release 4.0|Any CPU.Build.0 = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release 4.5|Any CPU.ActiveCfg = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release 4.5|Any CPU.Build.0 = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4783B3EB-D0D1-45BF-BE90-03701E092980}.Release|Any CPU.Build.0 = Release|Any CPU
 		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Debug 3.5|Any CPU.ActiveCfg = Debug|Any CPU
 		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Debug 3.5|Any CPU.Build.0 = Debug|Any CPU
 		{521AED4A-AB69-4712-99BA-02EFDF99DEB8}.Debug 4.0|Any CPU.ActiveCfg = Debug|Any CPU

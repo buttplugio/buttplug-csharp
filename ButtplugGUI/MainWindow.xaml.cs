@@ -10,9 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ButtplugKiirooPlatformEmulator;
-#if (!WIN7)
 using ButtplugUWPBluetoothManager.Core;
-#endif
 using ButtplugXInputGamepadManager.Core;
 using NLog;
 using NLog.Config;
@@ -83,11 +81,15 @@ namespace ButtplugGUI
         private readonly ButtplugGUIMessageNLogTarget _logTarget;
         private LoggingRule _outgoingLoggingRule;
         private readonly string _gitHash;
+        private readonly RavenClient _ravenClient;
         private bool _sentCrashLog;
         private byte _clickCounter;
+        private Logger _guiLog;
 
         public MainWindow()
         {
+            _ravenClient = new RavenClient("https://2e376d00cdcb44bfb2140c1cf000d73b:1fa6980aeefa4b048b866a450ee9ad71@sentry.io/170313");
+
             _logs = new LogList();
             var c = LogManager.Configuration ?? new LoggingConfiguration();
 
@@ -118,7 +120,7 @@ namespace ButtplugGUI
             //c.AddTarget("ButtplugLogger", _msgTarget);
             //_outgoingLoggingRule = new LoggingRule("*", LogLevel.Off, _msgTarget);
             //c.LoggingRules.Add(_outgoingLoggingRule);
-
+            _guiLog = LogManager.GetCurrentClassLogger();
 #if DEBUG
             // Debug Logger Setup
             var t = new DebuggerTarget();
@@ -130,9 +132,47 @@ namespace ButtplugGUI
             // Set up internal services
             _bpServer = new ButtplugService();
             _bpServer.MessageReceived += OnMessageReceived;
-#if (!WIN7)
-            _bpServer.AddDeviceSubtypeManager(aLogger => new UWPBluetoothManager(aLogger));
-#endif
+
+            if (!(Environment.OSVersion is null))
+            {
+                _guiLog.Info($"Windows Version: {Environment.OSVersion.VersionString}");
+            }
+            else
+            {
+                _guiLog.Error("Cannot retreive Environment.OSVersion string.");
+            }
+
+            var releaseId = 0;
+            try
+            {
+                releaseId = Int32.Parse(Registry
+                    .GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "")
+                    .ToString());
+                _guiLog.Info($"Windows Release ID: {releaseId}");
+            }
+            catch (Exception e)
+            {
+                _guiLog.Error("Cannot retreive Release ID for OS! Will not load bluetooth manager.");
+            }
+
+            
+            // Make sure we're on the Creators update before even trying to load the UWP Bluetooth Manager
+            if (releaseId >= 1703)
+            {
+                try
+                {
+                    _bpServer.AddDeviceSubtypeManager(aLogger => new UWPBluetoothManager(aLogger));
+                }
+                catch (PlatformNotSupportedException e)
+                {
+                    _ravenClient.Capture(new SentryEvent(e));
+                }
+            }
+            else
+            {
+                _guiLog.Warn("OS Version too old to load bluetooth core. Must be Windows 10 15063 or higher.");
+            }
+
             _bpServer.AddDeviceSubtypeManager(aLogger => new XInputGamepadManager(aLogger));
             _devices = new DeviceList();
 
@@ -156,12 +196,12 @@ namespace ButtplugGUI
                     AboutVersionNumber.MouseDown += GithubRequestNavigate;
                 }
                 Title = $"Buttplug {AboutVersionNumber.Text}";
+                _guiLog.Info($"Buttplug Server Revision: {AboutVersionNumber.Text}");
             }
             catch (Exception)
             {
                 // TODO Make this catch far more granular
-                var log = LogManager.GetCurrentClassLogger();
-                log.Info("Can't load assembly file, no version info available!");
+                _guiLog.Info("Can't load assembly file, no version info available!");
             }
         }
 
@@ -182,7 +222,6 @@ namespace ButtplugGUI
                 Dispatcher.UnhandledException -= DispatcherOnUnhandledException;
             }
 
-            var _ravenClient = new RavenClient("https://2e376d00cdcb44bfb2140c1cf000d73b:1fa6980aeefa4b048b866a450ee9ad71@sentry.io/170313");
             _ravenClient.Capture(new SentryEvent(aEx));
         }
 

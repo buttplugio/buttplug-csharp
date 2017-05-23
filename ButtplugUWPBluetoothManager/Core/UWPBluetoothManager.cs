@@ -22,6 +22,7 @@ namespace ButtplugUWPBluetoothManager.Core
 
         public UWPBluetoothManager(IButtplugLogManager aLogManager) : base(aLogManager)
         {
+            BpLogger.Debug("Loading UWP Bluetooth Manager");
             _currentlyConnecting = new List<ulong>();
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             _deviceFactories = new List<ButtplugBluetoothDeviceFactory>();
