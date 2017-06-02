@@ -5,11 +5,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ButtplugGUI")]
+[assembly: AssemblyTitle("Buttplug Kiiroo Emulator GUI")]
 [assembly: AssemblyDescription("Haptics Control Software")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Metafetish.com")]
-[assembly: AssemblyProduct("ButtplugGUI")]
+[assembly: AssemblyProduct("Buttplug")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

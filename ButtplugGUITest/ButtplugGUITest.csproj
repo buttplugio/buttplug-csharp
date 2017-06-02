@@ -56,17 +56,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ButtplugGUI\ButtplugGUI.csproj">
-      <Project>{76e03b47-dca6-49d1-99c2-2ea28d3a8e78}</Project>
-      <Name>ButtplugGUI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ButtplugKiirooEmulatorGUI\ButtplugKiirooEmulatorGUI.csproj">
+      <Project>{76e03b47-dca6-49d1-99c2-2ea28d3a8e78}</Project>
+      <Name>ButtplugKiirooEmulatorGUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

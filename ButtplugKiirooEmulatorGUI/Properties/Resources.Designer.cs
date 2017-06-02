@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ButtplugGUI.Properties {
+namespace ButtplugKiirooEmulatorGUI.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ButtplugGUI.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ButtplugGUI.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ButtplugKiirooEmulatorGUI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -67,26 +67,6 @@ namespace ButtplugGUI.Properties {
             get {
                 object obj = ResourceManager.GetObject("buttplug_icon_11", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap buttplug_logo_1 {
-            get {
-                object obj = ResourceManager.GetObject("buttplug_logo_1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap buttplugin_with_qdot_intro_patreon_image {
-            get {
-                object obj = ResourceManager.GetObject("buttplugin_with_qdot_intro_patreon_image", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using ButtplugGUI;
+using ButtplugKiirooEmulatorGUI;
 using Xunit;
 
 namespace ButtplugGUITest

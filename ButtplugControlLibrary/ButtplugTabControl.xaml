@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="ButtplugControlLibrary.ButtplugTabControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ButtplugControlLibrary"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <TabControl Margin="0,0,-0.333,-0.333" Name="ButtplugTab">           
+            <TabItem Header="Application" Name="ApplicationTab"/>
+            <TabItem Header="Logs">
+                <local:ButtplugLogControl />
+            </TabItem>
+            <TabItem Header="About">
+                <local:ButtplugAboutControl x:Name="AboutControl" />
+            </TabItem>
+            <TabItem Name="DeveloperTab" Header="Developer" Visibility="Hidden">
+                <Grid Background="#FFE5E5E5">
+                    <Button Name="CrashButton" Content="Crash Application" Margin="10,10,0,259.667" HorizontalAlignment="Left" Click="CrashButton_Click" Width="108"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="ButtplugControlLibrary.ButtplugLogControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ButtplugControlLibrary"
+             mc:Ignorable="d" 
+            d:DesignHeight="300" d:DesignWidth="525">
+    <Grid Background="#FFE5E5E5" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <ListBox Grid.Row="0" Name="LogListBox" Margin="10,10,10,0" />
+        <ComboBox Name="LogLevelComboBox" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="78,3.667,0,-0.333">
+            <ComboBoxItem Content="Off" />
+            <ComboBoxItem Content="Fatal" />
+            <ComboBoxItem Content="Error" />
+            <ComboBoxItem Content="Warn"/>
+            <ComboBoxItem Content="Info"/>
+            <ComboBoxItem IsSelected="true" Content="Debug" />
+            <ComboBoxItem Content="Trace"/>
+        </ComboBox>
+        <Label Grid.Row="1" Content="Log Level:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+        <Button Grid.Row="1" Content="Save To File" HorizontalAlignment="Right" Margin="403,3.667,15,0" VerticalAlignment="Top" Width="70" Click="SaveLogFileButton_Click"/>
+    </Grid>
+</UserControl>

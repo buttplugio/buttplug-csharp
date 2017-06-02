@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}</ProjectGuid>
+    <ProjectGuid>{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ButtplugGUI</RootNamespace>
-    <AssemblyName>ButtplugGUI</AssemblyName>
+    <RootNamespace>ButtplugServerGUI</RootNamespace>
+    <AssemblyName>ButtplugServerGUI</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -37,31 +37,29 @@
     <ApplicationIcon>Resources\buttplug-icon-1.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.9\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="WebsocketServerControl.xaml.cs">
+      <DependentUpon>WebsocketServerControl.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -70,11 +68,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ButtplugMessageNLogTarget.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="WebsocketServerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -91,10 +92,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
+      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -104,43 +104,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ButtplugKiirooPlatformEmulator\ButtplugKiirooPlatformEmulator.csproj">
-      <Project>{c606b29a-ee61-452c-8557-9dc9b37e87d1}</Project>
-      <Name>ButtplugKiirooPlatformEmulator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ButtplugUWPBluetoothManager\ButtplugUWPBluetoothManager.csproj">
-      <Project>{223ea194-8318-4189-bec8-73734c3f4a78}</Project>
-      <Name>ButtplugUWPBluetoothManager</Name>
+    <ProjectReference Include="..\ButtplugControlLibrary\ButtplugControlLibrary.csproj">
+      <Project>{0e0d1e27-9efd-4a07-b6aa-bb556205c002}</Project>
+      <Name>ButtplugControlLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\ButtplugWebsockets\ButtplugWebsockets.csproj">
       <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
       <Name>ButtplugWebsockets</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ButtplugXInputGamepadManager\ButtplugXInputGamepadManager.csproj">
-      <Project>{c7d040e1-e18e-4f51-859f-cff8aa57bd64}</Project>
-      <Name>ButtplugXInputGamepadManager</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Buttplug\Buttplug.csproj">
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug</Name>
     </ProjectReference>
-    <ProjectReference Include="..\raven-csharp\src\app\SharpRaven\SharpRaven.csproj">
-      <Project>{cc80a2e1-ae39-44de-8da3-4eef42f90fb1}</Project>
-      <Name>SharpRaven</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\buttplug-icon-1.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\buttplug-logo-1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\buttplugin-with-qdot-intro-patreon-image.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
