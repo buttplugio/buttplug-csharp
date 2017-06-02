@@ -56,8 +56,8 @@ namespace Buttplug.Bluetooth.Devices
             _previousPosition = 0;
 
             // Setup message function array
-            MsgFuncs.Add(typeof(FleshlightLaunchRawCmd), HandleFleshlightLaunchRawCmd);
-            MsgFuncs.Add(typeof(KiirooRawCmd), HandleKiirooRawCmd);
+            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), HandleFleshlightLaunchRawCmd);
+            MsgFuncs.Add(typeof(KiirooCmd), HandleKiirooRawCmd);
         }
 
         public override async Task<ButtplugMessage> Initialize()
@@ -70,7 +70,7 @@ namespace Buttplug.Bluetooth.Devices
 
         public async Task<ButtplugMessage> HandleKiirooRawCmd(ButtplugDeviceMessage aMsg)
         {
-            var kiirooCmd = aMsg as KiirooRawCmd;
+            var kiirooCmd = aMsg as KiirooCmd;
             if (kiirooCmd is null)
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
@@ -81,7 +81,7 @@ namespace Buttplug.Bluetooth.Devices
             var kiirooPosition = kiirooCmd.Position;
             if (kiirooPosition == _previousKiirooPosition)
             {
-                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchRawCmd(aMsg.DeviceIndex, 0, _previousPosition, aMsg.Id));
+                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchFW12Cmd(aMsg.DeviceIndex, 0, _previousPosition, aMsg.Id));
             }
             _previousKiirooPosition = kiirooPosition;
             ushort speed = 0;
@@ -120,20 +120,20 @@ namespace Buttplug.Bluetooth.Devices
                     _limitedSpeed = speed;
                 }
                 var position = (ushort)(kiirooPosition > 2 ? 95 : 5);
-                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchRawCmd(aMsg.DeviceIndex, _limitedSpeed, position, aMsg.Id));
+                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchFW12Cmd(aMsg.DeviceIndex, _limitedSpeed, position, aMsg.Id));
             }
             else
             {
                 _limitedSpeed = 0;
                 var position = (ushort)(kiirooPosition > 2 ? 95 : 5);
-                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchRawCmd(aMsg.DeviceIndex, speed, position, aMsg.Id));
+                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchFW12Cmd(aMsg.DeviceIndex, speed, position, aMsg.Id));
             }
         }
 
         public async Task<ButtplugMessage> HandleFleshlightLaunchRawCmd(ButtplugDeviceMessage aMsg)
         {
             //TODO: Split into Command message and Control message? (Issue #17)
-            var cmdMsg = aMsg as FleshlightLaunchRawCmd;
+            var cmdMsg = aMsg as FleshlightLaunchFW12Cmd;
             if (cmdMsg is null)
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");

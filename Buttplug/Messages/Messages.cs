@@ -181,7 +181,7 @@ namespace Buttplug.Messages
         }
     }
 
-    public class FleshlightLaunchRawCmd : ButtplugDeviceMessage
+    public class FleshlightLaunchFW12Cmd : ButtplugDeviceMessage
     {
         private uint _speedImpl;
 
@@ -215,21 +215,21 @@ namespace Buttplug.Messages
             }
         }
 
-        public FleshlightLaunchRawCmd(uint aDeviceIndex, uint aSpeed, uint aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
+        public FleshlightLaunchFW12Cmd(uint aDeviceIndex, uint aSpeed, uint aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
         {
             Speed = aSpeed;
             Position = aPosition;
         }
     }
 
-    public class LovenseRawCmd : ButtplugDeviceMessage
+    public class LovenseCmd : ButtplugDeviceMessage
     {
-        public LovenseRawCmd(uint aDeviceIndex, string aDeviceCmd, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
+        public LovenseCmd(uint aDeviceIndex, string aDeviceCmd, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
         {
         }
     }
 
-    public class KiirooRawCmd : ButtplugDeviceMessage
+    public class KiirooCmd : ButtplugDeviceMessage
     {
         private uint _positionImpl;
 
@@ -247,7 +247,7 @@ namespace Buttplug.Messages
             }
         }
 
-        public KiirooRawCmd(uint aDeviceIndex, uint aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
+        public KiirooCmd(uint aDeviceIndex, uint aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
         {
             Position = aPosition;
         }

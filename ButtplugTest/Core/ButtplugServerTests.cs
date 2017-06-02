@@ -149,7 +149,7 @@ namespace ButtplugTest.Core
             s.AddDeviceSubtypeManager(m);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
-            Assert.True(await s.SendMessage(new FleshlightLaunchRawCmd(0, 0, 0)) is Error);
+            Assert.True(await s.SendMessage(new FleshlightLaunchFW12Cmd(0, 0, 0)) is Error);
         }
 
         [Fact]

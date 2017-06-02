@@ -39,12 +39,12 @@ namespace Buttplug.Bluetooth.Devices
                 $"Kiiroo {aInterface.Name}",
                 aInterface)
         {
-            MsgFuncs.Add(typeof(KiirooRawCmd), HandleKiirooRawCmd);
+            MsgFuncs.Add(typeof(KiirooCmd), HandleKiirooRawCmd);
         }
 
         public async Task<ButtplugMessage> HandleKiirooRawCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as KiirooRawCmd;
+            var cmdMsg = aMsg as KiirooCmd;
             if (cmdMsg is null)
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");

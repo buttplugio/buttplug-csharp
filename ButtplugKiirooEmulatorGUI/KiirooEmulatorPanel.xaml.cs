@@ -113,7 +113,7 @@ namespace ButtplugKiirooEmulatorGUI
                     {
                         continue;
                     }
-                    await _bpServer.SendMessage(new KiirooRawCmd(device.Index, e.Position));
+                    await _bpServer.SendMessage(new KiirooCmd(device.Index, e.Position));
                 }
             });
         }
