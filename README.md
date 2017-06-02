@@ -43,7 +43,7 @@ Whether any of these will get done is a really good question.
 Buttplug C# Supports the following platforms:
 
 - Windows 10 - Creators Update (15063)
-  - BLE Devices: Fleshlight Launch, Lovense Toys
+  - BLE Devices: Fleshlight Launch, Lovense Toys, Vorze Interactive
   - Other devices: Xbox Gamepads (XInput)
   
 - Windows 7/8 and 10 pre 15063
