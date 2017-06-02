@@ -40,10 +40,10 @@ namespace Buttplug.Bluetooth.Devices
     internal class FleshlightLaunch : ButtplugBluetoothDevice
     {
         private readonly Stopwatch _stopwatch;
-        private readonly ushort _previousSpeed;
-        private readonly ushort _previousPosition;
-        private ushort _previousKiirooPosition;
-        private ushort _limitedSpeed;
+        private readonly uint _previousSpeed;
+        private readonly uint _previousPosition;
+        private uint _previousKiirooPosition;
+        private uint _limitedSpeed;
 
         public FleshlightLaunch(IButtplugLogManager aLogManager,
                                 IBluetoothDeviceInterface aInterface) :

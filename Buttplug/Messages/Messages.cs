@@ -183,10 +183,10 @@ namespace Buttplug.Messages
 
     public class FleshlightLaunchRawCmd : ButtplugDeviceMessage
     {
-        private ushort _speedImpl;
+        private uint _speedImpl;
 
         [JsonProperty(Required = Required.Always)]
-        public ushort Speed
+        public uint Speed
         {
             get => _speedImpl;
             set
@@ -199,10 +199,10 @@ namespace Buttplug.Messages
             }
         }
 
-        private ushort _positionImpl;
+        private uint _positionImpl;
 
         [JsonProperty(Required = Required.Always)]
-        public ushort Position
+        public uint Position
         {
             get => _positionImpl;
             set
@@ -215,7 +215,7 @@ namespace Buttplug.Messages
             }
         }
 
-        public FleshlightLaunchRawCmd(uint aDeviceIndex, ushort aSpeed, ushort aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
+        public FleshlightLaunchRawCmd(uint aDeviceIndex, uint aSpeed, uint aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
         {
             Speed = aSpeed;
             Position = aPosition;
@@ -231,10 +231,10 @@ namespace Buttplug.Messages
 
     public class KiirooRawCmd : ButtplugDeviceMessage
     {
-        private ushort _positionImpl;
+        private uint _positionImpl;
 
         [JsonProperty(Required = Required.Always)]
-        public ushort Position
+        public uint Position
         {
             get => _positionImpl;
             set
@@ -247,11 +247,40 @@ namespace Buttplug.Messages
             }
         }
 
-        public KiirooRawCmd(uint aDeviceIndex, ushort aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
+        public KiirooRawCmd(uint aDeviceIndex, uint aPosition, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
         {
             Position = aPosition;
         }
     }
+
+    public class VorzeA10CycloneCmd : ButtplugDeviceMessage
+    {
+        private uint _speedImpl;
+
+        [JsonProperty(Required = Required.Always)]
+        public uint Speed
+        {
+            get => _speedImpl;
+            set
+            {
+                if (value > 99)
+                {
+                    throw new ArgumentException("VorzeA10CycloneCmd cannot have a speed higher than 99!");
+                }
+                _speedImpl = value;
+            }
+        }
+
+        [JsonProperty(Required = Required.Always)]
+        public bool Clockwise;
+
+        public VorzeA10CycloneCmd(uint aDeviceIndex, uint aSpeed, bool aClockwise, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
+        {
+            Speed = aSpeed;
+            Clockwise = aClockwise;
+        }
+    }
+
 
     public class SingleMotorVibrateCmd : ButtplugDeviceMessage
     {
