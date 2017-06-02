@@ -63,9 +63,9 @@ namespace ButtplugKiirooEmulatorGUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        public static System.Drawing.Icon buttplug_icon_11 {
+        public static System.Drawing.Icon buttplug_icon_red_1 {
             get {
-                object obj = ResourceManager.GetObject("buttplug_icon_11", resourceCulture);
+                object obj = ResourceManager.GetObject("buttplug_icon_red_1", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
