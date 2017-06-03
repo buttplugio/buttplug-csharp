@@ -1,8 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugKiirooPlatformEmulator;
@@ -38,6 +42,7 @@ namespace ButtplugKiirooEmulatorGUI
         private readonly DeviceList _devices;
         private readonly KiirooPlatformEmulator _kiirooEmulator;
         private KiirooMessageTranslator _translator;
+        private List<DispatcherOperation> _ops;
 
         public KiirooEmulatorPanel(ButtplugService aBpService)
         {
@@ -51,7 +56,37 @@ namespace ButtplugKiirooEmulatorGUI
             _translator = new KiirooMessageTranslator();
             _translator.VibrateEvent += OnVibrateEvent;
             DeviceListBox.SelectionMode = SelectionMode.Multiple;
-            
+            DeviceListBox.SelectionChanged += SelectionChangedHandler;
+            _ops = new List<DispatcherOperation>();            
+        }
+
+        ~KiirooEmulatorPanel()
+        {
+            StopServer();
+            _ops.ForEach((x) =>
+            {
+                try
+                {
+                    x.Wait();
+                }
+                catch (TaskCanceledException e)
+                {
+                }
+            });
+        }
+
+        public void SelectionChangedHandler(object o, EventArgs e)
+        {
+            var currentDevices = DeviceListBox.SelectedItems.Cast<Device>().ToList();
+            foreach (var device in currentDevices)
+            {
+                if (device.Messages.Contains("SingleMotorVibrateCmd"))
+                {
+                    _translator.StartVibrateTimer();
+                    return;
+                }
+            }
+            _translator.StopVibrateTimer();
         }
 
         public void StartServer()
@@ -59,10 +94,19 @@ namespace ButtplugKiirooEmulatorGUI
             _kiirooEmulator.StartServer();
         }
 
-        private async void OnVibrateEvent(object o, VibrateEventArgs e)
+        public void StopServer()
         {
-            Debug.WriteLine($"{e.VibrateValue}");
-            await Dispatcher.InvokeAsync(async () =>
+            _kiirooEmulator.StopServer();
+        }
+
+        void OperationCompletedHandler(object o, EventArgs e)
+        {
+            _ops.Remove(o as DispatcherOperation);
+        }
+
+        private void OnVibrateEvent(object o, VibrateEventArgs e)
+        {
+            var op = Dispatcher.InvokeAsync(async () =>
             {
                 var currentDevices = DeviceListBox.SelectedItems.Cast<Device>().ToList();
                 foreach (var device in currentDevices)
@@ -73,11 +117,14 @@ namespace ButtplugKiirooEmulatorGUI
                     }
                 }
             });
+            _ops.Add(op);
+            op.Completed += OperationCompletedHandler;
+
         }
 
-        private void OnMessageReceived(object o, MessageReceivedEventArgs e)
+        private  void OnMessageReceived(object o, MessageReceivedEventArgs e)
         {
-            Dispatcher.InvokeAsync(() =>
+            var op = Dispatcher.InvokeAsync(() =>
             {
                 switch (e.Message)
                 {
@@ -95,6 +142,8 @@ namespace ButtplugKiirooEmulatorGUI
                         break;
                 }
             });
+            _ops.Add(op);
+            op.Completed += OperationCompletedHandler;
         }
 
         private async void ScanButton_Click(object sender, RoutedEventArgs e)

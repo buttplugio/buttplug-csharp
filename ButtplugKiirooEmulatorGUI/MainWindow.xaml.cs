@@ -7,6 +7,7 @@ namespace ButtplugKiirooEmulatorGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly KiirooEmulatorPanel _emu;
         public MainWindow()
         {
             InitializeComponent();
@@ -15,9 +16,9 @@ namespace ButtplugKiirooEmulatorGUI
                 return;
             }
             ButtplugTab.InitializeButtplugServer();
-            var emu = new KiirooEmulatorPanel(ButtplugTab.BpServer);
-            ButtplugTab.SetApplicationTab("Kiiroo Emulator", emu);
-            emu.StartServer();
+            _emu = new KiirooEmulatorPanel(ButtplugTab.BpServer);
+            ButtplugTab.SetApplicationTab("Kiiroo Emulator", _emu);
+            _emu.StartServer();
         }
     }
 }

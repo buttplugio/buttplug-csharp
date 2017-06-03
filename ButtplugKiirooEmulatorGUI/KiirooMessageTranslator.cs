@@ -37,29 +37,27 @@ namespace ButtplugKiirooEmulatorGUI
             _previousPosition = 0;
             _vibrateTimer = new Timer(20.0);
             _vibrateTimer.Elapsed += UpdateVibrate;
-            _vibrateTimer.Enabled = true;
             _currentVibrate = 0;
         }
 
         ~KiirooMessageTranslator()
         {
-            _vibrateTimer.Enabled = false;
+            _vibrateTimer.Stop();
         }
 
         public void StartVibrateTimer()
         {
-            _vibrateTimer.Enabled = true;
+            _vibrateTimer.Start();
         }
 
-        public void EndVibrateTimer()
+        public void StopVibrateTimer()
         {
-            _vibrateTimer.Enabled = false;
+            _vibrateTimer.Stop();
         }
 
         public void UpdateVibrate(object o, EventArgs e)
         {
             var speedModifier = .2 * (_currentSpeed / 100.0);
-            Debug.WriteLine($"{speedModifier} {_currentSpeed} {_currentVibrate}");
             if (_currentGoalPosition < 2)
             {
                 speedModifier *= -1;
@@ -78,7 +76,6 @@ namespace ButtplugKiirooEmulatorGUI
 
         public FleshlightLaunchFW12Cmd Translate(KiirooCmd aMsg)
         {
-            Debug.WriteLine(aMsg.Position);
             var elapsed = _stopwatch.ElapsedMilliseconds;
             _stopwatch.Stop();
             _currentGoalPosition = aMsg.Position;
