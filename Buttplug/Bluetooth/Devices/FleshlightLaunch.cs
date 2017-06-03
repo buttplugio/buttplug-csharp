@@ -39,25 +39,14 @@ namespace Buttplug.Bluetooth.Devices
 
     internal class FleshlightLaunch : ButtplugBluetoothDevice
     {
-        private readonly Stopwatch _stopwatch;
-        private readonly uint _previousSpeed;
-        private readonly uint _previousPosition;
-        private uint _previousKiirooPosition;
-        private uint _limitedSpeed;
-
         public FleshlightLaunch(IButtplugLogManager aLogManager,
                                 IBluetoothDeviceInterface aInterface) :
             base(aLogManager,
                  "Fleshlight Launch",
                  aInterface)
         {
-            _stopwatch = new Stopwatch();
-            _previousSpeed = 0;
-            _previousPosition = 0;
-
             // Setup message function array
             MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), HandleFleshlightLaunchRawCmd);
-            MsgFuncs.Add(typeof(KiirooCmd), HandleKiirooRawCmd);
         }
 
         public override async Task<ButtplugMessage> Initialize()
@@ -66,68 +55,6 @@ namespace Buttplug.Bluetooth.Devices
             return await Interface.WriteValue(ButtplugConsts.SYSTEM_MSG_ID,
                 (uint) FleshlightLaunchBluetoothInfo.Chrs.Cmd,
                 new byte[] {0});
-        }
-
-        public async Task<ButtplugMessage> HandleKiirooRawCmd(ButtplugDeviceMessage aMsg)
-        {
-            var kiirooCmd = aMsg as KiirooCmd;
-            if (kiirooCmd is null)
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
-            }
-
-            var elapsed = _stopwatch.ElapsedMilliseconds;
-            _stopwatch.Stop();
-            var kiirooPosition = kiirooCmd.Position;
-            if (kiirooPosition == _previousKiirooPosition)
-            {
-                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchFW12Cmd(aMsg.DeviceIndex, 0, _previousPosition, aMsg.Id));
-            }
-            _previousKiirooPosition = kiirooPosition;
-            ushort speed = 0;
-
-            // Speed Conversion
-            if (elapsed > 2000)
-            {
-                speed = 50;
-            }
-            else if (elapsed > 1000)
-            {
-                speed = 20;
-            }
-            else
-            {
-                speed = (ushort)(100 - ((elapsed / 100) + ((elapsed / 100) * .1)));
-                if (speed > _previousSpeed)
-                {
-                    speed = (ushort)(_previousSpeed + ((speed - _previousSpeed) / 6));
-                }
-                else if (speed <= _previousSpeed)
-                {
-                    speed = (ushort)(_previousSpeed - (speed / 2));
-                }
-            }
-            if (speed < 20)
-            {
-                speed = 20;
-            }
-            _stopwatch.Start();
-            // Position Conversion
-            if (elapsed <= 150)
-            {
-                if (_limitedSpeed == 0)
-                {
-                    _limitedSpeed = speed;
-                }
-                var position = (ushort)(kiirooPosition > 2 ? 95 : 5);
-                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchFW12Cmd(aMsg.DeviceIndex, _limitedSpeed, position, aMsg.Id));
-            }
-            else
-            {
-                _limitedSpeed = 0;
-                var position = (ushort)(kiirooPosition > 2 ? 95 : 5);
-                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchFW12Cmd(aMsg.DeviceIndex, speed, position, aMsg.Id));
-            }
         }
 
         public async Task<ButtplugMessage> HandleFleshlightLaunchRawCmd(ButtplugDeviceMessage aMsg)

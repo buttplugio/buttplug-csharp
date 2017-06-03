@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugKiirooPlatformEmulator;
@@ -47,6 +37,7 @@ namespace ButtplugKiirooEmulatorGUI
         private readonly ButtplugService _bpServer;
         private readonly DeviceList _devices;
         private readonly KiirooPlatformEmulator _kiirooEmulator;
+        private KiirooMessageTranslator _translator;
 
         public KiirooEmulatorPanel(ButtplugService aBpService)
         {
@@ -56,11 +47,32 @@ namespace ButtplugKiirooEmulatorGUI
             DeviceListBox.ItemsSource = _devices;
             _bpServer.MessageReceived += OnMessageReceived;
             _kiirooEmulator = new KiirooPlatformEmulator();
+            _kiirooEmulator.OnKiirooPlatformEvent += HandleKiirooPlatformMessage;
+            _translator = new KiirooMessageTranslator();
+            _translator.VibrateEvent += OnVibrateEvent;
+            DeviceListBox.SelectionMode = SelectionMode.Multiple;
+            
         }
 
         public void StartServer()
         {
             _kiirooEmulator.StartServer();
+        }
+
+        private async void OnVibrateEvent(object o, VibrateEventArgs e)
+        {
+            Debug.WriteLine($"{e.VibrateValue}");
+            await Dispatcher.InvokeAsync(async () =>
+            {
+                var currentDevices = DeviceListBox.SelectedItems.Cast<Device>().ToList();
+                foreach (var device in currentDevices)
+                {
+                    if (device.Messages.Contains("SingleMotorVibrateCmd"))
+                    {
+                        await _bpServer.SendMessage(new SingleMotorVibrateCmd(device.Index, e.VibrateValue));
+                    }
+                }
+            });
         }
 
         private void OnMessageReceived(object o, MessageReceivedEventArgs e)
@@ -107,16 +119,28 @@ namespace ButtplugKiirooEmulatorGUI
             await Dispatcher.InvokeAsync(async () =>
             {
                 var currentDevices = DeviceListBox.SelectedItems.Cast<Device>().ToList();
+                FleshlightLaunchFW12Cmd currentTranslatedCommand = null;
                 foreach (var device in currentDevices)
                 {
-                    if (!device.Messages.Contains("KiirooRawCmd"))
+                    if (device.Messages.Contains("KiirooRawCmd"))
                     {
-                        continue;
+                        await _bpServer.SendMessage(new KiirooCmd(device.Index, e.Position));
                     }
-                    await _bpServer.SendMessage(new KiirooCmd(device.Index, e.Position));
+                    else if (device.Messages.Contains("FleshlightLaunchFW12Cmd") ||
+                             device.Messages.Contains("SingleMotorVibrateCmd"))
+                    {
+                        if (currentTranslatedCommand == null)
+                        {
+                            currentTranslatedCommand = _translator.Translate(new KiirooCmd(device.Index, e.Position));
+                        }
+                        currentTranslatedCommand.DeviceIndex = device.Index;
+                        if (device.Messages.Contains("FleshlightLaunchFW12Cmd"))
+                        {
+                            await _bpServer.SendMessage(currentTranslatedCommand);
+                        }
+                    }
                 }
             });
         }
     }
-    
 }
