@@ -40,14 +40,14 @@ namespace ButtplugWebsockets
         protected override async void OnMessage(MessageEventArgs e)
         {
             base.OnMessage(e);
-            var msg = ButtplugService.Serialize(await _buttplug.SendMessage(e.Data));
-            Sessions?.Broadcast(Encoding.ASCII.GetBytes(msg));
+            var msg = _buttplug.Serialize(await _buttplug.SendMessage(e.Data));
+            Sessions?.Broadcast(msg);
         }
 
         private void OnMessageReceived(object aObj, MessageReceivedEventArgs e)
         {
-            var msg = ButtplugService.Serialize(e.Message);
-            Sessions?.Broadcast(Encoding.ASCII.GetBytes(msg));
+            var msg = _buttplug.Serialize(e.Message);
+            Sessions?.Broadcast(msg);
         }
     }
 }
