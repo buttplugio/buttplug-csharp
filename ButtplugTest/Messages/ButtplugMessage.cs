@@ -13,14 +13,14 @@ namespace ButtplugTest.Messages
         public async void RequestLogJsonTest()
         {
             var s = new TestService();
-            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}")) is Ok);
+            Assert.True((await s.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}]")) is Ok);
         }
 
         [Fact]
         public async void RequestLogWrongLevelTest()
         {
             var s = new TestService();
-            Assert.True((await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}")) is Error);
+            Assert.True((await s.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}]")) is Error);
         }
 
         [Fact]
@@ -52,7 +52,8 @@ namespace ButtplugTest.Messages
         [Fact]
         public async void SerializeUnhandledMessage()
         {
-            var r = ButtplugJsonMessageParser.Serialize(new FakeMessage(1));
+            var logger = new ButtplugLogManager();
+            var r = new ButtplugJsonMessageParser(logger).Serialize(new FakeMessage(1));
             // Even though the message is defined outside the core library, it should at least serialize
             Assert.True(r.Length > 0);
             // However it shouldn't be taken by the server.
@@ -80,7 +81,7 @@ namespace ButtplugTest.Messages
             var results = new List<ButtplugMessage>
             {
                 await s.SendMessage(new RequestServerInfo()),
-                await s.SendMessage("{\"RequestServerInfo\":{\"Id\":1}}")
+                await s.SendMessage("[{\"RequestServerInfo\":{\"Id\":1}}]")
             };
             foreach (var reply in results)
             {
