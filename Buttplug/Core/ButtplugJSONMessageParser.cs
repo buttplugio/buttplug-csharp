@@ -49,10 +49,11 @@ namespace Buttplug.Core
         public ButtplugMessage Deserialize(string aJsonMsg)
         {
             _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
-            JObject j;
+            
+            JArray a;
             try
             {
-                j = JObject.Parse(aJsonMsg);
+                a = JArray.Parse(aJsonMsg);
             }
             catch (JsonReaderException e)
             {
@@ -60,11 +61,20 @@ namespace Buttplug.Core
                 _bpLogger.Debug(e.Message);
                 return new Error("Not valid JSON", ButtplugConsts.SYSTEM_MSG_ID);
             }
-            if (!j.Properties().Any())
+            if (a.Count() == 0)
+            {
+                return new Error("No messages in array", ButtplugConsts.SYSTEM_MSG_ID);
+            }
+
+            // JSON input is an array of messages.
+            // We currently only handle the first one.
+
+            JObject o = a.Children<JObject>().ElementAt(0);
+            if ( !o.Properties().Any())
             {
                 return new Error("No message name available", ButtplugConsts.SYSTEM_MSG_ID);
             }
-            var msgName = j.Properties().First().Name;
+            var msgName = o.Properties().First().Name;
             if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
             {
                 return new Error($"{msgName} is not a valid message class", ButtplugConsts.SYSTEM_MSG_ID);
@@ -74,7 +84,7 @@ namespace Buttplug.Core
             // This specifically could fail due to object conversion.
             try
             {
-                var r = j[msgName].Value<JObject>();
+                var r = o[msgName].Value<JObject>();
                 m = (ButtplugMessage)r.ToObject(_messageTypes[msgName], s);
             }
             catch (InvalidCastException e)
@@ -89,10 +99,12 @@ namespace Buttplug.Core
             return m;
         }
 
-        public static string Serialize(ButtplugMessage aMsg)
+        public string Serialize(ButtplugMessage aMsg)
         {
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
-            return o.ToString(Formatting.None);
+            var a = new JArray(o);
+            _bpLogger.Trace($"Sent message: {a.ToString(Formatting.None)}");
+            return a.ToString(Formatting.None);
         }
     }
 }

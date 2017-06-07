@@ -83,9 +83,9 @@ namespace Buttplug.Core
             }
         }
 
-        public static string Serialize(ButtplugMessage aMsg)
+        public string Serialize(ButtplugMessage aMsg)
         {
-            return ButtplugJsonMessageParser.Serialize(aMsg);
+            return _parser.Serialize(aMsg);
         }
 
         public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
