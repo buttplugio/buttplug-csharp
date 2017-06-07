@@ -10,9 +10,10 @@ namespace ButtplugTest.Core
         public void JsonConversionTest()
         {
             var m = new Buttplug.Messages.Test("ThisIsATest", ButtplugConsts.SYSTEM_MSG_ID);
-            var msg = ButtplugJsonMessageParser.Serialize(m);
+            var logger = new ButtplugLogManager();
+            var msg = new ButtplugJsonMessageParser(logger).Serialize(m);
             Assert.True(msg.Length > 0);
-            Assert.Equal("{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}", msg);
+            Assert.Equal("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}]", msg);
         }
 
         // Not valid JSON
@@ -42,7 +43,7 @@ namespace ButtplugTest.Core
         public void DeserializeCorrectMessage()
         {
             var p = new ButtplugJsonMessageParser(new ButtplugLogManager());
-            var m = p.Deserialize("{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}");
+            var m = p.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}]");
             switch (m)
             {
                 case Error e:
