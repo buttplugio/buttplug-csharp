@@ -1,6 +1,7 @@
 ﻿using Buttplug.Messages;
 using JetBrains.Annotations;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Buttplug.Core
@@ -71,16 +72,23 @@ namespace Buttplug.Core
         }
 
         [ItemNotNull]
-        public async Task<ButtplugMessage> SendMessage(string aJsonMsg)
+        public async Task<ButtplugMessage[]> SendMessage(string aJsonMsgs)
         {
-            var msg = _parser.Deserialize(aJsonMsg);
-            switch (msg)
+            ButtplugMessage[] msgs = _parser.Deserialize(aJsonMsgs);
+            List<ButtplugMessage> res = new List<ButtplugMessage>();
+            foreach (ButtplugMessage msg in msgs)
             {
-                case Error errorMsg:
-                    return errorMsg;
-                default:
-                    return await SendMessage(msg);
+                switch (msg)
+                {
+                    case Error errorMsg:
+                        res.Add(errorMsg);
+                        break;
+                    default:
+                        res.Add(await SendMessage(msg));
+                        break;
+                }
             }
+            return res.ToArray();
         }
 
         public string Serialize(ButtplugMessage aMsg)
@@ -88,7 +96,12 @@ namespace Buttplug.Core
             return _parser.Serialize(aMsg);
         }
 
-        public ButtplugMessage Deserialize(string aMsg)
+        public string Serialize(ButtplugMessage[] aMsgs)
+        {
+            return _parser.Serialize(aMsgs);
+        }
+
+        public ButtplugMessage[] Deserialize(string aMsg)
         {
             return _parser.Deserialize(aMsg);
         }

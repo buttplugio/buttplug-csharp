@@ -13,14 +13,36 @@ namespace ButtplugTest.Messages
         public async void RequestLogJsonTest()
         {
             var s = new TestService();
-            Assert.True((await s.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}]")) is Ok);
+            ButtplugMessage[] res = await s.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}]");
+            Assert.True(res.Length == 1);
+            Assert.True(res[0] is Ok);
         }
 
         [Fact]
         public async void RequestLogWrongLevelTest()
         {
             var s = new TestService();
-            Assert.True((await s.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}]")) is Error);
+            ButtplugMessage[] res = await s.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}]");
+            Assert.True(res.Length == 1);
+            Assert.True(res[0] is Error);
+        }
+
+        [Fact]
+        public async void RequestLogWithoutArrayWrapperTest()
+        {
+            var s = new TestService();
+            ButtplugMessage[] res = await s.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}");
+            Assert.True(res.Length == 1);
+            Assert.True(res[0] is Error);
+        }
+
+        [Fact]
+        public async void RequestNothingTest()
+        {
+            var s = new TestService();
+            ButtplugMessage[] res = await s.SendMessage("[]");
+            Assert.True(res.Length == 1);
+            Assert.True(res[0] is Error);
         }
 
         [Fact]
@@ -58,9 +80,9 @@ namespace ButtplugTest.Messages
             Assert.True(r.Length > 0);
             // However it shouldn't be taken by the server.
             var s = new ButtplugService();
-            ButtplugMessage e = null;
-            e = await s.SendMessage(r);
-            Assert.True(e is Error);
+            ButtplugMessage[] e = await s.SendMessage(r);
+            Assert.True(e.Length == 1);
+            Assert.True(e[0] is Error);
         }
 
         [Fact]
@@ -78,11 +100,10 @@ namespace ButtplugTest.Messages
         public async void RequestServerInfoTest()
         {
             var s = new ButtplugService();
-            var results = new List<ButtplugMessage>
-            {
-                await s.SendMessage(new RequestServerInfo()),
-                await s.SendMessage("[{\"RequestServerInfo\":{\"Id\":1}}]")
-            };
+            var results = new List<ButtplugMessage>();
+            results.Add(await s.SendMessage(new RequestServerInfo()));
+            results.AddRange(await s.SendMessage("[{\"RequestServerInfo\":{\"Id\":1}}]"));
+
             foreach (var reply in results)
             {
                 Assert.True(reply is ServerInfo);
