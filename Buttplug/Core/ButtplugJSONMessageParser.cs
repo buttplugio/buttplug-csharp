@@ -61,7 +61,7 @@ namespace Buttplug.Core
                 _bpLogger.Debug(e.Message);
                 return new Error("Not valid JSON", ButtplugConsts.SYSTEM_MSG_ID);
             }
-            if (a.Count() == 0)
+            if (!a.Any())
             {
                 return new Error("No messages in array", ButtplugConsts.SYSTEM_MSG_ID);
             }
@@ -70,7 +70,7 @@ namespace Buttplug.Core
             // We currently only handle the first one.
 
             JObject o = a.Children<JObject>().ElementAt(0);
-            if ( !o.Properties().Any())
+            if (!o.Properties().Any())
             {
                 return new Error("No message name available", ButtplugConsts.SYSTEM_MSG_ID);
             }
@@ -103,7 +103,7 @@ namespace Buttplug.Core
         {
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             var a = new JArray(o);
-            _bpLogger.Trace($"Sent message: {a.ToString(Formatting.None)}");
+            _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}");
             return a.ToString(Formatting.None);
         }
     }
