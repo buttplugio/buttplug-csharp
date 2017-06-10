@@ -39,9 +39,15 @@ namespace Buttplug.Bluetooth.Devices
                 aInterface)
         {
             MsgFuncs.Add(typeof(VorzeA10CycloneCmd), HandleVorzeA10CycloneCmd);
+            MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
         }
 
-        public async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        {
+            return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, false, aMsg.Id));
+        }
+
+        private async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg)
         {
             var cmdMsg = aMsg as VorzeA10CycloneCmd;
             if (cmdMsg is null)

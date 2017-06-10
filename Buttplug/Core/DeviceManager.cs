@@ -90,6 +90,24 @@ namespace Buttplug.Core
                     StopScanning();
                     return new Ok(id);
 
+                case StopAllDevices _:
+                    var isOk = true;
+                    var errorMsg = "";
+                    foreach (var d in _devices.ToList())
+                    {
+                        var r = await d.Value.ParseMessage(new StopDeviceCmd(d.Key, aMsg.Id));
+                        if (r is Ok)
+                        {
+                            continue;
+                        }
+                        isOk = false;
+                        errorMsg += $"{(r as Error).ErrorMessage}; ";
+                    }
+                    if (isOk)
+                    {
+                        return new Ok(aMsg.Id);
+                    }
+                    return new Error(errorMsg, aMsg.Id);
                 case RequestDeviceList _:
                     var msgDevices = _devices
                         .Select(d => new DeviceMessageInfo(d.Key, d.Value.Name,

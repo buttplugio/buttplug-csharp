@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
+using Buttplug.Messages;
 using JetBrains.Annotations;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -31,10 +32,11 @@ namespace ButtplugWebsockets
             _buttplug.MessageReceived += OnMessageReceived;
         }
 
-        protected override void OnClose(CloseEventArgs e)
+        protected override async void OnClose(CloseEventArgs e)
         {
             base.OnClose(e);
             _buttplug.MessageReceived -= OnMessageReceived;
+            await _buttplug.SendMessage(new StopAllDevices());
         }
 
         protected override async void OnMessage(MessageEventArgs e)
