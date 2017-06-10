@@ -34,6 +34,11 @@ namespace Buttplug.Core
 
         private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
         {
+            // Devices can be turned off by the time they get to this point, at which point they end up null. Make sure the device isn't null.
+            if (e.Device == null)
+            {
+                return;
+            }
             var duplicates = from x in _devices.Values
                 where x.Identifier == e.Device.Identifier
                 select x;
