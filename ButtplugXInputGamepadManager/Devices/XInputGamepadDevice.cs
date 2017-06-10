@@ -14,17 +14,20 @@ namespace ButtplugXInputGamepadManager.Devices
         {
             _device = d;
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
+            MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        {
+            return HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id));
+        }
 
-        public async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
+                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler"));
             }
             var v = new Vibration()
             {
@@ -32,7 +35,7 @@ namespace ButtplugXInputGamepadManager.Devices
                 RightMotorSpeed = (ushort) (cmdMsg.Speed * 65536)
             };
             _device.SetVibration(v);
-            return new Ok(aMsg.Id);
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
     }
 }
