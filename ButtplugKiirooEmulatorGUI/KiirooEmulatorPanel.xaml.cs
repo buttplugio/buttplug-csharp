@@ -171,7 +171,7 @@ namespace ButtplugKiirooEmulatorGUI
                 FleshlightLaunchFW12Cmd currentTranslatedCommand = null;
                 foreach (var device in currentDevices)
                 {
-                    if (device.Messages.Contains("KiirooRawCmd"))
+                    if (device.Messages.Contains(typeof(KiirooCmd).Name))
                     {
                         await _bpServer.SendMessage(new KiirooCmd(device.Index, e.Position));
                     }
