@@ -106,13 +106,6 @@ namespace Buttplug.Core
             return res.ToArray();
         }
 
-        public string Serialize(ButtplugMessage aMsg)
-        {
-            var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
-            var a = new JArray(o);
-            _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}");
-            return a.ToString(Formatting.None);
-        }
         public string Serialize(ButtplugMessage[] aMsgs)
         {
             var a = new JArray();
