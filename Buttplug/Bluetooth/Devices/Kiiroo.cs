@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Messages;
+using JetBrains.Annotations;
 
 namespace Buttplug.Bluetooth.Devices
 {
@@ -10,18 +11,18 @@ namespace Buttplug.Bluetooth.Devices
     {
         public enum Chrs : uint
         {
-            Tx = 0,
-            Rx
+            Rx = 0,
+            Tx = 1
         }
         public string[] Names { get; } = { "ONYX", "PEARL" };
         public Guid[] Services { get; } = { new Guid("49535343-fe7d-4ae5-8fa9-9fafd205e455") };
 
         public Guid[] Characteristics { get; } =
         {
-            // tx
-            new Guid("49535343-8841-43f4-a8d4-ecbe34729bb3"),
             // rx
-            new Guid("49535343-1e4d-4bd9-ba61-23c647249616")
+            new Guid("49535343-1e4d-4bd9-ba61-23c647249616"),
+            // tx
+            new Guid("49535343-8841-43f4-a8d4-ecbe34729bb3")
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
