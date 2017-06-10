@@ -309,4 +309,18 @@ namespace Buttplug.Messages
             Speed = aSpeed;
         }
     }
+
+    public class StopDeviceCmd : ButtplugDeviceMessage
+    {
+        public StopDeviceCmd(uint aDeviceIndex, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)
+        {
+        }
+    }
+
+    public class StopAllDevices : ButtplugMessage
+    {
+        public StopAllDevices(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
+        {
+        }
+    }
 }

@@ -63,7 +63,7 @@ namespace Buttplug.Core
                 res.Add(new Error("Not valid JSON", ButtplugConsts.SYSTEM_MSG_ID));
                 return res.ToArray(); 
             }
-            if (a.Count() == 0)
+            if (!a.Any())
             {
                 res.Add(new Error("No messages in array", ButtplugConsts.SYSTEM_MSG_ID));
                 return res.ToArray();
@@ -110,7 +110,7 @@ namespace Buttplug.Core
         {
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             var a = new JArray(o);
-            _bpLogger.Trace($"Sent message: {a.ToString(Formatting.None)}");
+            _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}");
             return a.ToString(Formatting.None);
         }
         public string Serialize(ButtplugMessage[] aMsgs)
@@ -121,7 +121,7 @@ namespace Buttplug.Core
                 var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
                 a.Add(o);
             }
-            _bpLogger.Trace($"Sent message: {a.ToString(Formatting.None)}");
+            _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}");
             return a.ToString(Formatting.None);
         }
     }

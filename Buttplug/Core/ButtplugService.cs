@@ -101,6 +101,11 @@ namespace Buttplug.Core
             return _parser.Serialize(aMsgs);
         }
 
+        public ButtplugMessage[] Deserialize(string aMsg)
+        {
+            return _parser.Deserialize(aMsg);
+        }
+
         public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
         {
             _deviceManager.AddDeviceSubtypeManager(aCreateMgrFunc);

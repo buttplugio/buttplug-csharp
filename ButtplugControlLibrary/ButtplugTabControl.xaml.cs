@@ -119,7 +119,7 @@ namespace ButtplugControlLibrary
                 }
                 catch (PlatformNotSupportedException e)
                 {
-                    SendExceptionToSentry(e);
+                    _guiLog.Warn(e, "Something went wrong whilst setting up bluetooth.");
                 }
             }
             else

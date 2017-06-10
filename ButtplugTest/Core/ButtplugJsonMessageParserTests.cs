@@ -6,17 +6,18 @@ namespace ButtplugTest.Core
 {
     public class ButtplugJsonMessageParserTests
     {
+        private ButtplugService service = new ButtplugService();
+
         [Fact]
         public void JsonConversionTest()
         {
             var m1 = new Buttplug.Messages.Test("ThisIsATest", ButtplugConsts.SYSTEM_MSG_ID);
             var m2 = new Buttplug.Messages.Test("ThisIsAnotherTest", ButtplugConsts.SYSTEM_MSG_ID);
-            var logger = new ButtplugLogManager();
-            var msg = new ButtplugJsonMessageParser(logger).Serialize(m1);
+            var msg = service.Serialize(m1);
             Assert.True(msg.Length > 0);
             Assert.Equal("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}]", msg);
             ButtplugMessage[] msgs = { m1, m2 };
-            msg = new ButtplugJsonMessageParser(logger).Serialize(msgs);
+            msg = service.Serialize(msgs);
             Assert.True(msg.Length > 0);
             Assert.Equal("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}},{\"Test\":{\"TestString\":\"ThisIsAnotherTest\",\"Id\":0}}]", msg);
         }
@@ -40,8 +41,7 @@ namespace ButtplugTest.Core
         [Theory]
         public void DeserializeIncorrectMessages(string x)
         {
-            var p = new ButtplugJsonMessageParser(new ButtplugLogManager());
-            var res = p.Deserialize(x);
+            var res = service.Deserialize(x);
             Assert.True(res.Length == 1);
             Assert.True(res[0] is Error);
         }
@@ -49,8 +49,7 @@ namespace ButtplugTest.Core
         [Fact]
         public void DeserializeCorrectMessage()
         {
-            var p = new ButtplugJsonMessageParser(new ButtplugLogManager());
-            var m = p.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}]");
+            var m = service.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}]");
             Assert.True(m.Length == 1);
             switch (m[0])
             {

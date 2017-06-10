@@ -34,6 +34,11 @@ namespace Buttplug.Core
 
         private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
         {
+            // Devices can be turned off by the time they get to this point, at which point they end up null. Make sure the device isn't null.
+            if (e.Device == null)
+            {
+                return;
+            }
             var duplicates = from x in _devices.Values
                 where x.Identifier == e.Device.Identifier
                 select x;
@@ -90,6 +95,24 @@ namespace Buttplug.Core
                     StopScanning();
                     return new Ok(id);
 
+                case StopAllDevices _:
+                    var isOk = true;
+                    var errorMsg = "";
+                    foreach (var d in _devices.ToList())
+                    {
+                        var r = await d.Value.ParseMessage(new StopDeviceCmd(d.Key, aMsg.Id));
+                        if (r is Ok)
+                        {
+                            continue;
+                        }
+                        isOk = false;
+                        errorMsg += $"{(r as Error).ErrorMessage}; ";
+                    }
+                    if (isOk)
+                    {
+                        return new Ok(aMsg.Id);
+                    }
+                    return new Error(errorMsg, aMsg.Id);
                 case RequestDeviceList _:
                     var msgDevices = _devices
                         .Select(d => new DeviceMessageInfo(d.Key, d.Value.Name,
