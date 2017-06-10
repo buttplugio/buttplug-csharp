@@ -119,7 +119,7 @@ namespace ButtplugControlLibrary
                 }
                 catch (PlatformNotSupportedException e)
                 {
-                    _ravenClient.Capture(new SentryEvent(e));
+                    _guiLog.Warn(e, "Something went wrong whilst setting up bluetooth.");
                 }
             }
             else
@@ -147,7 +147,11 @@ namespace ButtplugControlLibrary
                 Dispatcher.UnhandledException -= DispatcherOnUnhandledException;
             }
 
-            _ravenClient.Capture(new SentryEvent(aEx));
+            MessageBoxResult result = MessageBox.Show("An error was encountered! Do you want to report this to the developers?", "Error encountered", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                _ravenClient.Capture(new SentryEvent(aEx));
+            }
         }
 
         private void DispatcherOnUnhandledException(object aObj, DispatcherUnhandledExceptionEventArgs aEx)
@@ -176,5 +180,6 @@ namespace ButtplugControlLibrary
             ApplicationTab.Content = aTabControl;            
         }
     }
+
 }
 

@@ -46,10 +46,11 @@ namespace Buttplug.Core
         }
 
         [NotNull]
-        public ButtplugMessage Deserialize(string aJsonMsg)
+        public ButtplugMessage[] Deserialize(string aJsonMsg)
         {
             _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
-            
+
+            List<ButtplugMessage> res = new List<ButtplugMessage>();
             JArray a;
             try
             {
@@ -59,51 +60,61 @@ namespace Buttplug.Core
             {
                 _bpLogger.Debug($"Not valid JSON: {aJsonMsg}");
                 _bpLogger.Debug(e.Message);
-                return new Error("Not valid JSON", ButtplugConsts.SYSTEM_MSG_ID);
+                res.Add(new Error("Not valid JSON", ButtplugConsts.SYSTEM_MSG_ID));
+                return res.ToArray(); 
             }
-            if (a.Count() == 0)
+            if (!a.Any())
             {
-                return new Error("No messages in array", ButtplugConsts.SYSTEM_MSG_ID);
+                res.Add(new Error("No messages in array", ButtplugConsts.SYSTEM_MSG_ID));
+                return res.ToArray();
             }
 
             // JSON input is an array of messages.
             // We currently only handle the first one.
 
-            JObject o = a.Children<JObject>().ElementAt(0);
-            if ( !o.Properties().Any())
+            foreach (JObject o in a.Children<JObject>())
             {
-                return new Error("No message name available", ButtplugConsts.SYSTEM_MSG_ID);
+                if (!o.Properties().Any())
+                {
+                    res.Add(new Error("No message name available", ButtplugConsts.SYSTEM_MSG_ID));
+                    continue;
+                }
+                var msgName = o.Properties().First().Name;
+                if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
+                {
+                    res.Add(new Error($"{msgName} is not a valid message class", ButtplugConsts.SYSTEM_MSG_ID));
+                    continue;
+                }
+                var s = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
+
+                // This specifically could fail due to object conversion.
+                try
+                {
+                    var r = o[msgName].Value<JObject>();
+                    res.Add((ButtplugMessage)r.ToObject(_messageTypes[msgName], s));
+                    _bpLogger.Trace($"Message successfully parsed as {msgName} type");
+                }
+                catch (InvalidCastException e)
+                {
+                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
+                }
+                catch (JsonSerializationException e)
+                {
+                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
+                }
             }
-            var msgName = o.Properties().First().Name;
-            if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
-            {
-                return new Error($"{msgName} is not a valid message class", ButtplugConsts.SYSTEM_MSG_ID);
-            }
-            var s = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
-            ButtplugMessage m;
-            // This specifically could fail due to object conversion.
-            try
-            {
-                var r = o[msgName].Value<JObject>();
-                m = (ButtplugMessage)r.ToObject(_messageTypes[msgName], s);
-            }
-            catch (InvalidCastException e)
-            {
-                return _bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, $"Could not create message for JSON {aJsonMsg}: {e.Message}");
-            }
-            catch (JsonSerializationException e)
-            {
-                return _bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, $"Could not create message for JSON {aJsonMsg}: {e.Message}");
-            }
-            _bpLogger.Trace($"Message successfully parsed as {msgName} type");
-            return m;
+            return res.ToArray();
         }
 
-        public string Serialize(ButtplugMessage aMsg)
+        public string Serialize(ButtplugMessage[] aMsgs)
         {
-            var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
-            var a = new JArray(o);
-            _bpLogger.Trace($"Sent message: {a.ToString(Formatting.None)}");
+            var a = new JArray();
+            foreach (ButtplugMessage aMsg in aMsgs)
+            {
+                var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
+                a.Add(o);
+            }
+            _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}");
             return a.ToString(Formatting.None);
         }
     }
