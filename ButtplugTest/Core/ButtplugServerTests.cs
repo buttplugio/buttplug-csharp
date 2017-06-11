@@ -10,14 +10,14 @@ namespace ButtplugTest.Core
         [Fact]
         public async void RejectOutgoingOnlyMessage()
         {
-            Assert.True((await new ButtplugService().SendMessage(new Error("Error", ButtplugConsts.DEFAULT_MSG_ID))) is Error);
+            Assert.True((await new TestService().SendMessage(new Error("Error", ButtplugConsts.DEFAULT_MSG_ID))) is Error);
         }
 
         [Fact]
         public async void LoggerSettingsTest()
         {
             var gotMessage = false;
-            var s = new ButtplugService();
+            var s = new TestService();
             s.MessageReceived += (obj, msg) =>
             {
                 if (msg.Message.GetType() == typeof(Log))
@@ -40,13 +40,13 @@ namespace ButtplugTest.Core
         [Fact]
         public async void CheckMessageReturnId()
         {
-            var s = new ButtplugService();
+            var s = new TestService();
             s.MessageReceived += (obj, msg) =>
             {
                 Assert.True(msg.Message is RequestServerInfo);
                 Assert.True(msg.Message.Id == 12345);
             };
-            var m = new RequestServerInfo(12345);
+            var m = new RequestServerInfo("TestClient", 12345);
             await s.SendMessage(m);
             await s.SendMessage("{\"RequestServerInfo\":{\"Id\":12345}}");
         }

@@ -13,7 +13,7 @@ namespace Buttplug.Messages
 
     public class Ping : ButtplugMessage
     {
-        public Ping(uint aId) : base(aId)
+        public Ping(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
         { }
     }
 
@@ -35,7 +35,7 @@ namespace Buttplug.Messages
             }
         }
 
-        public Test(string aString, uint aId) : base(aId)
+        public Test(string aString, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
         {
             TestString = aString;
         }
@@ -46,7 +46,7 @@ namespace Buttplug.Messages
         [JsonProperty(Required = Required.Always)]
         public string ErrorMessage { get; }
 
-        public Error(string aErrorMessage, uint aId) : base(aId)
+        public Error(string aErrorMessage, uint aId = ButtplugConsts.SYSTEM_MSG_ID) : base(aId)
         {
             ErrorMessage = aErrorMessage;
         }
@@ -163,8 +163,13 @@ namespace Buttplug.Messages
 
     public class RequestServerInfo : ButtplugMessage
     {
-        public RequestServerInfo(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
-        { }
+        [JsonProperty(Required = Required.Always)]
+        public string ClientName { get;  }
+
+        public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
+        {
+            ClientName = aClientName;
+        }
     }
 
     public class ServerInfo : ButtplugMessage, IButtplugMessageOutgoingOnly
@@ -172,9 +177,15 @@ namespace Buttplug.Messages
         public int MajorVersion { get; }
         public int MinorVersion { get; }
         public int BuildVersion { get; }
+        public uint MessageVersion { get; }
+        public uint MaxPingTime { get; }
+        public string ServerName { get; }
 
-        public ServerInfo(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
+        public ServerInfo(string aServerName, uint aMessageVersion, uint aMaxPingTime, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
         {
+            ServerName = aServerName;
+            MessageVersion = aMessageVersion;
+            MaxPingTime = aMaxPingTime;
             MajorVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major;
             MinorVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor;
             BuildVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build;
@@ -323,4 +334,5 @@ namespace Buttplug.Messages
         {
         }
     }
+
 }

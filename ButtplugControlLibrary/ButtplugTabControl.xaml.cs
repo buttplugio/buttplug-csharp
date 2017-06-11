@@ -27,7 +27,7 @@ namespace ButtplugControlLibrary
     /// </summary>
     public partial class ButtplugTabControl : UserControl
     {
-        public ButtplugService BpServer { get; }
+        public ButtplugService BpServer { get; private set; }
         private readonly RavenClient _ravenClient;
         private bool _sentCrashLog;
         private Logger _guiLog;
@@ -58,8 +58,6 @@ namespace ButtplugControlLibrary
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
             LogManager.Configuration = LogManager.Configuration;
 #endif
-            // Set up internal services
-            BpServer = new ButtplugService();
 
             // Set up GUI
             InitializeComponent();
@@ -79,8 +77,10 @@ namespace ButtplugControlLibrary
             AboutControl.AboutImageClickedABunch += (o, e) => DeveloperTab.Visibility = Visibility.Visible;
         }
 
-        public void InitializeButtplugServer()
+        public void InitializeButtplugServer(string aServerName, uint aMaxPingTime)
         {
+            // Set up internal services
+            BpServer = new ButtplugService(aServerName, aMaxPingTime);
             if (!(Environment.OSVersion is null))
             {
                 _guiLog.Info($"Windows Version: {Environment.OSVersion.VersionString}");

@@ -66,7 +66,7 @@ namespace ButtplugTest.Messages
         [Fact]
         public async void SendUnhandledMessage()
         {
-            var s = new ButtplugService();
+            var s = new TestService();
             var r = await s.SendMessage(new FakeMessage(1));
             Assert.True(r is Error);
         }
@@ -79,7 +79,7 @@ namespace ButtplugTest.Messages
             // Even though the message is defined outside the core library, it should at least serialize
             Assert.True(r.Length > 0);
             // However it shouldn't be taken by the server.
-            var s = new ButtplugService();
+            var s = new TestService();
             ButtplugMessage[] e = await s.SendMessage(r);
             Assert.True(e.Length == 1);
             Assert.True(e[0] is Error);
@@ -99,10 +99,10 @@ namespace ButtplugTest.Messages
         [Fact]
         public async void RequestServerInfoTest()
         {
-            var s = new ButtplugService();
+            var s = new ButtplugService("TestClient", 100);
             var results = new List<ButtplugMessage>();
-            results.Add(await s.SendMessage(new RequestServerInfo()));
-            results.AddRange(await s.SendMessage("[{\"RequestServerInfo\":{\"Id\":1}}]"));
+            results.Add(await s.SendMessage(new RequestServerInfo("TestClient")));
+            results.AddRange(await s.SendMessage("[{\"RequestServerInfo\":{\"Id\":1, \"ClientName\":\"TestClient\"}}]"));
 
             foreach (var reply in results)
             {
@@ -116,6 +116,15 @@ namespace ButtplugTest.Messages
                 Assert.True(r.MinorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor);
                 Assert.True(r.BuildVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build);
             }
+        }
+
+        [Fact]
+        public async void NonRequestServerInfoFirstTest()
+        {
+            var s = new ButtplugService("TestClient", 100);
+            Assert.True(await s.SendMessage(new Test("Test")) is Error);
+            Assert.True(await s.SendMessage(new RequestServerInfo("TestClient")) is ServerInfo);
+            Assert.True(await s.SendMessage(new Test("Test")) is Test);
         }
     }
 }

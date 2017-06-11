@@ -19,8 +19,15 @@ namespace Buttplug.Core
         [NotNull]
         private readonly IButtplugLogManager _bpLogManager;
 
-        public ButtplugService()
+        private readonly string _serverName;
+        private uint _maxPingTime;
+        private readonly uint _messageSchemaVersion;
+        private bool _receivedRequestServerInfo;
+
+        public ButtplugService(string aServerName, uint aMaxPingTime)
         {
+            _serverName = aServerName;
+            _maxPingTime = aMaxPingTime;
             _bpLogManager = new ButtplugLogManager();
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Trace("Setting up ButtplugService");
@@ -56,6 +63,13 @@ namespace Buttplug.Core
                 return _bpLogger.LogWarnMsg(id,
                     $"Message of type {aMsg.GetType().Name} cannot be sent to server");
             }
+
+            // If we get a message that's not RequestServerInfo first, return an error.
+            if (!_receivedRequestServerInfo && !(aMsg is RequestServerInfo))
+            {
+                return _bpLogger.LogErrorMsg(id,
+                    $"RequestServerInfo must be first message received by server!");
+            }
             switch (aMsg)
             {
                 case RequestLog m:
@@ -63,7 +77,8 @@ namespace Buttplug.Core
                     return new Ok(id);
 
                 case RequestServerInfo _:
-                    return new ServerInfo(id);
+                    _receivedRequestServerInfo = true;
+                    return new ServerInfo(_serverName, 1, _maxPingTime, id);
 
                 case Test m:
                     return new Test(m.TestString, id);
