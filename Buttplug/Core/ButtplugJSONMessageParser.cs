@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using Buttplug.Messages;
+using Newtonsoft.Json.Schema;
+using System.IO;
 
 namespace Buttplug.Core
 {
@@ -15,6 +17,8 @@ namespace Buttplug.Core
         private readonly Dictionary<string, Type> _messageTypes;
         [NotNull]
         private readonly IButtplugLog _bpLogger;
+        [NotNull]
+        private readonly JSchema _schema;
 
         public ButtplugJsonMessageParser([NotNull] IButtplugLogManager aLogManager)
         {
@@ -43,6 +47,16 @@ namespace Buttplug.Core
                 _bpLogger.Debug($"- {c.Name}");
                 _messageTypes.Add(c.Name, c);
             });
+
+            // Load the schema for validation
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "Buttplug.buttplug-schema.json";
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string result = reader.ReadToEnd();
+                _schema = JSchema.Parse(result);
+            }
         }
 
         [NotNull]
@@ -63,6 +77,14 @@ namespace Buttplug.Core
                 res.Add(new Error("Not valid JSON", ButtplugConsts.SYSTEM_MSG_ID));
                 return res.ToArray(); 
             }
+
+            IList<string> errors = new List<string>();
+            if (!a.IsValid(_schema, out errors))
+            {
+                res.Add(new Error("JSON does not conform to schema! Errors: " + String.Join(", ", errors.ToArray()), ButtplugConsts.SYSTEM_MSG_ID));
+                return res.ToArray();
+            }
+
             if (!a.Any())
             {
                 res.Add(new Error("No messages in array", ButtplugConsts.SYSTEM_MSG_ID));
