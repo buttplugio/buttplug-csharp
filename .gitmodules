@@ -4,3 +4,6 @@
 [submodule "raven-csharp"]
 	path = raven-csharp
 	url = https://github.com/qdot/raven-csharp
+[submodule "buttplug-schema"]
+	path = buttplug-schema
+	url = https://github.com/metafetish/buttplug
