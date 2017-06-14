@@ -37,6 +37,20 @@ namespace ButtplugTest.Messages
         }
 
         [Fact]
+        public async void RequestLogTraceLevelTest()
+        {
+            var s = new TestService();
+            s.MessageReceived += s.OnMessageReceived;
+            ButtplugMessage[] res = await s.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}]");
+            Assert.True(res.Length == 1);
+            Assert.True(res[0] is Ok);
+            res = await s.SendMessage("[{\"Test\": {\"TestString\":\"Echo\",\"Id\":2}}]");
+            Assert.True(res.Length == 1);
+            Assert.True(res[0] is Test);
+            Assert.True(s.outgoingAsync.Count == 3);
+        }
+
+        [Fact]
         public async void RequestNothingTest()
         {
             var s = new TestService();
