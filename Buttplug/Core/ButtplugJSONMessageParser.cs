@@ -130,21 +130,23 @@ namespace Buttplug.Core
 
         public string Serialize(ButtplugMessage aMsg)
         {
-            // Warning: Do not put any log messages in this function. They will possibly recurse.
+            // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             var a = new JArray(o);
+            _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);
             return a.ToString(Formatting.None);
         }
 
         public string Serialize(ButtplugMessage[] aMsgs)
         {
-            // Warning: Do not put any log messages in this function. They will possibly recurse.
+            // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             var a = new JArray();
             foreach (ButtplugMessage aMsg in aMsgs)
             {
                 var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
                 a.Add(o);
             }
+            _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);
             return a.ToString(Formatting.None);
         }
     }

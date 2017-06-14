@@ -16,51 +16,69 @@ namespace Buttplug.Core
             _log = aLogger;
         }
 
-        public void Trace(string aMsg)
+        public void Trace(string aMsg, bool localOnly)
         {
             _log.Trace(aMsg);
-            LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Trace, aMsg));
+            if (!localOnly)
+            {
+                LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Trace, aMsg));
+            }
         }
 
-        public void Debug(string aMsg)
+        public void Debug(string aMsg, bool localOnly)
         {
             _log.Debug(aMsg);
-            LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Debug, aMsg));
+            if (!localOnly)
+            {
+                LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Debug, aMsg));
+            }
         }
-         
-        public void Info(string aMsg)
+
+        public void Info(string aMsg, bool localOnly)
         {
             _log.Info(aMsg);
-            LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Info, aMsg));
+            if (!localOnly)
+            {
+                LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Info, aMsg));
+            }
         }
 
-        public void Warn(string aMsg)
+        public void Warn(string aMsg, bool localOnly)
         {
             _log.Warn(aMsg);
-            LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Warn, aMsg));
+            if (!localOnly)
+            {
+                LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Warn, aMsg));
+            }
         }
 
-        public void Error(string aMsg)
+        public void Error(string aMsg, bool localOnly)
         {
             _log.Error(aMsg);
-            LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Error, aMsg));
+            if (!localOnly)
+            {
+                LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Error, aMsg));
+            }
         }
 
-        public void Fatal(string aMsg)
+        public void Fatal(string aMsg, bool localOnly)
         {
             _log.Fatal(aMsg);
-            LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Fatal, aMsg));
+            if (!localOnly)
+            {
+                LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Fatal, aMsg));
+            }
         }
 
         public Error LogErrorMsg(uint aId, string msg)
         {
-            Error(msg);
+            Error(msg, false);
             return new Error(msg, aId);
         }
 
         public Error LogWarnMsg(uint aId, string msg)
         {
-            Warn(msg);
+            Warn(msg, false);
             return new Error(msg, aId);
         }
     }

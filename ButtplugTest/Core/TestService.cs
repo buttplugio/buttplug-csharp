@@ -3,12 +3,15 @@ using Buttplug.Messages;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using System.Collections.Generic;
 using Xunit;
 
 namespace ButtplugTest.Core
 {
     internal class TestService : ButtplugService
     {
+        public List<string> outgoingAsync = new List<string>();
+
         public TestService() : base("Test Service", 100)
         {
             // Build ourselves an NLog manager just so we can see what's going on.
@@ -22,6 +25,11 @@ namespace ButtplugTest.Core
             var t = SendMessage(new RequestServerInfo("TestClient"));
             t.Wait();
             Assert.True(t.Result is ServerInfo);
+        }
+
+        public void OnMessageReceived(object aObj, MessageReceivedEventArgs e)
+        {
+            outgoingAsync.Add(Serialize(e.Message));
         }
     }
 }
