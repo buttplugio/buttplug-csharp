@@ -77,7 +77,7 @@ namespace ButtplugControlLibrary
             AboutControl.AboutImageClickedABunch += (o, e) => DeveloperTab.Visibility = Visibility.Visible;
         }
 
-        public void InitializeButtplugServer(string aServerName, uint aMaxPingTime)
+        public async Task InitializeButtplugServer(string aServerName, uint aMaxPingTime)
         {
             // Set up internal services
             BpServer = new ButtplugService(aServerName, aMaxPingTime);
@@ -128,6 +128,7 @@ namespace ButtplugControlLibrary
             }
 
             BpServer.AddDeviceSubtypeManager(aLogger => new XInputGamepadManager(aLogger));
+            await BpServer.SendMessage(new RequestServerInfo(aServerName));
         }
 
         private void SendExceptionToSentry(Exception aEx)

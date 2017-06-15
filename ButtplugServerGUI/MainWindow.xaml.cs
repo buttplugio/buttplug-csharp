@@ -23,7 +23,7 @@ namespace ButtplugServerGUI
         public MainWindow()
         {
             InitializeComponent();
-            ButtplugTab.InitializeButtplugServer("Websocket Server", 100);
+            ButtplugTab.InitializeButtplugServer("Websocket Server", 100).Wait();
             var wsTab = new WebsocketServerControl();
             ButtplugTab.SetApplicationTab("Websocket Server", wsTab);
             wsTab.StartServer(ButtplugTab.BpServer);

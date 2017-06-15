@@ -15,7 +15,7 @@ namespace ButtplugKiirooEmulatorGUI
             {
                 return;
             }
-            ButtplugTab.InitializeButtplugServer("Kiiroo Emulator", 100);
+            ButtplugTab.InitializeButtplugServer("Kiiroo Emulator", 100).Wait();
             _emu = new KiirooEmulatorPanel(ButtplugTab.BpServer);
             ButtplugTab.SetApplicationTab("Kiiroo Emulator", _emu);
             _emu.StartServer();
