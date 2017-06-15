@@ -60,6 +60,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ButtplugShared\ButtplugShared.csproj">
+      <Project>{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}</Project>
+      <Name>ButtplugShared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Buttplug\Buttplug.csproj">
       <Project>{23D9EC18-2DBA-4149-A951-B84786D4BFA6}</Project>
       <Name>Buttplug</Name>
