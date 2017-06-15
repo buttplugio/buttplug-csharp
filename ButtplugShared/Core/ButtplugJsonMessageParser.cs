@@ -53,7 +53,7 @@ namespace Buttplug.Core
 
             // Load the schema for validation
             var assembly = Assembly.GetExecutingAssembly();
-            const string resourceName = "Buttplug.buttplug-schema.json";
+            const string resourceName = "ButtplugShared.buttplug-schema.json";
             Stream stream = null;
             try
             {

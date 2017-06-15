@@ -137,6 +137,10 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ButtplugShared\ButtplugShared.csproj">
+      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
+      <Name>ButtplugShared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ButtplugUWPBluetoothManager\ButtplugUWPBluetoothManager.csproj">
       <Project>{223ea194-8318-4189-bec8-73734c3f4a78}</Project>
       <Name>ButtplugUWPBluetoothManager</Name>

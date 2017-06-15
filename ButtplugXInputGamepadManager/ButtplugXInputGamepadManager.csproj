@@ -51,6 +51,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ButtplugShared\ButtplugShared.csproj">
+      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
+      <Name>ButtplugShared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Buttplug\Buttplug.csproj">
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug</Name>

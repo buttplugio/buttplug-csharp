@@ -128,6 +128,10 @@
       <Project>{c606b29a-ee61-452c-8557-9dc9b37e87d1}</Project>
       <Name>ButtplugKiirooPlatformEmulator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ButtplugShared\ButtplugShared.csproj">
+      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
+      <Name>ButtplugShared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Buttplug\Buttplug.csproj">
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug</Name>
