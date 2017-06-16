@@ -56,7 +56,8 @@ namespace ButtplugUWPBluetoothManager.Core
         {
             if (!(_currentTask is null))
             {
-                return _bpLogger.LogErrorMsg(aMsgId, "Device already has a transfer in progress.");
+                _currentTask.Cancel();
+                _bpLogger.Trace("Cancelling device transfer in progress for new transfer.");
             }
             var gattCharacteristic = _gattCharacteristics[aCharacteristicIndex];
             if (gattCharacteristic == null)
