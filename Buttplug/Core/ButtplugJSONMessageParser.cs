@@ -17,8 +17,6 @@ namespace Buttplug.Core
         private readonly Dictionary<string, Type> _messageTypes;
         [NotNull]
         private readonly IButtplugLog _bpLogger;
-        [NotNull]
-        private readonly JSchema _schema;
 
         public ButtplugJsonMessageParser([NotNull] IButtplugLogManager aLogManager)
         {
@@ -55,7 +53,6 @@ namespace Buttplug.Core
             using (StreamReader reader = new StreamReader(stream))
             {
                 string result = reader.ReadToEnd();
-                _schema = JSchema.Parse(result);
             }
         }
 
@@ -79,12 +76,6 @@ namespace Buttplug.Core
             }
 
             IList<string> errors = new List<string>();
-            if (!a.IsValid(_schema, out errors))
-            {
-                res.Add(new Error("JSON does not conform to schema! Errors: " + String.Join(", ", errors.ToArray()), ButtplugConsts.SYSTEM_MSG_ID));
-                return res.ToArray();
-            }
-
             if (!a.Any())
             {
                 res.Add(new Error("No messages in array", ButtplugConsts.SYSTEM_MSG_ID));
