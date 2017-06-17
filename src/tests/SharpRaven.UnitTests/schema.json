@@ -1,0 +1,368 @@
+{
+  "title": "JsonPacket",
+  "description": "An exception packet for Sentry",
+  "type": "object",
+  "properties": {
+    "culprit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "event_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "exception": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "module": {
+            "required": true,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stacktrace": {
+            "required": true,
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "frames": {
+                "required": true,
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "items": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "abs_path": {
+                      "required": true,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "colno": {
+                      "required": true,
+                      "type": "integer"
+                    },
+                    "filename": {
+                      "required": true,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "function": {
+                      "required": true,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "in_app": {
+                      "required": true,
+                      "type": "boolean"
+                    },
+                    "lineno": {
+                      "required": true,
+                      "type": "integer"
+                    },
+                    "module": {
+                      "required": true,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "post_context": {
+                      "required": true,
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "pre_context": {
+                      "required": true,
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "context_line": {
+                      "required": true,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "vars": {
+                      "required": true,
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "type": {
+            "required": true,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "value": {
+            "required": true,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "extra": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {}
+    },
+    "level": {
+      "required": true,
+      "type": "string",
+      "enum": [
+        "fatal",
+        "error",
+        "warning",
+        "info",
+        "debug"
+      ]
+    },
+    "logger": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "message": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sentry.interfaces.Message": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "message": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "params": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {}
+          }
+        }
+      }
+    },
+    "modules": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "platform": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "project": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "request": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "cookies": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "data": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {}
+        },
+        "env": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "headers": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "query_string": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "server_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tags": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "user": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ip_address": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "username": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}
