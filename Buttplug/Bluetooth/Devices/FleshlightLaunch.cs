@@ -74,7 +74,7 @@ namespace Buttplug.Bluetooth.Devices
             var cmdMsg = aMsg as FleshlightLaunchFW12Cmd;
             if (cmdMsg is null)
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
             return await Interface.WriteValue(aMsg.Id,
                 (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx,

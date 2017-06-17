@@ -1,6 +1,7 @@
 ﻿using System;
 using Buttplug.Messages;
 using JetBrains.Annotations;
+using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
 {
@@ -15,8 +16,8 @@ namespace Buttplug.Core
         void Error(string aMsg, bool localOnly = false);
         void Fatal(string aMsg, bool localOnly = false);
         [NotNull]
-        Error LogErrorMsg(uint aId, string aMsg);
+        Error LogErrorMsg(uint aId, ErrorClass code, string aMsg);
         [NotNull]
-        Error LogWarnMsg(uint aId, string aMsg);
+        Error LogWarnMsg(uint aId, ErrorClass code, string aMsg);
     }
 }

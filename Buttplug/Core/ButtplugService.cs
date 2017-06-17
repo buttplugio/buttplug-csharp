@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
 {
@@ -55,19 +56,19 @@ namespace Buttplug.Core
             var id = aMsg.Id;
             if (id == 0)
             {
-                return _bpLogger.LogWarnMsg(id,
+                return _bpLogger.LogWarnMsg(id, ErrorClass.ERROR_MSG,
                     $"Message Id 0 is reserved for outgoing system messages. Please use another Id.");
             }
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
-                return _bpLogger.LogWarnMsg(id,
+                return _bpLogger.LogWarnMsg(id, ErrorClass.ERROR_MSG,
                     $"Message of type {aMsg.GetType().Name} cannot be sent to server");
             }
 
             // If we get a message that's not RequestServerInfo first, return an error.
             if (!_receivedRequestServerInfo && !(aMsg is RequestServerInfo))
             {
-                return _bpLogger.LogErrorMsg(id,
+                return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_INIT,
                     $"RequestServerInfo must be first message received by server!");
             }
             switch (aMsg)

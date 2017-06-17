@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Messages;
 using JetBrains.Annotations;
+using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
 {
@@ -43,12 +44,12 @@ namespace Buttplug.Core
         {
             if (_isDisconnected)
             {
-                return BpLogger.LogErrorMsg(aMsg.Id,
+                return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE,
                     $"{Name} has disconnected and can no longer process messages.");
             }
             if (!MsgFuncs.ContainsKey(aMsg.GetType()))
             {
-                return BpLogger.LogErrorMsg(aMsg.Id,
+                return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE,
                     $"{Name} cannot handle message of type {aMsg.GetType().Name}");
             }
             // We just checked whether the key exists above, so we're ok.

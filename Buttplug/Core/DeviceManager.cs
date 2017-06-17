@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Messages;
+using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
 {
@@ -10,6 +11,8 @@ namespace Buttplug.Core
     {
         private readonly List<IDeviceSubtypeManager> _managers;
         internal Dictionary<uint, IButtplugDevice> _devices { get; }
+        public Error.ErrorClass ERROR_DEVICE { get; private set; }
+
         private uint _deviceIndex;
         private readonly IButtplugLog _bpLogger;
         private readonly IButtplugLogManager _bpLogManager;
@@ -112,7 +115,7 @@ namespace Buttplug.Core
                     {
                         return new Ok(aMsg.Id);
                     }
-                    return new Error(errorMsg, aMsg.Id);
+                    return new Error(errorMsg, ERROR_DEVICE, aMsg.Id);
                 case RequestDeviceList _:
                     var msgDevices = _devices
                         .Select(d => new DeviceMessageInfo(d.Key, d.Value.Name,
@@ -126,9 +129,9 @@ namespace Buttplug.Core
                     {
                         return await _devices[m.DeviceIndex].ParseMessage(m);
                     }
-                    return _bpLogger.LogErrorMsg(id, $"Dropping message for unknown device index {m.DeviceIndex}");
+                    return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_DEVICE, $"Dropping message for unknown device index {m.DeviceIndex}");
             }
-            return _bpLogger.LogErrorMsg(id, $"Message type {aMsg.GetType().Name} unhandled by this server.");
+            return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_MSG, $"Message type {aMsg.GetType().Name} unhandled by this server.");
         }
 
         private void StartScanning()

@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using Buttplug.Messages;
 using Newtonsoft.Json.Schema;
 using System.IO;
+using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
 {
@@ -109,11 +110,11 @@ namespace Buttplug.Core
                 }
                 catch (InvalidCastException e)
                 {
-                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
+                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, ErrorClass.ERROR_MSG, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
                 }
                 catch (JsonSerializationException e)
                 {
-                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
+                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, ErrorClass.ERROR_MSG, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
                 }
             }
             return res.ToArray();
