@@ -1,6 +1,3 @@
 [submodule "websocket-sharp"]
 	path = websocket-sharp
 	url = https://github.com/sta/websocket-sharp
-[submodule "raven-csharp"]
-	path = raven-csharp
-	url = https://github.com/qdot/raven-csharp
