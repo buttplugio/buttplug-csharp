@@ -2,6 +2,7 @@
 using Buttplug.Logging;
 using Buttplug.Messages;
 using JetBrains.Annotations;
+using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
 {
@@ -70,16 +71,16 @@ namespace Buttplug.Core
             }
         }
 
-        public Error LogErrorMsg(uint aId, string msg)
+        public Error LogErrorMsg(uint aId, ErrorClass code, string msg)
         {
             Error(msg, false);
-            return new Error(msg, aId);
+            return new Error(msg, code, aId);
         }
 
-        public Error LogWarnMsg(uint aId, string msg)
+        public Error LogWarnMsg(uint aId, ErrorClass code, string msg)
         {
             Warn(msg, false);
-            return new Error(msg, aId);
+            return new Error(msg, code, aId);
         }
     }
 }

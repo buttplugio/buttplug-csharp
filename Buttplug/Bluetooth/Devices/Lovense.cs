@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Messages;
+using static Buttplug.Messages.Error;
 
 namespace Buttplug.Bluetooth.Devices
 {
@@ -55,7 +56,7 @@ namespace Buttplug.Bluetooth.Devices
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, "Wrong Handler");
+                return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
             return await Interface.WriteValue(aMsg.Id, 
                 (uint)LovenseBluetoothInfo.Chrs.Tx,

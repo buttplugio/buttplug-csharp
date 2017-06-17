@@ -43,12 +43,25 @@ namespace Buttplug.Messages
 
     public class Error : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
+        public enum ErrorClass
+        {
+            ERROR_UNKNOWN,
+            ERROR_INIT,
+            ERROR_PING,
+            ERROR_MSG,
+            ERROR_DEVICE
+        }
+
+        [JsonProperty(Required = Required.Always)]
+        public ErrorClass ErrorCode { get; }
+
         [JsonProperty(Required = Required.Always)]
         public string ErrorMessage { get; }
 
-        public Error(string aErrorMessage, uint aId = ButtplugConsts.SYSTEM_MSG_ID) : base(aId)
+        public Error(string aErrorMessage, ErrorClass aErrorCode, uint aId = ButtplugConsts.SYSTEM_MSG_ID) : base(aId)
         {
             ErrorMessage = aErrorMessage;
+            ErrorCode = aErrorCode;
         }
     }
 

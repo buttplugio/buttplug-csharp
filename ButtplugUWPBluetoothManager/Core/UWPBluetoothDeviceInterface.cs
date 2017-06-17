@@ -8,6 +8,7 @@ using Buttplug.Messages;
 using Buttplug.Core;
 using Buttplug.Bluetooth;
 using JetBrains.Annotations;
+using static Buttplug.Messages.Error;
 
 namespace ButtplugUWPBluetoothManager.Core
 {
@@ -62,14 +63,14 @@ namespace ButtplugUWPBluetoothManager.Core
             var gattCharacteristic = _gattCharacteristics[aCharacteristicIndex];
             if (gattCharacteristic == null)
             {
-                return _bpLogger.LogErrorMsg(aMsgId, $"Requested character {aCharacteristicIndex} out of range");
+                return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"Requested character {aCharacteristicIndex} out of range");
             }
             _currentTask = gattCharacteristic.WriteValueAsync(aValue.AsBuffer());
             var status = await _currentTask;
             _currentTask = null;
             if (status != GattCommunicationStatus.Success)
             {
-                return _bpLogger.LogErrorMsg(aMsgId, $"GattCommunication Error: {status}");
+                return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {status}");
             }
             return new Ok(aMsgId);
         }
@@ -84,14 +85,14 @@ namespace ButtplugUWPBluetoothManager.Core
         public Task<ButtplugMessage> Subscribe(uint aMsgId,
             uint aCharacertisticIndex)
         {
-            return Task.FromResult<ButtplugMessage>(_bpLogger.LogErrorMsg(aMsgId, "Not implemented."));
+            return Task.FromResult<ButtplugMessage>(_bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_UNKNOWN, "Not implemented."));
         }
 
         [ItemNotNull]
         public Task<ButtplugMessage> Unsubscribe(uint aMsgId,
             uint aCharacertisticIndex)
         {
-            return Task.FromResult<ButtplugMessage>(_bpLogger.LogErrorMsg(aMsgId, "Not implemented."));
+            return Task.FromResult<ButtplugMessage>(_bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_UNKNOWN, "Not implemented."));
         }
     }
 }
