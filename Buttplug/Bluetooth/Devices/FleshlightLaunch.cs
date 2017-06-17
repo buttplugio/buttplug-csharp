@@ -55,7 +55,8 @@ namespace Buttplug.Bluetooth.Devices
             BpLogger.Trace($"Initializing {Name}");
             return await Interface.WriteValue(ButtplugConsts.SYSTEM_MSG_ID,
                 (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd,
-                new byte[] { 0 });
+                new byte[] { 0 },
+                true);
         }
 
         private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
