@@ -10,7 +10,6 @@ image: Visual Studio 2017
 install:
   - ver
   - ps: choco install -y InnoSetup
-  - git submodule update --init
   - ps: |
       function gitVersion(){
         $gitVersion=git describe --tags --abbrev=0 $env:APPVEYOR_REPO_BRANCH
