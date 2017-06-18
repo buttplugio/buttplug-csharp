@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Release 4.5</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CC80A2E1-AE39-44DE-8DA3-4EEF42F90FB1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpRaven</RootNamespace>
+    <AssemblyName>SharpRaven</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug 3.5|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\net35\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;net35</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\net35\SharpRaven.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 3.5|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\net35\</OutputPath>
+    <DefineConstants>TRACE;net35</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\net35\SharpRaven.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug 4.0|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\net40\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;net40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\net40\SharpRaven.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 4.0|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\net40\</OutputPath>
+    <DefineConstants>TRACE;net40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\net40\SharpRaven.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug 4.5|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\net45\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>bin\Debug\net45\SharpRaven.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 4.5|AnyCPU'">
+    <OutputPath>bin\Release\net45\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>bin\Release\net45\SharpRaven.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web" Condition="$(Configuration) == 'Release 3.5' Or $(Configuration) == 'Debug 3.5'" />
+    <Reference Include="System.Net.Http" Condition="$(Configuration) == 'Release 4.5' Or $(Configuration) == 'Debug 4.5'" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Data\BreadcrumbLevel.cs" />
+    <Compile Include="Data\BreadcrumbType.cs" />
+    <Compile Include="Data\Breadcrumb.cs" />
+    <Compile Include="Data\DefaultHttpRequestBodyConverter.cs" />
+    <Compile Include="Data\ExceptionData.cs" />
+    <Compile Include="Data\HttpRequestBodyConverter.cs" />
+    <Compile Include="Data\MultiPartFormHttpRequestBodyConverter.cs" />
+    <Compile Include="Data\IHttpRequestBodyConverter.cs" />
+    <Compile Include="Data\ISentryRequestFactory.cs" />
+    <Compile Include="Data\ISentryUserFactory.cs" />
+    <Compile Include="Data\ISentryRequest.cs" />
+    <Compile Include="Data\FormHttpRequestBodyConverter.cs" />
+    <Compile Include="Data\JsonHttpRequestBodyConverter.cs" />
+    <Compile Include="Data\JsonPacketFactory.cs" />
+    <Compile Include="Data\ErrorLevel.cs" />
+    <Compile Include="Data\ExceptionFrame.cs" />
+    <Compile Include="Data\IJsonPacketFactory.cs" />
+    <Compile Include="Data\RequestData.cs" />
+    <Compile Include="Data\Requester.Net45.cs" />
+    <Compile Include="Data\Requester.cs" />
+    <Compile Include="Data\SentryEvent.cs" />
+    <Compile Include="Data\SentryMessage.cs" />
+    <Compile Include="Data\SentryException.cs" />
+    <Compile Include="Data\SentryRequest.cs" />
+    <Compile Include="Data\SentryUserFactory.cs" />
+    <Compile Include="Data\SentryRequestFactory.cs" />
+    <Compile Include="Data\SentryStacktrace.cs" />
+    <Compile Include="Data\SentryUser.cs" />
+    <Compile Include="Dsn.cs" />
+    <Compile Include="Data\JsonPacket.cs" />
+    <Compile Include="IRavenClient.cs" />
+    <Compile Include="Logging\Filters\CreditCardFilter.cs" />
+    <Compile Include="Logging\Filters\PhoneNumberFilter.cs" />
+    <Compile Include="Logging\Filters\SocialSecurityFilter.cs" />
+    <Compile Include="Logging\IFilter.cs" />
+    <Compile Include="Logging\IScrubber.cs" />
+    <Compile Include="Logging\LogScrubber.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RavenClient.Net45.cs" />
+    <Compile Include="RavenClient.cs" />
+    <Compile Include="Serialization\LowerInvariantStringEnumConverter.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="Utilities\CircularBuffer.cs" />
+    <Compile Include="Utilities\GzipUtil.cs" />
+    <Compile Include="Utilities\PacketBuilder.cs" />
+    <Compile Include="Utilities\SystemUtil.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="SharpRaven.nuspec" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

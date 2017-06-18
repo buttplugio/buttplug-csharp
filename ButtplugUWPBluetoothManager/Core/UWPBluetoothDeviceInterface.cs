@@ -52,20 +52,21 @@ namespace ButtplugUWPBluetoothManager.Core
 
         [ItemNotNull]
         public async Task<ButtplugMessage> WriteValue(uint aMsgId, 
-            uint aCharacteristicIndex, 
-            byte[] aValue)
+            uint aCharacteristicIndex,
+            byte[] aValue,
+            bool aWriteOption = false)
         {
             if (!(_currentTask is null))
             {
                 _currentTask.Cancel();
-                _bpLogger.Trace("Cancelling device transfer in progress for new transfer.");
+                _bpLogger.Error("Cancelling device transfer in progress for new transfer.");
             }
             var gattCharacteristic = _gattCharacteristics[aCharacteristicIndex];
             if (gattCharacteristic == null)
             {
                 return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"Requested character {aCharacteristicIndex} out of range");
             }
-            _currentTask = gattCharacteristic.WriteValueAsync(aValue.AsBuffer());
+            _currentTask = gattCharacteristic.WriteValueAsync(aValue.AsBuffer(), aWriteOption ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
             var status = await _currentTask;
             _currentTask = null;
             if (status != GattCommunicationStatus.Success)

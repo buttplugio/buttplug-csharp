@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -59,7 +59,7 @@
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug</Name>
     </ProjectReference>
-    <ProjectReference Include="..\websocket-sharp\websocket-sharp\websocket-sharp.csproj">
+    <ProjectReference Include="..\dependencies\websocket-sharp\websocket-sharp\websocket-sharp.csproj">
       <Project>{b357bac7-529e-4d81-a0d2-71041b19c8de}</Project>
       <Name>websocket-sharp</Name>
     </ProjectReference>

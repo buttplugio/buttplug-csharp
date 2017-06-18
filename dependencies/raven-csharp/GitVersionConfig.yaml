@@ -1,0 +1,7 @@
+next-version: 2.1
+branches:
+  feature[/-]:
+    mode: ContinuousDeployment
+    increment: Patch
+  develop:
+    increment: Patch
