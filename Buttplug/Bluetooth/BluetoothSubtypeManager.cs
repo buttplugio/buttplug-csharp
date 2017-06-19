@@ -20,7 +20,9 @@ namespace Buttplug.Bluetooth
             {
                 new FleshlightLaunchBluetoothInfo(),
                 new KiirooBluetoothInfo(),
-                new LovenseBluetoothInfo(),
+                new LovenseRev1BluetoothInfo(),
+                new LovenseRev2BluetoothInfo(),
+                new LovenseRev3BluetoothInfo(),
                 new VorzeA10CycloneInfo()
             };
         }
