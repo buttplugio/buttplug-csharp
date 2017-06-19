@@ -67,11 +67,19 @@ namespace ButtplugUWPBluetoothManager.Core
                 return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"Requested character {aCharacteristicIndex} out of range");
             }
             _currentTask = gattCharacteristic.WriteValueAsync(aValue.AsBuffer(), aWriteOption ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
-            var status = await _currentTask;
-            _currentTask = null;
-            if (status != GattCommunicationStatus.Success)
+            try
             {
-                return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {status}");
+                var status = await _currentTask;
+                _currentTask = null;
+                if (status != GattCommunicationStatus.Success)
+                {
+                    return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {status}");
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                // This exception will be thrown if the bluetooth device disconnects in the middle of a transfer.
+                return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {e.Message}");
             }
             return new Ok(aMsgId);
         }
