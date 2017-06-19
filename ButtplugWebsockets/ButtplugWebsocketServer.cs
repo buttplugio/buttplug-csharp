@@ -14,13 +14,13 @@ namespace ButtplugWebsockets
 
         public ButtplugWebsocketServer()
         {
-            _wsServer = new WebSocketServer("ws://localhost:12345");
+            _wsServer = new WebSocketServer(12345);
             _wsServer.RemoveWebSocketService("/buttplug");
         }
 
         public void StartServer([NotNull] ButtplugService aService)
         {
-            _wsServer.AddWebSocketService<ButtplugWebsocketServerBehavior>("/buttplug", () => new ButtplugWebsocketServerBehavior(aService));
+            _wsServer.WebSocketServices.AddService<ButtplugWebsocketServerBehavior>("/buttplug", (obj) => obj.Service = aService );
             _wsServer.Start();
         }
 
