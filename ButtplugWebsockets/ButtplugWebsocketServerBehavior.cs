@@ -13,23 +13,24 @@ namespace ButtplugWebsockets
 {
     public class ButtplugWebsocketServerBehavior : WebSocketBehavior
     {
-        [NotNull]
-        private readonly ButtplugService _buttplug;
-
-        public ButtplugWebsocketServerBehavior()
-            : this(null)
+        private ButtplugService _buttplug;
+        
+        public ButtplugService Service
         {
-            
+            set {
+                if (_buttplug != null)
+                {
+                    throw new AccessViolationException("Service already set!");
+                }
+                _buttplug = value;
+                _buttplug.MessageReceived += OnMessageReceived;
+            }
+            private get { return _buttplug; }
         }
 
-        public ButtplugWebsocketServerBehavior(ButtplugService aService)
+        public ButtplugWebsocketServerBehavior()
         {
-            if (aService == null)
-            {
-                return;
-            }
-            _buttplug = aService;
-            _buttplug.MessageReceived += OnMessageReceived;
+
         }
 
         protected override async void OnClose(CloseEventArgs e)
