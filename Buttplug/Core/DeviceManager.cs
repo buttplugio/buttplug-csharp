@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Messages;
 using static Buttplug.Messages.Error;
@@ -13,7 +14,7 @@ namespace Buttplug.Core
         internal Dictionary<uint, IButtplugDevice> _devices { get; }
         public Error.ErrorClass ERROR_DEVICE { get; private set; }
 
-        private uint _deviceIndex;
+        private long _deviceIndexCounter;
         private readonly IButtplugLog _bpLogger;
         private readonly IButtplugLogManager _bpLogManager;
         public event EventHandler<MessageReceivedEventArgs> DeviceMessageReceived;
@@ -25,7 +26,7 @@ namespace Buttplug.Core
             _bpLogger.Trace("Setting up DeviceManager");
 
             _devices = new Dictionary<uint, IButtplugDevice>();
-            _deviceIndex = 0;
+            _deviceIndexCounter = 0;
 
             _managers = new List<IDeviceSubtypeManager>();
         }
@@ -37,6 +38,8 @@ namespace Buttplug.Core
 
         private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
         {
+            // If we get to 4 billion devices connected, this may be a problem.
+            var deviceIndex = (uint)Interlocked.Increment(ref _deviceIndexCounter);
             // Devices can be turned off by the time they get to this point, at which point they end up null. Make sure the device isn't null.
             if (e.Device == null)
             {
@@ -50,11 +53,11 @@ namespace Buttplug.Core
                 _bpLogger.Trace($"Already have device {e.Device.Name} in Devices list");
                 return;
             }
-            _bpLogger.Debug($"Adding Device {e.Device.Name} at index {_deviceIndex}");
-            _devices.Add(_deviceIndex, e.Device);
+            _bpLogger.Debug($"Adding Device {e.Device.Name} at index {deviceIndex}");
+            _devices.Add(deviceIndex, e.Device);
             e.Device.DeviceRemoved += DeviceRemovedHandler;
-            var msg = new DeviceAdded(_deviceIndex, e.Device.Name, GetAllowedMessageTypesAsStrings(e.Device).ToArray());
-            _deviceIndex += 1;
+            var msg = new DeviceAdded(deviceIndex, e.Device.Name, GetAllowedMessageTypesAsStrings(e.Device).ToArray());
+            
             DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
 
