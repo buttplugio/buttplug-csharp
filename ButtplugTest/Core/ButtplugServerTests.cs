@@ -58,7 +58,7 @@ namespace ButtplugTest.Core
             {
                 case DeviceAdded da:                        
                     Assert.True(da.DeviceName == "TestDevice");
-                    Assert.True(da.DeviceIndex == 0);
+                    Assert.True(da.DeviceIndex == 1);
                     Assert.True(da.DeviceMessages.Length == 1);
                     Assert.True(da.DeviceMessages.Contains("SingleMotorVibrateCmd"));
                     break;
@@ -66,12 +66,12 @@ namespace ButtplugTest.Core
                     Assert.True(dl.Devices.Length == 1);
                     var di = dl.Devices[0];
                     Assert.True(di.DeviceName == "TestDevice");
-                    Assert.True(di.DeviceIndex == 0);
+                    Assert.True(di.DeviceIndex == 1);
                     Assert.True(di.DeviceMessages.Length == 1);
                     Assert.True(di.DeviceMessages.Contains("SingleMotorVibrateCmd"));
                     break;
                 case DeviceRemoved dr:                        
-                    Assert.True(dr.DeviceIndex == 0);
+                    Assert.True(dr.DeviceIndex == 1);
                     break;
                 default:
                     Assert.True(false, $"Shouldn't be here {msgArgs.GetType().Name}");
@@ -138,7 +138,7 @@ namespace ButtplugTest.Core
             s.AddDeviceSubtypeManager(m);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
-            Assert.True(await s.SendMessage(new SingleMotorVibrateCmd(0, .2)) is Ok);
+            Assert.True(await s.SendMessage(new SingleMotorVibrateCmd(1, .2)) is Ok);
         }
 
         [Fact]
@@ -150,7 +150,7 @@ namespace ButtplugTest.Core
             s.AddDeviceSubtypeManager(m);
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
-            Assert.True(await s.SendMessage(new FleshlightLaunchFW12Cmd(0, 0, 0)) is Error);
+            Assert.True(await s.SendMessage(new FleshlightLaunchFW12Cmd(1, 0, 0)) is Error);
         }
 
         [Fact]
@@ -168,7 +168,7 @@ namespace ButtplugTest.Core
                 {
                     case DeviceAdded da:
                         Assert.True(da.DeviceName == "TestDevice");
-                        Assert.True(da.DeviceIndex == 0);
+                        Assert.True(da.DeviceIndex == 1);
                         Assert.True(da.Id == 0);
                         break;
 
@@ -187,7 +187,7 @@ namespace ButtplugTest.Core
                 {
                     case DeviceList dl:
                         Assert.True(dl.Devices.Count() == 1);
-                        Assert.True(dl.Devices[0].DeviceIndex == 0);
+                        Assert.True(dl.Devices[0].DeviceIndex == 1);
                         Assert.True(dl.Devices[0].DeviceName == "TestDevice");
                         break;
                 }
