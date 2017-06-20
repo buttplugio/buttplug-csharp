@@ -9,6 +9,7 @@ using Buttplug.Messages;
 using Newtonsoft.Json.Schema;
 using System.IO;
 using static Buttplug.Messages.Error;
+using NJsonSchema;
 
 namespace Buttplug.Core
 {
@@ -18,6 +19,8 @@ namespace Buttplug.Core
         private readonly Dictionary<string, Type> _messageTypes;
         [NotNull]
         private readonly IButtplugLog _bpLogger;
+        [NotNull]
+        private readonly JsonSchema4 _schema;
 
         public ButtplugJsonMessageParser([NotNull] IButtplugLogManager aLogManager)
         {
@@ -54,6 +57,7 @@ namespace Buttplug.Core
             using (StreamReader reader = new StreamReader(stream))
             {
                 string result = reader.ReadToEnd();
+                _schema = JsonSchema4.FromJsonAsync(result).GetAwaiter().GetResult();
             }
         }
 
@@ -72,14 +76,20 @@ namespace Buttplug.Core
             {
                 _bpLogger.Debug($"Not valid JSON: {aJsonMsg}");
                 _bpLogger.Debug(e.Message);
-                res.Add(new Error("Not valid JSON", ButtplugConsts.SYSTEM_MSG_ID));
+                res.Add(new Error("Not valid JSON", ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
                 return res.ToArray(); 
             }
 
-            IList<string> errors = new List<string>();
+            var errors = _schema.Validate(a);
+            if( errors.Any() )
+            {
+                res.Add(new Error("Message does not conform to schema: " + string.Join(", ", errors.Select(x => x.ToString()).ToArray()), ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
+                return res.ToArray();
+            }
+
             if (!a.Any())
             {
-                res.Add(new Error("No messages in array", ButtplugConsts.SYSTEM_MSG_ID));
+                res.Add(new Error("No messages in array", ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
                 return res.ToArray();
             }
 
@@ -90,13 +100,13 @@ namespace Buttplug.Core
             {
                 if (!o.Properties().Any())
                 {
-                    res.Add(new Error("No message name available", ButtplugConsts.SYSTEM_MSG_ID));
+                    res.Add(new Error("No message name available", ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
                     continue;
                 }
                 var msgName = o.Properties().First().Name;
                 if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
                 {
-                    res.Add(new Error($"{msgName} is not a valid message class", ButtplugConsts.SYSTEM_MSG_ID));
+                    res.Add(new Error($"{msgName} is not a valid message class", ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
                     continue;
                 }
                 var s = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
