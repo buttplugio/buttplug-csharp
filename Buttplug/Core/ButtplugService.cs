@@ -77,6 +77,9 @@ namespace Buttplug.Core
                     _bpLogManager.Level = m.LogLevel;
                     return new Ok(id);
 
+                case Ping m:
+                    return new Ok(id);
+
                 case RequestServerInfo _:
                     _receivedRequestServerInfo = true;
                     return new ServerInfo(_serverName, 1, _maxPingTime, id);
