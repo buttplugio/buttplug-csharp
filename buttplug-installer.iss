@@ -29,10 +29,13 @@ LicenseFile=LICENSE
 [Files]
 Source: "ButtplugCLI\bin\{#Configuration}\ButtplugCLI.exe"; DestDir: "{app}"
 Source: "ButtplugCLI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
+Source: "ButtplugServerGUI\bin\{#Configuration}\*.config"; DestDir: "{app}"
 Source: "ButtplugKiirooEmulatorGUI\bin\{#Configuration}\ButtplugKiirooEmulatorGUI.exe"; DestDir: "{app}"
 Source: "ButtplugKiirooEmulatorGUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
+Source: "ButtplugKiirooEmulatorGUI\bin\{#Configuration}\*.config"; DestDir: "{app}"
 Source: "ButtplugServerGUI\bin\{#Configuration}\ButtplugServerGUI.exe"; DestDir: "{app}"
 Source: "ButtplugServerGUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
+Source: "ButtplugServerGUI\bin\{#Configuration}\*.config"; DestDir: "{app}"
 Source: "Readme.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme
 Source: "LICENSE"; DestDir: "{app}"; DestName: "License.txt"
 
