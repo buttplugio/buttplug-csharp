@@ -61,6 +61,7 @@ namespace ButtplugUWPBluetoothManager.Core
                 //BpLogger.Trace($"Ignoring advertisement for already connecting device: {e.Advertisement.LocalName} / {e.BluetoothAddress}");
                 return;
             }
+            BpLogger.Trace("BLE device found: " + e.Advertisement.LocalName);
             var factories = from x in _deviceFactories
                             where x.MayBeDevice(e.Advertisement)
                             select x;
