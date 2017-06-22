@@ -21,7 +21,9 @@ namespace Buttplug.Bluetooth.Devices
             // Nora
             "LVS-A011", "LVS-C011",
             // Max
-            "LVS-B011" };
+            "LVS-B011",
+            // Ambi
+            "LVS-L009" };
 
         public Guid[] Characteristics { get; } =
         {

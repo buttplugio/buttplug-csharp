@@ -44,6 +44,11 @@ namespace ButtplugUWPBluetoothManager.Core
         public async Task<IButtplugDevice> CreateDeviceAsync([NotNull] BluetoothLEDevice aDevice)
         {
             // GetGattServicesForUuidAsync is 15063 only
+            var services = await aDevice.GetGattServicesAsync(BluetoothCacheMode.Cached);
+            foreach( var s in services.Services)
+            {
+                _bpLogger.Trace("Found service UUID: " + s.Uuid);
+            }
             var srvResult = await aDevice.GetGattServicesForUuidAsync(_deviceInfo.Services[0], BluetoothCacheMode.Cached);
             if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
             {
