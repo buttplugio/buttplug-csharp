@@ -16,9 +16,10 @@ namespace ButtplugWebsockets
 
         public ButtplugWebsocketServer()
         {
-            _wsServer = new HttpServer(12345);
+            _wsServer = new HttpServer(12345, true);
             _wsServer.RemoveWebSocketService("/buttplug");
             _wsServer.OnGet += OnGetHandler;
+            _wsServer.SslConfiguration.ServerCertificate = CertUtils.GetCert("Buttplug");
         }
 
         public void StartServer([NotNull] ButtplugService aService)
