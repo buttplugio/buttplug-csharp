@@ -11,19 +11,21 @@ namespace ButtplugWebsockets
 {
     public class ButtplugWebsocketServer
     {
-        [NotNull]
         private HttpServer _wsServer;
 
         public ButtplugWebsocketServer()
         {
-            _wsServer = new HttpServer(12345, true);
-            _wsServer.RemoveWebSocketService("/buttplug");
-            _wsServer.OnGet += OnGetHandler;
-            _wsServer.SslConfiguration.ServerCertificate = CertUtils.GetCert("Buttplug");
         }
 
-        public void StartServer([NotNull] ButtplugService aService)
+        public void StartServer([NotNull] ButtplugService aService, int port = 12345, bool secure = false)
         {
+            _wsServer = new HttpServer(port, secure);
+            _wsServer.RemoveWebSocketService("/buttplug");
+            _wsServer.OnGet += OnGetHandler;
+            if (secure)
+            {
+                _wsServer.SslConfiguration.ServerCertificate = CertUtils.GetCert("Buttplug");
+            }
             _wsServer.WebSocketServices.AddService<ButtplugWebsocketServerBehavior>("/buttplug", (obj) => obj.Service = aService);
             _wsServer.Start();
         }
@@ -32,6 +34,7 @@ namespace ButtplugWebsockets
         {
             _wsServer.Stop();
             _wsServer.RemoveWebSocketService("/buttplug");
+            _wsServer = null;
         }
 
         protected void OnGetHandler(object sender, HttpRequestEventArgs e)
