@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Buttplug.Core;
 using ButtplugWebsockets;
+using Buttplug.Core;
 
 namespace ButtplugServerGUI
 {
@@ -26,14 +15,26 @@ namespace ButtplugServerGUI
         private ButtplugService _service;
         private uint _port;
         private bool _secure;
+        private ButtplugConfig _config;
 
         public WebsocketServerControl(ButtplugService aService)
         {
             InitializeComponent();
             _ws = new ButtplugWebsocketServer();
+            _config = new ButtplugConfig("Buttplug");
             _service = aService;
             _port = 12345;
             _secure = false;
+            if (UInt32.TryParse(_config.GetValue("buttplug.server.port", "12345"), out uint pres))
+            {
+                _port = pres;
+            }
+            if (Boolean.TryParse(_config.GetValue("buttplug.server.secure", "false"), out bool sres))
+            {
+                _secure = sres;
+            }
+            ((TextBox)PortTextBox).Text = _port.ToString();
+            ((CheckBox)SecureCheckBox).IsChecked = _secure;
         }
 
         public void StartServer()
@@ -53,10 +54,11 @@ namespace ButtplugServerGUI
 
         private void ConnToggleButton_Click(object sender, RoutedEventArgs e)
         {
-
-            if (((Button)ConnToggleButton).Content == "Start")
+            if (((Button)ConnToggleButton).Content.Equals("Start"))
             {
                 StartServer();
+                _config.SetValue("buttplug.server.port", _port.ToString());
+                _config.SetValue("buttplug.server.secure", _secure.ToString());
             }
             else
             {
