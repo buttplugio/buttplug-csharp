@@ -195,5 +195,13 @@ namespace ButtplugTest.Core
                 msgReceived = false;
             }
         }
+
+        [Fact]
+        public void TestLicenseFileLoading()
+        {
+            var license = ButtplugService.GetLicense();
+            Assert.Contains("Buttplug is covered under the following BSD 3-Clause License", license);
+            Assert.Contains("NJsonSchema (https://github.com/RSuter/NJsonSchema) is covered under the", license);
+        }
     }
 }

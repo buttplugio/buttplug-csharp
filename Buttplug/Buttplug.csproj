@@ -79,6 +79,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <EmbeddedResource Include="..\dependencies\buttplug-schema\schema\buttplug-schema.json" />
+    <EmbeddedResource Include="..\LICENSE" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

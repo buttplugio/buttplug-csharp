@@ -16,6 +16,7 @@
                 Software updates at <Hyperlink NavigateUri="https://github.com/metafetish" RequestNavigate="Hyperlink_RequestNavigate">https://buttplug.io/</Hyperlink><LineBreak/>
                 Documentation at <Hyperlink NavigateUri="https://buttplug.io/docs" RequestNavigate="Hyperlink_RequestNavigate">https://buttplug.io/docs</Hyperlink><LineBreak/>
                 Source code at <Hyperlink NavigateUri="https://github.com/metafetish" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/metafetish</Hyperlink><LineBreak/>
+                License information <Hyperlink Click="LicenseHyperlink_Click" >here</Hyperlink><LineBreak/>
             </TextBlock>
             <TextBlock HorizontalAlignment="Left" Margin="7,147,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
                 Buttplug and the corresponding applications and libraries are provided open source and free of charge. 
