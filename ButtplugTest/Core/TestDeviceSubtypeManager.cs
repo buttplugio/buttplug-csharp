@@ -23,6 +23,7 @@ namespace ButtplugTest.Core
         public override void StartScanning()
         {
             StartScanningCalled = true;
+            StopScanningCalled = false;
             if (!(_device is null))
             {
                 InvokeDeviceAdded(new DeviceAddedEventArgs(_device));
@@ -32,6 +33,13 @@ namespace ButtplugTest.Core
         public override void StopScanning()
         {
             StopScanningCalled = true;
+            StartScanningCalled = false;
+            InvokeScanningFinished();
+        }
+
+        public override bool IsScanning()
+        {
+            return StartScanningCalled && !StopScanningCalled;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Windows.Gaming.Input;
 using Buttplug.Core;
 using ButtplugUWPGamepadManager.Devices;
+using System;
 
 namespace ButtplugUWPGamepadManager.Core
 {
@@ -28,12 +29,19 @@ namespace ButtplugUWPGamepadManager.Core
             var device = new UwpGamepadDevice(LogManager, e);
             _connectedGamepads.Add(device);
             InvokeDeviceAdded(new DeviceAddedEventArgs(device));
+            InvokeScanningFinished();
         }
 
         public override void StopScanning()
         {
             // noop
             BpLogger.Trace("UWPGamepadManager stop scanning");
+        }
+
+        public override bool IsScanning()
+        {
+            // noop
+            return false;
         }
     }
 }
