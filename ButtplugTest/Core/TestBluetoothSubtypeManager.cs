@@ -23,5 +23,9 @@ namespace ButtplugTest.Core
         public override void StopScanning()
         {
         }
+        public override bool IsScanning()
+        {
+            return false;
+        }
     }
 }

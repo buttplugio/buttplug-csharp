@@ -11,6 +11,7 @@ namespace Buttplug.Core
         protected readonly IButtplugLogManager LogManager;
 
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
+        public event EventHandler<EventArgs> ScanningFinished;
 
         protected DeviceSubtypeManager([NotNull] IButtplugLogManager aLogManager)
         {
@@ -24,7 +25,13 @@ namespace Buttplug.Core
             DeviceAdded?.Invoke(this, args);
         }
 
+        protected void InvokeScanningFinished()
+        {
+            ScanningFinished?.Invoke(this, new EventArgs());
+        }
+
         public abstract void StartScanning();
         public abstract void StopScanning();
+        public abstract bool IsScanning();
     }
 }

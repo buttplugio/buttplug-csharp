@@ -49,6 +49,7 @@ namespace Buttplug.Core
             _deviceManager = new DeviceManager(_bpLogManager);
             _bpLogger.Trace("Finished setting up ButtplugService");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
+            _deviceManager.ScanningFinished += ScanningFinishedHandler;
             _bpLogManager.LogMessageReceived += LogMessageReceivedHandler;
         }
 
@@ -60,6 +61,11 @@ namespace Buttplug.Core
         private void LogMessageReceivedHandler([NotNull] object aObj, [NotNull] ButtplugLogMessageEventArgs e)
         {
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(e.LogMessage));
+        }
+
+        private void ScanningFinishedHandler([NotNull] object aObj, EventArgs e)
+        {
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new ScanningFinished()));
         }
 
         [NotNull]

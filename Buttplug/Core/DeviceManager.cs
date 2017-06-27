@@ -17,14 +17,16 @@ namespace Buttplug.Core
         private long _deviceIndexCounter;
         private readonly IButtplugLog _bpLogger;
         private readonly IButtplugLogManager _bpLogManager;
+        private bool _sentFinished;
         public event EventHandler<MessageReceivedEventArgs> DeviceMessageReceived;
+        public event EventHandler<EventArgs> ScanningFinished;
 
         public DeviceManager(IButtplugLogManager aLogManager)
         {
             _bpLogManager = aLogManager;
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Trace("Setting up DeviceManager");
-
+            _sentFinished = true;
             _devices = new Dictionary<uint, IButtplugDevice>();
             _deviceIndexCounter = 0;
 
@@ -87,6 +89,22 @@ namespace Buttplug.Core
                 DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(new DeviceRemoved(pair.Key)));
             }
         }
+        
+        private void ScanningFinishedHandler(object o, EventArgs e)
+        {
+            if (_sentFinished)
+            {
+                return;
+            }
+
+            bool done = true;
+            _managers.ForEach(m => done &= !m.IsScanning());
+            if(done)
+            {
+                _sentFinished = true;
+                ScanningFinished?.Invoke(this, new EventArgs());
+            }
+        }
 
         public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
         {
@@ -139,6 +157,7 @@ namespace Buttplug.Core
 
         private void StartScanning()
         {
+            _sentFinished = false;
             _managers.ForEach(m => m.StartScanning());
         }
 
@@ -156,6 +175,7 @@ namespace Buttplug.Core
         {
             _managers.Add(mgr);
             mgr.DeviceAdded += DeviceAddedHandler;
+            mgr.ScanningFinished += ScanningFinishedHandler;
         }
     }
 }

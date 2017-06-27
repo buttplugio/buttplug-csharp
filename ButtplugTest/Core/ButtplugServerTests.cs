@@ -70,8 +70,10 @@ namespace ButtplugTest.Core
                     Assert.True(di.DeviceMessages.Length == 1);
                     Assert.True(di.DeviceMessages.Contains("SingleMotorVibrateCmd"));
                     break;
-                case DeviceRemoved dr:                        
+                case DeviceRemoved dr:
                     Assert.True(dr.DeviceIndex == 1);
+                    break;
+                case ScanningFinished f:
                     break;
                 default:
                     Assert.True(false, $"Shouldn't be here {msgArgs.GetType().Name}");
@@ -99,7 +101,10 @@ namespace ButtplugTest.Core
             ButtplugMessage msgReceived = null;
             s.MessageReceived += (obj, msgArgs) =>
             {
-                msgReceived = msgArgs.Message;
+                if(!(msgArgs.Message is ScanningFinished))
+                {
+                    msgReceived = msgArgs.Message;
+                }
                 CheckDeviceMessages(msgReceived);
             };
             CheckDeviceCount(s, 0);
@@ -163,16 +168,20 @@ namespace ButtplugTest.Core
             var msgReceived = false;
             s.MessageReceived += (obj, msgArgs) =>
             {
-                msgReceived = true;
                 switch (msgArgs.Message)
                 {
                     case DeviceAdded da:
+                        msgReceived = true;
                         Assert.True(da.DeviceName == "TestDevice");
                         Assert.True(da.DeviceIndex == 1);
                         Assert.True(da.Id == 0);
                         break;
 
+                    case ScanningFinished f:
+                        break;
+
                     default:
+                        msgReceived = true;
                         Assert.False(msgArgs.Message is DeviceAdded);
                         break;
                 }

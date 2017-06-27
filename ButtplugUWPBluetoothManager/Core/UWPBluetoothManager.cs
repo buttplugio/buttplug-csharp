@@ -50,6 +50,7 @@ namespace ButtplugUWPBluetoothManager.Core
             // would have to set up multiple watchers for multiple devices. We'll handle our own filtering via the factory
             // classes whenever we receive a device.
             _bleWatcher.Received += OnAdvertisementReceived;
+            _bleWatcher.Stopped += OnWatcherStopped;
         }
 
         private async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher o,
@@ -107,6 +108,14 @@ namespace ButtplugUWPBluetoothManager.Core
             _currentlyConnecting.Remove(e.BluetoothAddress);
         }
 
+        private void OnWatcherStopped(BluetoothLEAdvertisementWatcher o,
+                                      BluetoothLEAdvertisementWatcherStoppedEventArgs e)
+        {
+
+            BpLogger.Trace("Stopped BLE Scanning");
+            InvokeScanningFinished();
+        }
+
         public override void StartScanning()
         {
             BpLogger.Trace("Starting BLE Scanning");
@@ -117,6 +126,11 @@ namespace ButtplugUWPBluetoothManager.Core
         {
             BpLogger.Trace("Stopping BLE Scanning");
             _bleWatcher.Stop();
+        }
+
+        public override bool IsScanning()
+        {
+            return _bleWatcher.Status == BluetoothLEAdvertisementWatcherStatus.Started;
         }
     }
 }

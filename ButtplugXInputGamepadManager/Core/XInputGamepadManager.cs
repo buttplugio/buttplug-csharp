@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Buttplug.Core;
 using ButtplugXInputGamepadManager.Devices;
 using SharpDX.XInput;
@@ -32,6 +33,7 @@ namespace ButtplugXInputGamepadManager.Core
                 var device = new XInputGamepadDevice(LogManager, c);
                 _connectedGamepads.Add(device);
                 InvokeDeviceAdded(new DeviceAddedEventArgs(device));
+                InvokeScanningFinished();
             }
         }
 
@@ -39,6 +41,12 @@ namespace ButtplugXInputGamepadManager.Core
         {
             // noop
             BpLogger.Trace("XInputGamepadManager stop scanning");
+        }
+
+        public override bool IsScanning()
+        {
+            // noop
+            return false;
         }
     }
 }
