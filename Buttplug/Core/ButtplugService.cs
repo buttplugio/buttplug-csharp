@@ -2,6 +2,8 @@
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using static Buttplug.Messages.Error;
 
@@ -24,6 +26,17 @@ namespace Buttplug.Core
         private uint _maxPingTime;
         private readonly uint _messageSchemaVersion;
         private bool _receivedRequestServerInfo;
+
+        public static string GetLicense()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "Buttplug.LICENSE";
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
 
         public ButtplugService(string aServerName, uint aMaxPingTime)
         {
