@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Timers;
 using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
@@ -21,9 +22,11 @@ namespace Buttplug.Core
         private readonly DeviceManager _deviceManager;
         [NotNull]
         private readonly IButtplugLogManager _bpLogManager;
+        private readonly Timer _pingTimer;
 
         private readonly string _serverName;
         private uint _maxPingTime;
+        private bool _pingTimedOut;
         private readonly uint _messageSchemaVersion;
         private bool _receivedRequestServerInfo;
 
@@ -38,10 +41,16 @@ namespace Buttplug.Core
             }
         }
 
-        public ButtplugService(string aServerName, uint aMaxPingTime)
+        public ButtplugService([NotNull] string aServerName, uint aMaxPingTime)
         {
             _serverName = aServerName;
             _maxPingTime = aMaxPingTime;
+            _pingTimedOut = false;
+            if (aMaxPingTime != 0)
+            {
+                _pingTimer = new System.Timers.Timer(_maxPingTime);
+                _pingTimer.Elapsed += PingTimeoutHandler;
+            }
             _bpLogManager = new ButtplugLogManager();
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Trace("Setting up ButtplugService");
@@ -68,6 +77,18 @@ namespace Buttplug.Core
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new ScanningFinished()));
         }
 
+        private void PingTimeoutHandler([NotNull] object aObj, EventArgs e)
+        {
+            if(_pingTimer != null)
+            {
+                _pingTimer.Stop();
+            }
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
+                ErrorClass.ERROR_PING, ButtplugConsts.SYSTEM_MSG_ID)));
+            SendMessage(new StopAllDevices()).Wait();
+            _pingTimedOut = true;
+        }
+
         [NotNull]
         public async Task<ButtplugMessage> SendMessage([NotNull] ButtplugMessage aMsg)
         {
@@ -84,6 +105,11 @@ namespace Buttplug.Core
                     $"Message of type {aMsg.GetType().Name} cannot be sent to server");
             }
 
+            if (_pingTimedOut)
+            {
+                return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_PING, "Ping timed out.");
+            }
+
             // If we get a message that's not RequestServerInfo first, return an error.
             if (!_receivedRequestServerInfo && !(aMsg is RequestServerInfo))
             {
@@ -97,10 +123,19 @@ namespace Buttplug.Core
                     return new Ok(id);
 
                 case Ping m:
+                    if(_pingTimer != null)
+                    {
+                        _pingTimer.Stop();
+                        _pingTimer.Start();
+                    }
                     return new Ok(id);
 
                 case RequestServerInfo _:
                     _receivedRequestServerInfo = true;
+                    if (_pingTimer != null)
+                    {
+                        _pingTimer.Start();
+                    }
                     return new ServerInfo(_serverName, 1, _maxPingTime, id);
 
                 case Test m:

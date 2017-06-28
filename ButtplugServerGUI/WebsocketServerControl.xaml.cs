@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using ButtplugWebsockets;
 using Buttplug.Core;
+using ButtplugControlLibrary;
 
 namespace ButtplugServerGUI
 {
@@ -12,17 +13,17 @@ namespace ButtplugServerGUI
     public partial class WebsocketServerControl : UserControl
     {
         private ButtplugWebsocketServer _ws;
-        private ButtplugService _service;
+        private ButtplugServiceFactory _bpFactory;
         private uint _port;
         private bool _secure;
         private ButtplugConfig _config;
 
-        public WebsocketServerControl(ButtplugService aService)
+        public WebsocketServerControl(ButtplugServiceFactory bpFactory)
         {
             InitializeComponent();
             _ws = new ButtplugWebsocketServer();
+            _bpFactory = bpFactory;
             _config = new ButtplugConfig("Buttplug");
-            _service = aService;
             _port = 12345;
             _secure = false;
             if (UInt32.TryParse(_config.GetValue("buttplug.server.port", "12345"), out uint pres))
@@ -39,7 +40,7 @@ namespace ButtplugServerGUI
 
         public void StartServer()
         {
-            _ws.StartServer(_service, (int) _port, _secure);
+            _ws.StartServer(_bpFactory, (int) _port, _secure);
             ((Button)ConnToggleButton).Content = "Stop";
             ((CheckBox)SecureCheckBox).IsEnabled = false;
             ((TextBox)PortTextBox).IsEnabled = false;

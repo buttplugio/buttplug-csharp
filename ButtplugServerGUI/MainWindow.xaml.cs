@@ -22,9 +22,13 @@ namespace ButtplugServerGUI
     {
         public MainWindow()
         {
+            var config = new ButtplugConfig("Buttplug");
+            uint ping = 100;
+            UInt32.TryParse(config.GetValue("buttplug.server.maxPing", "100"), out ping);
+
             InitializeComponent();
-            ButtplugTab.InitializeButtplugServer("Websocket Server", 100).Wait();
-            var wsTab = new WebsocketServerControl(ButtplugTab.BpServer);
+            ButtplugTab.SetServerDetails("Websocket Server", ping);
+            var wsTab = new WebsocketServerControl(ButtplugTab);
             ButtplugTab.SetApplicationTab("Websocket Server", wsTab);
             wsTab.StartServer();
         }
