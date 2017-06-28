@@ -63,6 +63,7 @@
     <Compile Include="Core\ButtplugLogManager.cs" />
     <Compile Include="Core\ButtplugLogMessageEventArgs.cs" />
     <Compile Include="Core\ButtplugService.cs" />
+    <Compile Include="Core\ButtplugServiceFactory.cs" />
     <Compile Include="Core\DeviceAddedEventArgs.cs" />
     <Compile Include="Core\DeviceManager.cs" />
     <Compile Include="Core\DeviceSubtypeManager.cs" />
@@ -79,7 +80,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <EmbeddedResource Include="..\dependencies\buttplug-schema\schema\buttplug-schema.json" />
-    <EmbeddedResource Include="..\LICENSE" />
+	<EmbeddedResource Include="..\LICENSE" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

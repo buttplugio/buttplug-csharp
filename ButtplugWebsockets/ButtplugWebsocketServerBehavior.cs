@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Messages;
-using JetBrains.Annotations;
+using static Buttplug.Messages.Error;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -30,7 +27,30 @@ namespace ButtplugWebsockets
 
         public ButtplugWebsocketServerBehavior()
         {
+        }
 
+        protected override void OnOpen()
+        {
+            base.OnOpen();
+            if (Sessions != null)
+            {
+                var ids = Sessions.ActiveIDs.ToList();
+                ids.Remove(ID);
+                if (ids.Any())
+                {
+                    var msg = _buttplug.Serialize(new Error("WebSocketServer already in use!", ErrorClass.ERROR_INIT, ButtplugConsts.SYSTEM_MSG_ID));
+                    try
+                    {
+                        Send(msg);
+                    }
+                    catch(InvalidOperationException)
+                    {
+                        // noop - likely already disconnected
+                    }
+
+                    Sessions?.CloseSession(ID);
+                }
+            }
         }
 
         protected override async void OnClose(CloseEventArgs e)
@@ -38,19 +58,38 @@ namespace ButtplugWebsockets
             base.OnClose(e);
             _buttplug.MessageReceived -= OnMessageReceived;
             await _buttplug.SendMessage(new StopAllDevices());
+            _buttplug = null;
         }
 
         protected override async void OnMessage(MessageEventArgs e)
         {
             base.OnMessage(e);
             var msg = _buttplug.Serialize(await _buttplug.SendMessage(e.Data));
-            Sessions?.Broadcast(msg);
+            try
+            {
+                Send(msg);
+            }
+            catch (InvalidOperationException)
+            {
+                // noop - likely already disconnected
+            }
         }
 
         private void OnMessageReceived(object aObj, MessageReceivedEventArgs e)
         {
             var msg = _buttplug.Serialize(e.Message);
-            Sessions?.Broadcast(msg);
+            try
+            {
+                Send(msg);
+            }
+            catch (InvalidOperationException)
+            {
+                // noop - likely already disconnected
+            }
+            if (e.Message is Error && ((Error)e.Message).ErrorCode == Buttplug.Messages.Error.ErrorClass.ERROR_PING)
+            {
+                Sessions?.CloseSession(ID);
+            }
         }
     }
 }

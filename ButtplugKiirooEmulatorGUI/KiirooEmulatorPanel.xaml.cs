@@ -47,6 +47,7 @@ namespace ButtplugKiirooEmulatorGUI
         public KiirooEmulatorPanel(ButtplugService aBpService)
         {
             _bpServer = aBpService;
+            _bpServer.SendMessage(new RequestServerInfo("Kiiroo Emulator")).Wait();
             _devices = new DeviceList();
             InitializeComponent();
             DeviceListBox.ItemsSource = _devices;

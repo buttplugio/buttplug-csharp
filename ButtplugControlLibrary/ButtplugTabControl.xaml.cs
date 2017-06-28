@@ -25,12 +25,14 @@ namespace ButtplugControlLibrary
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ButtplugTabControl : UserControl
+    public partial class ButtplugTabControl : UserControl, ButtplugServiceFactory
     {
-        public ButtplugService BpServer { get; private set; }
         private readonly RavenClient _ravenClient;
         private bool _sentCrashLog;
         private Logger _guiLog;
+        private int _releaseId = 0;
+        private string _serverName;
+        private uint _maxPingTime;
 
         public ButtplugTabControl()
         {
@@ -58,7 +60,7 @@ namespace ButtplugControlLibrary
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
             LogManager.Configuration = LogManager.Configuration;
 #endif
-
+            
             // Set up GUI
             InitializeComponent();
 
@@ -77,10 +79,10 @@ namespace ButtplugControlLibrary
             AboutControl.AboutImageClickedABunch += (o, e) => DeveloperTab.Visibility = Visibility.Visible;
         }
 
-        public async Task InitializeButtplugServer(string aServerName, uint aMaxPingTime)
+        public ButtplugService InitializeButtplugServer(string aServerName, uint aMaxPingTime)
         {
             // Set up internal services
-            BpServer = new ButtplugService(aServerName, aMaxPingTime);
+            var bpServer = new ButtplugService(aServerName, aMaxPingTime);
             if (!(Environment.OSVersion is null))
             {
                 _guiLog.Info($"Windows Version: {Environment.OSVersion.VersionString}");
@@ -89,33 +91,13 @@ namespace ButtplugControlLibrary
             {
                 _guiLog.Error("Cannot retreive Environment.OSVersion string.");
             }
-
-            var releaseId = 0;
-            try
-            {
-                releaseId = Int32.Parse(Registry
-                    .GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "")
-                    .ToString());
-                _guiLog.Info($"Windows Release ID: {releaseId}");
-            }
-            catch (Exception)
-            {
-                _guiLog.Error("Cannot retreive Release ID for OS! Will not load bluetooth manager.");
-            }
-
             
             // Make sure we're on the Creators update before even trying to load the UWP Bluetooth Manager
-            if (releaseId >= 1703)
+            if (_releaseId >= 1703)
             {
-                if (!UWPBluetoothManager.HasRegistryKeysSet())
-                {
-                    _guiLog.Error("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
-                    // TODO Need to figure out how to only show this if we're running a full application.
-                    MessageBox.Show("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
-                }
                 try
                 {
-                    BpServer.AddDeviceSubtypeManager(aLogger => new UWPBluetoothManager(aLogger));
+                    bpServer.AddDeviceSubtypeManager(aLogger => new UWPBluetoothManager(aLogger));
                 }
                 catch (PlatformNotSupportedException e)
                 {
@@ -127,8 +109,8 @@ namespace ButtplugControlLibrary
                 _guiLog.Warn("OS Version too old to load bluetooth core. Must be Windows 10 15063 or higher.");
             }
 
-            BpServer.AddDeviceSubtypeManager(aLogger => new XInputGamepadManager(aLogger));
-            await BpServer.SendMessage(new RequestServerInfo(aServerName));
+            bpServer.AddDeviceSubtypeManager(aLogger => new XInputGamepadManager(aLogger));
+            return bpServer;
         }
 
         private void SendExceptionToSentry(Exception aEx)
@@ -179,6 +161,39 @@ namespace ButtplugControlLibrary
         {
             ApplicationTab.Header = aTabName;
             ApplicationTab.Content = aTabControl;            
+        }
+
+        public void SetServerDetails(string serverName, uint maxPingTime)
+        {
+            _serverName = serverName;
+            _maxPingTime = maxPingTime;
+
+            try
+            {
+                _releaseId = Int32.Parse(Registry
+                    .GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "")
+                    .ToString());
+                _guiLog.Info($"Windows Release ID: {_releaseId}");
+            }
+            catch (Exception)
+            {
+                _guiLog.Error("Cannot retreive Release ID for OS! Will not load bluetooth manager.");
+            }
+            if (!UWPBluetoothManager.HasRegistryKeysSet())
+            {
+                _guiLog.Error("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
+                // TODO Need to figure out how to only show this if we're running a full application.
+                MessageBox.Show("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
+            }
+        }
+
+        public ButtplugService GetService()
+        {
+            if( _serverName == null)
+            {
+                throw new AccessViolationException("SetServerDetails() must be called before GetService()");
+            }
+            return InitializeButtplugServer(_serverName, _maxPingTime);
         }
     }
 

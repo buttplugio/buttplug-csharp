@@ -41,7 +41,14 @@ namespace ButtplugControlLibrary
 
         protected override void Write(LogEventInfo aLogEvent)
         {
-            Dispatcher.FromThread(_winThread).Invoke(() => _logs.Add(this.Layout.Render(aLogEvent)));
+            try
+            {
+                Dispatcher.FromThread(_winThread).Invoke(() => _logs.Add(this.Layout.Render(aLogEvent)));
+            }
+            catch( TaskCanceledException tce)
+            {
+                //noop
+            }
         }
     }
 

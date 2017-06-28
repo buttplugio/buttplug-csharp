@@ -13,7 +13,11 @@ namespace ButtplugWebsockets
     {
         private HttpServer _wsServer;
 
-        public void StartServer([NotNull] ButtplugService aService, int port = 12345, bool secure = false)
+        public ButtplugWebsocketServer()
+        {
+        }
+
+        public void StartServer([NotNull] ButtplugServiceFactory aFactory, int port = 12345, bool secure = false)
         {
             _wsServer = new HttpServer(port, secure);
             _wsServer.RemoveWebSocketService("/buttplug");
@@ -22,7 +26,7 @@ namespace ButtplugWebsockets
             {
                 _wsServer.SslConfiguration.ServerCertificate = CertUtils.GetCert("Buttplug");
             }
-            _wsServer.WebSocketServices.AddService<ButtplugWebsocketServerBehavior>("/buttplug", (obj) => obj.Service = aService);
+            _wsServer.WebSocketServices.AddService<ButtplugWebsocketServerBehavior>("/buttplug", (obj) => obj.Service = aFactory.GetService());
             _wsServer.Start();
         }
 

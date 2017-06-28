@@ -1,6 +1,7 @@
 ﻿using Buttplug.Core;
 using Buttplug.Messages;
 using System.Linq;
+using System.Threading;
 using Xunit;
 using static Buttplug.Messages.Error;
 
@@ -211,6 +212,23 @@ namespace ButtplugTest.Core
             var license = ButtplugService.GetLicense();
             Assert.Contains("Buttplug is covered under the following BSD 3-Clause License", license);
             Assert.Contains("NJsonSchema (https://github.com/RSuter/NJsonSchema) is covered under the", license);
+        }
+
+        [Fact]
+        public async void TestPing()
+        {
+            var s = new TestService();
+            // Timeout is set to 100ms
+            for (int i = 0; i < 8; i++)
+            {
+                Thread.Sleep(50);
+                Assert.True(await s.SendMessage(new Ping()) is Ok);
+            }
+            // If we're still getting OK, we've suvived 400ms
+            
+            // Now lets ensure we can actually timeout
+            Thread.Sleep(150);
+            Assert.True(await s.SendMessage(new Ping()) is Error);
         }
     }
 }
