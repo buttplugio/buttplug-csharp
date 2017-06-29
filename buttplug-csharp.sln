@@ -17,15 +17,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugUWPGamepadManager",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugXInputGamepadManager", "ButtplugXInputGamepadManager\ButtplugXInputGamepadManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugGUITest", "ButtplugGUITest\ButtplugGUITest.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugWebsockets", "ButtplugWebsockets\ButtplugWebsockets.csproj", "{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugServerGUI", "ButtplugServerGUI\ButtplugServerGUI.csproj", "{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugServerGUITest", "ButtplugServerGUITest\ButtplugServerGUITest.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugControlLibrary", "ButtplugControlLibrary\ButtplugControlLibrary.csproj", "{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugKiirooEmulatorGUI", "ButtplugKiirooEmulatorGUI\ButtplugKiirooEmulatorGUI.csproj", "{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugKiirooEmulatorGUITest", "ButtplugKiirooEmulatorGUITest\ButtplugKiirooEmulatorGUITest.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78395}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "dependencies\websocket-sharp\websocket-sharp\websocket-sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
 EndProject
@@ -67,6 +69,10 @@ Global
 		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78395}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78395}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA1D2401-38BB-4822-BBCB-69873CB78395}.Release|Any CPU.Build.0 = Release|Any CPU
 		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
