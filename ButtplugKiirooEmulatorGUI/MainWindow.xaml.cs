@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
 
 namespace ButtplugKiirooEmulatorGUI
 {
@@ -11,14 +13,17 @@ namespace ButtplugKiirooEmulatorGUI
         public MainWindow()
         {
             InitializeComponent();
-            if (Application.Current == null)
-            {
-                return;
-            }
+
             ButtplugTab.SetServerDetails("Kiiroo Emulator", 0);
             _emu = new KiirooEmulatorPanel(ButtplugTab.GetService());
             ButtplugTab.SetApplicationTab("Kiiroo Emulator", _emu);
+            Closing += ClosingHandler;
             _emu.StartServer();
+        }
+
+        private void ClosingHandler(object aObj, CancelEventArgs e)
+        {
+            _emu?.StopServer();
         }
     }
 }

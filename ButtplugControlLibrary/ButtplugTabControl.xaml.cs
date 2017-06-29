@@ -182,8 +182,11 @@ namespace ButtplugControlLibrary
             if (!UWPBluetoothManager.HasRegistryKeysSet())
             {
                 _guiLog.Error("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
-                // TODO Need to figure out how to only show this if we're running a full application.
-                MessageBox.Show("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
+                // Only show this if we're running a full application.
+                if (Application.Current != null)
+                {
+                    MessageBox.Show("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
+                }
             }
         }
 

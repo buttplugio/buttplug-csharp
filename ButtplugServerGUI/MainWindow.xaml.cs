@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace ButtplugServerGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        WebsocketServerControl _wsTab;
+
         public MainWindow()
         {
             var config = new ButtplugConfig("Buttplug");
@@ -27,10 +30,17 @@ namespace ButtplugServerGUI
             UInt32.TryParse(config.GetValue("buttplug.server.maxPing", "100"), out ping);
 
             InitializeComponent();
+
             ButtplugTab.SetServerDetails("Websocket Server", ping);
-            var wsTab = new WebsocketServerControl(ButtplugTab);
-            ButtplugTab.SetApplicationTab("Websocket Server", wsTab);
-            wsTab.StartServer();
+            _wsTab = new WebsocketServerControl(ButtplugTab);
+            ButtplugTab.SetApplicationTab("Websocket Server", _wsTab);
+            Closing += ClosingHandler;
+            _wsTab.StartServer();
+        }
+
+        private void ClosingHandler(object aObj, CancelEventArgs e)
+        {
+            _wsTab?.StopServer();
         }
     }
 }
