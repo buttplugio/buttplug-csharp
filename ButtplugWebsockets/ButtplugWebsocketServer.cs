@@ -13,10 +13,6 @@ namespace ButtplugWebsockets
     {
         private HttpServer _wsServer;
 
-        public ButtplugWebsocketServer()
-        {
-        }
-
         public void StartServer([NotNull] ButtplugService aService, int port = 12345, bool secure = false)
         {
             _wsServer = new HttpServer(port, secure);
@@ -32,6 +28,10 @@ namespace ButtplugWebsockets
 
         public void StopServer()
         {
+            if (_wsServer is null)
+            {
+                return;
+            }
             _wsServer.Stop();
             _wsServer.RemoveWebSocketService("/buttplug");
             _wsServer = null;
