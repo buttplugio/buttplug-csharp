@@ -3,12 +3,13 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Web;
+using JetBrains.Annotations;
 
 namespace ButtplugKiirooPlatformEmulator
 {
     public class KiirooPlatformEventArgs : EventArgs
     {
-        public ushort Position { get; private set; }
+        public ushort Position { get; }
 
         public KiirooPlatformEventArgs(ushort p)
         {
@@ -18,6 +19,7 @@ namespace ButtplugKiirooPlatformEmulator
 
     public class KiirooPlatformEmulator
     {
+        [NotNull]
         private readonly HttpListener _httpListener;
         private bool _stop;
         private bool _isRunning;
@@ -33,17 +35,17 @@ namespace ButtplugKiirooPlatformEmulator
         }
 
         // http://stackoverflow.com/questions/5197579/getting-form-data-from-httplistenerrequest
-        public static string GetRequestPostData(HttpListenerRequest request)
+        private static string GetRequestPostData([NotNull] HttpListenerRequest aRequest)
         {
-            if (!request.HasEntityBody)
+            if (!aRequest.HasEntityBody)
             {
                 return null;
             }
 
-            var body = request.InputStream;
+            var body = aRequest.InputStream;
             try
             {
-                using (var reader = new StreamReader(body, request.ContentEncoding))
+                using (var reader = new StreamReader(body, aRequest.ContentEncoding))
                 {
                     body = null;
                     return reader.ReadToEnd();

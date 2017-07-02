@@ -19,7 +19,7 @@ namespace ButtplugWebsockets
     class CertUtils
     {
         // Note: Much of this code comes from https://stackoverflow.com/a/22247129
-        public static X509Certificate2 GenerateSelfSignedCertificate(string subjectName, string issuerName, AsymmetricKeyParameter issuerPrivKey)
+        private static X509Certificate2 GenerateSelfSignedCertificate(string subjectName, string issuerName, AsymmetricKeyParameter issuerPrivKey)
         {
             const int keyStrength = 2048;
             // Generating Random Numbers
@@ -44,11 +44,10 @@ namespace ButtplugWebsockets
             certificateGenerator.SetNotBefore(notBefore);
             certificateGenerator.SetNotAfter(notAfter);
             // Subject Public Key
-            AsymmetricCipherKeyPair subjectKeyPair;
-            var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
             var keyPairGenerator = new RsaKeyPairGenerator();
+            var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
+            var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
             keyPairGenerator.Init(keyGenerationParameters);
-            subjectKeyPair = keyPairGenerator.GenerateKeyPair();
             certificateGenerator.SetPublicKey(subjectKeyPair.Public);
             // Generating the Certificate
             var issuerKeyPair = subjectKeyPair;
@@ -57,7 +56,7 @@ namespace ButtplugWebsockets
             // correcponding private key
             var info = PrivateKeyInfoFactory.CreatePrivateKeyInfo(subjectKeyPair.Private);
             // merge into X509Certificate2
-            var x509 = new System.Security.Cryptography.X509Certificates.X509Certificate2(certificate.GetEncoded());
+            var x509 = new X509Certificate2(certificate.GetEncoded());
             var seq = (Asn1Sequence)Asn1Object.FromByteArray(info.PrivateKey.GetDerEncoded());
             if (seq.Count != 9)
             {
@@ -69,7 +68,8 @@ namespace ButtplugWebsockets
             x509.PrivateKey = ToDotNetKey(rsaparams); //x509.PrivateKey = DotNetUtilities.ToRSA(rsaparams);
             return x509;
         }
-        public static AsymmetricAlgorithm ToDotNetKey(RsaPrivateCrtKeyParameters privateKey)
+
+        private static AsymmetricAlgorithm ToDotNetKey(RsaPrivateCrtKeyParameters privateKey)
         {
             var cspParams = new CspParameters
             {
@@ -92,7 +92,8 @@ namespace ButtplugWebsockets
             rsaProvider.ImportParameters(parameters);
             return rsaProvider;
         }
-        public static X509Certificate2 GenerateCACertificate(string subjectName, ref AsymmetricKeyParameter CaPrivateKey)
+
+        private static X509Certificate2 GenerateCACertificate(string subjectName, ref AsymmetricKeyParameter CaPrivateKey)
         {
             const int keyStrength = 2048;
             // Generating Random Numbers
@@ -117,17 +118,16 @@ namespace ButtplugWebsockets
             certificateGenerator.SetNotBefore(notBefore);
             certificateGenerator.SetNotAfter(notAfter);
             // Subject Public Key
-            AsymmetricCipherKeyPair subjectKeyPair;
             var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
             var keyPairGenerator = new RsaKeyPairGenerator();
+            var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
             keyPairGenerator.Init(keyGenerationParameters);
-            subjectKeyPair = keyPairGenerator.GenerateKeyPair();
             certificateGenerator.SetPublicKey(subjectKeyPair.Public);
             // Generating the Certificate
             var issuerKeyPair = subjectKeyPair;
             // selfsign certificate
             var certificate = certificateGenerator.Generate(issuerKeyPair.Private, random);
-            var x509 = new System.Security.Cryptography.X509Certificates.X509Certificate2(certificate.GetEncoded());
+            var x509 = new X509Certificate2(certificate.GetEncoded());
             CaPrivateKey = issuerKeyPair.Private;
             return x509;
             //return issuerKeyPair.Private;

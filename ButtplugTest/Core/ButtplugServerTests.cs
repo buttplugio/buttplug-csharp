@@ -53,7 +53,7 @@ namespace ButtplugTest.Core
             await s.SendMessage("{\"RequestServerInfo\":{\"Id\":12345}}");
         }
 
-        public void CheckDeviceMessages(ButtplugMessage msgArgs)
+        private void CheckDeviceMessages(ButtplugMessage msgArgs)
         {
             switch (msgArgs)
             {
@@ -82,11 +82,11 @@ namespace ButtplugTest.Core
             }
         }
 
-        public async void CheckDeviceCount(ButtplugService s, int expectedCount)
+        private async void CheckDeviceCount(ButtplugService aService, int aExpectedCount)
         {
-            var deviceListMsg = await s.SendMessage(new RequestDeviceList());
+            var deviceListMsg = await aService.SendMessage(new RequestDeviceList());
             Assert.True(deviceListMsg is DeviceList);
-            Assert.Equal(((DeviceList)deviceListMsg).Devices.Count(), expectedCount);
+            Assert.Equal(((DeviceList)deviceListMsg).Devices.Count(), aExpectedCount);
         }
 
         [Fact]
@@ -124,7 +124,7 @@ namespace ButtplugTest.Core
         {
             var s = new TestService();
             // Test echos back a test message with the same string and id
-            Assert.True(await s.SendMessage(new Test("Right", 1)) is Test);
+            Assert.True(await s.SendMessage(new Test("Right", 2)) is Test);
             Assert.True(await s.SendMessage(new Test("Wrong", 0)) is Error);
         }
 

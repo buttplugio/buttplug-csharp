@@ -11,8 +11,8 @@ namespace ButtplugTest.Core
         [Fact]
         public void JsonConversionTest()
         {
-            var m1 = new Buttplug.Messages.Test("ThisIsATest", ButtplugConsts.SYSTEM_MSG_ID);
-            var m2 = new Buttplug.Messages.Test("ThisIsAnotherTest", ButtplugConsts.SYSTEM_MSG_ID);
+            var m1 = new Test("ThisIsATest", ButtplugConsts.SYSTEM_MSG_ID);
+            var m2 = new Test("ThisIsAnotherTest", ButtplugConsts.SYSTEM_MSG_ID);
             var msg = service.Serialize(m1);
             Assert.True(msg.Length > 0);
             Assert.Equal("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}]", msg);

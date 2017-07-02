@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugKiirooPlatformEmulator;
+using JetBrains.Annotations;
 
 namespace ButtplugKiirooEmulatorGUI
 {
@@ -39,8 +40,14 @@ namespace ButtplugKiirooEmulatorGUI
     {
         private readonly ButtplugService _bpServer;
         private readonly DeviceList _devices;
+
+        [NotNull]
         private readonly KiirooPlatformEmulator _kiirooEmulator;
+
+        [NotNull]
         private readonly KiirooMessageTranslator _translator;
+
+        [NotNull]
         private readonly List<DispatcherOperation> _ops;
 
         public KiirooEmulatorPanel(ButtplugService aBpService)
@@ -63,11 +70,11 @@ namespace ButtplugKiirooEmulatorGUI
         ~KiirooEmulatorPanel()
         {
             StopServer();
-            _ops.ForEach((x) =>
+            _ops.ForEach(aDispatchOp =>
             {
                 try
                 {
-                    x.Wait();
+                    aDispatchOp.Wait();
                 }
                 catch (TaskCanceledException)
                 {

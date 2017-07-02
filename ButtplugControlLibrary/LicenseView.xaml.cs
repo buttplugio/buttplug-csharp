@@ -1,5 +1,4 @@
 ﻿using Buttplug.Core;
-using System.Windows.Controls;
 
 namespace ButtplugControlLibrary
 {

@@ -2,6 +2,7 @@
 using Buttplug.Messages;
 using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Buttplug.Bluetooth.Devices
 {
@@ -39,8 +40,8 @@ namespace Buttplug.Bluetooth.Devices
 
     internal class FleshlightLaunch : ButtplugBluetoothDevice
     {
-        public FleshlightLaunch(IButtplugLogManager aLogManager,
-                                IBluetoothDeviceInterface aInterface) :
+        public FleshlightLaunch([NotNull] IButtplugLogManager aLogManager,
+                                [NotNull] IBluetoothDeviceInterface aInterface) :
             base(aLogManager,
                  "Fleshlight Launch",
                  aInterface)

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using ButtplugWebsockets;
 using Buttplug.Core;
 using ButtplugControlLibrary;
+using ButtplugWebsockets;
 
 namespace ButtplugServerGUI
 {
@@ -34,28 +34,29 @@ namespace ButtplugServerGUI
             {
                 _secure = sres;
             }
-            ((TextBox)PortTextBox).Text = _port.ToString();
-            ((CheckBox)SecureCheckBox).IsChecked = _secure;
+            PortTextBox.Text = _port.ToString();
+            SecureCheckBox.IsChecked = _secure;
         }
 
         public void StartServer()
         {
             _ws.StartServer(_bpFactory, (int) _port, _secure);
-            ((Button)ConnToggleButton).Content = "Stop";
-            ((CheckBox)SecureCheckBox).IsEnabled = false;
-            ((TextBox)PortTextBox).IsEnabled = false;
+            ConnToggleButton.Content = "Stop";
+            SecureCheckBox.IsEnabled = false;
+            PortTextBox.IsEnabled = false;
         }
+
         public void StopServer()
         {
             _ws.StopServer();
-            ((Button)ConnToggleButton).Content = "Start";
-            ((CheckBox)SecureCheckBox).IsEnabled = true;
-            ((TextBox)PortTextBox).IsEnabled = true;
+            ConnToggleButton.Content = "Start";
+            SecureCheckBox.IsEnabled = true;
+            PortTextBox.IsEnabled = true;
         }
 
         private void ConnToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            if (((Button)ConnToggleButton).Content.Equals("Start"))
+            if (ConnToggleButton.Content.Equals("Start"))
             {
                 StartServer();
                 _config.SetValue("buttplug.server.port", _port.ToString());
@@ -70,12 +71,12 @@ namespace ButtplugServerGUI
 
         private void PortTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (UInt32.TryParse(((TextBox)PortTextBox).Text, out uint port) && port >= 1024 && port <= 65535)
+            if (UInt32.TryParse(PortTextBox.Text, out uint port) && port >= 1024 && port <= 65535)
             {
                 _port = port;
                 return;
             }
-            ((TextBox)PortTextBox).Text = _port.ToString();
+            PortTextBox.Text = _port.ToString();
         }
 
         private void SecureCheckBox_Unchecked(object sender, RoutedEventArgs e)

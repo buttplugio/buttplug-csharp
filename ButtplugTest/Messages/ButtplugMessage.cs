@@ -47,7 +47,7 @@ namespace ButtplugTest.Messages
             res = await s.SendMessage("[{\"Test\": {\"TestString\":\"Echo\",\"Id\":2}}]");
             Assert.True(res.Length == 1);
             Assert.True(res[0] is Test);
-            Assert.True(s.outgoingAsync.Count == 3);
+            Assert.True(s.OutgoingAsync.Count == 3);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace ButtplugTest.Messages
             Assert.True(dm.StartScanningCalled);
         }
 
-        public class FakeMessage : ButtplugMessage
+        private class FakeMessage : ButtplugMessage
         {
             public FakeMessage(uint aId) : base(aId)
             {

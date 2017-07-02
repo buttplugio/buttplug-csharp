@@ -10,7 +10,7 @@ namespace ButtplugTest.Core
 {
     internal class TestService : ButtplugService
     {
-        public List<string> outgoingAsync = new List<string>();
+        public readonly List<string> OutgoingAsync = new List<string>();
 
         public TestService() : base("Test Service", 100)
         {
@@ -29,7 +29,7 @@ namespace ButtplugTest.Core
 
         public void OnMessageReceived(object aObj, MessageReceivedEventArgs e)
         {
-            outgoingAsync.Add(Serialize(e.Message));
+            OutgoingAsync.Add(Serialize(e.Message));
         }
     }
 }

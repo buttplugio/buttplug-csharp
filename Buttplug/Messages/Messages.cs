@@ -81,7 +81,7 @@ namespace Buttplug.Messages
 
     public class DeviceList : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
-        public DeviceMessageInfo[] Devices;
+        public readonly DeviceMessageInfo[] Devices;
 
         public DeviceList(DeviceMessageInfo[] aDeviceList, uint aId) : base(aId)
         {
@@ -165,7 +165,7 @@ namespace Buttplug.Messages
     public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         public ButtplugLogLevel LogLevel { get; }
-        public string LogMessage { get; }
+        private string LogMessage { get; }
 
         public Log(ButtplugLogLevel aLogLevel, string aLogMessage) : base(ButtplugConsts.SYSTEM_MSG_ID)
         {
@@ -190,9 +190,9 @@ namespace Buttplug.Messages
         public int MajorVersion { get; }
         public int MinorVersion { get; }
         public int BuildVersion { get; }
-        public uint MessageVersion { get; }
-        public uint MaxPingTime { get; }
-        public string ServerName { get; }
+        private uint MessageVersion { get; }
+        private uint MaxPingTime { get; }
+        private string ServerName { get; }
 
         public ServerInfo(string aServerName, uint aMessageVersion, uint aMaxPingTime, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
         {

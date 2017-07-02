@@ -35,11 +35,11 @@ namespace Buttplug.Bluetooth.Devices
 
     internal class Kiiroo : ButtplugBluetoothDevice
     {
-        public Kiiroo(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface) :
+        public Kiiroo([NotNull] IButtplugLogManager aLogManager,
+                      [NotNull] IBluetoothDeviceInterface aInterface) :
             base(aLogManager,
-                $"Kiiroo {aInterface.Name}",
-                aInterface)
+                 $"Kiiroo {aInterface.Name}",
+                 aInterface)
         {
             MsgFuncs.Add(typeof(KiirooCmd), HandleKiirooRawCmd);
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
@@ -61,8 +61,8 @@ namespace Buttplug.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
             return await Interface.WriteValue(cmdMsg.Id,
-                (uint)KiirooBluetoothInfo.Chrs.Tx,
-                Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"));
+                                              (uint)KiirooBluetoothInfo.Chrs.Tx, 
+                                              Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"));
         }
     }
 }

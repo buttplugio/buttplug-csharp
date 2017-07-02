@@ -7,7 +7,7 @@ namespace ButtplugKiirooEmulatorGUI
 {
     internal class VibrateEventArgs : EventArgs
     {
-        public double VibrateValue;
+        public readonly double VibrateValue;
 
         public VibrateEventArgs(double aValue)
         {
@@ -54,7 +54,7 @@ namespace ButtplugKiirooEmulatorGUI
             _vibrateTimer.Stop();
         }
 
-        public void UpdateVibrate(object o, EventArgs e)
+        private void UpdateVibrate(object aObject, EventArgs aEvent)
         {
             var speedModifier = .2 * (_currentSpeed / 100.0);
             if (_currentGoalPosition < 2)

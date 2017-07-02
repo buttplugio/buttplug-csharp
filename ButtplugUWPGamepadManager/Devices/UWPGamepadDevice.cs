@@ -17,15 +17,12 @@ namespace ButtplugUWPGamepadManager.Devices
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
-        public async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE, "Wrong Handler");
+                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE, "Wrong Handler"));
             }
             var v = new GamepadVibration()
             {
@@ -33,7 +30,7 @@ namespace ButtplugUWPGamepadManager.Devices
                 RightMotor = cmdMsg.Speed
             };
             _device.Vibration = v;
-            return new Ok(aMsg.Id);
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
     }
 }
