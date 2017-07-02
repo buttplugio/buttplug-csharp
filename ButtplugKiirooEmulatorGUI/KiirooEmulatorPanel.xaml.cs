@@ -98,7 +98,7 @@ namespace ButtplugKiirooEmulatorGUI
         public void StopServer()
         {
             _bpServer.SendMessage(new StopScanning()).Wait();
-            _bpServer.SendMessage(new StopAllDevices()).Wait(); ;
+            _bpServer.SendMessage(new StopAllDevices()).Wait();
             _kiirooEmulator.StopServer();
         }
 
