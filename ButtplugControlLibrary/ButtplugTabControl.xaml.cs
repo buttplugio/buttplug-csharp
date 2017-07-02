@@ -22,7 +22,8 @@ namespace ButtplugControlLibrary
     {
         private readonly RavenClient _ravenClient;
         private bool _sentCrashLog;
-        private Logger _guiLog;
+
+        private readonly Logger _guiLog;
         private int _releaseId = 0;
         private string _serverName;
         private uint _maxPingTime;

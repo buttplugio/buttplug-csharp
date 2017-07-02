@@ -40,8 +40,8 @@ namespace ButtplugKiirooEmulatorGUI
         private readonly ButtplugService _bpServer;
         private readonly DeviceList _devices;
         private readonly KiirooPlatformEmulator _kiirooEmulator;
-        private KiirooMessageTranslator _translator;
-        private List<DispatcherOperation> _ops;
+        private readonly KiirooMessageTranslator _translator;
+        private readonly List<DispatcherOperation> _ops;
 
         public KiirooEmulatorPanel(ButtplugService aBpService)
         {

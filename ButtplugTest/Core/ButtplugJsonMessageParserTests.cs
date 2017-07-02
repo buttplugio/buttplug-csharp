@@ -6,7 +6,7 @@ namespace ButtplugTest.Core
 {
     public class ButtplugJsonMessageParserTests
     {
-        private TestService service = new TestService();
+        private readonly TestService service = new TestService();
 
         [Fact]
         public void JsonConversionTest()

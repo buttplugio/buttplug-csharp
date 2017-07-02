@@ -24,7 +24,7 @@ namespace ButtplugKiirooEmulatorGUI
         private uint _limitedSpeed;
         private uint _currentGoalPosition;
         private uint _currentSpeed;
-        private Timer _vibrateTimer;
+        private readonly Timer _vibrateTimer;
         private double _currentVibrate;
 
         public event EventHandler<VibrateEventArgs> VibrateEvent;
