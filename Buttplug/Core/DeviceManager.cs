@@ -40,46 +40,46 @@ namespace Buttplug.Core
             return from x in aDevice.GetAllowedMessageTypes() select x.Name;
         }
 
-        private void DeviceAddedHandler(object o, DeviceAddedEventArgs e)
+        private void DeviceAddedHandler(object aObj, DeviceAddedEventArgs aEvent)
         {
             // If we get to 4 billion devices connected, this may be a problem.
             var deviceIndex = (uint)Interlocked.Increment(ref _deviceIndexCounter);
             // Devices can be turned off by the time they get to this point, at which point they end up null. Make sure the device isn't null.
-            if (e.Device == null)
+            if (aEvent.Device == null)
             {
                 return;
             }
             var duplicates = from x in _devices.Values
-                where x.Identifier == e.Device.Identifier
+                where x.Identifier == aEvent.Device.Identifier
                 select x;
             if (duplicates.Any())
             {
-                _bpLogger.Trace($"Already have device {e.Device.Name} in Devices list");
+                _bpLogger.Trace($"Already have device {aEvent.Device.Name} in Devices list");
                 return;
             }
-            _bpLogger.Debug($"Adding Device {e.Device.Name} at index {deviceIndex}");
-            _devices.Add(deviceIndex, e.Device);
-            e.Device.DeviceRemoved += DeviceRemovedHandler;
-            var msg = new DeviceAdded(deviceIndex, e.Device.Name, GetAllowedMessageTypesAsStrings(e.Device).ToArray());
+            _bpLogger.Debug($"Adding Device {aEvent.Device.Name} at index {deviceIndex}");
+            _devices.Add(deviceIndex, aEvent.Device);
+            aEvent.Device.DeviceRemoved += DeviceRemovedHandler;
+            var msg = new DeviceAdded(deviceIndex, aEvent.Device.Name, GetAllowedMessageTypesAsStrings(aEvent.Device).ToArray());
             
             DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
 
-        private void DeviceRemovedHandler(object o, EventArgs e)
+        private void DeviceRemovedHandler(object aObj, EventArgs aEvent)
         {
-            if ((o as ButtplugDevice) == null)
+            if ((aObj as ButtplugDevice) == null)
             {
                 _bpLogger.Error("Got DeviceRemoved message from an object that is not a ButtplugDevice.");
                 return;
             }
-            var device = (ButtplugDevice) o;
+            var device = (ButtplugDevice) aObj;
             // The device itself will fire the remove event, so look it up in the dictionary and translate that for clients.
             var entry = (from x in _devices where x.Value.Identifier == device.Identifier select x).ToList();
             if (!entry.Any())
             {
                 _bpLogger.Error("Got DeviceRemoved Event from object that is not in devices dictionary");
             }
-            if (entry.Count() > 1)
+            if (entry.Count > 1)
             {
                 _bpLogger.Error("Device being removed has multiple entries in device dictionary.");
             }
@@ -92,7 +92,7 @@ namespace Buttplug.Core
             }
         }
         
-        private void ScanningFinishedHandler(object o, EventArgs e)
+        private void ScanningFinishedHandler(object aObj, EventArgs aEvent)
         {
             if (_sentFinished)
             {
@@ -100,12 +100,13 @@ namespace Buttplug.Core
             }
 
             var done = true;
-            _managers.ForEach(m => done &= !m.IsScanning());
-            if(done)
+            _managers.ForEach(aMgr => done &= !aMgr.IsScanning());
+            if (!done)
             {
-                _sentFinished = true;
-                ScanningFinished?.Invoke(this, new EventArgs());
+                return;
             }
+            _sentFinished = true;
+            ScanningFinished?.Invoke(this, new EventArgs());
         }
 
         public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
@@ -141,8 +142,8 @@ namespace Buttplug.Core
                     return new Error(errorMsg, ErrorClass.ERROR_DEVICE, aMsg.Id);
                 case RequestDeviceList _:
                     var msgDevices = _devices
-                        .Select(d => new DeviceMessageInfo(d.Key, d.Value.Name,
-                            GetAllowedMessageTypesAsStrings(d.Value).ToArray())).ToList();
+                        .Select(aDevice => new DeviceMessageInfo(aDevice.Key, aDevice.Value.Name,
+                                GetAllowedMessageTypesAsStrings(aDevice.Value).ToArray())).ToList();
                     return new DeviceList(msgDevices.ToArray(), id);
 
                 // If it's a device message, it's most likely not ours.
@@ -160,24 +161,24 @@ namespace Buttplug.Core
         private void StartScanning()
         {
             _sentFinished = false;
-            _managers.ForEach(m => m.StartScanning());
+            _managers.ForEach(aMgr => aMgr.StartScanning());
         }
 
         private void StopScanning()
         {
-            _managers.ForEach(m => m.StopScanning());
+            _managers.ForEach(aMgr => aMgr.StopScanning());
         }
 
-        public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
+        public void AddDeviceSubtypeManager<T>([NotNull] Func<IButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
         {
             AddDeviceSubtypeManager(aCreateMgrFunc(_bpLogManager));
         }
 
-        internal void AddDeviceSubtypeManager(IDeviceSubtypeManager mgr)
+        internal void AddDeviceSubtypeManager(IDeviceSubtypeManager aMgr)
         {
-            _managers.Add(mgr);
-            mgr.DeviceAdded += DeviceAddedHandler;
-            mgr.ScanningFinished += ScanningFinishedHandler;
+            _managers.Add(aMgr);
+            aMgr.DeviceAdded += DeviceAddedHandler;
+            aMgr.ScanningFinished += ScanningFinishedHandler;
         }
     }
 }

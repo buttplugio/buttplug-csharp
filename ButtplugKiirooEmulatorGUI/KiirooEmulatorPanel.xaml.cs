@@ -36,7 +36,7 @@ namespace ButtplugKiirooEmulatorGUI
     {
     }
 
-    public partial class KiirooEmulatorPanel : UserControl
+    public partial class KiirooEmulatorPanel
     {
         private readonly ButtplugService _bpServer;
         private readonly DeviceList _devices;
@@ -82,7 +82,7 @@ namespace ButtplugKiirooEmulatorGUI
             });
         }
 
-        private void SelectionChangedHandler(object o, EventArgs e)
+        private void SelectionChangedHandler(object aObj, EventArgs aEvent)
         {
             var currentDevices = DeviceListBox.SelectedItems.Cast<Device>().ToList();
             if (currentDevices.Any(aDevice => aDevice.Messages.Contains("SingleMotorVibrateCmd")))
@@ -105,12 +105,12 @@ namespace ButtplugKiirooEmulatorGUI
             _kiirooEmulator.StopServer();
         }
 
-        void OperationCompletedHandler(object o, EventArgs e)
+        void OperationCompletedHandler(object aObj, EventArgs aEvent)
         {
-            _ops.Remove(o as DispatcherOperation);
+            _ops.Remove(aObj as DispatcherOperation);
         }
 
-        private void OnVibrateEvent(object o, VibrateEventArgs e)
+        private void OnVibrateEvent(object aObj, VibrateEventArgs aEvent)
         {
             var op = Dispatcher.InvokeAsync(async () =>
             {
@@ -119,7 +119,7 @@ namespace ButtplugKiirooEmulatorGUI
                 {
                     if (device.Messages.Contains("SingleMotorVibrateCmd"))
                     {
-                        await _bpServer.SendMessage(new SingleMotorVibrateCmd(device.Index, e.VibrateValue));
+                        await _bpServer.SendMessage(new SingleMotorVibrateCmd(device.Index, aEvent.VibrateValue));
                     }
                 }
             });
@@ -128,11 +128,11 @@ namespace ButtplugKiirooEmulatorGUI
 
         }
 
-        private  void OnMessageReceived(object o, MessageReceivedEventArgs e)
+        private  void OnMessageReceived(object aObj, MessageReceivedEventArgs aEvent)
         {
             var op = Dispatcher.InvokeAsync(() =>
             {
-                switch (e.Message)
+                switch (aEvent.Message)
                 {
                     case DeviceAdded m:
                         _devices.Add(new Device(m.DeviceIndex, m.DeviceName, m.DeviceMessages));
@@ -152,7 +152,7 @@ namespace ButtplugKiirooEmulatorGUI
             op.Completed += OperationCompletedHandler;
         }
 
-        private async void ScanButton_Click(object sender, RoutedEventArgs e)
+        private async void ScanButton_Click(object aSender, RoutedEventArgs aEvent)
         {
             // Disable button until we're done here
             ScanButton.Click -= ScanButton_Click;
@@ -169,7 +169,7 @@ namespace ButtplugKiirooEmulatorGUI
             ScanButton.Click += ScanButton_Click;
         }
 
-        private async void HandleKiirooPlatformMessage(object o, KiirooPlatformEventArgs e)
+        private async void HandleKiirooPlatformMessage(object aObj, KiirooPlatformEventArgs aEvent)
         {
             await Dispatcher.InvokeAsync(async () =>
             {
@@ -179,14 +179,14 @@ namespace ButtplugKiirooEmulatorGUI
                 {
                     if (device.Messages.Contains(typeof(KiirooCmd).Name))
                     {
-                        await _bpServer.SendMessage(new KiirooCmd(device.Index, e.Position));
+                        await _bpServer.SendMessage(new KiirooCmd(device.Index, aEvent.Position));
                     }
                     else if (device.Messages.Contains("FleshlightLaunchFW12Cmd") ||
                              device.Messages.Contains("SingleMotorVibrateCmd"))
                     {
                         if (currentTranslatedCommand == null)
                         {
-                            currentTranslatedCommand = _translator.Translate(new KiirooCmd(device.Index, e.Position));
+                            currentTranslatedCommand = _translator.Translate(new KiirooCmd(device.Index, aEvent.Position));
                         }
                         currentTranslatedCommand.DeviceIndex = device.Index;
                         if (device.Messages.Contains("FleshlightLaunchFW12Cmd"))

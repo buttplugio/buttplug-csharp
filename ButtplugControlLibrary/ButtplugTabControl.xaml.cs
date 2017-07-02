@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using ButtplugUWPBluetoothManager.Core;
 using ButtplugXInputGamepadManager.Core;
+using JetBrains.Annotations;
 using NLog;
 using NLog.Config;
 using Microsoft.Win32;
@@ -23,9 +24,13 @@ namespace ButtplugControlLibrary
     /// </summary>
     public partial class ButtplugTabControl : ButtplugServiceFactory
     {
+        [NotNull]
         private readonly RavenClient _ravenClient;
+
+
         private bool _sentCrashLog;
 
+        [NotNull]
         private readonly Logger _guiLog;
         private int _releaseId = 0;
         private string _serverName;
@@ -70,7 +75,7 @@ namespace ButtplugControlLibrary
                 _guiLog.Info("Can't load assembly file, no version info available!");
             }
 
-            AboutControl.AboutImageClickedABunch += (o, e) => DeveloperTab.Visibility = Visibility.Visible;
+            AboutControl.AboutImageClickedABunch += (aObj, aEvent) => DeveloperTab.Visibility = Visibility.Visible;
         }
 
         public ButtplugService InitializeButtplugServer(string aServerName, uint aMaxPingTime)
@@ -146,7 +151,7 @@ namespace ButtplugControlLibrary
             SendExceptionToSentry(aEx.Exception);
         }
 
-        private void CrashButton_Click(object sender, RoutedEventArgs e)
+        private void CrashButton_Click(object aSender, RoutedEventArgs aEvent)
         {
             throw new Exception("Should be caught and sent to sentry!");
         }

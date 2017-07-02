@@ -75,12 +75,12 @@ namespace Buttplug.Core
             MessageReceived?.Invoke(aObj, aMsg);
         }
 
-        private void LogMessageReceivedHandler([NotNull] object aObj, [NotNull] ButtplugLogMessageEventArgs e)
+        private void LogMessageReceivedHandler([NotNull] object aObj, [NotNull] ButtplugLogMessageEventArgs aEvent)
         {
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(e.LogMessage));
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(aEvent.LogMessage));
         }
 
-        private void ScanningFinishedHandler([NotNull] object aObj, EventArgs e)
+        private void ScanningFinishedHandler([NotNull] object aObj, EventArgs aEvent)
         {
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new ScanningFinished()));
         }
@@ -192,9 +192,9 @@ namespace Buttplug.Core
             _deviceManager.AddDeviceSubtypeManager(aCreateMgrFunc);
         }
 
-        internal void AddDeviceSubtypeManager(IDeviceSubtypeManager mgr)
+        internal void AddDeviceSubtypeManager(IDeviceSubtypeManager aMgr)
         {
-            _deviceManager.AddDeviceSubtypeManager(mgr);
+            _deviceManager.AddDeviceSubtypeManager(aMgr);
         }
 
         // ReSharper disable once UnusedMember.Global

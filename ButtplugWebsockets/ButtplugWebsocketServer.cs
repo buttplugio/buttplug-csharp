@@ -20,7 +20,7 @@ namespace ButtplugWebsockets
             {
                 _wsServer.SslConfiguration.ServerCertificate = CertUtils.GetCert("Buttplug");
             }
-            _wsServer.WebSocketServices.AddService<ButtplugWebsocketServerBehavior>("/buttplug", (obj) => obj.Service = aFactory.GetService());
+            _wsServer.WebSocketServices.AddService<ButtplugWebsocketServerBehavior>("/buttplug", (aObj) => aObj.Service = aFactory.GetService());
             _wsServer.Start();
         }
 

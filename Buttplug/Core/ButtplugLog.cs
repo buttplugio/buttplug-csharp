@@ -71,16 +71,16 @@ namespace Buttplug.Core
             }
         }
 
-        public Error LogErrorMsg(uint aId, ErrorClass code, string msg)
+        public Error LogErrorMsg(uint aId, ErrorClass aCode, string aMsg)
         {
-            Error(msg, false);
-            return new Error(msg, code, aId);
+            Error(aMsg, false);
+            return new Error(aMsg, aCode, aId);
         }
 
-        public Error LogWarnMsg(uint aId, ErrorClass code, string msg)
+        public Error LogWarnMsg(uint aId, ErrorClass aCode, string aMsg)
         {
-            Warn(msg, false);
-            return new Error(msg, code, aId);
+            Warn(aMsg, false);
+            return new Error(aMsg, aCode, aId);
         }
     }
 }

@@ -13,11 +13,11 @@ namespace ButtplugTest.Core
         {
             var buttplugAssembly = AppDomain.CurrentDomain
                 .GetAssemblies()
-                .SingleOrDefault(assembly => assembly.GetName().Name == "Buttplug");
+                .SingleOrDefault(aAssembly => aAssembly.GetName().Name == "Buttplug");
             Assert.NotNull(buttplugAssembly);
             var types = buttplugAssembly.GetTypes()
-                .Where(t => t.IsClass && t.Namespace == "Buttplug.Bluetooth.Devices" &&
-                            typeof(IBluetoothDeviceInfo).IsAssignableFrom(t)).ToList();
+                .Where(aType => aType.IsClass && aType.Namespace == "Buttplug.Bluetooth.Devices" &&
+                            typeof(IBluetoothDeviceInfo).IsAssignableFrom(aType)).ToList();
             Assert.True(types.Any());
             var b = new TestBluetoothSubtypeManager(new ButtplugLogManager());
             var d = b.GetDefaultDeviceInfoList();

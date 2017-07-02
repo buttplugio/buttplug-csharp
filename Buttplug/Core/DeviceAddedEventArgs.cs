@@ -6,9 +6,9 @@ namespace Buttplug.Core
     {
         public IButtplugDevice Device { get; }
 
-        public DeviceAddedEventArgs(IButtplugDevice d)
+        public DeviceAddedEventArgs(IButtplugDevice aDevice)
         {
-            Device = d;
+            Device = aDevice;
         }
     }
 }

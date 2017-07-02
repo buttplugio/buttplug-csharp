@@ -96,7 +96,7 @@ namespace ButtplugKiirooEmulatorGUI
             }
             else
             {
-                _currentSpeed = (uint)(100 - ((elapsed / 100) + ((elapsed / 100) * .1)));
+                _currentSpeed = (uint)(100 - ((elapsed / 100.0) + ((elapsed / 100.0) * .1)));
                 if (_currentSpeed > _previousSpeed)
                 {
                     _currentSpeed = (_previousSpeed + ((_currentSpeed - _previousSpeed) / 6));

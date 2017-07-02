@@ -27,9 +27,9 @@ namespace ButtplugTest.Core
             Assert.True(t.Result is ServerInfo);
         }
 
-        public void OnMessageReceived(object aObj, MessageReceivedEventArgs e)
+        public void OnMessageReceived(object aObj, MessageReceivedEventArgs aEvent)
         {
-            OutgoingAsync.Add(Serialize(e.Message));
+            OutgoingAsync.Add(Serialize(aEvent.Message));
         }
     }
 }

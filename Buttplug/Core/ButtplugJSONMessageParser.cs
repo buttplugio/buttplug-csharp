@@ -41,12 +41,12 @@ namespace Buttplug.Core
                                  select t;
 
             var enumerable = messageClasses as Type[] ?? messageClasses.ToArray();
-            _bpLogger.Debug($"Message type count: {enumerable.Count()}");
+            _bpLogger.Debug($"Message type count: {enumerable.Length}");
             _messageTypes = new Dictionary<string, Type>();
-            enumerable.ToList().ForEach(c =>
+            enumerable.ToList().ForEach(aMessageType =>
             {
-                _bpLogger.Debug($"- {c.Name}");
-                _messageTypes.Add(c.Name, c);
+                _bpLogger.Debug($"- {aMessageType.Name}");
+                _messageTypes.Add(aMessageType.Name, aMessageType);
             });
 
             // Load the schema for validation
@@ -91,7 +91,7 @@ namespace Buttplug.Core
             var errors = _schema.Validate(a);
             if( errors.Any() )
             {
-                res.Add(new Error("Message does not conform to schema: " + string.Join(", ", errors.Select(x => x.ToString()).ToArray()), ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
+                res.Add(new Error("Message does not conform to schema: " + string.Join(", ", errors.Select(aErr => aErr.ToString()).ToArray()), ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
                 return res.ToArray();
             }
 

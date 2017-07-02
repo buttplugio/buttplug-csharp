@@ -75,7 +75,7 @@ namespace ButtplugUWPBluetoothManager.Core
 
             // TODO This assumes we're always planning on having the UUIDs sorted in the Info classes, which is probably not true.
             var bleInterface = new UWPBluetoothDeviceInterface(_buttplugLogManager,
-                aDevice, gattCharacteristics.OrderBy((x) => x.Uuid).ToArray());
+                aDevice, gattCharacteristics.OrderBy((aChr) => aChr.Uuid).ToArray());
 
             var device = _deviceInfo.CreateDevice(_buttplugLogManager, bleInterface);
             if (await device.Initialize() is Ok)

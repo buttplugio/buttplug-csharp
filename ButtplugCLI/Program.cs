@@ -14,33 +14,37 @@ namespace ButtplugCLI
 
         [Option('p', "port", DefaultValue = 6868,
                 HelpText = "Port for Websocket Server")]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public int WebsocketPort { get; set; }
 
         [Option('l', "log", DefaultValue = "Warn",
                 HelpText = "Log output level (Debug, Info, Warn, Error, Fatal)")]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string LogLevel { get; set; }
 
         [Option('q', "quiet", DefaultValue = false,
                 HelpText = "If passed, no output will occur to stdout/stderr")]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool Quiet { get; set; }
 
         [Option("exitimmediately", DefaultValue = false,
                 HelpText = "Startup and exit. Only used to installer testing.")]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool ExitImmediately { get; set; }
 
         [HelpOption]
         public string GetUsage()
         {
-            var t = HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current));
+            var t = HelpText.AutoBuild(this, aCur => HelpText.DefaultParsingErrorsHandler(this, aCur));
             t.Heading = HeadingInfo;
             t.Copyright = "Command Line Server for Haptics Routing and Translation";
             return t;
         }
     }
 
-    internal class Program
+    internal static class Program
     {
-        private static void Main(string[] args)
+        private static void Main(string[] aArgs)
         {
             var config = new LoggingConfiguration();
             var consoleTarget = new ColoredConsoleTarget();
@@ -50,7 +54,7 @@ namespace ButtplugCLI
             LogManager.Configuration = config;
             var bpLogger = LogManager.GetLogger("Buttplug");
             var options = new Options();
-            if (!Parser.Default.ParseArguments(args, options))
+            if (!Parser.Default.ParseArguments(aArgs, options))
             {
                 return;
             }
@@ -58,7 +62,6 @@ namespace ButtplugCLI
             {
                 return;
             }
-            var p = new Program();
 
             bpLogger.Info("Buttplug v0.0.1 - Booting up...");
             bpLogger.Info("Starting Websocket server on port " + options.WebsocketPort);
