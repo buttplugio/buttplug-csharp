@@ -70,7 +70,7 @@ namespace ButtplugKiirooEmulatorGUI
                 {
                     x.Wait();
                 }
-                catch (TaskCanceledException e)
+                catch (TaskCanceledException)
                 {
                 }
             });

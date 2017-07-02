@@ -39,12 +39,19 @@ namespace ButtplugKiirooPlatformEmulator
             {
                 return null;
             }
-            using (var body = request.InputStream)
+
+            var body = request.InputStream;
+            try
             {
                 using (var reader = new StreamReader(body, request.ContentEncoding))
                 {
+                    body = null;
                     return reader.ReadToEnd();
                 }
+            }
+            finally
+            {
+                body?.Close();
             }
         }
 

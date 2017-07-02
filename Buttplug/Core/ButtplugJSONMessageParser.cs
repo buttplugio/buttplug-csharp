@@ -53,11 +53,20 @@ namespace Buttplug.Core
             // Load the schema for validation
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "Buttplug.buttplug-schema.json";
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
+            Stream stream = null;
+            try
             {
-                string result = reader.ReadToEnd();
-                _schema = JsonSchema4.FromJsonAsync(result).GetAwaiter().GetResult();
+                stream = assembly.GetManifestResourceStream(resourceName);
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    stream = null;
+                    string result = reader.ReadToEnd();
+                    _schema = JsonSchema4.FromJsonAsync(result).GetAwaiter().GetResult();
+                }
+            }
+            finally
+            {
+                stream?.Dispose();
             }
         }
 
