@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Messages;
-using static Buttplug.Messages.Error;
+using System;
+using System.Linq;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -38,7 +37,7 @@ namespace ButtplugWebsockets
                 ids.Remove(ID);
                 if (ids.Any())
                 {
-                    var msg = _buttplug.Serialize(new Error("WebSocketServer already in use!", ErrorClass.ERROR_INIT, ButtplugConsts.SYSTEM_MSG_ID));
+                    var msg = _buttplug.Serialize(new Error("WebSocketServer already in use!", Buttplug.Messages.Error.ErrorClass.ERROR_INIT, ButtplugConsts.SYSTEM_MSG_ID));
                     try
                     {
                         Send(msg);

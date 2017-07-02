@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Buttplug.Core;
 using ButtplugXInputGamepadManager.Devices;
 using SharpDX.XInput;

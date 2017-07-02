@@ -1,11 +1,9 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Buttplug.Core;
 using JetBrains.Annotations;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using WebSocketSharp.Net;
-using System.Security.Cryptography.X509Certificates;
 
 namespace ButtplugWebsockets
 {
