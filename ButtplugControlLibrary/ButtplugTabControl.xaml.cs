@@ -10,6 +10,9 @@ using ButtplugXInputGamepadManager.Core;
 using NLog;
 using NLog.Config;
 using Microsoft.Win32;
+#if DEBUG
+using NLog.Targets;
+#endif
 using SharpRaven;
 using SharpRaven.Data;
 
@@ -45,7 +48,7 @@ namespace ButtplugControlLibrary
             _guiLog = LogManager.GetCurrentClassLogger();
             LogManager.Configuration = LogManager.Configuration ?? new LoggingConfiguration();
 #if DEBUG
-// Debug Logger Setup
+            // Debug Logger Setup
             var t = new DebuggerTarget();
             LogManager.Configuration.AddTarget("debugger", t);
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
