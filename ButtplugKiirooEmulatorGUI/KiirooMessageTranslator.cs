@@ -1,5 +1,4 @@
-﻿using Buttplug.Core;
-using Buttplug.Messages;
+﻿using Buttplug.Messages;
 using System;
 using System.Diagnostics;
 using System.Timers;

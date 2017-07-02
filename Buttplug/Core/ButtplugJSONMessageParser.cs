@@ -1,15 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using Buttplug.Messages;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NJsonSchema;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using JetBrains.Annotations;
-using Buttplug.Messages;
-using Newtonsoft.Json.Schema;
-using System.IO;
 using static Buttplug.Messages.Error;
-using NJsonSchema;
 
 namespace Buttplug.Core
 {

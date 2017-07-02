@@ -2,7 +2,6 @@
 using Windows.Gaming.Input;
 using Buttplug.Core;
 using ButtplugUWPGamepadManager.Devices;
-using System;
 
 namespace ButtplugUWPGamepadManager.Core
 {

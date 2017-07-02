@@ -1,7 +1,6 @@
 ﻿using Buttplug.Core;
 using Buttplug.Messages;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 using static Buttplug.Messages.Error;
 
