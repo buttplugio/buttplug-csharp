@@ -12,7 +12,7 @@ namespace ButtplugTest.Core
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
         }
 
-        public Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
             //BpLogger.Trace("Test Device got SingleMotorVibrateMessage");
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));

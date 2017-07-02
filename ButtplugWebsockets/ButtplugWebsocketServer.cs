@@ -11,16 +11,12 @@ namespace ButtplugWebsockets
     {
         private HttpServer _wsServer;
 
-        public ButtplugWebsocketServer()
+        public void StartServer([NotNull] ButtplugServiceFactory aFactory, int aPort = 12345, bool aSecure = false)
         {
-        }
-
-        public void StartServer([NotNull] ButtplugServiceFactory aFactory, int port = 12345, bool secure = false)
-        {
-            _wsServer = new HttpServer(port, secure);
+            _wsServer = new HttpServer(aPort, aSecure);
             _wsServer.RemoveWebSocketService("/buttplug");
             _wsServer.OnGet += OnGetHandler;
-            if (secure)
+            if (aSecure)
             {
                 _wsServer.SslConfiguration.ServerCertificate = CertUtils.GetCert("Buttplug");
             }
@@ -39,10 +35,10 @@ namespace ButtplugWebsockets
             _wsServer = null;
         }
 
-        protected void OnGetHandler(object sender, HttpRequestEventArgs e)
+        private static void OnGetHandler(object aSender, HttpRequestEventArgs aEvent)
         {
-            var req = e.Request;
-            var res = e.Response;
+            var req = aEvent.Request;
+            var res = aEvent.Response;
 
             // Wouldn't it be cool to present syncydink here?
 

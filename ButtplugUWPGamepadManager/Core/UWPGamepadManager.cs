@@ -22,7 +22,7 @@ namespace ButtplugUWPGamepadManager.Core
             BpLogger.Trace("UWPGamepadManager start scanning");
         }
 
-        public void GamepadAdded(object o, Gamepad e)
+        private void GamepadAdded(object o, Gamepad e)
         {
             BpLogger.Trace("UWPGamepadManager GamepadAdded");
             var device = new UwpGamepadDevice(LogManager, e);

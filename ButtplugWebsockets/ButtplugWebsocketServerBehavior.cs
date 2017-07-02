@@ -24,10 +24,6 @@ namespace ButtplugWebsockets
             private get { return _buttplug; }
         }
 
-        public ButtplugWebsocketServerBehavior()
-        {
-        }
-
         protected override void OnOpen()
         {
             base.OnOpen();
