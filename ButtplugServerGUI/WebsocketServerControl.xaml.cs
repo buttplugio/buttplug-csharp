@@ -12,11 +12,11 @@ namespace ButtplugServerGUI
     /// </summary>
     public partial class WebsocketServerControl : UserControl
     {
-        private ButtplugWebsocketServer _ws;
-        private ButtplugServiceFactory _bpFactory;
+        private readonly ButtplugWebsocketServer _ws;
+        private readonly ButtplugServiceFactory _bpFactory;
         private uint _port;
         private bool _secure;
-        private ButtplugConfig _config;
+        private readonly ButtplugConfig _config;
 
         public WebsocketServerControl(ButtplugServiceFactory bpFactory)
         {

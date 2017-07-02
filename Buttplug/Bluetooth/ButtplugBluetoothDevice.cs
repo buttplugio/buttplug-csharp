@@ -7,7 +7,7 @@ namespace Buttplug.Bluetooth
     internal class ButtplugBluetoothDevice : ButtplugDevice
     {
         [NotNull]
-        protected IBluetoothDeviceInterface Interface;
+        protected readonly IBluetoothDeviceInterface Interface;
 
         protected ButtplugBluetoothDevice(IButtplugLogManager aLogManager,
             string aName,

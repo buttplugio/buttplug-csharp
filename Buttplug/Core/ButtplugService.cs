@@ -25,7 +25,7 @@ namespace Buttplug.Core
         private readonly Timer _pingTimer;
 
         private readonly string _serverName;
-        private uint _maxPingTime;
+        private readonly uint _maxPingTime;
         private bool _pingTimedOut;
         private bool _receivedRequestServerInfo;
 
