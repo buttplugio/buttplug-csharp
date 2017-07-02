@@ -96,7 +96,7 @@ namespace ButtplugKiirooPlatformEmulator
                     continue;
                 }
                 var methodName = ctx.Request.Url.Segments[1].Replace("/", "");
-                var json = "";
+                string json;
                 switch (methodName)
                 {
                     case "status":

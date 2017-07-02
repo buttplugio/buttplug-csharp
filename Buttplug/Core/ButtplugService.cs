@@ -105,7 +105,7 @@ namespace Buttplug.Core
             if (id == 0)
             {
                 return _bpLogger.LogWarnMsg(id, ErrorClass.ERROR_MSG,
-                    $"Message Id 0 is reserved for outgoing system messages. Please use another Id.");
+                    "Message Id 0 is reserved for outgoing system messages. Please use another Id.");
             }
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
@@ -122,7 +122,7 @@ namespace Buttplug.Core
             if (!_receivedRequestServerInfo && !(aMsg is RequestServerInfo))
             {
                 return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_INIT,
-                    $"RequestServerInfo must be first message received by server!");
+                    "RequestServerInfo must be first message received by server!");
             }
             switch (aMsg)
             {
