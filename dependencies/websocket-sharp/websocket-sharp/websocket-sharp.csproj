@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="CloseEventArgs.cs" />
     <Compile Include="ByteOrder.cs" />
@@ -146,9 +147,5 @@
     <Compile Include="Server\WebSocketServiceHost`1.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Server\" />
-    <Folder Include="Net\" />
-    <Folder Include="Net\WebSockets\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
