@@ -55,7 +55,7 @@ namespace Buttplug.Bluetooth.Devices
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
-            byte rawSpeed = (byte)(((byte)(cmdMsg.Clockwise ? 1 : 0)) << 7 | (byte)cmdMsg.Speed);
+            var rawSpeed = (byte)(((byte)(cmdMsg.Clockwise ? 1 : 0)) << 7 | (byte)cmdMsg.Speed);
             return await Interface.WriteValue(aMsg.Id,
                 (uint)VorzeA10CycloneInfo.Chrs.Tx,
                 new byte[] { 0x01, 0x01, rawSpeed});

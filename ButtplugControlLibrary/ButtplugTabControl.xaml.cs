@@ -130,7 +130,7 @@ namespace ButtplugControlLibrary
                 Dispatcher.UnhandledException -= DispatcherOnUnhandledException;
             }
 
-            MessageBoxResult result = MessageBox.Show("An error was encountered! Do you want to report this to the developers?", "Error encountered", MessageBoxButton.YesNo);
+            var result = MessageBox.Show("An error was encountered! Do you want to report this to the developers?", "Error encountered", MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
                 _ravenClient.Capture(new SentryEvent(aEx));

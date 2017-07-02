@@ -39,7 +39,7 @@ namespace ButtplugControlLibrary.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ButtplugControlLibrary.Properties.Resources", typeof(Resources).Assembly);
+                    var temp = new global::System.Resources.ResourceManager("ButtplugControlLibrary.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -65,7 +65,7 @@ namespace ButtplugControlLibrary.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap buttplug_logo_1 {
             get {
-                object obj = ResourceManager.GetObject("buttplug_logo_1", resourceCulture);
+                var obj = ResourceManager.GetObject("buttplug_logo_1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -75,7 +75,7 @@ namespace ButtplugControlLibrary.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap buttplugin_with_qdot_intro_patreon_image {
             get {
-                object obj = ResourceManager.GetObject("buttplugin_with_qdot_intro_patreon_image", resourceCulture);
+                var obj = ResourceManager.GetObject("buttplugin_with_qdot_intro_patreon_image", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
