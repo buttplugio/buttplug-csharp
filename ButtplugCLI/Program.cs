@@ -31,7 +31,7 @@ namespace ButtplugCLI
         [HelpOption]
         public string GetUsage()
         {
-            var t = HelpText.AutoBuild(this, (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+            var t = HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current));
             t.Heading = HeadingInfo;
             t.Copyright = "Command Line Server for Haptics Routing and Translation";
             return t;
@@ -45,12 +45,12 @@ namespace ButtplugCLI
             var config = new LoggingConfiguration();
             var consoleTarget = new ColoredConsoleTarget();
             config.AddTarget("console", consoleTarget);
-            var rule1 = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);
+            var rule1 = new LoggingRule("*", LogLevel.Debug, consoleTarget);
             config.LoggingRules.Add(rule1);
             LogManager.Configuration = config;
             var bpLogger = LogManager.GetLogger("Buttplug");
             var options = new Options();
-            if (!CommandLine.Parser.Default.ParseArguments(args, options))
+            if (!Parser.Default.ParseArguments(args, options))
             {
                 return;
             }

@@ -35,7 +35,7 @@ namespace Buttplug.Bluetooth.Devices
         public VorzeA10Cyclone(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface) :
             base(aLogManager,
-                $"Vorze A10 Cyclone",
+                "Vorze A10 Cyclone",
                 aInterface)
         {
             MsgFuncs.Add(typeof(VorzeA10CycloneCmd), HandleVorzeA10CycloneCmd);

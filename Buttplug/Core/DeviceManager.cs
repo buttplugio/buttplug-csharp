@@ -15,7 +15,6 @@ namespace Buttplug.Core
         // Needs to be internal for tests.
         // ReSharper disable once MemberCanBePrivate.Global
         internal Dictionary<uint, IButtplugDevice> _devices { get; }
-        private ErrorClass ERROR_DEVICE { get; }
 
         private long _deviceIndexCounter;
         private readonly IButtplugLog _bpLogger;
@@ -139,7 +138,7 @@ namespace Buttplug.Core
                     {
                         return new Ok(aMsg.Id);
                     }
-                    return new Error(errorMsg, ERROR_DEVICE, aMsg.Id);
+                    return new Error(errorMsg, ErrorClass.ERROR_DEVICE, aMsg.Id);
                 case RequestDeviceList _:
                     var msgDevices = _devices
                         .Select(d => new DeviceMessageInfo(d.Key, d.Value.Name,
