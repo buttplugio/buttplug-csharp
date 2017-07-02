@@ -27,17 +27,25 @@ namespace Buttplug.Core
         private readonly string _serverName;
         private uint _maxPingTime;
         private bool _pingTimedOut;
-        private readonly uint _messageSchemaVersion;
         private bool _receivedRequestServerInfo;
 
         public static string GetLicense()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "Buttplug.LICENSE";
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
+            Stream stream = null;
+            try
             {
-                return reader.ReadToEnd();
+                stream = assembly.GetManifestResourceStream(resourceName);
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    stream = null;
+                    return reader.ReadToEnd();
+                }
+            }
+            finally
+            {
+                stream?.Dispose();
             }
         }
 

@@ -55,7 +55,7 @@ namespace ButtplugControlLibrary
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class ButtplugLogControl : UserControl
+    public partial class ButtplugLogControl : UserControl, IDisposable
     {
         private readonly LogList _logs;
         private readonly ButtplugGUIMessageNLogTarget _logTarget;
@@ -77,6 +77,20 @@ namespace ButtplugControlLibrary
             InitializeComponent();
             LogLevelComboBox.SelectionChanged += LogLevelSelectionChangedHandler;
             LogListBox.ItemsSource = _logs;
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _logTarget?.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         private void SaveLogFileButton_Click(object sender, RoutedEventArgs e)
