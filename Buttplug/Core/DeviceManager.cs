@@ -97,7 +97,7 @@ namespace Buttplug.Core
                 return;
             }
 
-            bool done = true;
+            var done = true;
             _managers.ForEach(m => done &= !m.IsScanning());
             if(done)
             {

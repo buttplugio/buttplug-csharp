@@ -88,7 +88,7 @@ namespace ButtplugUWPBluetoothManager.Core
             var fromBluetoothAddressAsync = BluetoothLEDevice.FromBluetoothAddressAsync(e.BluetoothAddress);
             if (fromBluetoothAddressAsync != null)
             {
-                BluetoothLEDevice dev = await fromBluetoothAddressAsync;
+                var dev = await fromBluetoothAddressAsync;
                 // If a device is turned on after scanning has started, windows seems to lose the
                 // device handle the first couple of times it tries to deal with the advertisement.
                 // Just log the error and hope it reconnects on a later retry.

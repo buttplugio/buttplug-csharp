@@ -39,7 +39,7 @@ namespace ButtplugKiirooEmulatorGUI.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ButtplugKiirooEmulatorGUI.Properties.Resources", typeof(Resources).Assembly);
+                    var temp = new global::System.Resources.ResourceManager("ButtplugKiirooEmulatorGUI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -65,7 +65,7 @@ namespace ButtplugKiirooEmulatorGUI.Properties {
         /// </summary>
         public static System.Drawing.Icon buttplug_icon_red_1 {
             get {
-                object obj = ResourceManager.GetObject("buttplug_icon_red_1", resourceCulture);
+                var obj = ResourceManager.GetObject("buttplug_icon_red_1", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

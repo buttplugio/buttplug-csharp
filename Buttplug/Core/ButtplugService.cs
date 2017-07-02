@@ -37,7 +37,7 @@ namespace Buttplug.Core
             try
             {
                 stream = assembly.GetManifestResourceStream(resourceName);
-                using (StreamReader reader = new StreamReader(stream))
+                using (var reader = new StreamReader(stream))
                 {
                     stream = null;
                     return reader.ReadToEnd();
@@ -155,9 +155,9 @@ namespace Buttplug.Core
         [ItemNotNull]
         public async Task<ButtplugMessage[]> SendMessage(string aJsonMsgs)
         {
-            ButtplugMessage[] msgs = _parser.Deserialize(aJsonMsgs);
-            List<ButtplugMessage> res = new List<ButtplugMessage>();
-            foreach (ButtplugMessage msg in msgs)
+            var msgs = _parser.Deserialize(aJsonMsgs);
+            var res = new List<ButtplugMessage>();
+            foreach (var msg in msgs)
             {
                 switch (msg)
                 {

@@ -52,15 +52,15 @@ namespace Buttplug.Core
 
             // Load the schema for validation
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "Buttplug.buttplug-schema.json";
+            const string resourceName = "Buttplug.buttplug-schema.json";
             Stream stream = null;
             try
             {
                 stream = assembly.GetManifestResourceStream(resourceName);
-                using (StreamReader reader = new StreamReader(stream))
+                using (var reader = new StreamReader(stream))
                 {
                     stream = null;
-                    string result = reader.ReadToEnd();
+                    var result = reader.ReadToEnd();
                     _schema = JsonSchema4.FromJsonAsync(result).GetAwaiter().GetResult();
                 }
             }
@@ -75,7 +75,7 @@ namespace Buttplug.Core
         {
             _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
 
-            List<ButtplugMessage> res = new List<ButtplugMessage>();
+            var res = new List<ButtplugMessage>();
             JArray a;
             try
             {
@@ -105,7 +105,7 @@ namespace Buttplug.Core
             // JSON input is an array of messages.
             // We currently only handle the first one.
 
-            foreach (JObject o in a.Children<JObject>())
+            foreach (var o in a.Children<JObject>())
             {
                 if (!o.Properties().Any())
                 {
@@ -152,7 +152,7 @@ namespace Buttplug.Core
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             var a = new JArray();
-            foreach (ButtplugMessage aMsg in aMsgs)
+            foreach (var aMsg in aMsgs)
             {
                 var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
                 a.Add(o);

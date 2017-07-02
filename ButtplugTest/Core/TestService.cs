@@ -15,7 +15,7 @@ namespace ButtplugTest.Core
         public TestService() : base("Test Service", 100)
         {
             // Build ourselves an NLog manager just so we can see what's going on.
-            DebuggerTarget dt = new DebuggerTarget();
+            var dt = new DebuggerTarget();
             LogManager.Configuration = new LoggingConfiguration();
             LogManager.Configuration.AddTarget("debugger", dt);
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, dt));

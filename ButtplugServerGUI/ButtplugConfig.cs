@@ -57,7 +57,7 @@ namespace ButtplugServerGUI
             var bits = key.Split('.');
             LoadConfig();
             JToken cfg = config;
-            for(int i = 0; cfg != null && i < bits.Length; i++)
+            for(var i = 0; cfg != null && i < bits.Length; i++)
             {
                 cfg = cfg[bits[i]];
             }
@@ -73,7 +73,7 @@ namespace ButtplugServerGUI
             var bits = key.Split('.');
             LoadConfig();
             JToken cfg = config;
-            for (int i = 0; cfg != null && i < bits.Length-1; i++)
+            for (var i = 0; cfg != null && i < bits.Length-1; i++)
             {
                 if(cfg[bits[i]] == null)
                 {
