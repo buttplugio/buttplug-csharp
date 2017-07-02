@@ -11,7 +11,7 @@ namespace ButtplugControlLibrary
         public LicenseView()
         {
             InitializeComponent();
-            ((TextBox)LicenseText).Text = ButtplugService.GetLicense();
+            LicenseText.Text = ButtplugService.GetLicense();
         }
     }
 }

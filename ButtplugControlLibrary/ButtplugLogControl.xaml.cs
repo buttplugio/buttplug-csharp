@@ -84,7 +84,7 @@ namespace ButtplugControlLibrary
             GC.SuppressFinalize(this);
         }
 
-        private void SaveLogFileButton_Click(object sender, RoutedEventArgs e)
+        private void SaveLogFileButton_Click(object aSender, RoutedEventArgs aEvent)
         {
             var dialog = new SaveFileDialog
             {
@@ -104,7 +104,7 @@ namespace ButtplugControlLibrary
             sw.Close();
         }
 
-        private void LogLevelSelectionChangedHandler(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void LogLevelSelectionChangedHandler(object aSender, SelectionChangedEventArgs aEvent)
         {            
             var c = LogManager.Configuration;
             var level = ((ComboBoxItem)LogLevelComboBox.SelectedValue).Content.ToString();
