@@ -8,6 +8,7 @@ namespace ButtplugUWPGamepadManager.Core
     internal class UWPGamepadManager : DeviceSubtypeManager
     {
         //TODO Pay attention to gamepad events
+        // ReSharper disable once CollectionNeverQueried.Local
         private readonly List<UwpGamepadDevice> _connectedGamepads;
 
         public UWPGamepadManager(IButtplugLogManager aLogManager) : base(aLogManager)
@@ -22,10 +23,10 @@ namespace ButtplugUWPGamepadManager.Core
             BpLogger.Trace("UWPGamepadManager start scanning");
         }
 
-        private void GamepadAdded(object o, Gamepad e)
+        private void GamepadAdded(object aObj, Gamepad aEvent)
         {
             BpLogger.Trace("UWPGamepadManager GamepadAdded");
-            var device = new UwpGamepadDevice(LogManager, e);
+            var device = new UwpGamepadDevice(LogManager, aEvent);
             _connectedGamepads.Add(device);
             InvokeDeviceAdded(new DeviceAddedEventArgs(device));
             InvokeScanningFinished();

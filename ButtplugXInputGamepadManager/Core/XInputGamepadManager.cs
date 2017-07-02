@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using ButtplugXInputGamepadManager.Devices;
 using SharpDX.XInput;
 
@@ -7,12 +6,9 @@ namespace ButtplugXInputGamepadManager.Core
 {
     public class XInputGamepadManager : DeviceSubtypeManager
     {
-        private readonly List<XInputGamepadDevice> _connectedGamepads;
-
         public XInputGamepadManager(IButtplugLogManager aLogManager) : base(aLogManager)
         {
             BpLogger.Debug("Loading XInput Gamepad Manager");
-            _connectedGamepads = new List<XInputGamepadDevice>();
         }
 
         public override void StartScanning()
@@ -30,7 +26,6 @@ namespace ButtplugXInputGamepadManager.Core
                 }
                 BpLogger.Debug($"Found connected XInput Gamepad for Index {c.UserIndex}");
                 var device = new XInputGamepadDevice(LogManager, c);
-                _connectedGamepads.Add(device);
                 InvokeDeviceAdded(new DeviceAddedEventArgs(device));
                 InvokeScanningFinished();
             }

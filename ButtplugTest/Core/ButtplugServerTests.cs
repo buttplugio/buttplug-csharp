@@ -1,4 +1,5 @@
-﻿using Buttplug.Core;
+﻿using System;
+using Buttplug.Core;
 using Buttplug.Messages;
 using System.Linq;
 using System.Threading;
@@ -20,9 +21,9 @@ namespace ButtplugTest.Core
         {
             var gotMessage = false;
             var s = new TestService();
-            s.MessageReceived += (obj, msg) =>
+            s.MessageReceived += (aObj, aMsg) =>
             {
-                if (msg.Message.GetType() == typeof(Log))
+                if (aMsg.Message.GetType() == typeof(Log))
                 {
                     gotMessage = true;
                 }
@@ -43,19 +44,19 @@ namespace ButtplugTest.Core
         public async void CheckMessageReturnId()
         {
             var s = new TestService();
-            s.MessageReceived += (obj, msg) =>
+            s.MessageReceived += (aObj, aMsg) =>
             {
-                Assert.True(msg.Message is RequestServerInfo);
-                Assert.True(msg.Message.Id == 12345);
+                Assert.True(aMsg.Message is RequestServerInfo);
+                Assert.True(aMsg.Message.Id == 12345);
             };
             var m = new RequestServerInfo("TestClient", 12345);
             await s.SendMessage(m);
             await s.SendMessage("{\"RequestServerInfo\":{\"Id\":12345}}");
         }
 
-        private void CheckDeviceMessages(ButtplugMessage msgArgs)
+        private void CheckDeviceMessages(ButtplugMessage aMsgArgs)
         {
-            switch (msgArgs)
+            switch (aMsgArgs)
             {
                 case DeviceAdded da:                        
                     Assert.True(da.DeviceName == "TestDevice");
@@ -74,10 +75,10 @@ namespace ButtplugTest.Core
                 case DeviceRemoved dr:
                     Assert.True(dr.DeviceIndex == 1);
                     break;
-                case ScanningFinished f:
+                case ScanningFinished _:
                     break;
                 default:
-                    Assert.True(false, $"Shouldn't be here {msgArgs.GetType().Name}");
+                    Assert.True(false, $"Shouldn't be here {aMsgArgs.GetType().Name}");
                     break;
             }
         }
@@ -86,7 +87,7 @@ namespace ButtplugTest.Core
         {
             var deviceListMsg = await aService.SendMessage(new RequestDeviceList());
             Assert.True(deviceListMsg is DeviceList);
-            Assert.Equal(((DeviceList)deviceListMsg).Devices.Count(), aExpectedCount);
+            Assert.Equal(((DeviceList)deviceListMsg).Devices.Length, aExpectedCount);
         }
 
         [Fact]
@@ -94,17 +95,18 @@ namespace ButtplugTest.Core
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var msgarray = d.GetAllowedMessageTypes();
-            Assert.True(msgarray.Count() == 1);
-            Assert.True(msgarray.Contains(typeof(SingleMotorVibrateCmd)));
+            var enumerable = msgarray as Type[] ?? msgarray.ToArray();
+            Assert.True(enumerable.Length == 1);
+            Assert.True(enumerable.Contains(typeof(SingleMotorVibrateCmd)));
             var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
             var s = new TestService();
             s.AddDeviceSubtypeManager(m);
             ButtplugMessage msgReceived = null;
-            s.MessageReceived += (obj, msgArgs) =>
+            s.MessageReceived += (aObj, aMsgArgs) =>
             {
-                if(!(msgArgs.Message is ScanningFinished))
+                if(!(aMsgArgs.Message is ScanningFinished))
                 {
-                    msgReceived = msgArgs.Message;
+                    msgReceived = aMsgArgs.Message;
                 }
                 CheckDeviceMessages(msgReceived);
             };
@@ -167,9 +169,9 @@ namespace ButtplugTest.Core
             var s = new TestService();
             s.AddDeviceSubtypeManager(m);
             var msgReceived = false;
-            s.MessageReceived += (obj, msgArgs) =>
+            s.MessageReceived += (aObj, aMsgArgs) =>
             {
-                switch (msgArgs.Message)
+                switch (aMsgArgs.Message)
                 {
                     case DeviceAdded da:
                         msgReceived = true;
@@ -178,12 +180,12 @@ namespace ButtplugTest.Core
                         Assert.True(da.Id == 0);
                         break;
 
-                    case ScanningFinished f:
+                    case ScanningFinished _:
                         break;
 
                     default:
                         msgReceived = true;
-                        Assert.False(msgArgs.Message is DeviceAdded);
+                        Assert.False(aMsgArgs.Message is DeviceAdded);
                         break;
                 }
             };
@@ -196,7 +198,7 @@ namespace ButtplugTest.Core
                 switch (x)
                 {
                     case DeviceList dl:
-                        Assert.True(dl.Devices.Count() == 1);
+                        Assert.True(dl.Devices.Length == 1);
                         Assert.True(dl.Devices[0].DeviceIndex == 1);
                         Assert.True(dl.Devices[0].DeviceName == "TestDevice");
                         break;

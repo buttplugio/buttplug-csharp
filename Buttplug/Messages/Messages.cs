@@ -11,6 +11,9 @@ namespace Buttplug.Messages
         { }
     }
 
+    // Clients may instantiate Ping message, and it is used in pattern matching.
+    // Resharper doesn't seem to be able to deduce that though.
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class Ping : ButtplugMessage
     {
         public Ping(uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
@@ -165,6 +168,8 @@ namespace Buttplug.Messages
     public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         public ButtplugLogLevel LogLevel { get; }
+        // Needs to be left in for serialization
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
         private string LogMessage { get; }
 
         public Log(ButtplugLogLevel aLogLevel, string aLogMessage) : base(ButtplugConsts.SYSTEM_MSG_ID)
@@ -190,9 +195,17 @@ namespace Buttplug.Messages
         public int MajorVersion { get; }
         public int MinorVersion { get; }
         public int BuildVersion { get; }
-        private uint MessageVersion { get; }
-        private uint MaxPingTime { get; }
-        private string ServerName { get; }
+        // Disable can be private here, as this field is used for serialization, 
+        // and may be needed by clients
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public uint MessageVersion { get; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public uint MaxPingTime { get; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public string ServerName { get; }
 
         public ServerInfo(string aServerName, uint aMessageVersion, uint aMaxPingTime, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId)
         {
@@ -246,6 +259,7 @@ namespace Buttplug.Messages
         }
     }
 
+    // ReSharper disable once UnusedMember.Global
     public class LovenseCmd : ButtplugDeviceMessage
     {
         public LovenseCmd(uint aDeviceIndex, string aDeviceCmd, uint aId = ButtplugConsts.DEFAULT_MSG_ID) : base(aId, aDeviceIndex)

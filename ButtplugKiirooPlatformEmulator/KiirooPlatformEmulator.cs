@@ -11,9 +11,9 @@ namespace ButtplugKiirooPlatformEmulator
     {
         public ushort Position { get; }
 
-        public KiirooPlatformEventArgs(ushort p)
+        public KiirooPlatformEventArgs(ushort aPos)
         {
-            Position = p;
+            Position = aPos;
         }
     }
 

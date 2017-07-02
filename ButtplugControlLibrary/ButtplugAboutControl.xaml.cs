@@ -35,23 +35,23 @@ namespace ButtplugControlLibrary
             return AboutVersionNumber.Text;
         }
 
-        private void GithubRequestNavigate(object o, MouseButtonEventArgs e)
+        private void GithubRequestNavigate(object aObj, MouseButtonEventArgs aEvent)
         {
             System.Diagnostics.Process.Start(
                 new Uri($"http://github.com/metafetish/buttplug-csharp/commit/{_gitHash}").AbsoluteUri);
         }
 
-        private void PatreonRequestNavigate(object o, MouseButtonEventArgs e)
+        private void PatreonRequestNavigate(object aObj, MouseButtonEventArgs aEvent)
         {
             System.Diagnostics.Process.Start(new Uri("http://patreon.com/qdot").AbsoluteUri);
         }
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        private void Hyperlink_RequestNavigate(object aSender, System.Windows.Navigation.RequestNavigateEventArgs aEvent)
         {
-            System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
+            System.Diagnostics.Process.Start(aEvent.Uri.AbsoluteUri);
         }
 
-        private void IconImage_Click(object sender, RoutedEventArgs e)
+        private void IconImage_Click(object aSender, RoutedEventArgs aEvent)
         {
             _clickCounter += 1;
             if (_clickCounter < 5)
@@ -59,10 +59,10 @@ namespace ButtplugControlLibrary
                 return;
             }
             IconImage.MouseDown -= IconImage_Click;
-            AboutImageClickedABunch?.Invoke(this, e);
+            AboutImageClickedABunch?.Invoke(this, aEvent);
         }
 
-        private void LicenseHyperlink_Click(object sender, RoutedEventArgs e)
+        private void LicenseHyperlink_Click(object aSender, RoutedEventArgs aEvent)
         {
             new LicenseView().Show();
         }

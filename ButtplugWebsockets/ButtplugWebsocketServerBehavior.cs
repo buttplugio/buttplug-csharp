@@ -1,7 +1,8 @@
-﻿using Buttplug.Core;
-using Buttplug.Messages;
-using System;
+﻿using System;
 using System.Linq;
+using Buttplug.Core;
+using Buttplug.Messages;
+using JetBrains.Annotations;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -18,10 +19,9 @@ namespace ButtplugWebsockets
                 {
                     throw new AccessViolationException("Service already set!");
                 }
-                _buttplug = value;
+                _buttplug = value ?? throw new ArgumentNullException();
                 _buttplug.MessageReceived += OnMessageReceived;
             }
-            private get { return _buttplug; }
         }
 
         protected override void OnOpen()
@@ -48,18 +48,18 @@ namespace ButtplugWebsockets
             }
         }
 
-        protected override async void OnClose(CloseEventArgs e)
+        protected override async void OnClose([NotNull] CloseEventArgs aEvent)
         {
-            base.OnClose(e);
+            base.OnClose(aEvent);
             _buttplug.MessageReceived -= OnMessageReceived;
             await _buttplug.SendMessage(new StopAllDevices());
             _buttplug = null;
         }
 
-        protected override async void OnMessage(MessageEventArgs e)
+        protected override async void OnMessage([NotNull] MessageEventArgs aEvent)
         {
-            base.OnMessage(e);
-            var msg = _buttplug.Serialize(await _buttplug.SendMessage(e.Data));
+            base.OnMessage(aEvent);
+            var msg = _buttplug.Serialize(await _buttplug.SendMessage(aEvent.Data));
             try
             {
                 Send(msg);
@@ -70,9 +70,9 @@ namespace ButtplugWebsockets
             }
         }
 
-        private void OnMessageReceived(object aObj, MessageReceivedEventArgs e)
+        private void OnMessageReceived(object aObj, [NotNull] MessageReceivedEventArgs aEvent)
         {
-            var msg = _buttplug.Serialize(e.Message);
+            var msg = _buttplug.Serialize(aEvent.Message);
             try
             {
                 Send(msg);
@@ -81,7 +81,7 @@ namespace ButtplugWebsockets
             {
                 // noop - likely already disconnected
             }
-            if (e.Message is Error && ((Error)e.Message).ErrorCode == Buttplug.Messages.Error.ErrorClass.ERROR_PING)
+            if (aEvent.Message is Error && ((Error)aEvent.Message).ErrorCode == Buttplug.Messages.Error.ErrorClass.ERROR_PING)
             {
                 Sessions?.CloseSession(ID);
             }

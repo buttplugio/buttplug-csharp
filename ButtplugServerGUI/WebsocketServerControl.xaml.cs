@@ -10,7 +10,7 @@ namespace ButtplugServerGUI
     /// <summary>
     /// Interaction logic for WebsocketServerControl.xaml
     /// </summary>
-    public partial class WebsocketServerControl : UserControl
+    public partial class WebsocketServerControl
     {
         private readonly ButtplugWebsocketServer _ws;
         private readonly ButtplugServiceFactory _bpFactory;
@@ -54,7 +54,7 @@ namespace ButtplugServerGUI
             PortTextBox.IsEnabled = true;
         }
 
-        private void ConnToggleButton_Click(object sender, RoutedEventArgs e)
+        private void ConnToggleButton_Click(object aObj, RoutedEventArgs aEvent)
         {
             if (ConnToggleButton.Content.Equals("Start"))
             {
@@ -69,7 +69,7 @@ namespace ButtplugServerGUI
         }
        
 
-        private void PortTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void PortTextBox_TextChanged(object aObj, TextChangedEventArgs aEvent)
         {
             if (UInt32.TryParse(PortTextBox.Text, out uint port) && port >= 1024 && port <= 65535)
             {
@@ -79,12 +79,12 @@ namespace ButtplugServerGUI
             PortTextBox.Text = _port.ToString();
         }
 
-        private void SecureCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        private void SecureCheckBox_Unchecked(object aObj, RoutedEventArgs aEvent)
         {
             _secure = false;
         }
 
-        private void SecureCheckBox_Checked(object sender, RoutedEventArgs e)
+        private void SecureCheckBox_Checked(object aObj, RoutedEventArgs aEvent)
         {
             _secure = true;
         }

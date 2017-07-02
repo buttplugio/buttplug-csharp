@@ -10,10 +10,10 @@ namespace ButtplugXInputGamepadManager.Devices
     {
         private readonly Controller _device;
 
-        public XInputGamepadDevice(IButtplugLogManager aLogManager, Controller d) :
-            base(aLogManager, "XBox Compatible Gamepad (XInput)", d.UserIndex.ToString())
+        public XInputGamepadDevice(IButtplugLogManager aLogManager, Controller aDevice) :
+            base(aLogManager, "XBox Compatible Gamepad (XInput)", aDevice.UserIndex.ToString())
         {
-            _device = d;
+            _device = aDevice;
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
         }

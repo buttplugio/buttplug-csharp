@@ -20,9 +20,9 @@ namespace Buttplug.Core
             BpLogger.Trace($"Setting up Device Manager {GetType().Name}");
         }
 
-        protected void InvokeDeviceAdded([NotNull] DeviceAddedEventArgs args)
+        protected void InvokeDeviceAdded([NotNull] DeviceAddedEventArgs aEventArgs)
         {
-            DeviceAdded?.Invoke(this, args);
+            DeviceAdded?.Invoke(this, aEventArgs);
         }
 
         protected void InvokeScanningFinished()

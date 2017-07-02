@@ -1,4 +1,5 @@
-﻿using Buttplug.Core;
+﻿using System;
+using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugTest.Core;
 using System.Collections.Generic;
@@ -119,10 +120,14 @@ namespace ButtplugTest.Messages
 
             foreach (var reply in results)
             {
-                Assert.True(reply is ServerInfo);
-                var r = (ServerInfo)reply;
-                if (r is null)
+                ServerInfo r;
+                try
                 {
+                    r = (ServerInfo) reply;
+                }
+                catch (InvalidCastException)
+                {
+                    Assert.True(reply is ServerInfo);
                     continue;
                 }
                 Assert.True(r.MajorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major);

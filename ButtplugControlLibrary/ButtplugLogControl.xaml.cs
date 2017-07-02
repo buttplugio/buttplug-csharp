@@ -23,10 +23,10 @@ namespace ButtplugControlLibrary
         private readonly LogList _logs;
         private readonly Thread _winThread;
 
-        public ButtplugGUIMessageNLogTarget(LogList l, Thread aWinThread)
+        public ButtplugGUIMessageNLogTarget(LogList aList, Thread aWinThread)
         {
             // TODO This totally needs a mutex or something
-            _logs = l;
+            _logs = aList;
             _winThread = aWinThread;
         }
 
@@ -70,9 +70,9 @@ namespace ButtplugControlLibrary
             LogListBox.ItemsSource = _logs;
         }
 
-        private void Dispose(bool disposing)
+        private void Dispose(bool aDisposing)
         {
-            if (disposing)
+            if (aDisposing)
             {
                 _logTarget?.Dispose();
             }

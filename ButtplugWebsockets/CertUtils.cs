@@ -16,7 +16,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 namespace ButtplugWebsockets
 {
-    class CertUtils
+    internal static class CertUtils
     {
         // Note: Much of this code comes from https://stackoverflow.com/a/22247129
         private static X509Certificate2 GenerateSelfSignedCertificate(string subjectName, string issuerName, AsymmetricKeyParameter issuerPrivKey)
@@ -49,8 +49,6 @@ namespace ButtplugWebsockets
             var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
             keyPairGenerator.Init(keyGenerationParameters);
             certificateGenerator.SetPublicKey(subjectKeyPair.Public);
-            // Generating the Certificate
-            var issuerKeyPair = subjectKeyPair;
             // selfsign certificate
             var certificate = certificateGenerator.Generate(issuerPrivKey, random);
             // correcponding private key
@@ -93,6 +91,7 @@ namespace ButtplugWebsockets
             return rsaProvider;
         }
 
+        // ReSharper disable once RedundantAssignment
         private static X509Certificate2 GenerateCACertificate(string subjectName, ref AsymmetricKeyParameter CaPrivateKey)
         {
             const int keyStrength = 2048;

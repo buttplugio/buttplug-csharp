@@ -4,9 +4,9 @@ namespace Buttplug.Core
 {
     public class MessageReceivedEventArgs : EventArgs
     {
-        public MessageReceivedEventArgs(ButtplugMessage message)
+        public MessageReceivedEventArgs(ButtplugMessage aMessage)
         {
-            Message = message;
+            Message = aMessage;
         }
 
         public ButtplugMessage Message { get; }
