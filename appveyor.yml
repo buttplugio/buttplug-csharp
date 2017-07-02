@@ -1,15 +1,23 @@
 branches:
- except:
-   - gh-pages
+  except:
+    - gh-pages
+
 configuration:
   - Debug
   - Release
+
 image: Visual Studio 2017
+
+skip_commits:
+  files:
+    - README.md
 
 # Taken from https://boblokerse.github.io/2015/11/03/GitVersion-versioning-made-easy-and-dry/
 install:
   - ver
-  - ps: choco install -y InnoSetup
+  - ps: choco install -y -r resharper-clt.portable
+  - ps: choco install -y -r fxcop
+  - ps: choco install -y -r InnoSetup
   - ps: |
       function gitVersion(){
         $gitVersion=git describe --tags --abbrev=0 $env:APPVEYOR_REPO_BRANCH
@@ -24,32 +32,37 @@ install:
       }
       gitVersion
 
+      
 # patch the assembly version, but only in our own directories
 assembly_info:
-   patch: true
-   file: '**\AssemblyInfo.*'
-   assembly_version: $(appveyor_build_version)
-   assembly_file_version: $(appveyor_build_version)
-   assembly_informational_version: $(newhash)
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: $(appveyor_build_version)
+  assembly_file_version: $(appveyor_build_version)
+  assembly_informational_version: $(newhash)
 
 before_build:
   - nuget restore
 build:
   project: buttplug-csharp.sln
-skip_commits:
-  files:
-    - README.md
+after_build:
+  - cmd: InspectCode.exe -o=resharper-clt-output.xml --project=Buttplug* buttplug-csharp.sln
+  - ps: $result = [xml](Get-Content .\resharper-clt-output.xml)
+  - ps: $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
 test_script:
- - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"ButtplugTest\bin\$env:CONFIGURATION\ButtplugTest.dll ButtplugGUITest\bin\$env:CONFIGURATION\ButtplugGUITest.dll -noshadow" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
+  - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"ButtplugTest\bin\$env:CONFIGURATION\ButtplugTest.dll ButtplugGUITest\bin\$env:CONFIGURATION\ButtplugGUITest.dll -noshadow" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
 after_test:
- - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
- - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }
- - ps: If (($env:CONFIGURATION -imatch "Debug")) { codecov -f "coverage.xml" -X gcov }
- - ps: set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
- - ps: iscc buttplug-installer.iss   
- - ps: installer\buttplug-installer.exe /VERYSILENT
-# Test currently doesn't work, possibly because installer is blocked by access control dialog?
-#- ps: test\check-registry.ps1
- - ps: Push-AppveyorArtifact installer\buttplug-installer.exe -FileName Buttplug-$env:CONFIGURATION-$env:APPVEYOR_BUILD_VERSION-installer.exe
+  - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
+  - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }
+  - ps: If (($env:CONFIGURATION -imatch "Debug")) { codecov -f "coverage.xml" -X gcov }
+  - ps: set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
+  - ps: iscc buttplug-installer.iss   
+  - ps: installer\buttplug-installer.exe /VERYSILENT
+  # Test currently doesn't work, possibly because installer is blocked by access control dialog?
+  #- ps: test\check-registry.ps1
+  - ps: Push-AppveyorArtifact installer\buttplug-installer.exe -FileName Buttplug-$env:CONFIGURATION-$env:APPVEYOR_BUILD_VERSION-installer.exe
 cache:
   - packages -> **\packages.config
+  # Cache chocolatey packages
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
