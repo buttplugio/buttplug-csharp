@@ -1,13 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows;
 
 namespace ButtplugServerGUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         WebsocketServerControl _wsTab;
 

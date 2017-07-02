@@ -130,7 +130,7 @@ namespace Buttplug.Core
                     _bpLogManager.Level = m.LogLevel;
                     return new Ok(id);
 
-                case Ping m:
+                case Ping _:
                     if(_pingTimer != null)
                     {
                         _pingTimer.Stop();

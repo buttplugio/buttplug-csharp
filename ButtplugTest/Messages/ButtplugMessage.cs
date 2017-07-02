@@ -114,8 +114,7 @@ namespace ButtplugTest.Messages
         public async void RequestServerInfoTest()
         {
             var s = new ButtplugService("TestClient", 100);
-            var results = new List<ButtplugMessage>();
-            results.Add(await s.SendMessage(new RequestServerInfo("TestClient")));
+            var results = new List<ButtplugMessage> {await s.SendMessage(new RequestServerInfo("TestClient"))};
             results.AddRange(await s.SendMessage("[{\"RequestServerInfo\":{\"Id\":1, \"ClientName\":\"TestClient\"}}]"));
 
             foreach (var reply in results)

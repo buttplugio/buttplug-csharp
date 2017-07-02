@@ -18,7 +18,7 @@ namespace ButtplugControlLibrary
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ButtplugTabControl : UserControl, ButtplugServiceFactory
+    public partial class ButtplugTabControl : ButtplugServiceFactory
     {
         private readonly RavenClient _ravenClient;
         private bool _sentCrashLog;
@@ -31,9 +31,6 @@ namespace ButtplugControlLibrary
         public ButtplugTabControl()
         {
             _ravenClient = new RavenClient("https://2e376d00cdcb44bfb2140c1cf000d73b:1fa6980aeefa4b048b866a450ee9ad71@sentry.io/170313");
-
-
-            var c = LogManager.Configuration ?? new LoggingConfiguration();
 
             // Cover all of the possible bases for WPF failure
             // http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
@@ -60,7 +57,7 @@ namespace ButtplugControlLibrary
 
             try
             {
-                AboutControl.InitializeVersion();;
+                AboutControl.InitializeVersion();
                 var version = AboutControl.GetAboutVersion();
                 _guiLog.Info($"Buttplug Server Revision: {version}");
             }

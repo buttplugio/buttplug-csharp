@@ -34,7 +34,7 @@ namespace ButtplugControlLibrary
         {
             try
             {
-                Dispatcher.FromThread(_winThread).Invoke(() => _logs.Add(this.Layout.Render(aLogEvent)));
+                Dispatcher.FromThread(_winThread).Invoke(() => _logs.Add(Layout.Render(aLogEvent)));
             }
             catch(TaskCanceledException)
             {
@@ -46,7 +46,7 @@ namespace ButtplugControlLibrary
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class ButtplugLogControl : UserControl, IDisposable
+    public partial class ButtplugLogControl : IDisposable
     {
         private readonly LogList _logs;
         private readonly ButtplugGUIMessageNLogTarget _logTarget;

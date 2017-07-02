@@ -138,7 +138,7 @@ namespace Buttplug.Core
             return res.ToArray();
         }
 
-        public string Serialize(ButtplugMessage aMsg)
+        public string Serialize([NotNull] ButtplugMessage aMsg)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
@@ -147,13 +147,13 @@ namespace Buttplug.Core
             return a.ToString(Formatting.None);
         }
 
-        public string Serialize(ButtplugMessage[] aMsgs)
+        public string Serialize([NotNull] IEnumerable<ButtplugMessage> aMsgs)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             var a = new JArray();
-            foreach (var aMsg in aMsgs)
+            foreach (var msg in aMsgs)
             {
-                var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
+                var o = new JObject(new JProperty(msg.GetType().Name, JObject.FromObject(msg)));
                 a.Add(o);
             }
             _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);

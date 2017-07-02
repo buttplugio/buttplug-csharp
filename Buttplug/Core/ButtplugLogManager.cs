@@ -8,7 +8,7 @@ namespace Buttplug.Core
     {
         [CanBeNull]
         public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
-        public ButtplugLogLevel Level { get; set; }
+        public ButtplugLogLevel Level { private get; set; }
 
         private void LogMessageHandler([NotNull] object aObject, [NotNull] ButtplugLogMessageEventArgs aMsg)
         {

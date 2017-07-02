@@ -17,55 +17,55 @@ namespace Buttplug.Core
             _log = aLogger;
         }
 
-        public void Trace(string aMsg, bool localOnly)
+        public void Trace(string aMsg, bool aLocalOnly)
         {
             _log.Trace(aMsg);
-            if (!localOnly)
+            if (!aLocalOnly)
             {
                 LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Trace, aMsg));
             }
         }
 
-        public void Debug(string aMsg, bool localOnly)
+        public void Debug(string aMsg, bool aLocalOnly)
         {
             _log.Debug(aMsg);
-            if (!localOnly)
+            if (!aLocalOnly)
             {
                 LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Debug, aMsg));
             }
         }
 
-        public void Info(string aMsg, bool localOnly)
+        public void Info(string aMsg, bool aLocalOnly)
         {
             _log.Info(aMsg);
-            if (!localOnly)
+            if (!aLocalOnly)
             {
                 LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Info, aMsg));
             }
         }
 
-        public void Warn(string aMsg, bool localOnly)
+        public void Warn(string aMsg, bool aLocalOnly)
         {
             _log.Warn(aMsg);
-            if (!localOnly)
+            if (!aLocalOnly)
             {
                 LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Warn, aMsg));
             }
         }
 
-        public void Error(string aMsg, bool localOnly)
+        public void Error(string aMsg, bool aLocalOnly)
         {
             _log.Error(aMsg);
-            if (!localOnly)
+            if (!aLocalOnly)
             {
                 LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Error, aMsg));
             }
         }
 
-        public void Fatal(string aMsg, bool localOnly)
+        public void Fatal(string aMsg, bool aLocalOnly)
         {
             _log.Fatal(aMsg);
-            if (!localOnly)
+            if (!aLocalOnly)
             {
                 LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Fatal, aMsg));
             }

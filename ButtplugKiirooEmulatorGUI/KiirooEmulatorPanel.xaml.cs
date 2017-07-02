@@ -75,16 +75,13 @@ namespace ButtplugKiirooEmulatorGUI
             });
         }
 
-        public void SelectionChangedHandler(object o, EventArgs e)
+        private void SelectionChangedHandler(object o, EventArgs e)
         {
             var currentDevices = DeviceListBox.SelectedItems.Cast<Device>().ToList();
-            foreach (var device in currentDevices)
+            if (currentDevices.Any(aDevice => aDevice.Messages.Contains("SingleMotorVibrateCmd")))
             {
-                if (device.Messages.Contains("SingleMotorVibrateCmd"))
-                {
-                    _translator.StartVibrateTimer();
-                    return;
-                }
+                _translator.StartVibrateTimer();
+                return;
             }
             _translator.StopVibrateTimer();
         }
@@ -165,7 +162,7 @@ namespace ButtplugKiirooEmulatorGUI
             ScanButton.Click += ScanButton_Click;
         }
 
-        public async void HandleKiirooPlatformMessage(object o, KiirooPlatformEventArgs e)
+        private async void HandleKiirooPlatformMessage(object o, KiirooPlatformEventArgs e)
         {
             await Dispatcher.InvokeAsync(async () =>
             {
