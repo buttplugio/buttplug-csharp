@@ -79,7 +79,7 @@ namespace Buttplug.Bluetooth.Devices
             }
             return await Interface.WriteValue(aMsg.Id,
                 (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx,
-                new byte[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed });
+                new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed });
         }
     }
 }

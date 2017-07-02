@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TabControl Margin="0,0,-0.333,-0.333" Name="ButtplugTab">           
+        <TabControl Margin="0,0,-0.333,-0.333">           
             <TabItem Header="Application" Name="ApplicationTab"/>
             <TabItem Header="Logs">
                 <local:ButtplugLogControl />
@@ -17,7 +17,7 @@
             </TabItem>
             <TabItem Name="DeveloperTab" Header="Developer" Visibility="Hidden">
                 <Grid Background="#FFE5E5E5">
-                    <Button Name="CrashButton" Content="Crash Application" Margin="10,10,0,259.667" HorizontalAlignment="Left" Click="CrashButton_Click" Width="108"/>
+                    <Button Content="Crash Application" Margin="10,10,0,259.667" HorizontalAlignment="Left" Click="CrashButton_Click" Width="108"/>
                 </Grid>
             </TabItem>
         </TabControl>

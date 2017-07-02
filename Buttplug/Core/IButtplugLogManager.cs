@@ -9,6 +9,6 @@ namespace Buttplug.Core
         event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
         [NotNull]
         IButtplugLog GetLogger(Type aType);
-        ButtplugLogLevel Level { get; set; }
+        ButtplugLogLevel Level { set; }
     }
 }

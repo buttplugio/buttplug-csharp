@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Messages;
+using JetBrains.Annotations;
 using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
@@ -11,8 +12,10 @@ namespace Buttplug.Core
     internal class DeviceManager
     {
         private readonly List<IDeviceSubtypeManager> _managers;
+        // Needs to be internal for tests.
+        // ReSharper disable once MemberCanBePrivate.Global
         internal Dictionary<uint, IButtplugDevice> _devices { get; }
-        public Error.ErrorClass ERROR_DEVICE { get; private set; }
+        private ErrorClass ERROR_DEVICE { get; }
 
         private long _deviceIndexCounter;
         private readonly IButtplugLog _bpLogger;
@@ -33,7 +36,7 @@ namespace Buttplug.Core
             _managers = new List<IDeviceSubtypeManager>();
         }
         
-        protected IEnumerable<string> GetAllowedMessageTypesAsStrings(IButtplugDevice aDevice)
+        private static IEnumerable<string> GetAllowedMessageTypesAsStrings([NotNull] IButtplugDevice aDevice)
         {
             return from x in aDevice.GetAllowedMessageTypes() select x.Name;
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ButtplugControlLibrary
@@ -9,7 +8,7 @@ namespace ButtplugControlLibrary
     /// <summary>
     /// Interaction logic for ButtplugAboutControl.xaml
     /// </summary>
-    public partial class ButtplugAboutControl : UserControl
+    public partial class ButtplugAboutControl
     {
         private string _gitHash;
         private uint _clickCounter;
