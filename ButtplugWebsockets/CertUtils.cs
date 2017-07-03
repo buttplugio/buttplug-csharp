@@ -14,6 +14,8 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Org.BouncyCastle.Crypto.Operators;
+
 namespace ButtplugWebsockets
 {
     internal static class CertUtils
@@ -32,7 +34,7 @@ namespace ButtplugWebsockets
             certificateGenerator.SetSerialNumber(serialNumber);
             // Signature Algorithm
             const string signatureAlgorithm = "SHA256WithRSA";
-            certificateGenerator.SetSignatureAlgorithm(signatureAlgorithm);
+            var signatureFactory = new Asn1SignatureFactory(signatureAlgorithm, issuerPrivKey);
             // Issuer and Subject Name
             var subjectDN = new X509Name(subjectName);
             var issuerDN = new X509Name(issuerName);
@@ -50,17 +52,17 @@ namespace ButtplugWebsockets
             keyPairGenerator.Init(keyGenerationParameters);
             certificateGenerator.SetPublicKey(subjectKeyPair.Public);
             // selfsign certificate
-            var certificate = certificateGenerator.Generate(issuerPrivKey, random);
+            var certificate = certificateGenerator.Generate(signatureFactory);
             // correcponding private key
             var info = PrivateKeyInfoFactory.CreatePrivateKeyInfo(subjectKeyPair.Private);
             // merge into X509Certificate2
             var x509 = new X509Certificate2(certificate.GetEncoded());
-            var seq = (Asn1Sequence)Asn1Object.FromByteArray(info.PrivateKey.GetDerEncoded());
+            var seq = (Asn1Sequence)Asn1Object.FromByteArray(info.ParsePrivateKey().GetDerEncoded());
             if (seq.Count != 9)
             {
                 //throw new PemException("malformed sequence in RSA private key");
             }
-            var rsa = new RsaPrivateKeyStructure(seq);
+            var rsa = RsaPrivateKeyStructure.GetInstance(seq);
             var rsaparams = new RsaPrivateCrtKeyParameters(
                 rsa.Modulus, rsa.PublicExponent, rsa.PrivateExponent, rsa.Prime1, rsa.Prime2, rsa.Exponent1, rsa.Exponent2, rsa.Coefficient);
             x509.PrivateKey = ToDotNetKey(rsaparams); //x509.PrivateKey = DotNetUtilities.ToRSA(rsaparams);
@@ -105,7 +107,6 @@ namespace ButtplugWebsockets
             certificateGenerator.SetSerialNumber(serialNumber);
             // Signature Algorithm
             const string signatureAlgorithm = "SHA256WithRSA";
-            certificateGenerator.SetSignatureAlgorithm(signatureAlgorithm);
             // Issuer and Subject Name
             var subjectDN = new X509Name(subjectName);
             var issuerDN = subjectDN;
@@ -125,7 +126,8 @@ namespace ButtplugWebsockets
             // Generating the Certificate
             var issuerKeyPair = subjectKeyPair;
             // selfsign certificate
-            var certificate = certificateGenerator.Generate(issuerKeyPair.Private, random);
+            var signatureFactory = new Asn1SignatureFactory(signatureAlgorithm, issuerKeyPair.Private);
+            var certificate = certificateGenerator.Generate(signatureFactory);
             var x509 = new X509Certificate2(certificate.GetEncoded());
             CaPrivateKey = issuerKeyPair.Private;
             return x509;
