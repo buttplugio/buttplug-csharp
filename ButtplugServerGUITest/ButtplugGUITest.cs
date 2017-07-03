@@ -3,12 +3,12 @@ using System.Threading;
 using ButtplugServerGUI;
 using Xunit;
 
-namespace ButtplugGUITest
+namespace ButtplugServerGUITest
 {
     public class GUITest
     {
         private Exception didStart;
-        public void StartGUI()
+        private void StartGUI()
         {
             try
             {

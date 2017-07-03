@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using Buttplug.Core;
-using ButtplugControlLibrary;
 using ButtplugWebsockets;
 
 namespace ButtplugServerGUI

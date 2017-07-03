@@ -56,7 +56,7 @@ namespace Buttplug.Core
             _pingTimedOut = false;
             if (aMaxPingTime != 0)
             {
-                _pingTimer = new System.Timers.Timer(_maxPingTime);
+                _pingTimer = new Timer(_maxPingTime);
                 _pingTimer.Elapsed += PingTimeoutHandler;
             }
             _bpLogManager = new ButtplugLogManager();
@@ -87,10 +87,7 @@ namespace Buttplug.Core
 
         private void PingTimeoutHandler([NotNull] object aObj, EventArgs e)
         {
-            if(_pingTimer != null)
-            {
-                _pingTimer.Stop();
-            }
+            _pingTimer?.Stop();
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
                 ErrorClass.ERROR_PING, ButtplugConsts.SYSTEM_MSG_ID)));
             SendMessage(new StopAllDevices()).Wait();
@@ -140,10 +137,7 @@ namespace Buttplug.Core
 
                 case RequestServerInfo _:
                     _receivedRequestServerInfo = true;
-                    if (_pingTimer != null)
-                    {
-                        _pingTimer.Start();
-                    }
+                    _pingTimer?.Start();
                     return new ServerInfo(_serverName, 1, _maxPingTime, id);
 
                 case Test m:
