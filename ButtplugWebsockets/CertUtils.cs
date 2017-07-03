@@ -47,9 +47,9 @@ namespace ButtplugWebsockets
             certificateGenerator.SetNotAfter(notAfter);
             // Subject Public Key
             var keyPairGenerator = new RsaKeyPairGenerator();
-            var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
             var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
             keyPairGenerator.Init(keyGenerationParameters);
+            var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
             certificateGenerator.SetPublicKey(subjectKeyPair.Public);
             // selfsign certificate
             var certificate = certificateGenerator.Generate(signatureFactory);
@@ -120,8 +120,8 @@ namespace ButtplugWebsockets
             // Subject Public Key
             var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
             var keyPairGenerator = new RsaKeyPairGenerator();
-            var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
             keyPairGenerator.Init(keyGenerationParameters);
+            var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
             certificateGenerator.SetPublicKey(subjectKeyPair.Public);
             // Generating the Certificate
             var issuerKeyPair = subjectKeyPair;
