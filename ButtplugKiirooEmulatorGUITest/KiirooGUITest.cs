@@ -3,12 +3,12 @@ using System.Threading;
 using ButtplugKiirooEmulatorGUI;
 using Xunit;
 
-namespace ButtplugGUITest
+namespace ButtplugKiirooEmulatorGUITest
 {
     public class KiirooGUITest
     {
         private Exception didStart;
-        public void StartGUI()
+        private void StartGUI()
         {
             try
             {

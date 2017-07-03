@@ -1,6 +1,4 @@
-﻿using Buttplug.Core;
-
-namespace Buttplug.Core
+﻿namespace Buttplug.Core
 {
     public interface ButtplugServiceFactory
     {

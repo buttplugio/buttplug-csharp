@@ -8,12 +8,12 @@ namespace ButtplugServerGUI
     /// </summary>
     public partial class MainWindow
     {
-        WebsocketServerControl _wsTab;
+        private readonly WebsocketServerControl _wsTab;
 
         public MainWindow()
         {
             var config = new ButtplugConfig("Buttplug");
-            uint ping = 100;
+            uint ping;
             UInt32.TryParse(config.GetValue("buttplug.server.maxPing", "100"), out ping);
 
             InitializeComponent();

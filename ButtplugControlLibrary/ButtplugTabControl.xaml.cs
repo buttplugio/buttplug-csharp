@@ -1,7 +1,5 @@
 ﻿using System;
 using Buttplug.Core;
-using Buttplug.Messages;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -32,7 +30,7 @@ namespace ButtplugControlLibrary
 
         [NotNull]
         private readonly Logger _guiLog;
-        private int _releaseId = 0;
+        private int _releaseId;
         private string _serverName;
         private uint _maxPingTime;
 
@@ -78,7 +76,7 @@ namespace ButtplugControlLibrary
             AboutControl.AboutImageClickedABunch += (aObj, aEvent) => DeveloperTab.Visibility = Visibility.Visible;
         }
 
-        public ButtplugService InitializeButtplugServer(string aServerName, uint aMaxPingTime)
+        private ButtplugService InitializeButtplugServer(string aServerName, uint aMaxPingTime)
         {
             // Set up internal services
             var bpServer = new ButtplugService(aServerName, aMaxPingTime);

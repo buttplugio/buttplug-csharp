@@ -81,7 +81,8 @@ namespace ButtplugWebsockets
             {
                 // noop - likely already disconnected
             }
-            if (aEvent.Message is Error && ((Error)aEvent.Message).ErrorCode == Buttplug.Messages.Error.ErrorClass.ERROR_PING)
+            var error = aEvent.Message as Error;
+            if (error != null && error.ErrorCode == Buttplug.Messages.Error.ErrorClass.ERROR_PING)
             {
                 Sessions?.CloseSession(ID);
             }
