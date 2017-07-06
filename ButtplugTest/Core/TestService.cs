@@ -12,8 +12,9 @@ namespace ButtplugTest.Core
     {
         public readonly List<string> OutgoingAsync = new List<string>();
 
-        public TestService()
-            : base("Test Service", 100)
+        // Set MaxPingTime to zero (infinite ping/ping checks off) by default for tests
+        public TestService(uint aMaxPingTime = 0)
+            : base("Test Service", aMaxPingTime)
         {
             // Build ourselves an NLog manager just so we can see what's going on.
             var dt = new DebuggerTarget();
