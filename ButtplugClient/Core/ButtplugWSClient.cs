@@ -1,13 +1,13 @@
-﻿using Buttplug.Core;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Messages;
 using JetBrains.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Text;
-using System.Collections.Concurrent;
-using System.Net.WebSockets;
 
 namespace ButtplugClient.Core
 {
@@ -15,29 +15,46 @@ namespace ButtplugClient.Core
     {
         [NotNull]
         private readonly ButtplugJsonMessageParser _parser;
+
         [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+
         [NotNull]
         private readonly IButtplugLog _bpLogger;
+
         [NotNull]
         private readonly IButtplugLogManager _bpLogManager;
+
         private readonly object sendLock = new object();
-        [NotNull]
-        private ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs = new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
+
         [NotNull]
         private readonly string _clientName;
+
         [NotNull]
         private readonly uint _messageSchemaVersion;
+
+        [NotNull]
+        private ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs = new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
+
         [CanBeNull]
         private ClientWebSocket _ws;
+
         [CanBeNull]
         private Timer _pingTimer;
+
         [CanBeNull]
         private Thread _readThread;
+
         [NotNull]
         private int _counter;
 
-        public uint nextMsgId { get { return Convert.ToUInt32(Interlocked.Increment(ref _counter)); } }
+        public uint nextMsgId
+        {
+            get
+            {
+                return Convert.ToUInt32(Interlocked.Increment(ref _counter));
+            }
+        }
 
         public ButtplugWSClient(string aClientName)
         {
@@ -50,7 +67,7 @@ namespace ButtplugClient.Core
 
         public async Task Connect(Uri aURL)
         {
-            if(_ws != null && (_ws.State == WebSocketState.Connecting || _ws.State == WebSocketState.Open) )
+            if (_ws != null && (_ws.State == WebSocketState.Connecting || _ws.State == WebSocketState.Open) )
             {
                 throw new AccessViolationException("Already connected!");
             }
@@ -59,11 +76,12 @@ namespace ButtplugClient.Core
             _waitingMsgs.Clear();
             _counter = 0;
             await _ws.ConnectAsync(aURL, CancellationToken.None);
-            
-            if(_ws.State != WebSocketState.Open)
+
+            if (_ws.State != WebSocketState.Open)
             {
                 throw new Exception("Connection failed!");
             }
+
             _readThread = new Thread(wsReader);
             _readThread.Start();
 
@@ -75,6 +93,7 @@ namespace ButtplugClient.Core
                     {
                         _pingTimer = new Timer(onPingTimer, null, 0, Convert.ToInt32(Math.Round(((double)si.MaxPingTime) / 2, 0)));
                     }
+
                     break;
 
                 case Error e:
@@ -105,25 +124,29 @@ namespace ButtplugClient.Core
                                 queued.TrySetResult(msg);
                                 continue;
                             }
+
                             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
                         }
+
                         sb.Clear();
                     }
-                } catch (WebSocketException) {
+                }
+                catch (WebSocketException)
+                {
                     // Noop - WS probably closed on us during read
                 }
             }
         }
 
-        private void onPingTimer(Object state)
+        private void onPingTimer(object state)
         {
             var msg = SendMessage(new Ping(nextMsgId)).GetAwaiter().GetResult();
-            if( msg is Error )
+            if (msg is Error)
             {
                 // Do something with the error!
             }
         }
-        
+
         public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
         {
             var promise = new TaskCompletionSource<ButtplugMessage>();
@@ -164,4 +187,3 @@ namespace ButtplugClient.Core
         }
     }
 }
-
