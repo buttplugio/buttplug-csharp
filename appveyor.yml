@@ -54,7 +54,7 @@ after_build:
   - ps: $result = [xml](Get-Content .\resharper-clt-output.xml)
   - ps: $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
 test_script:
-  - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"ButtplugTest\bin\$env:CONFIGURATION\ButtplugTest.dll ButtplugServerGUITest\bin\$env:CONFIGURATION\ButtplugServerGUITest.dll ButtplugKiirooEmulatorGUITest\bin\$env:CONFIGURATION\ButtplugKiirooEmulatorGUITest.dll -noshadow" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
+  - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"ButtplugTest\bin\$env:CONFIGURATION\ButtplugTest.dll ButtplugServerGUITest\bin\$env:CONFIGURATION\ButtplugServerGUITest.dll ButtplugKiirooEmulatorGUITest\bin\$env:CONFIGURATION\ButtplugKiirooEmulatorGUITest.dll ButtplugClientTest\bin\$env:CONFIGURATION\dll ButtplugClientTest.dll -noshadow" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
 after_test:
   - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
   - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }

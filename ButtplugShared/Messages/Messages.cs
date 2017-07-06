@@ -62,10 +62,10 @@ namespace Buttplug.Messages
         }
 
         [JsonProperty(Required = Required.Always)]
-        public ErrorClass ErrorCode { get; }
+        public ErrorClass ErrorCode;
 
         [JsonProperty(Required = Required.Always)]
-        public string ErrorMessage { get; }
+        public string ErrorMessage;
 
         public Error(string aErrorMessage, ErrorClass aErrorCode, uint aId)
             : base(aId)
@@ -77,11 +77,11 @@ namespace Buttplug.Messages
 
     public class DeviceMessageInfo
     {
-        public string DeviceName { get; }
+        public string DeviceName;
 
-        public uint DeviceIndex { get; }
+        public uint DeviceIndex;
 
-        public string[] DeviceMessages { get; }
+        public string[] DeviceMessages;
 
         public DeviceMessageInfo(uint aIndex, string aName, string[] aMessages)
         {
@@ -104,9 +104,9 @@ namespace Buttplug.Messages
 
     public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
     {
-        public string DeviceName { get; }
+        public string DeviceName;
 
-        public string[] DeviceMessages { get; }
+        public string[] DeviceMessages;
 
         public DeviceAdded(uint aIndex, string aName, string[] aMessages)
             : base(ButtplugConsts.SystemMsgId, aIndex)
@@ -118,7 +118,7 @@ namespace Buttplug.Messages
 
     public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
-        public uint DeviceIndex { get; }
+        public uint DeviceIndex;
 
         public DeviceRemoved(uint aIndex)
             : base(ButtplugConsts.SystemMsgId)
@@ -162,7 +162,7 @@ namespace Buttplug.Messages
     public class RequestLog : ButtplugMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public ButtplugLogLevel LogLevel { get; set; }
+        public ButtplugLogLevel LogLevel;
 
         // JSON.Net gets angry if it doesn't have a default initializer.
         public RequestLog()
@@ -188,11 +188,11 @@ namespace Buttplug.Messages
 
     public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
-        public ButtplugLogLevel LogLevel { get; }
+        public ButtplugLogLevel LogLevel;
 
         // Needs to be left in for serialization
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
-        private string LogMessage { get; }
+        private string LogMessage;
 
         public Log(ButtplugLogLevel aLogLevel, string aLogMessage)
             : base(ButtplugConsts.SystemMsgId)
@@ -205,7 +205,7 @@ namespace Buttplug.Messages
     public class RequestServerInfo : ButtplugMessage
     {
         [JsonProperty(Required = Required.Always)]
-        public string ClientName { get;  }
+        public string ClientName;
 
         public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
@@ -216,25 +216,31 @@ namespace Buttplug.Messages
 
     public class ServerInfo : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
-        public int MajorVersion { get; }
+        [JsonProperty(Required = Required.Always)]
+        public int MajorVersion;
 
-        public int MinorVersion { get; }
+        [JsonProperty(Required = Required.Always)]
+        public int MinorVersion;
 
-        public int BuildVersion { get; }
+        [JsonProperty(Required = Required.Always)]
+        public int BuildVersion;
 
-        // Disable can be private here, as this field is used for serialization,
+        // Disable can be private here, as this field is used for serialization, 
         // and may be needed by clients
         // ReSharper disable once MemberCanBePrivate.Global
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public uint MessageVersion { get; }
+        [JsonProperty(Required = Required.Always)]
+        public uint MessageVersion;
 
         // ReSharper disable once MemberCanBePrivate.Global
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public uint MaxPingTime { get; }
+        [JsonProperty(Required = Required.Always)]
+        public uint MaxPingTime;
 
         // ReSharper disable once MemberCanBePrivate.Global
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public string ServerName { get; }
+        [JsonProperty(Required = Required.Always)]
+        public string ServerName;
 
         public ServerInfo(string aServerName, uint aMessageVersion, uint aMaxPingTime, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
