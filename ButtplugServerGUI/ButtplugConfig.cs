@@ -26,7 +26,11 @@ namespace ButtplugServerGUI
 
         private void LoadConfig()
         {
-            if (!File.Exists(_configFile) || File.GetLastWriteTimeUtc(_configFile) <= _modtime) return;
+            if (!File.Exists(_configFile) || File.GetLastWriteTimeUtc(_configFile) <= _modtime)
+            {
+                return;
+            }
+
             try
             {
                 _config = JObject.Parse(File.ReadAllText(_configFile));
@@ -56,10 +60,11 @@ namespace ButtplugServerGUI
             var bits = aKey.Split('.');
             LoadConfig();
             JToken cfg = _config;
-            for(var i = 0; cfg != null && i < bits.Length; i++)
+            for (var i = 0; cfg != null && i < bits.Length; i++)
             {
                 cfg = cfg[bits[i]];
             }
+
             return cfg != null ? cfg.Value<string>() : aOther;
         }
 
@@ -68,16 +73,17 @@ namespace ButtplugServerGUI
             var bits = aKey.Split('.');
             LoadConfig();
             JToken cfg = _config;
-            for (var i = 0; cfg != null && i < bits.Length-1; i++)
+            for (var i = 0; cfg != null && i < bits.Length - 1; i++)
             {
-                if(cfg[bits[i]] == null)
+                if (cfg[bits[i]] == null)
                 {
                     cfg[bits[i]] = new JObject();
                 }
+
                 cfg = cfg[bits[i]];
             }
-            
-            cfg[bits[bits.Length-1]] = aValue;
+
+            cfg[bits[bits.Length - 1]] = aValue;
             SaveConfig();
         }
     }

@@ -1,9 +1,9 @@
-﻿using Buttplug.Core;
+﻿using System.Collections.Generic;
+using Buttplug.Core;
 using Buttplug.Messages;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using System.Collections.Generic;
 using Xunit;
 
 namespace ButtplugTest.Core
@@ -12,7 +12,8 @@ namespace ButtplugTest.Core
     {
         public readonly List<string> OutgoingAsync = new List<string>();
 
-        public TestService() : base("Test Service", 100)
+        public TestService()
+            : base("Test Service", 100)
         {
             // Build ourselves an NLog manager just so we can see what's going on.
             var dt = new DebuggerTarget();

@@ -16,7 +16,9 @@ namespace ButtplugKiirooEmulatorGUI
     public class Device
     {
         private string Name { get; }
+
         public uint Index { get; }
+
         public string[] Messages { get;  }
 
         public Device(uint aIndex, string aName, string[] aMessages)
@@ -64,7 +66,7 @@ namespace ButtplugKiirooEmulatorGUI
             _translator.VibrateEvent += OnVibrateEvent;
             DeviceListBox.SelectionMode = SelectionMode.Multiple;
             DeviceListBox.SelectionChanged += SelectionChangedHandler;
-            _ops = new List<DispatcherOperation>();            
+            _ops = new List<DispatcherOperation>();
         }
 
         ~KiirooEmulatorPanel()
@@ -90,6 +92,7 @@ namespace ButtplugKiirooEmulatorGUI
                 _translator.StartVibrateTimer();
                 return;
             }
+
             _translator.StopVibrateTimer();
         }
 
@@ -105,7 +108,7 @@ namespace ButtplugKiirooEmulatorGUI
             _kiirooEmulator.StopServer();
         }
 
-        void OperationCompletedHandler(object aObj, EventArgs aEvent)
+        private void OperationCompletedHandler(object aObj, EventArgs aEvent)
         {
             _ops.Remove(aObj as DispatcherOperation);
         }
@@ -125,10 +128,9 @@ namespace ButtplugKiirooEmulatorGUI
             });
             _ops.Add(op);
             op.Completed += OperationCompletedHandler;
-
         }
 
-        private  void OnMessageReceived(object aObj, MessageReceivedEventArgs aEvent)
+        private void OnMessageReceived(object aObj, MessageReceivedEventArgs aEvent)
         {
             var op = Dispatcher.InvokeAsync(() =>
             {
@@ -166,6 +168,7 @@ namespace ButtplugKiirooEmulatorGUI
                 await _bpServer.SendMessage(new StopScanning());
                 ScanButton.Content = "Start Scanning";
             }
+
             ScanButton.Click += ScanButton_Click;
         }
 

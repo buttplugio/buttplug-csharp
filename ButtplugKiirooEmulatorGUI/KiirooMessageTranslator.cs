@@ -1,7 +1,7 @@
-﻿using Buttplug.Messages;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Timers;
+using Buttplug.Messages;
 
 namespace ButtplugKiirooEmulatorGUI
 {
@@ -20,11 +20,11 @@ namespace ButtplugKiirooEmulatorGUI
         private readonly Stopwatch _stopwatch;
         private readonly uint _previousSpeed;
         private readonly uint _previousPosition;
+        private readonly Timer _vibrateTimer;
         private uint _previousKiirooPosition;
         private uint _limitedSpeed;
         private uint _currentGoalPosition;
         private uint _currentSpeed;
-        private readonly Timer _vibrateTimer;
         private double _currentVibrate;
 
         public event EventHandler<VibrateEventArgs> VibrateEvent;
@@ -61,6 +61,7 @@ namespace ButtplugKiirooEmulatorGUI
             {
                 speedModifier *= -1;
             }
+
             _currentVibrate += speedModifier;
             if (_currentVibrate > 1)
             {
@@ -70,6 +71,7 @@ namespace ButtplugKiirooEmulatorGUI
             {
                 _currentVibrate = 0;
             }
+
             VibrateEvent?.Invoke(this, new VibrateEventArgs(_currentVibrate));
         }
 
@@ -82,6 +84,7 @@ namespace ButtplugKiirooEmulatorGUI
             {
                 return new FleshlightLaunchFW12Cmd(aMsg.DeviceIndex, 0, _previousPosition, aMsg.Id);
             }
+
             _previousKiirooPosition = _currentGoalPosition;
             _currentSpeed = 0;
 
@@ -96,21 +99,24 @@ namespace ButtplugKiirooEmulatorGUI
             }
             else
             {
-                _currentSpeed = (uint)(100 - ((elapsed / 100.0) + ((elapsed / 100.0) * .1)));
+                _currentSpeed = (uint)(100 - ((elapsed / 100.0) + (elapsed / 100.0 * .1)));
                 if (_currentSpeed > _previousSpeed)
                 {
-                    _currentSpeed = (_previousSpeed + ((_currentSpeed - _previousSpeed) / 6));
+                    _currentSpeed = _previousSpeed + ((_currentSpeed - _previousSpeed) / 6);
                 }
                 else if (_currentSpeed <= _previousSpeed)
                 {
-                    _currentSpeed = (_previousSpeed - (_currentSpeed / 2));
+                    _currentSpeed = _previousSpeed - (_currentSpeed / 2);
                 }
             }
+
             if (_currentSpeed < 20)
             {
                 _currentSpeed = 20;
             }
+
             _stopwatch.Start();
+
             // Position Conversion
             var position = (ushort)(_currentGoalPosition > 2 ? 95 : 5);
             if (elapsed <= 150)
@@ -119,8 +125,10 @@ namespace ButtplugKiirooEmulatorGUI
                 {
                     _limitedSpeed = _currentSpeed;
                 }
+
                 return new FleshlightLaunchFW12Cmd(aMsg.DeviceIndex, _limitedSpeed, position, aMsg.Id);
             }
+
             _limitedSpeed = 0;
             return new FleshlightLaunchFW12Cmd(aMsg.DeviceIndex, _currentSpeed, position, aMsg.Id);
         }

@@ -8,6 +8,7 @@ namespace ButtplugKiirooEmulatorGUITest
     public class KiirooGUITest
     {
         private Exception didStart;
+
         private void StartGUI()
         {
             try
@@ -23,7 +24,7 @@ namespace ButtplugKiirooEmulatorGUITest
 
         [Fact]
         public void TestGUIBringup()
-        {           
+        {
             var t = new Thread(StartGUI);
             t.SetApartmentState(ApartmentState.STA);
             t.Start();

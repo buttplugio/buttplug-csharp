@@ -12,10 +12,12 @@ namespace ButtplugControlLibrary
     {
         private string _gitHash;
         private uint _clickCounter;
+
         public event EventHandler AboutImageClickedABunch;
+
         public ButtplugAboutControl()
         {
-            InitializeComponent();   
+            InitializeComponent();
         }
 
         public void InitializeVersion()
@@ -58,6 +60,7 @@ namespace ButtplugControlLibrary
             {
                 return;
             }
+
             IconImage.MouseDown -= IconImage_Click;
             AboutImageClickedABunch?.Invoke(this, aEvent);
         }

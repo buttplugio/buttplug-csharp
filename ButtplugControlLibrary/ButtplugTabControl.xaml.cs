@@ -1,14 +1,14 @@
 ﻿using System;
-using Buttplug.Core;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Buttplug.Core;
 using ButtplugUWPBluetoothManager.Core;
 using ButtplugXInputGamepadManager.Core;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 using NLog;
 using NLog.Config;
-using Microsoft.Win32;
 #if DEBUG
 using NLog.Targets;
 #endif
@@ -20,19 +20,16 @@ namespace ButtplugControlLibrary
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ButtplugTabControl : ButtplugServiceFactory
+    public partial class ButtplugTabControl : IButtplugServiceFactory
     {
         [NotNull]
         private readonly RavenClient _ravenClient;
-
-
-        private bool _sentCrashLog;
-
         [NotNull]
         private readonly Logger _guiLog;
         private int _releaseId;
         private string _serverName;
         private uint _maxPingTime;
+        private bool _sentCrashLog;
 
         public ButtplugTabControl()
         {
@@ -40,8 +37,8 @@ namespace ButtplugControlLibrary
 
             // Cover all of the possible bases for WPF failure
             // http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
-
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+
             // Null check application, otherwise test bringup for GUI tests will fail
             if (Application.Current != null)
             {
@@ -57,7 +54,7 @@ namespace ButtplugControlLibrary
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
             LogManager.Configuration = LogManager.Configuration;
 #endif
-            
+
             // Set up GUI
             InitializeComponent();
 
@@ -88,7 +85,7 @@ namespace ButtplugControlLibrary
             {
                 _guiLog.Error("Cannot retreive Environment.OSVersion string.");
             }
-            
+
             // Make sure we're on the Creators update before even trying to load the UWP Bluetooth Manager
             if (_releaseId >= 1703)
             {
@@ -116,12 +113,14 @@ namespace ButtplugControlLibrary
             {
                 return;
             }
+
             _sentCrashLog = true;
             AppDomain.CurrentDomain.UnhandledException -= CurrentDomainOnUnhandledException;
             if (Application.Current != null)
             {
                 Application.Current.DispatcherUnhandledException -= CurrentOnDispatcherUnhandledException;
             }
+
             if (Dispatcher != null)
             {
                 Dispatcher.UnhandledException -= DispatcherOnUnhandledException;
@@ -157,7 +156,7 @@ namespace ButtplugControlLibrary
         public void SetApplicationTab(string aTabName, UserControl aTabControl)
         {
             ApplicationTab.Header = aTabName;
-            ApplicationTab.Content = aTabControl;            
+            ApplicationTab.Content = aTabControl;
         }
 
         public void SetServerDetails(string serverName, uint maxPingTime)
@@ -167,8 +166,8 @@ namespace ButtplugControlLibrary
 
             try
             {
-                _releaseId = Int32.Parse(Registry
-                    .GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "")
+                _releaseId = int.Parse(Registry
+                    .GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", string.Empty)
                     .ToString());
                 _guiLog.Info($"Windows Release ID: {_releaseId}");
             }
@@ -176,9 +175,11 @@ namespace ButtplugControlLibrary
             {
                 _guiLog.Error("Cannot retreive Release ID for OS! Will not load bluetooth manager.");
             }
+
             if (!UWPBluetoothManager.HasRegistryKeysSet())
             {
                 _guiLog.Error("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
+
                 // Only show this if we're running a full application.
                 if (Application.Current != null)
                 {
@@ -189,13 +190,12 @@ namespace ButtplugControlLibrary
 
         public ButtplugService GetService()
         {
-            if( _serverName == null)
+            if (_serverName == null)
             {
                 throw new AccessViolationException("SetServerDetails() must be called before GetService()");
             }
+
             return InitializeButtplugServer(_serverName, _maxPingTime);
         }
     }
-
 }
-

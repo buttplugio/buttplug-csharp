@@ -14,7 +14,7 @@ namespace ButtplugServerGUI
         {
             var config = new ButtplugConfig("Buttplug");
             uint ping;
-            UInt32.TryParse(config.GetValue("buttplug.server.maxPing", "100"), out ping);
+            uint.TryParse(config.GetValue("buttplug.server.maxPing", "100"), out ping);
 
             InitializeComponent();
 

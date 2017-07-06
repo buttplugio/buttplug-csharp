@@ -12,12 +12,12 @@ namespace ButtplugServerGUI
     public partial class WebsocketServerControl
     {
         private readonly ButtplugWebsocketServer _ws;
-        private readonly ButtplugServiceFactory _bpFactory;
+        private readonly IButtplugServiceFactory _bpFactory;
+        private readonly ButtplugConfig _config;
         private uint _port;
         private bool _secure;
-        private readonly ButtplugConfig _config;
 
-        public WebsocketServerControl(ButtplugServiceFactory bpFactory)
+        public WebsocketServerControl(IButtplugServiceFactory bpFactory)
         {
             InitializeComponent();
             _ws = new ButtplugWebsocketServer();
@@ -25,21 +25,23 @@ namespace ButtplugServerGUI
             _config = new ButtplugConfig("Buttplug");
             _port = 12345;
             _secure = false;
-            if (UInt32.TryParse(_config.GetValue("buttplug.server.port", "12345"), out uint pres))
+            if (uint.TryParse(_config.GetValue("buttplug.server.port", "12345"), out uint pres))
             {
                 _port = pres;
             }
-            if (Boolean.TryParse(_config.GetValue("buttplug.server.secure", "false"), out bool sres))
+
+            if (bool.TryParse(_config.GetValue("buttplug.server.secure", "false"), out bool sres))
             {
                 _secure = sres;
             }
+
             PortTextBox.Text = _port.ToString();
             SecureCheckBox.IsChecked = _secure;
         }
 
         public void StartServer()
         {
-            _ws.StartServer(_bpFactory, (int) _port, _secure);
+            _ws.StartServer(_bpFactory, (int)_port, _secure);
             ConnToggleButton.Content = "Stop";
             SecureCheckBox.IsEnabled = false;
             PortTextBox.IsEnabled = false;
@@ -66,15 +68,15 @@ namespace ButtplugServerGUI
                 StopServer();
             }
         }
-       
 
         private void PortTextBox_TextChanged(object aObj, TextChangedEventArgs aEvent)
         {
-            if (UInt32.TryParse(PortTextBox.Text, out uint port) && port >= 1024 && port <= 65535)
+            if (uint.TryParse(PortTextBox.Text, out uint port) && port >= 1024 && port <= 65535)
             {
                 _port = port;
                 return;
             }
+
             PortTextBox.Text = _port.ToString();
         }
 

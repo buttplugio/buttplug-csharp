@@ -6,9 +6,9 @@ namespace ButtplugTest.Core
 {
     internal class TestBluetoothSubtypeManager : BluetoothSubtypeManager
     {
-        public TestBluetoothSubtypeManager(IButtplugLogManager aLogManager) : base(aLogManager)
+        public TestBluetoothSubtypeManager(IButtplugLogManager aLogManager)
+            : base(aLogManager)
         {
-            
         }
 
         public List<IBluetoothDeviceInfo> GetDefaultDeviceInfoList()
@@ -17,12 +17,13 @@ namespace ButtplugTest.Core
         }
 
         public override void StartScanning()
-        {   
+        {
         }
 
         public override void StopScanning()
         {
         }
+
         public override bool IsScanning()
         {
             return false;

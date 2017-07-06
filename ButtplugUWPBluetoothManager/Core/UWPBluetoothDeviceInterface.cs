@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Buttplug.Bluetooth;
+using Buttplug.Core;
+using Buttplug.Messages;
+using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
-using Buttplug.Messages;
-using Buttplug.Core;
-using Buttplug.Bluetooth;
-using JetBrains.Annotations;
 using static Buttplug.Messages.Error;
 
 namespace ButtplugUWPBluetoothManager.Core
@@ -15,14 +15,16 @@ namespace ButtplugUWPBluetoothManager.Core
     internal class UWPBluetoothDeviceInterface : IBluetoothDeviceInterface
     {
         public string Name => _bleDevice.Name;
+
         [NotNull]
         private readonly BluetoothLEDevice _bleDevice;
         [NotNull]
         private readonly GattCharacteristic[] _gattCharacteristics;
-        [CanBeNull]
-        private IAsyncOperation<GattCommunicationStatus> _currentTask;
         [NotNull]
         private readonly IButtplugLog _bpLogger;
+        [CanBeNull]
+        private IAsyncOperation<GattCommunicationStatus> _currentTask;
+
         [CanBeNull]
         public event EventHandler DeviceRemoved;
 
@@ -51,7 +53,7 @@ namespace ButtplugUWPBluetoothManager.Core
         }
 
         [ItemNotNull]
-        public async Task<ButtplugMessage> WriteValue(uint aMsgId, 
+        public async Task<ButtplugMessage> WriteValue(uint aMsgId,
             uint aCharacteristicIndex,
             byte[] aValue,
             bool aWriteOption = false)
@@ -61,11 +63,13 @@ namespace ButtplugUWPBluetoothManager.Core
                 _currentTask.Cancel();
                 _bpLogger.Error("Cancelling device transfer in progress for new transfer.");
             }
+
             var gattCharacteristic = _gattCharacteristics[aCharacteristicIndex];
             if (gattCharacteristic == null)
             {
                 return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"Requested character {aCharacteristicIndex} out of range");
             }
+
             _currentTask = gattCharacteristic.WriteValueAsync(aValue.AsBuffer(), aWriteOption ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
             try
             {
@@ -81,6 +85,7 @@ namespace ButtplugUWPBluetoothManager.Core
                 // This exception will be thrown if the bluetooth device disconnects in the middle of a transfer.
                 return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {e.Message}");
             }
+
             return new Ok(aMsgId);
         }
     }

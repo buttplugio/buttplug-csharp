@@ -23,7 +23,6 @@ namespace ButtplugTest.Core
             var d = b.GetDefaultDeviceInfoList();
             foreach (var t in types)
             {
-                
                 Assert.True(d.Any(aInfoObj => aInfoObj.GetType() == t), $"Default types contains type: {t.Name}");
             }
         }

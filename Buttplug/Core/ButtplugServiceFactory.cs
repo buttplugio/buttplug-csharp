@@ -1,6 +1,6 @@
 ﻿namespace Buttplug.Core
 {
-    public interface ButtplugServiceFactory
+    public interface IButtplugServiceFactory
     {
         ButtplugService GetService();
     }

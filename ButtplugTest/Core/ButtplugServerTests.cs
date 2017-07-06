@@ -1,8 +1,8 @@
 ﻿using System;
-using Buttplug.Core;
-using Buttplug.Messages;
 using System.Linq;
 using System.Threading;
+using Buttplug.Core;
+using Buttplug.Messages;
 using Xunit;
 using static Buttplug.Messages.Error;
 
@@ -13,7 +13,7 @@ namespace ButtplugTest.Core
         [Fact]
         public async void RejectOutgoingOnlyMessage()
         {
-            Assert.True((await new TestService().SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DEFAULT_MSG_ID))) is Error);
+            Assert.True((await new TestService().SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId))) is Error);
         }
 
         [Fact]
@@ -28,15 +28,16 @@ namespace ButtplugTest.Core
                     gotMessage = true;
                 }
             };
+
             // Sending error messages will always cause an error, as they are outgoing, not incoming.
-            await s.SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DEFAULT_MSG_ID));
+            await s.SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId));
             Assert.False(gotMessage);
             Assert.True((await s.SendMessage(new RequestLog("Trace"))) is Ok);
-            Assert.True((await s.SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DEFAULT_MSG_ID))) is Error);
+            Assert.True((await s.SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId))) is Error);
             Assert.True(gotMessage);
             await s.SendMessage(new RequestLog("Off"));
             gotMessage = false;
-            await s.SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DEFAULT_MSG_ID));
+            await s.SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId));
             Assert.False(gotMessage);
         }
 
@@ -58,7 +59,7 @@ namespace ButtplugTest.Core
         {
             switch (aMsgArgs)
             {
-                case DeviceAdded da:                        
+                case DeviceAdded da:
                     Assert.True(da.DeviceName == "TestDevice");
                     Assert.True(da.DeviceIndex == 1);
                     Assert.True(da.DeviceMessages.Length == 1);
@@ -104,10 +105,11 @@ namespace ButtplugTest.Core
             ButtplugMessage msgReceived = null;
             s.MessageReceived += (aObj, aMsgArgs) =>
             {
-                if(!(aMsgArgs.Message is ScanningFinished))
+                if (!(aMsgArgs.Message is ScanningFinished))
                 {
                     msgReceived = aMsgArgs.Message;
                 }
+
                 CheckDeviceMessages(msgReceived);
             };
             CheckDeviceCount(s, 0);
@@ -125,6 +127,7 @@ namespace ButtplugTest.Core
         public async void TestIncomingSystemIdMessage()
         {
             var s = new TestService();
+
             // Test echos back a test message with the same string and id
             Assert.True(await s.SendMessage(new Test("Right", 2)) is Test);
             Assert.True(await s.SendMessage(new Test("Wrong", 0)) is Error);
@@ -203,6 +206,7 @@ namespace ButtplugTest.Core
                         Assert.True(dl.Devices[0].DeviceName == "TestDevice");
                         break;
                 }
+
                 Assert.True(i == 0 ? msgReceived : !msgReceived, "DeviceAdded fired at incorrect time!");
                 msgReceived = false;
             }
@@ -220,14 +224,16 @@ namespace ButtplugTest.Core
         public async void TestPing()
         {
             var s = new TestService();
+
             // Timeout is set to 100ms
             for (int i = 0; i < 8; i++)
             {
                 Thread.Sleep(50);
                 Assert.True(await s.SendMessage(new Ping()) is Ok);
             }
+
             // If we're still getting OK, we've suvived 400ms
-            
+
             // Now lets ensure we can actually timeout
             Thread.Sleep(150);
             Assert.True(await s.SendMessage(new Ping()) is Error);

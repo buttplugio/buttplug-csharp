@@ -11,7 +11,8 @@ namespace Buttplug.Bluetooth
         [ItemNotNull]
         protected readonly List<IBluetoothDeviceInfo> BuiltinDevices;
 
-        protected BluetoothSubtypeManager([NotNull] IButtplugLogManager aLogManager) : base(aLogManager)
+        protected BluetoothSubtypeManager([NotNull] IButtplugLogManager aLogManager)
+            : base(aLogManager)
         {
             // This used to go through all assemblies looking for IBluetoothDeviceInfo, but that
             // ended up constantly breaking due to Reflection issues on different platforms/setups.
@@ -23,7 +24,7 @@ namespace Buttplug.Bluetooth
                 new LovenseRev1BluetoothInfo(),
                 new LovenseRev2BluetoothInfo(),
                 new LovenseRev3BluetoothInfo(),
-                new VorzeA10CycloneInfo()
+                new VorzeA10CycloneInfo(),
             };
         }
     }

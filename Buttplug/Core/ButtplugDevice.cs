@@ -10,16 +10,19 @@ namespace Buttplug.Core
     internal abstract class ButtplugDevice : IButtplugDevice
     {
         public string Name { get; }
+
         public string Identifier { get; }
+
         [CanBeNull]
         public event EventHandler DeviceRemoved;
+
         [NotNull]
         protected readonly IButtplugLog BpLogger;
         [NotNull]
         protected readonly Dictionary<Type, Func<ButtplugDeviceMessage, Task<ButtplugMessage>>> MsgFuncs;
         private bool _isDisconnected;
 
-        protected ButtplugDevice([NotNull] IButtplugLogManager aLogManager, 
+        protected ButtplugDevice([NotNull] IButtplugLogManager aLogManager,
             [NotNull] string aName,
             [NotNull] string aIdentifier)
         {
@@ -47,11 +50,13 @@ namespace Buttplug.Core
                 return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE,
                     $"{Name} has disconnected and can no longer process messages.");
             }
+
             if (!MsgFuncs.ContainsKey(aMsg.GetType()))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE,
                     $"{Name} cannot handle message of type {aMsg.GetType().Name}");
             }
+
             // We just checked whether the key exists above, so we're ok.
             // ReSharper disable once PossibleNullReferenceException
             return await MsgFuncs[aMsg.GetType()].Invoke(aMsg);
@@ -60,7 +65,7 @@ namespace Buttplug.Core
         public virtual Task<ButtplugMessage> Initialize()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SYSTEM_MSG_ID));
+            return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SystemMsgId));
         }
     }
 }

@@ -6,7 +6,8 @@ namespace ButtplugXInputGamepadManager.Core
 {
     public class XInputGamepadManager : DeviceSubtypeManager
     {
-        public XInputGamepadManager(IButtplugLogManager aLogManager) : base(aLogManager)
+        public XInputGamepadManager(IButtplugLogManager aLogManager)
+            : base(aLogManager)
         {
             BpLogger.Debug("Loading XInput Gamepad Manager");
         }
@@ -14,16 +15,20 @@ namespace ButtplugXInputGamepadManager.Core
         public override void StartScanning()
         {
             BpLogger.Trace("XInputGamepadManager start scanning");
-            var controllers = new[] { new Controller(UserIndex.One),
-                                      new Controller(UserIndex.Two),
-                                      new Controller(UserIndex.Three),
-                                      new Controller(UserIndex.Four) };
+            var controllers = new[]
+            {
+                new Controller(UserIndex.One),
+                new Controller(UserIndex.Two),
+                new Controller(UserIndex.Three),
+                new Controller(UserIndex.Four),
+            };
             foreach (var c in controllers)
             {
                 if (!c.IsConnected)
                 {
                     continue;
                 }
+
                 BpLogger.Debug($"Found connected XInput Gamepad for Index {c.UserIndex}");
                 var device = new XInputGamepadDevice(LogManager, c);
                 InvokeDeviceAdded(new DeviceAddedEventArgs(device));

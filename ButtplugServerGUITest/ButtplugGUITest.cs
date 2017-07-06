@@ -8,22 +8,10 @@ namespace ButtplugServerGUITest
     public class GUITest
     {
         private Exception didStart;
-        private void StartGUI()
-        {
-            try
-            {
-                var m = new MainWindow();
-                m.Close();
-            }
-            catch (Exception e)
-            {
-                didStart = e;
-            }
-        }
 
         [Fact]
         public void TestGUIBringup()
-        {           
+        {
             var t = new Thread(StartGUI);
             t.SetApartmentState(ApartmentState.STA);
             t.Start();
@@ -35,6 +23,19 @@ namespace ButtplugServerGUITest
             else
             {
                 Assert.True(false, $"{didStart.Message}\n{didStart.StackTrace}");
+            }
+        }
+
+        private void StartGUI()
+        {
+            try
+            {
+                var m = new MainWindow();
+                m.Close();
+            }
+            catch (Exception e)
+            {
+                didStart = e;
             }
         }
     }
