@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Buttplug.Core;
 using ButtplugWebsockets;
+using System.Net.Sockets;
 
 namespace ButtplugServerGUI
 {
@@ -41,10 +42,17 @@ namespace ButtplugServerGUI
 
         public void StartServer()
         {
-            _ws.StartServer(_bpFactory, (int)_port, _secure);
-            ConnToggleButton.Content = "Stop";
-            SecureCheckBox.IsEnabled = false;
-            PortTextBox.IsEnabled = false;
+            try
+            {
+                _ws.StartServer(_bpFactory, (int)_port, _secure);
+                ConnToggleButton.Content = "Stop";
+                SecureCheckBox.IsEnabled = false;
+                PortTextBox.IsEnabled = false;
+            }
+            catch (SocketException e)
+            {
+                MessageBox.Show(e.Message, "Buttplug Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         public void StopServer()
