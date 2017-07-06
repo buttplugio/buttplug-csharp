@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\Buttplug\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\Buttplug\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
@@ -55,10 +57,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="ButtPlugClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json" />
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -66,10 +73,6 @@
     <ProjectReference Include="..\ButtplugClient\ButtplugClient.csproj">
       <Project>{1592d845-8fe5-4f33-a665-d7675c9aaee4}</Project>
       <Name>ButtplugClient</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ButtplugControlLibrary\ButtplugControlLibrary.csproj">
-      <Project>{0e0d1e27-9efd-4a07-b6aa-bb556205c002}</Project>
-      <Name>ButtplugControlLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\ButtplugShared\ButtplugShared.csproj">
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>

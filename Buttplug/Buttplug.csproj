@@ -52,7 +52,7 @@
     <Compile Include="Bluetooth\IBluetoothDeviceInfo.cs" />
     <Compile Include="Bluetooth\IBluetoothDeviceInterface.cs" />
     <Compile Include="Core\ButtplugService.cs" />
-    <Compile Include="Core\ButtplugServiceFactory.cs" />
+    <Compile Include="Core\IButtplugServiceFactory.cs" />
     <Compile Include="Core\DeviceAddedEventArgs.cs" />
     <Compile Include="Core\DeviceManager.cs" />
     <Compile Include="Core\DeviceSubtypeManager.cs" />

@@ -225,7 +225,7 @@ namespace Buttplug.Messages
         [JsonProperty(Required = Required.Always)]
         public int BuildVersion;
 
-        // Disable can be private here, as this field is used for serialization, 
+        // Disable can be private here, as this field is used for serialization,
         // and may be needed by clients
         // ReSharper disable once MemberCanBePrivate.Global
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
