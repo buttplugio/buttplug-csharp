@@ -12,26 +12,31 @@ namespace Buttplug.Bluetooth.Devices
         public enum Chrs : uint
         {
             Tx = 0,
-            Rx
+            Rx,
         }
 
         public Guid[] Services { get; } = { new Guid("0000fff0-0000-1000-8000-00805f9b34fb") };
-        public string[] Names { get; } = 
+
+        public string[] Names { get; } =
         {
             // Nora
             "LVS-A011", "LVS-C011",
+
             // Max
             "LVS-B011",
+
             // Ambi
-            "LVS-L009" };
+            "LVS-L009",
+        };
 
         public Guid[] Characteristics { get; } =
         {
             // tx characteristic
-            new Guid("0000fff2-0000-1000-8000-00805f9b34fb")//,
+            new Guid("0000fff2-0000-1000-8000-00805f9b34fb"), // ,
+
             // rx characteristic
             // Comment out until issue #108 is fixed. Characteristic isn't really needed until Issue #9 is implemented also.
-            //new Guid("0000fff1-0000-1000-8000-00805f9b34fb")
+            // new Guid("0000fff1-0000-1000-8000-00805f9b34fb")
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
@@ -47,24 +52,27 @@ namespace Buttplug.Bluetooth.Devices
         public enum Chrs : uint
         {
             Tx = 0,
-            Rx
+            Rx,
         }
 
         public Guid[] Services { get; } = { new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e") };
+
         public string[] Names { get; } =
         {
             // Lush
             "LVS-S001",
+
             // Hush
-            "LVS-Z001"
+            "LVS-Z001",
         };
 
         public Guid[] Characteristics { get; } =
         {
             // tx characteristic
             new Guid("6e400002-b5a3-f393-e0a9-e50e24dcca9e"),
+
             // rx characteristic
-            new Guid("6e400003-b5a3-f393-e0a9-e50e24dcca9e")
+            new Guid("6e400003-b5a3-f393-e0a9-e50e24dcca9e"),
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
@@ -80,22 +88,24 @@ namespace Buttplug.Bluetooth.Devices
         public enum Chrs : uint
         {
             Tx = 0,
-            Rx
+            Rx,
         }
 
         public Guid[] Services { get; } = { new Guid("50300001-0024-4bd4-bbd5-a6920e4c5653") };
+
         public string[] Names { get; } =
         {
             // Edge
-            "LVS-P36"
+            "LVS-P36",
         };
 
         public Guid[] Characteristics { get; } =
         {
             // tx characteristic
             new Guid("50300002-0024-4bd4-bbd5-a6920e4c5653"),
+
             // rx characteristic
-            new Guid("50300003-0024-4bd4-bbd5-a6920e4c5653")
+            new Guid("50300003-0024-4bd4-bbd5-a6920e4c5653"),
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
@@ -109,10 +119,10 @@ namespace Buttplug.Bluetooth.Devices
     internal class Lovense : ButtplugBluetoothDevice
     {
         public Lovense(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface) :
-            base(aLogManager,
-                 $"Lovense Device ({aInterface.Name})",
-                 aInterface)
+                       IBluetoothDeviceInterface aInterface)
+            : base(aLogManager,
+                   $"Lovense Device ({aInterface.Name})",
+                   aInterface)
         {
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
@@ -130,10 +140,10 @@ namespace Buttplug.Bluetooth.Devices
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
-            return await Interface.WriteValue(aMsg.Id, 
-                // While there are 3 lovense revs right now, all of the characteristic arrays are the same.
-                (uint)LovenseRev1BluetoothInfo.Chrs.Tx,
-                Encoding.ASCII.GetBytes($"Vibrate:{(int)(cmdMsg.Speed * 20)};"));
+
+            // While there are 3 lovense revs right now, all of the characteristic arrays are the same.
+            return await Interface.WriteValue(aMsg.Id, (uint)LovenseRev1BluetoothInfo.Chrs.Tx,
+                                              Encoding.ASCII.GetBytes($"Vibrate:{(int)(cmdMsg.Speed * 20)};"));
         }
     }
 }

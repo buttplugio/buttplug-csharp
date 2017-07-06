@@ -8,11 +8,13 @@ namespace Buttplug.Bluetooth
     {
         [NotNull]
         string[] Names { get; }
+
         [NotNull]
         Guid[] Services { get; }
+
         [NotNull]
         Guid[] Characteristics { get; }
-        
+
         [NotNull]
         IButtplugDevice CreateDevice([NotNull] IButtplugLogManager aLogManager, [NotNull] IBluetoothDeviceInterface aDeviceInterface);
     }

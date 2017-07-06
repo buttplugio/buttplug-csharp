@@ -9,14 +9,19 @@ namespace Buttplug.Core
     {
         [NotNull]
         string Name { get; }
+
         [NotNull]
         string Identifier { get; }
+
         [CanBeNull]
         event EventHandler DeviceRemoved;
+
         [NotNull]
         IEnumerable<Type> GetAllowedMessageTypes();
+
         [NotNull]
         Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg);
+
         [NotNull]
         Task<ButtplugMessage> Initialize();
     }

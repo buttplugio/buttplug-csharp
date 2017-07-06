@@ -11,8 +11,8 @@ namespace ButtplugTest.Core
         [Fact]
         public void JsonConversionTest()
         {
-            var m1 = new Test("ThisIsATest", ButtplugConsts.SYSTEM_MSG_ID);
-            var m2 = new Test("ThisIsAnotherTest", ButtplugConsts.SYSTEM_MSG_ID);
+            var m1 = new Test("ThisIsATest", ButtplugConsts.SystemMsgId);
+            var m2 = new Test("ThisIsAnotherTest", ButtplugConsts.SystemMsgId);
             var msg = _service.Serialize(m1);
             Assert.True(msg.Length > 0);
             Assert.Equal("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}]", msg);
@@ -24,18 +24,25 @@ namespace ButtplugTest.Core
 
         // Not valid JSON
         [InlineData("not a json message")]
+
         // Valid json object but no contents
         [InlineData("{}")]
+
         // Valid json but not an object
         [InlineData("[]")]
+
         // Not a message type
         [InlineData("[{\"NotAMessage\":{}}]")]
+
         // Valid json and message type but not in correct format
         [InlineData("[{\"Test\":[]}]")]
+
         // Valid json and message type but not in correct format
         [InlineData("[{\"Test\":{}}]")]
+
         // Valid json and message type but with erroneous content
         [InlineData("[{\"Test\":{\"TestString\":\"Error\",\"Id\":0}}]")]
+
         // Valid json and message type but with extra content
         [InlineData("[{\"Test\":{\"TestString\":\"Yup\",\"NotAField\":\"NotAValue\",\"Id\":0}}]")]
         [Theory]

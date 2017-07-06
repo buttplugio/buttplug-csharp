@@ -7,8 +7,10 @@ namespace Buttplug.Core
     {
         [CanBeNull]
         event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
+
         [NotNull]
         IButtplugLog GetLogger(Type aType);
+
         ButtplugLogLevel Level { set; }
     }
 }

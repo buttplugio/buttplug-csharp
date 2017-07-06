@@ -63,6 +63,7 @@ namespace ButtplugKiirooPlatformEmulator
             {
                 return;
             }
+
             _isRunning = true;
             _stop = false;
             _httpListener.Start();
@@ -83,9 +84,12 @@ namespace ButtplugKiirooPlatformEmulator
                     }
                 }
 
-                if (ctx == null) continue;
+                if (ctx == null)
+                {
+                    continue;
+                }
 
-                //got a request
+                // got a request
                 var response = ctx.Response;
                 response.Headers.Add("Access-Control-Allow-Origin", "*");
                 response.Headers.Add(HttpResponseHeader.CacheControl, "private, no-store");
@@ -97,7 +101,8 @@ namespace ButtplugKiirooPlatformEmulator
                     response.Close();
                     continue;
                 }
-                var methodName = ctx.Request.Url.Segments[1].Replace("/", "");
+
+                var methodName = ctx.Request.Url.Segments[1].Replace("/", string.Empty);
                 string json;
                 switch (methodName)
                 {
@@ -114,6 +119,7 @@ namespace ButtplugKiirooPlatformEmulator
                             response.Close();
                             continue;
                         }
+
                         try
                         {
                             var position = ushort.Parse(data["data"]);
@@ -126,6 +132,7 @@ namespace ButtplugKiirooPlatformEmulator
                             response.Close();
                             continue;
                         }
+
                         break;
                     default:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -139,6 +146,7 @@ namespace ButtplugKiirooPlatformEmulator
                 response.OutputStream.Close();
                 response.Close();
             }
+
             _isRunning = false;
         }
 
@@ -148,6 +156,7 @@ namespace ButtplugKiirooPlatformEmulator
             {
                 return;
             }
+
             _stop = true;
             _httpListener.Stop();
         }

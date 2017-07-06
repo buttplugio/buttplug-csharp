@@ -7,7 +7,8 @@ namespace Buttplug.Core
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; set; }
 
-        public ButtplugDeviceMessage(uint aId, uint aDeviceIndex) : base(aId)
+        public ButtplugDeviceMessage(uint aId, uint aDeviceIndex)
+            : base(aId)
         {
             DeviceIndex = aDeviceIndex;
         }

@@ -1,9 +1,9 @@
-﻿using CommandLine;
+﻿using System;
+using CommandLine;
 using CommandLine.Text;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using System;
 using WebSocketSharp.Server;
 
 namespace ButtplugCLI
@@ -14,21 +14,25 @@ namespace ButtplugCLI
 
         [Option('p', "port", DefaultValue = 6868,
                 HelpText = "Port for Websocket Server")]
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public int WebsocketPort { get; set; }
 
         [Option('l', "log", DefaultValue = "Warn",
                 HelpText = "Log output level (Debug, Info, Warn, Error, Fatal)")]
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string LogLevel { get; set; }
 
         [Option('q', "quiet", DefaultValue = false,
                 HelpText = "If passed, no output will occur to stdout/stderr")]
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool Quiet { get; set; }
 
         [Option("exitimmediately", DefaultValue = false,
                 HelpText = "Startup and exit. Only used to installer testing.")]
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool ExitImmediately { get; set; }
 
@@ -58,6 +62,7 @@ namespace ButtplugCLI
             {
                 return;
             }
+
             if (options.ExitImmediately)
             {
                 return;
@@ -68,8 +73,7 @@ namespace ButtplugCLI
             var wssv = new WebSocketServer(options.WebsocketPort);
             wssv.Log.Level = options.Quiet ? WebSocketSharp.LogLevel.Fatal : WebSocketSharp.LogLevel.Warn;
 
-            //wssv.AddWebSocketService<ButtplugWebsocketServer.ButtplugWebsocketServer>("/Buttplug");
-
+            // wssv.AddWebSocketService<ButtplugWebsocketServer.ButtplugWebsocketServer>("/Buttplug");
             wssv.Start();
             Console.ReadKey(true);
             wssv.Stop();

@@ -1,11 +1,11 @@
-﻿using Buttplug.Messages;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Timers;
+using Buttplug.Messages;
+using JetBrains.Annotations;
 using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
@@ -14,8 +14,10 @@ namespace Buttplug.Core
     {
         [NotNull]
         private readonly ButtplugJsonMessageParser _parser;
+
         [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+
         [NotNull]
         private readonly IButtplugLog _bpLogger;
         [NotNull]
@@ -59,6 +61,7 @@ namespace Buttplug.Core
                 _pingTimer = new Timer(_maxPingTime);
                 _pingTimer.Elapsed += PingTimeoutHandler;
             }
+
             _bpLogManager = new ButtplugLogManager();
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Trace("Setting up ButtplugService");
@@ -89,7 +92,7 @@ namespace Buttplug.Core
         {
             _pingTimer?.Stop();
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
-                ErrorClass.ERROR_PING, ButtplugConsts.SYSTEM_MSG_ID)));
+                ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
             SendMessage(new StopAllDevices()).Wait();
             _pingTimedOut = true;
         }
@@ -104,6 +107,7 @@ namespace Buttplug.Core
                 return _bpLogger.LogWarnMsg(id, ErrorClass.ERROR_MSG,
                     "Message Id 0 is reserved for outgoing system messages. Please use another Id.");
             }
+
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
                 return _bpLogger.LogWarnMsg(id, ErrorClass.ERROR_MSG,
@@ -121,6 +125,7 @@ namespace Buttplug.Core
                 return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_INIT,
                     "RequestServerInfo must be first message received by server!");
             }
+
             switch (aMsg)
             {
                 case RequestLog m:
@@ -128,11 +133,12 @@ namespace Buttplug.Core
                     return new Ok(id);
 
                 case Ping _:
-                    if(_pingTimer != null)
+                    if (_pingTimer != null)
                     {
                         _pingTimer.Stop();
                         _pingTimer.Start();
                     }
+
                     return new Ok(id);
 
                 case RequestServerInfo _:
@@ -143,6 +149,7 @@ namespace Buttplug.Core
                 case Test m:
                     return new Test(m.TestString, id);
             }
+
             return await _deviceManager.SendMessage(aMsg);
         }
 
@@ -163,6 +170,7 @@ namespace Buttplug.Core
                         break;
                 }
             }
+
             return res.ToArray();
         }
 
@@ -181,7 +189,8 @@ namespace Buttplug.Core
             return _parser.Deserialize(aMsg);
         }
 
-        public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager,T> aCreateMgrFunc) where T : IDeviceSubtypeManager
+        public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager, T> aCreateMgrFunc)
+            where T : IDeviceSubtypeManager
         {
             _deviceManager.AddDeviceSubtypeManager(aCreateMgrFunc);
         }
@@ -199,4 +208,3 @@ namespace Buttplug.Core
         }
     }
 }
-

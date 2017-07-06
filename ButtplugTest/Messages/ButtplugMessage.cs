@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugTest.Core;
-using System.Collections.Generic;
-using System.Reflection;
 using Xunit;
 
 namespace ButtplugTest.Messages
@@ -73,10 +73,11 @@ namespace ButtplugTest.Messages
 
         private class FakeMessage : ButtplugMessage
         {
-            public FakeMessage(uint aId) : base(aId)
+            public FakeMessage(uint aId)
+                : base(aId)
             {
             }
-        };
+        }
 
         [Fact]
         public async void SendUnhandledMessage()
@@ -91,8 +92,10 @@ namespace ButtplugTest.Messages
         {
             var logger = new ButtplugLogManager();
             var r = new ButtplugJsonMessageParser(logger).Serialize(new FakeMessage(1));
+
             // Even though the message is defined outside the core library, it should at least serialize
             Assert.True(r.Length > 0);
+
             // However it shouldn't be taken by the server.
             var s = new TestService();
             var e = await s.SendMessage(r);
@@ -115,7 +118,7 @@ namespace ButtplugTest.Messages
         public async void RequestServerInfoTest()
         {
             var s = new ButtplugService("TestClient", 100);
-            var results = new List<ButtplugMessage> {await s.SendMessage(new RequestServerInfo("TestClient"))};
+            var results = new List<ButtplugMessage> { await s.SendMessage(new RequestServerInfo("TestClient")) };
             results.AddRange(await s.SendMessage("[{\"RequestServerInfo\":{\"Id\":1, \"ClientName\":\"TestClient\"}}]"));
 
             foreach (var reply in results)
@@ -123,13 +126,14 @@ namespace ButtplugTest.Messages
                 ServerInfo r;
                 try
                 {
-                    r = (ServerInfo) reply;
+                    r = (ServerInfo)reply;
                 }
                 catch (InvalidCastException)
                 {
                     Assert.True(reply is ServerInfo);
                     continue;
                 }
+
                 Assert.True(r.MajorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major);
                 Assert.True(r.MinorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor);
                 Assert.True(r.BuildVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build);

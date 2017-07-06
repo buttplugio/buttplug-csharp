@@ -11,14 +11,16 @@ namespace ButtplugWebsockets
     public class ButtplugWebsocketServerBehavior : WebSocketBehavior
     {
         private ButtplugService _buttplug;
-        
+
         public ButtplugService Service
         {
-            set {
+            set
+            {
                 if (_buttplug != null)
                 {
                     throw new AccessViolationException("Service already set!");
                 }
+
                 _buttplug = value ?? throw new ArgumentNullException();
                 _buttplug.MessageReceived += OnMessageReceived;
             }
@@ -33,12 +35,12 @@ namespace ButtplugWebsockets
                 ids.Remove(ID);
                 if (ids.Any())
                 {
-                    var msg = _buttplug.Serialize(new Error("WebSocketServer already in use!", Buttplug.Messages.Error.ErrorClass.ERROR_INIT, ButtplugConsts.SYSTEM_MSG_ID));
+                    var msg = _buttplug.Serialize(new Error("WebSocketServer already in use!", Buttplug.Messages.Error.ErrorClass.ERROR_INIT, ButtplugConsts.SystemMsgId));
                     try
                     {
                         Send(msg);
                     }
-                    catch(InvalidOperationException)
+                    catch (InvalidOperationException)
                     {
                         // noop - likely already disconnected
                     }
@@ -81,6 +83,7 @@ namespace ButtplugWebsockets
             {
                 // noop - likely already disconnected
             }
+
             var error = aEvent.Message as Error;
             if (error != null && error.ErrorCode == Buttplug.Messages.Error.ErrorClass.ERROR_PING)
             {

@@ -1,10 +1,10 @@
-﻿using Buttplug.Bluetooth;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Buttplug.Bluetooth;
 using Buttplug.Core;
 using Buttplug.Messages;
 using JetBrains.Annotations;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
@@ -36,6 +36,7 @@ namespace ButtplugUWPBluetoothManager.Core
             {
                 return false;
             }
+
             return !aAdvertisement.ServiceUuids.Any() || _deviceInfo.Services.Union(aAdvertisement.ServiceUuids).Any();
         }
 
@@ -45,16 +46,18 @@ namespace ButtplugUWPBluetoothManager.Core
         {
             // GetGattServicesForUuidAsync is 15063 only
             var services = await aDevice.GetGattServicesAsync(BluetoothCacheMode.Cached);
-            foreach( var s in services.Services)
+            foreach (var s in services.Services)
             {
                 _bpLogger.Trace("Found service UUID: " + s.Uuid);
             }
+
             var srvResult = await aDevice.GetGattServicesForUuidAsync(_deviceInfo.Services[0], BluetoothCacheMode.Cached);
             if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
             {
                 _bpLogger.Trace("Cannot find service for device");
                 return null;
             }
+
             var service = srvResult.Services.First();
 
             var chrResult = await service.GetCharacteristicsAsync();
@@ -82,6 +85,7 @@ namespace ButtplugUWPBluetoothManager.Core
             {
                 return device;
             }
+
             // If initialization fails, don't actually send the message back. Just return null, we'll have the info in the logs.
             return null;
         }

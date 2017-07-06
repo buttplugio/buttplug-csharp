@@ -10,6 +10,7 @@ namespace Buttplug.Core
     {
         [NotNull]
         private readonly ILog _log;
+
         public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
 
         public ButtplugLog([NotNull] ILog aLogger)

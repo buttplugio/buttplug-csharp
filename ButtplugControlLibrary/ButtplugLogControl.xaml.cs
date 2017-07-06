@@ -36,9 +36,9 @@ namespace ButtplugControlLibrary
             {
                 Dispatcher.FromThread(_winThread).Invoke(() => _logs.Add(Layout.Render(aLogEvent)));
             }
-            catch(TaskCanceledException)
+            catch (TaskCanceledException)
             {
-                //noop
+                // noop
             }
         }
     }
@@ -56,6 +56,7 @@ namespace ButtplugControlLibrary
         {
             var c = LogManager.Configuration ?? new LoggingConfiguration();
             _logs = new LogList();
+
             // Null check Dispatcher, otherwise test bringup for GUI tests will fail.
             if (Dispatcher != null)
             {
@@ -65,6 +66,7 @@ namespace ButtplugControlLibrary
                 c.LoggingRules.Add(_outgoingLoggingRule);
                 LogManager.Configuration = c;
             }
+
             InitializeComponent();
             LogLevelComboBox.SelectionChanged += LogLevelSelectionChangedHandler;
             LogListBox.ItemsSource = _logs;
@@ -90,22 +92,24 @@ namespace ButtplugControlLibrary
             {
                 CheckFileExists = false,
                 CheckPathExists = true,
-                OverwritePrompt = true
+                OverwritePrompt = true,
             };
             if (dialog.ShowDialog() != true)
             {
                 return;
             }
+
             var sw = new System.IO.StreamWriter(dialog.FileName, false);
             foreach (var line in _logs.ToList())
             {
                 sw.WriteLine(line);
             }
+
             sw.Close();
         }
 
         private void LogLevelSelectionChangedHandler(object aSender, SelectionChangedEventArgs aEvent)
-        {            
+        {
             var c = LogManager.Configuration;
             var level = ((ComboBoxItem)LogLevelComboBox.SelectedValue).Content.ToString();
             try
@@ -113,7 +117,7 @@ namespace ButtplugControlLibrary
                 c.LoggingRules.Remove(_outgoingLoggingRule);
                 _outgoingLoggingRule = new LoggingRule("*", LogLevel.FromString(level), _logTarget);
                 c.LoggingRules.Add(_outgoingLoggingRule);
-                LogManager.Configuration = c;                
+                LogManager.Configuration = c;
             }
             catch (ArgumentException)
             {

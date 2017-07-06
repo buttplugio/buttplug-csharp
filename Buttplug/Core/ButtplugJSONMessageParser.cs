@@ -1,13 +1,13 @@
-﻿using Buttplug.Messages;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NJsonSchema;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Buttplug.Messages;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NJsonSchema;
 using static Buttplug.Messages.Error;
 
 namespace Buttplug.Core
@@ -26,6 +26,7 @@ namespace Buttplug.Core
             _bpLogger = aLogManager.GetLogger(GetType());
             _bpLogger.Debug($"Setting up {GetType().Name}");
             IEnumerable<Type> allTypes;
+
             // Some classes in the library may not load on certain platforms due to missing symbols.
             // If this is the case, we should still find messages even though an exception was thrown.
             try
@@ -36,6 +37,7 @@ namespace Buttplug.Core
             {
                 allTypes = e.Types;
             }
+
             var messageClasses = from t in allTypes
                                  where t != null && t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(ButtplugMessage).IsAssignableFrom(t)
                                  select t;
@@ -84,39 +86,40 @@ namespace Buttplug.Core
             {
                 _bpLogger.Debug($"Not valid JSON: {aJsonMsg}");
                 _bpLogger.Debug(e.Message);
-                res.Add(new Error("Not valid JSON", ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
-                return res.ToArray(); 
+                res.Add(new Error("Not valid JSON", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
+                return res.ToArray();
             }
 
             var errors = _schema.Validate(a);
-            if( errors.Any() )
+            if (errors.Any())
             {
-                res.Add(new Error("Message does not conform to schema: " + string.Join(", ", errors.Select(aErr => aErr.ToString()).ToArray()), ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
+                res.Add(new Error("Message does not conform to schema: " + string.Join(", ", errors.Select(aErr => aErr.ToString()).ToArray()), ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
                 return res.ToArray();
             }
 
             if (!a.Any())
             {
-                res.Add(new Error("No messages in array", ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
+                res.Add(new Error("No messages in array", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
                 return res.ToArray();
             }
 
             // JSON input is an array of messages.
             // We currently only handle the first one.
-
             foreach (var o in a.Children<JObject>())
             {
                 if (!o.Properties().Any())
                 {
-                    res.Add(new Error("No message name available", ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
+                    res.Add(new Error("No message name available", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
                     continue;
                 }
+
                 var msgName = o.Properties().First().Name;
                 if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
                 {
-                    res.Add(new Error($"{msgName} is not a valid message class", ErrorClass.ERROR_MSG, ButtplugConsts.SYSTEM_MSG_ID));
+                    res.Add(new Error($"{msgName} is not a valid message class", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
                     continue;
                 }
+
                 var s = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
 
                 // This specifically could fail due to object conversion.
@@ -128,13 +131,14 @@ namespace Buttplug.Core
                 }
                 catch (InvalidCastException e)
                 {
-                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, ErrorClass.ERROR_MSG, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
+                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
                 }
                 catch (JsonSerializationException e)
                 {
-                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SYSTEM_MSG_ID, ErrorClass.ERROR_MSG, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
+                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
                 }
             }
+
             return res.ToArray();
         }
 
@@ -156,6 +160,7 @@ namespace Buttplug.Core
                 var o = new JObject(new JProperty(msg.GetType().Name, JObject.FromObject(msg)));
                 a.Add(o);
             }
+
             _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);
             return a.ToString(Formatting.None);
         }
