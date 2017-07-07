@@ -65,6 +65,11 @@ namespace ButtplugClient.Core
             _bpLogger.Trace("Finished setting up ButtplugClient");
         }
 
+        ~ButtplugWSClient()
+        {
+            Diconnect().Wait();
+        }
+
         public async Task Connect(Uri aURL)
         {
             if (_ws != null && (_ws.State == WebSocketState.Connecting || _ws.State == WebSocketState.Open) )
@@ -74,7 +79,7 @@ namespace ButtplugClient.Core
 
             _ws = new ClientWebSocket();
             _waitingMsgs.Clear();
-            _counter = 0;
+            _counter = 1;
             await _ws.ConnectAsync(aURL, CancellationToken.None);
 
             if (_ws.State != WebSocketState.Open)
@@ -99,6 +104,31 @@ namespace ButtplugClient.Core
                 case Error e:
                     break;
             }
+        }
+
+        public async Task Diconnect()
+        {
+            if (_pingTimer != null)
+            {
+                _pingTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                _pingTimer = null;
+            }
+
+            while (_ws != null && _ws.State != WebSocketState.Closed && _ws.State != WebSocketState.Aborted)
+            {
+                if (_ws.State != WebSocketState.CloseSent && _ws.State != WebSocketState.Closed)
+                {
+                    await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client shutdown", CancellationToken.None);
+                }
+            }
+
+            if (_readThread != null && _readThread.IsAlive)
+            {
+                _readThread.Join();
+                _readThread = null;
+            }
+
+            _counter = 1;
         }
 
         private void wsReader()
