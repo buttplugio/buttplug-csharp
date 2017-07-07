@@ -22,7 +22,6 @@ namespace ButtplugControlLibrary
     /// </summary>
     public partial class ButtplugTabControl : IButtplugServiceFactory
     {
-        [NotNull]
         private readonly RavenClient _ravenClient;
         [NotNull]
         private readonly Logger _guiLog;
@@ -33,18 +32,6 @@ namespace ButtplugControlLibrary
 
         public ButtplugTabControl()
         {
-            _ravenClient = new RavenClient("https://2e376d00cdcb44bfb2140c1cf000d73b:1fa6980aeefa4b048b866a450ee9ad71@sentry.io/170313");
-
-            // Cover all of the possible bases for WPF failure
-            // http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-
-            // Null check application, otherwise test bringup for GUI tests will fail
-            if (Application.Current != null)
-            {
-                Application.Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
-            }
-
             _guiLog = LogManager.GetCurrentClassLogger();
             LogManager.Configuration = LogManager.Configuration ?? new LoggingConfiguration();
 #if DEBUG
@@ -54,6 +41,24 @@ namespace ButtplugControlLibrary
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, t));
             LogManager.Configuration = LogManager.Configuration;
 #endif
+
+            try
+            {
+                _ravenClient = new RavenClient("SENTRY_API_URL");
+            }
+            catch (ArgumentException)
+            {
+                _guiLog.Error("Sentry URL invalid, cannot submit crash reports!");
+            }
+            // Cover all of the possible bases for WPF failure
+            // http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+
+            // Null check application, otherwise test bringup for GUI tests will fail
+            if (Application.Current != null)
+            {
+                Application.Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
+            }
 
             // Set up GUI
             InitializeComponent();
@@ -109,7 +114,7 @@ namespace ButtplugControlLibrary
 
         private void SendExceptionToSentry(Exception aEx)
         {
-            if (_sentCrashLog)
+            if (_sentCrashLog || _ravenClient == null)
             {
                 return;
             }
@@ -160,7 +165,7 @@ namespace ButtplugControlLibrary
 
         private void SendLogsButton_Click(object aSender, RoutedEventArgs aEvent)
         {
-            _ravenClient.Capture(new SentryEvent(string.Join("\n", LogControl.GetLogs())));
+            _ravenClient?.Capture(new SentryEvent(string.Join("\n", LogControl.GetLogs())));
         }
 
         public void SetApplicationTab(string aTabName, UserControl aTabControl)

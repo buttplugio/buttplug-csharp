@@ -31,7 +31,9 @@ install:
         appveyor UpdateBuild -Version "$newVersion"
       }
       gitVersion
-
+  - ps: |
+      (Get-Content ButtplugControlLibrary\ButtplugTabControl.xaml.cs).replace('SENTRY_API_URL', $env:sentry_api_url) | Set-Content ButtplugControlLibrary\ButtplugTabControl.xaml.cs
+      
       
 # patch the assembly version, but only in our own directories
 assembly_info:
@@ -66,3 +68,6 @@ cache:
   # Cache chocolatey packages
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
+environment:
+  sentry_api_url:
+    secure: grqYfjT9kMwONAdl/iwYcI7NOEd8ounzFFehZIWX3I3y1oiIa7F4GrZJKNqWcucEhyyn9SpAnXiheKAJU/kl0nFT7QUlnXplEE9c/krbWDEy0mSMy5DaFv1+MijZ5hjm
