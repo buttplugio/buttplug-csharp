@@ -10,6 +10,7 @@ using Buttplug.Core;
 using Buttplug.Messages;
 using ButtplugKiirooPlatformEmulator;
 using JetBrains.Annotations;
+using System.Net;
 
 namespace ButtplugKiirooEmulatorGUI
 {
@@ -62,6 +63,7 @@ namespace ButtplugKiirooEmulatorGUI
             _bpServer.MessageReceived += OnMessageReceived;
             _kiirooEmulator = new KiirooPlatformEmulator();
             _kiirooEmulator.OnKiirooPlatformEvent += HandleKiirooPlatformMessage;
+            _kiirooEmulator.OnException += HandleKiirooPlatformMessage;
             _translator = new KiirooMessageTranslator();
             _translator.VibrateEvent += OnVibrateEvent;
             DeviceListBox.SelectionMode = SelectionMode.Multiple;
@@ -99,6 +101,27 @@ namespace ButtplugKiirooEmulatorGUI
         public void StartServer()
         {
             _kiirooEmulator.StartServer();
+            ServerButton.Content = "Stop Server";
+        }
+
+        private void HandleKiirooPlatformMessage(object aObj, UnhandledExceptionEventArgs aEvent)
+        {
+            // This is most likely a socket in use exception
+            switch (aEvent.ExceptionObject)
+            {
+                case HttpListenerException hle:
+                    MessageBox.Show(hle.Message, "Error Encountered", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    StopServer();
+                    if (hle.ErrorCode != 183)
+                    {
+                        throw hle;
+                    }
+
+                    break;
+
+                default:
+                    throw aEvent.ExceptionObject as Exception;
+            }
         }
 
         public void StopServer()
@@ -106,6 +129,7 @@ namespace ButtplugKiirooEmulatorGUI
             _bpServer.SendMessage(new StopScanning()).Wait();
             _bpServer.SendMessage(new StopAllDevices()).Wait();
             _kiirooEmulator.StopServer();
+            ServerButton.Content = "Start Server";
         }
 
         private void OperationCompletedHandler(object aObj, EventArgs aEvent)
@@ -199,6 +223,18 @@ namespace ButtplugKiirooEmulatorGUI
                     }
                 }
             });
+        }
+
+        private void ServerButton_Click(object sender, RoutedEventArgs e)
+        {
+            if ((string)ServerButton.Content == "Start Server")
+            {
+                StartServer();
+            }
+            else
+            {
+                StopServer();
+            }
         }
     }
 }

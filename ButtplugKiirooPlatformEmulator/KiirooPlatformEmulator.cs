@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using JetBrains.Annotations;
+using System.Collections.Specialized;
 
 namespace ButtplugKiirooPlatformEmulator
 {
@@ -25,6 +26,8 @@ namespace ButtplugKiirooPlatformEmulator
         private bool _isRunning;
 
         public event EventHandler<KiirooPlatformEventArgs> OnKiirooPlatformEvent;
+
+        public event EventHandler<UnhandledExceptionEventArgs> OnException;
 
         public KiirooPlatformEmulator()
         {
@@ -66,7 +69,17 @@ namespace ButtplugKiirooPlatformEmulator
 
             _isRunning = true;
             _stop = false;
-            _httpListener.Start();
+            try
+            {
+                _httpListener.Start();
+            }
+            catch (Exception e)
+            {
+                OnException?.Invoke(this, new UnhandledExceptionEventArgs(e, true));
+                _isRunning = false;
+                return;
+            }
+
             while (!_stop)
             {
                 HttpListenerContext ctx = null;
@@ -111,12 +124,21 @@ namespace ButtplugKiirooPlatformEmulator
                         break;
                     case "senddata":
                         json = "{}";
-                        var post = GetRequestPostData(ctx.Request);
-                        var data = HttpUtility.ParseQueryString(post);
-                        if (!data.HasKeys())
+                        NameValueCollection data;
+                        try
                         {
-                            response.StatusCode = (int)HttpStatusCode.NotFound;
-                            response.Close();
+                            var post = GetRequestPostData(ctx.Request);
+                            data = HttpUtility.ParseQueryString(post);
+                            if (!data.HasKeys())
+                            {
+                                response.StatusCode = (int)HttpStatusCode.NotFound;
+                                response.Close();
+                                continue;
+                            }
+                        }
+                        catch
+                        {
+                            // noop - most likely the connection has been severed half way through a read.
                             continue;
                         }
 
@@ -142,9 +164,17 @@ namespace ButtplugKiirooPlatformEmulator
 
                 var messageBytes = Encoding.UTF8.GetBytes(json);
                 response.ContentLength64 = messageBytes.Length;
-                await response.OutputStream.WriteAsync(messageBytes, 0, messageBytes.Length);
-                response.OutputStream.Close();
-                response.Close();
+                try
+                {
+                    await response.OutputStream.WriteAsync(messageBytes, 0, messageBytes.Length);
+                    response.OutputStream.Close();
+                    response.Close();
+                }
+                catch
+                {
+                    // noop - most likely the connection has been severed half way through a read.
+                    continue;
+                }
             }
 
             _isRunning = false;
@@ -158,7 +188,13 @@ namespace ButtplugKiirooPlatformEmulator
             }
 
             _stop = true;
-            _httpListener.Stop();
+
+            if (_httpListener.IsListening)
+            {
+                _httpListener.Stop();
+            }
+
+            _isRunning = false;
         }
     }
 }

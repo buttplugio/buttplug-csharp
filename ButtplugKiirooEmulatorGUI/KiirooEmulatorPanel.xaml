@@ -13,6 +13,7 @@
             </Grid.RowDefinitions>
             <ListBox Grid.Row="0" Name="DeviceListBox" Margin="10,10,10,10" />
             <Button Grid.Row="1" Name="ScanButton" Content="Start Scanning" Margin="10,0,0,0" HorizontalAlignment="Left" Width="95" Click="ScanButton_Click" />
+            <Button Grid.Row="1" Name="ServerButton" Content="Start Server" Margin="0,0,10,0" HorizontalAlignment="Right" Width="95" Click="ServerButton_Click" />
         </Grid>
     </Grid>
 </UserControl>
