@@ -41,6 +41,8 @@ namespace ButtplugClientTest
             Assert.True(((Test)res).TestString == "Test string");
             Assert.True(((Test)res).Id == msgId);
 
+            // Shut it down
+            client.Diconnect().Wait();
             server.StopServer();
         }
     }
