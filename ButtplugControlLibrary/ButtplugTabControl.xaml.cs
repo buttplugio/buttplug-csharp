@@ -153,6 +153,11 @@ namespace ButtplugControlLibrary
             throw new Exception("Should be caught and sent to sentry!");
         }
 
+        private void SendLogsButton_Click(object aSender, RoutedEventArgs aEvent)
+        {
+            _ravenClient.Capture(new SentryEvent(string.Join("\n", LogControl.GetLogs())));
+        }
+
         public void SetApplicationTab(string aTabName, UserControl aTabControl)
         {
             ApplicationTab.Header = aTabName;

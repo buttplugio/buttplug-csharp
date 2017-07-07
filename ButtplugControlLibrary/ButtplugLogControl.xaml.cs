@@ -86,6 +86,11 @@ namespace ButtplugControlLibrary
             GC.SuppressFinalize(this);
         }
 
+        public string[] GetLogs()
+        {
+            return _logs.ToArray();
+        }
+
         private void SaveLogFileButton_Click(object aSender, RoutedEventArgs aEvent)
         {
             var dialog = new SaveFileDialog
