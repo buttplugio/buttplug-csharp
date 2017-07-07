@@ -129,6 +129,11 @@ namespace ButtplugControlLibrary
             var result = MessageBox.Show("An error was encountered! Do you want to report this to the developers?", "Error encountered", MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
+                if (LogControl != null)
+                {
+                    aEx.Data.Add("LogMessages", string.Join("\n", LogControl.GetLogs()));
+                }
+
                 _ravenClient.Capture(new SentryEvent(aEx));
             }
         }
