@@ -48,7 +48,11 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ButtplugClientDevice.cs" />
     <Compile Include="Core\ButtplugWSClient.cs" />
+    <Compile Include="Core\DeviceAction.cs" />
+    <Compile Include="Core\LogEventArgs.cs" />
+    <Compile Include="Core\ScanningFinishedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

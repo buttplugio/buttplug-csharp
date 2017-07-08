@@ -60,7 +60,17 @@ namespace ButtplugWebsockets
             EventHandler<Buttplug.Core.MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
             {
                 var msg = buttplug.Serialize(aEvent.Message);
-                ws.WriteString(msg);
+                try
+                {
+                    if (ws != null && ws.IsConnected)
+                    {
+                        ws.WriteString(msg);
+                    }
+                }
+                catch (WebSocketException)
+                {
+                    // Log? - probably means we're repling to a message we recieved just before shutdown.
+                }
             };
 
             buttplug.MessageReceived += msgReceived;
