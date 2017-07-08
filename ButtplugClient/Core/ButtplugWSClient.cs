@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using Buttplug.Core;
 using Buttplug.Messages;
 using JetBrains.Annotations;
+using static ButtplugClient.Core.DeviceEventArgs;
 
 namespace ButtplugClient.Core
 {
@@ -17,9 +18,6 @@ namespace ButtplugClient.Core
     {
         [NotNull]
         private readonly ButtplugJsonMessageParser _parser;
-
-        [CanBeNull]
-        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
         [NotNull]
         private readonly IButtplugLog _bpLogger;
@@ -38,6 +36,9 @@ namespace ButtplugClient.Core
         [NotNull]
         private ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs = new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
 
+        [NotNull]
+        private ConcurrentDictionary<uint, ButtplugClientDevice> _devices = new ConcurrentDictionary<uint, ButtplugClientDevice>();
+
         [CanBeNull]
         private ClientWebSocket _ws;
 
@@ -53,6 +54,24 @@ namespace ButtplugClient.Core
 
         [NotNull]
         private int _counter;
+
+        [CanBeNull]
+        public event EventHandler<DeviceEventArgs> DeviceAdded;
+
+        [CanBeNull]
+        public event EventHandler<DeviceEventArgs> DeviceRemoved;
+
+        [CanBeNull]
+        public event EventHandler<ScanningFinishedEventArgs> ScanningFinished;
+
+        [CanBeNull]
+        public event EventHandler<LogEventArgs> Log;
+
+        [CanBeNull]
+        private bool _gotServerInfo;
+
+        [CanBeNull]
+        private bool _gotError;
 
         public uint nextMsgId
         {
@@ -75,19 +94,22 @@ namespace ButtplugClient.Core
 
         ~ButtplugWSClient()
         {
-            Diconnect().Wait();
+            Disconnect().Wait();
         }
 
         public async Task Connect(Uri aURL)
         {
-            if (_ws != null && (_ws.State == WebSocketState.Connecting || _ws.State == WebSocketState.Open) )
+            if (_ws != null && (_ws.State == WebSocketState.Connecting || _ws.State == WebSocketState.Open))
             {
                 throw new AccessViolationException("Already connected!");
             }
 
             _ws = new ClientWebSocket();
             _waitingMsgs.Clear();
+            _devices.Clear();
             _counter = 1;
+            _gotServerInfo = false;
+            _gotError = false;
             await _ws.ConnectAsync(aURL, CancellationToken.None);
 
             if (_ws.State != WebSocketState.Open)
@@ -114,7 +136,7 @@ namespace ButtplugClient.Core
             }
         }
 
-        public async Task Diconnect()
+        public async Task Disconnect()
         {
             if (_pingTimer != null)
             {
@@ -132,6 +154,18 @@ namespace ButtplugClient.Core
 
             _tokenSource.Cancel();
             _readThread.Wait();
+
+            var max = 3;
+            while (max-- > 0 && _waitingMsgs.Count != 0)
+            {
+                foreach (var msgId in _waitingMsgs.Keys)
+                {
+                    if (_waitingMsgs.TryRemove(msgId, out TaskCompletionSource<ButtplugMessage> promise))
+                    {
+                        promise.SetResult(new Error("Connection closed!", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId));
+                    }
+                }
+            }
 
             _counter = 1;
         }
@@ -159,10 +193,43 @@ namespace ButtplugClient.Core
                                 queued.TrySetResult(msg);
                                 continue;
                             }
-                            _owningDispatcher.Invoke(() =>
+
+                            switch (msg)
                             {
-                                MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
-                            });
+                                case Log l:
+                                    _owningDispatcher.Invoke(() =>
+                                    {
+                                        Log?.Invoke(this, new LogEventArgs(l));
+                                    });
+                                    break;
+
+                                case DeviceAdded d:
+                                    var dev = new ButtplugClientDevice(d);
+                                    _devices.AddOrUpdate(d.DeviceIndex, dev, (idx, old) => dev);
+                                    _owningDispatcher.Invoke(() =>
+                                    {
+                                        DeviceAdded?.Invoke(this, new DeviceEventArgs(dev, DeviceAction.ADDED));
+                                    });
+                                    break;
+
+                                case DeviceRemoved d:
+                                    if (_devices.TryRemove(d.DeviceIndex, out ButtplugClientDevice oldDev))
+                                    {
+                                        _owningDispatcher.Invoke(() =>
+                                        {
+                                            DeviceRemoved?.Invoke(this, new DeviceEventArgs(oldDev, DeviceAction.REMOVED));
+                                        });
+                                    }
+
+                                    break;
+
+                                case ScanningFinished sf:
+                                    _owningDispatcher.Invoke(() =>
+                                    {
+                                        ScanningFinished?.Invoke(this, new ScanningFinishedEventArgs(sf));
+                                    });
+                                    break;
+                            }
                         }
 
                         sb.Clear();
@@ -184,7 +251,71 @@ namespace ButtplugClient.Core
             }
         }
 
-        public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
+        public async Task RequestDeviceList()
+        {
+            var deviceList = (await SendMessage(new RequestDeviceList(nextMsgId))) as DeviceList;
+            foreach (var d in deviceList.Devices)
+            {
+                if (!_devices.ContainsKey(d.DeviceIndex))
+                {
+                    var device = new ButtplugClientDevice(d);
+                    if (_devices.TryAdd(d.DeviceIndex, device))
+                    {
+                        _owningDispatcher.Invoke(() =>
+                        {
+                            DeviceAdded?.Invoke(this, new DeviceEventArgs(device, DeviceAction.ADDED));
+                        });
+                    }
+                }
+            }
+        }
+
+        public ButtplugClientDevice[] getDevices()
+        {
+            var devices = new List<ButtplugClientDevice>();
+            devices.AddRange(_devices.Values);
+            return devices.ToArray();
+        }
+
+        public async Task<bool> StartScanning()
+        {
+            return await SendMessageExpectOk(new StartScanning(nextMsgId));
+        }
+
+        public async Task<bool> StopScanning()
+        {
+            return await SendMessageExpectOk(new StopScanning(nextMsgId));
+        }
+
+        public async Task<bool> RequestLog(string aLogLevel)
+        {
+            return await this.SendMessageExpectOk(new RequestLog(aLogLevel, nextMsgId));
+        }
+
+        public async Task<ButtplugMessage> SendDeviceMessage(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg)
+        {
+            if (_devices.TryGetValue(aDevice.Index, out ButtplugClientDevice dev))
+            {
+                if (!dev.AllowedMessages.Contains(aDeviceMsg.GetType().ToString()))
+                {
+                    return new Error("Device does not accept that message type.", Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId);
+                }
+
+                aDeviceMsg.DeviceIndex = aDevice.Index;
+                return await SendMessage(aDeviceMsg);
+            }
+            else
+            {
+                return new Error("Device not available.", Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId);
+            }
+        }
+
+        protected async Task<bool> SendMessageExpectOk(ButtplugMessage aMsg)
+        {
+            return await SendMessage(aMsg) is Ok;
+        }
+
+        protected async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
         {
             var promise = new TaskCompletionSource<ButtplugMessage>();
             _waitingMsgs.TryAdd(aMsg.Id, promise);
@@ -201,24 +332,24 @@ namespace ButtplugClient.Core
 
                 return await promise.Task;
             }
-            catch (WebSocketException)
+            catch (WebSocketException e)
             {
                 // Noop - WS probably closed on us during read
-                return null;
+                return new Error(e.Message, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId); ;
             }
         }
 
-        public string Serialize(ButtplugMessage aMsg)
+        protected string Serialize(ButtplugMessage aMsg)
         {
             return _parser.Serialize(aMsg);
         }
 
-        public string Serialize(ButtplugMessage[] aMsgs)
+        protected string Serialize(ButtplugMessage[] aMsgs)
         {
             return _parser.Serialize(aMsgs);
         }
 
-        public ButtplugMessage[] Deserialize(string aMsg)
+        protected ButtplugMessage[] Deserialize(string aMsg)
         {
             return _parser.Deserialize(aMsg);
         }
