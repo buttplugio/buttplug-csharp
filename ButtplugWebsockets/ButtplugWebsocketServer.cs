@@ -1,64 +1,99 @@
-﻿using System.Text;
+﻿using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Buttplug.Core;
 using JetBrains.Annotations;
-using WebSocketSharp;
-using WebSocketSharp.Net;
-using WebSocketSharp.Server;
+using vtortola.WebSockets;
 
 namespace ButtplugWebsockets
 {
     public class ButtplugWebsocketServer
     {
-        private HttpServer _wsServer;
+        private WebSocketListener _server;
+        [NotNull]
+        private IButtplugServiceFactory _factory;
 
         public void StartServer([NotNull] IButtplugServiceFactory aFactory, int aPort = 12345, bool aSecure = false)
         {
-            _wsServer = new HttpServer(aPort, aSecure);
-            _wsServer.RemoveWebSocketService("/buttplug");
-            _wsServer.OnGet += OnGetHandler;
+            CancellationTokenSource cancellation = new CancellationTokenSource();
+            _factory = aFactory;
+
+            var endpoint = new IPEndPoint(IPAddress.Any, aPort);
+            _server = new WebSocketListener(endpoint);
+            var rfc6455 = new vtortola.WebSockets.Rfc6455.WebSocketFactoryRfc6455(_server);
+            _server.Standards.RegisterStandard(rfc6455);
             if (aSecure)
             {
-                _wsServer.SslConfiguration.ServerCertificate = CertUtils.GetCert("Buttplug");
+                var cert = CertUtils.GetCert("Buttplug");
+                _server.ConnectionExtensions.RegisterExtension(new WebSocketSecureConnectionExtension(cert));
             }
 
-            _wsServer.WebSocketServices.AddService<ButtplugWebsocketServerBehavior>("/buttplug", (aObj) => aObj.Service = aFactory.GetService());
-            _wsServer.Start();
+            _server.Start();
+
+            Task.Run(() => AcceptWebSocketClientsAsync(_server, cancellation.Token));
+        }
+
+        private async Task AcceptWebSocketClientsAsync(WebSocketListener aServer, CancellationToken aToken)
+        {
+            while (!aToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var ws = await aServer.AcceptWebSocketAsync(aToken).ConfigureAwait(false);
+                    if (ws != null)
+                    {
+                       Task.Run(() => HandleConnectionAsync(ws, aToken));
+                    }
+                }
+                catch (Exception aEx)
+                {
+                    // TODO: Actually log here.
+                }
+            }
+        }
+
+        private async Task HandleConnectionAsync(WebSocket ws, CancellationToken cancellation)
+        {
+            var buttplug = _factory.GetService();
+
+            EventHandler<Buttplug.Core.MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
+            {
+                var msg = buttplug.Serialize(aEvent.Message);
+                ws.WriteString(msg);
+            };
+
+            buttplug.MessageReceived += msgReceived;
+
+            try
+            {
+                while (ws.IsConnected && !cancellation.IsCancellationRequested)
+                {
+                    var msg = await ws.ReadStringAsync(cancellation).ConfigureAwait(false);
+                    if (msg != null)
+                    {
+                        var respMsg = buttplug.Serialize(await buttplug.SendMessage(msg));
+                        await ws.WriteStringAsync(respMsg, cancellation);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // TODO Log here.
+                try { ws.Close(); }
+                catch { }
+            }
+            finally
+            {
+                buttplug.MessageReceived -= msgReceived;
+                buttplug = null;
+                ws.Dispose();
+            }
         }
 
         public void StopServer()
         {
-            if (_wsServer is null)
-            {
-                return;
-            }
-
-            _wsServer.Stop();
-            _wsServer.RemoveWebSocketService("/buttplug");
-            _wsServer = null;
-        }
-
-        private static void OnGetHandler(object aSender, HttpRequestEventArgs aEvent)
-        {
-            var req = aEvent.Request;
-            var res = aEvent.Response;
-
-            // Wouldn't it be cool to present syncydink here?
-            var path = req.RawUrl;
-            if (path == "/")
-            {
-                path += "index.html";
-            }
-
-            if (path != "/index.html")
-            {
-                res.StatusCode = (int)HttpStatusCode.TemporaryRedirect;
-                res.RedirectLocation = "/index.html";
-                return;
-            }
-
-            res.ContentType = "text/html";
-            res.ContentEncoding = Encoding.UTF8;
-            res.WriteContent(Encoding.UTF8.GetBytes("<html><head><title>Buttplug server</title></head><body><h1>Buttplug server</h1><p>The server is running.</p></body></html>"));
+            _server?.Stop();
         }
     }
 }
