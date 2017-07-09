@@ -34,7 +34,7 @@ install:
       }
       gitVersion
   - ps: |
-      (Get-Content ButtplugControlLibrary\ButtplugTabControl.xaml.cs).replace('SENTRY_API_URL', $env:sentry_api_url) | Set-Content ButtplugControlLibrary\ButtplugTabControl.xaml.cs
+      (Get-Content Buttplug.Components.Controls\ButtplugTabControl.xaml.cs).replace('SENTRY_API_URL', $env:sentry_api_url) | Set-Content Buttplug.Components.Controls\ButtplugTabControl.xaml.cs
       
       
 # patch the assembly version, but only in our own directories
@@ -48,13 +48,13 @@ assembly_info:
 before_build:
   - nuget restore
 build:
-  project: buttplug-csharp.sln
+  project: Buttplug.sln
 after_build:
-  - cmd: InspectCode.exe -o=resharper-clt-output.xml --project=Buttplug* buttplug-csharp.sln
+  - cmd: InspectCode.exe -o=resharper-clt-output.xml --project=Buttplug* Buttplug.sln
   - ps: $result = [xml](Get-Content .\resharper-clt-output.xml)
   - ps: $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
 test_script:
-  - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"ButtplugTest\bin\$env:CONFIGURATION\ButtplugTest.dll ButtplugServerGUITest\bin\$env:CONFIGURATION\ButtplugServerGUITest.dll ButtplugKiirooEmulatorGUITest\bin\$env:CONFIGURATION\ButtplugKiirooEmulatorGUITest.dll ButtplugClientTest\bin\$env:CONFIGURATION\ButtplugClientTest.dll -noshadow" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
+  - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"Buttplug.Server.Test\bin\$env:CONFIGURATION\Buttplug.Server.Test.dll Buttplug.Client.Test\bin\$env:CONFIGURATION\Buttplug.Client.Test.dll Buttplug.Apps.WebsocketServerGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.WebsocketServerGUI.Test.dll Buttplug.Apps.KiirooEmulatorGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.KiirooEmulatorGUI.Test.dll -noshadow" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
 after_test:
   - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
   - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }
