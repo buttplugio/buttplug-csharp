@@ -16,7 +16,7 @@ namespace ButtplugClientTest
         }
 
         [Fact]
-        public void TestConnection()
+        public async void TestConnection()
         {
             var server = new ButtplugWebsocketServer();
             server.StartServer(this);
@@ -25,7 +25,7 @@ namespace ButtplugClientTest
             client.Connect(new Uri("ws://localhost:12345/buttplug")).Wait();
 
             var msgId = client.nextMsgId;
-            var res = client.SendMessage(new Test("Test string", msgId)).GetAwaiter().GetResult();
+            var res = await client.SendMessage(new Test("Test string", msgId));
             Assert.True(res != null);
             Assert.True(res is Test);
             Assert.True(((Test)res).TestString == "Test string");
@@ -35,7 +35,7 @@ namespace ButtplugClientTest
             Thread.Sleep(200);
 
             msgId = client.nextMsgId;
-            res = client.SendMessage(new Test("Test string", msgId)).GetAwaiter().GetResult();
+            res = await client.SendMessage(new Test("Test string", msgId));
             Assert.True(res != null);
             Assert.True(res is Test);
             Assert.True(((Test)res).TestString == "Test string");

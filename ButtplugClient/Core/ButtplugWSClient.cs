@@ -90,7 +90,7 @@ namespace ButtplugClient.Core
             _readThread = new Thread(wsReader);
             _readThread.Start();
 
-            var res = SendMessage(new RequestServerInfo(_clientName)).GetAwaiter().GetResult();
+            var res = await SendMessage(new RequestServerInfo(_clientName));
             switch (res)
             {
                 case ServerInfo si:
@@ -131,16 +131,16 @@ namespace ButtplugClient.Core
             _counter = 1;
         }
 
-        private void wsReader()
+        private async void wsReader()
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            var sb = new StringBuilder();
             while (_ws != null && _ws.State == WebSocketState.Open)
             {
                 try
                 {
                     var buffer = new byte[5];
                     var segment = new ArraySegment<byte>(buffer);
-                    var result = _ws.ReceiveAsync(segment, CancellationToken.None).GetAwaiter().GetResult();
+                    var result = await _ws.ReceiveAsync(segment, CancellationToken.None);
                     var input = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
                     sb.Append(input);
@@ -168,9 +168,9 @@ namespace ButtplugClient.Core
             }
         }
 
-        private void onPingTimer(object state)
+        private async void onPingTimer(object state)
         {
-            var msg = SendMessage(new Ping(nextMsgId)).GetAwaiter().GetResult();
+            var msg = await SendMessage(new Ping(nextMsgId));
             if (msg is Error)
             {
                 // Do something with the error!
