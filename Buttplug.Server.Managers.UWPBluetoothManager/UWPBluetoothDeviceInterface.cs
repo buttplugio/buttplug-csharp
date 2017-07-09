@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Buttplug.Bluetooth;
+using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
-using static Buttplug.Messages.Error;
 
-namespace ButtplugUWPBluetoothManager.Core
+namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
     internal class UWPBluetoothDeviceInterface : IBluetoothDeviceInterface
     {
@@ -67,7 +66,7 @@ namespace ButtplugUWPBluetoothManager.Core
             var gattCharacteristic = _gattCharacteristics[aCharacteristicIndex];
             if (gattCharacteristic == null)
             {
-                return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"Requested character {aCharacteristicIndex} out of range");
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"Requested character {aCharacteristicIndex} out of range");
             }
 
             _currentTask = gattCharacteristic.WriteValueAsync(aValue.AsBuffer(), aWriteOption ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
@@ -77,13 +76,13 @@ namespace ButtplugUWPBluetoothManager.Core
                 _currentTask = null;
                 if (status != GattCommunicationStatus.Success)
                 {
-                    return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {status}");
+                    return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {status}");
                 }
             }
             catch (InvalidOperationException e)
             {
                 // This exception will be thrown if the bluetooth device disconnects in the middle of a transfer.
-                return _bpLogger.LogErrorMsg(aMsgId, ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {e.Message}");
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {e.Message}");
             }
 
             return new Ok(aMsgId);

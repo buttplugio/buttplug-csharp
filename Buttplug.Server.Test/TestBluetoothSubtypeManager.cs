@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Buttplug.Bluetooth;
+using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
 
-namespace ButtplugTest.Core
+namespace Buttplug.Server.Test
 {
     internal class TestBluetoothSubtypeManager : BluetoothSubtypeManager
     {

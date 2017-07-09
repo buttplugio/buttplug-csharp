@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Buttplug.Core;
 
-namespace Buttplug.Bluetooth
+namespace Buttplug.Server.Bluetooth
 {
     public interface IBluetoothDeviceInterface
     {

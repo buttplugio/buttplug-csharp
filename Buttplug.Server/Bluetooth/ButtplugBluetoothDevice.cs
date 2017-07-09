@@ -2,9 +2,9 @@
 using Buttplug.Core;
 using JetBrains.Annotations;
 
-namespace Buttplug.Bluetooth
+namespace Buttplug.Server.Bluetooth
 {
-    internal class ButtplugBluetoothDevice : ButtplugDevice
+    public class ButtplugBluetoothDevice : ButtplugDevice
     {
         [NotNull]
         protected readonly IBluetoothDeviceInterface Interface;

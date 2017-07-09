@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Buttplug.Bluetooth;
+using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
 using Xunit;
 
-namespace ButtplugTest.Core
+namespace Buttplug.Server.Test
 {
     public class ButtplugDeviceTests
     {
@@ -13,10 +13,10 @@ namespace ButtplugTest.Core
         {
             var buttplugAssembly = AppDomain.CurrentDomain
                 .GetAssemblies()
-                .SingleOrDefault(aAssembly => aAssembly.GetName().Name == "Buttplug");
+                .SingleOrDefault(aAssembly => aAssembly.GetName().Name == "Buttplug.Server");
             Assert.NotNull(buttplugAssembly);
             var types = buttplugAssembly.GetTypes()
-                .Where(aType => aType.IsClass && aType.Namespace == "Buttplug.Bluetooth.Devices" &&
+                .Where(aType => aType.IsClass && aType.Namespace == "Buttplug.Server.Bluetooth.Devices" &&
                             typeof(IBluetoothDeviceInfo).IsAssignableFrom(aType)).ToList();
             Assert.True(types.Any());
             var b = new TestBluetoothSubtypeManager(new ButtplugLogManager());

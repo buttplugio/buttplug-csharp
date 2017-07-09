@@ -2,7 +2,7 @@
 using Buttplug.Core;
 using JetBrains.Annotations;
 
-namespace Buttplug.Bluetooth
+namespace Buttplug.Server.Bluetooth
 {
     public interface IBluetoothDeviceInfo
     {

@@ -2,7 +2,7 @@
 using Buttplug.Server;
 using JetBrains.Annotations;
 
-namespace ButtplugTest.Core
+namespace Buttplug.Server.Test
 {
     internal class TestDeviceSubtypeManager : DeviceSubtypeManager
     {

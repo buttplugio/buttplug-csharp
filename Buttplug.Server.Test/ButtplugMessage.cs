@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using Buttplug.Server;
-using ButtplugTest.Core;
+using Buttplug.Server.Test;
 using Xunit;
 
-namespace ButtplugTest.Messages
+namespace Buttplug.Server.Test
 {
     public class ButtplugMessageTests
     {
@@ -48,7 +47,7 @@ namespace ButtplugTest.Messages
             Assert.True(res[0] is Ok);
             res = await s.SendMessage("[{\"Test\": {\"TestString\":\"Echo\",\"Id\":2}}]");
             Assert.True(res.Length == 1);
-            Assert.True(res[0] is Test);
+            Assert.True(res[0] is Core.Messages.Test);
             Assert.True(s.OutgoingAsync.Count == 3);
         }
 
@@ -66,7 +65,7 @@ namespace ButtplugTest.Messages
         {
             var dm = new TestDeviceSubtypeManager(new ButtplugLogManager());
             var s = new TestService();
-            s.AddDeviceSubtypeManager(dm);
+            s.AddDeviceSubtypeManager(aLogger => { return dm; });
             var r = await s.SendMessage(new StartScanning());
             Assert.True(r is Ok);
             Assert.True(dm.StartScanningCalled);
@@ -109,7 +108,7 @@ namespace ButtplugTest.Messages
         {
             var dm = new TestDeviceSubtypeManager(new ButtplugLogManager());
             var s = new TestService();
-            s.AddDeviceSubtypeManager(dm);
+            s.AddDeviceSubtypeManager(aLogger => { return dm; });
             var r = await s.SendMessage(new StopScanning());
             Assert.True(r is Ok);
             Assert.True(dm.StopScanningCalled);
@@ -145,9 +144,9 @@ namespace ButtplugTest.Messages
         public async void NonRequestServerInfoFirstTest()
         {
             var s = new ButtplugService("TestClient", 100);
-            Assert.True(await s.SendMessage(new Test("Test")) is Error);
+            Assert.True(await s.SendMessage(new Core.Messages.Test("Test")) is Error);
             Assert.True(await s.SendMessage(new RequestServerInfo("TestClient")) is ServerInfo);
-            Assert.True(await s.SendMessage(new Test("Test")) is Test);
+            Assert.True(await s.SendMessage(new Core.Messages.Test("Test")) is Core.Messages.Test);
         }
     }
 }

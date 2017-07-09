@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Buttplug.Bluetooth;
+using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
@@ -9,9 +9,9 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 
-namespace ButtplugUWPBluetoothManager.Core
+namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
-    internal class ButtplugBluetoothDeviceFactory
+    internal class UWPBluetoothDeviceFactory
     {
         [NotNull]
         private readonly IButtplugLog _bpLogger;
@@ -22,7 +22,7 @@ namespace ButtplugUWPBluetoothManager.Core
         [NotNull]
         private readonly IButtplugLogManager _buttplugLogManager;
 
-        public ButtplugBluetoothDeviceFactory([NotNull] IButtplugLogManager aLogManager, [NotNull] IBluetoothDeviceInfo aInfo)
+        public UWPBluetoothDeviceFactory([NotNull] IButtplugLogManager aLogManager, [NotNull] IBluetoothDeviceInfo aInfo)
         {
             _buttplugLogManager = aLogManager;
             _bpLogger = _buttplugLogManager.GetLogger(GetType());

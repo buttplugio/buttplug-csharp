@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\xunit.runner.visualstudio.2.2.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.2.0\build\net20\xunit.runner.visualstudio.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -8,8 +8,8 @@
     <ProjectGuid>{CADDB981-1F47-4BAF-8718-9970E46C3018}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ButtplugTest</RootNamespace>
-    <AssemblyName>ButtplugTest</AssemblyName>
+    <RootNamespace>Buttplug.Server.Test</RootNamespace>
+    <AssemblyName>Buttplug.Server.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -58,14 +58,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\ButtplugDeviceTests.cs" />
-    <Compile Include="Core\ButtplugJsonMessageParserTests.cs" />
-    <Compile Include="Core\ButtplugServerTests.cs" />
-    <Compile Include="Core\TestBluetoothSubtypeManager.cs" />
-    <Compile Include="Core\TestDevice.cs" />
-    <Compile Include="Core\TestDeviceSubtypeManager.cs" />
-    <Compile Include="Core\TestService.cs" />
-    <Compile Include="Messages\ButtplugMessage.cs" />
+    <Compile Include="ButtplugDeviceTests.cs" />
+    <Compile Include="ButtplugJsonMessageParserTests.cs" />
+    <Compile Include="ButtplugServerTests.cs" />
+    <Compile Include="TestBluetoothSubtypeManager.cs" />
+    <Compile Include="TestDevice.cs" />
+    <Compile Include="TestDeviceSubtypeManager.cs" />
+    <Compile Include="TestService.cs" />
+    <Compile Include="ButtplugMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

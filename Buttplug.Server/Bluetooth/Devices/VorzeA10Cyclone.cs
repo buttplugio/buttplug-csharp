@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 
-namespace Buttplug.Bluetooth.Devices
+namespace Buttplug.Server.Bluetooth.Devices
 {
     internal class VorzeA10CycloneInfo : IBluetoothDeviceInfo
     {

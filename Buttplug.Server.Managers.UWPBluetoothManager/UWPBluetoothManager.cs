@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Buttplug.Bluetooth;
+using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
 using JetBrains.Annotations;
 using Microsoft.Win32;
@@ -9,14 +9,14 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Buttplug.Server;
 
-namespace ButtplugUWPBluetoothManager.Core
+namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
     public class UWPBluetoothManager : BluetoothSubtypeManager
     {
         [NotNull]
         private readonly BluetoothLEAdvertisementWatcher _bleWatcher;
         [NotNull]
-        private readonly List<ButtplugBluetoothDeviceFactory> _deviceFactories;
+        private readonly List<UWPBluetoothDeviceFactory> _deviceFactories;
         [NotNull]
         private readonly List<ulong> _currentlyConnecting;
 
@@ -40,11 +40,11 @@ namespace ButtplugUWPBluetoothManager.Core
             _currentlyConnecting = new List<ulong>();
 
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
-            _deviceFactories = new List<ButtplugBluetoothDeviceFactory>();
+            _deviceFactories = new List<UWPBluetoothDeviceFactory>();
             BuiltinDevices.ForEach(aDeviceFactory =>
                 {
                     BpLogger.Debug($"Loading Bluetooth Device Factory: {aDeviceFactory.GetType().Name}");
-                    _deviceFactories.Add(new ButtplugBluetoothDeviceFactory(aLogManager, aDeviceFactory));
+                    _deviceFactories.Add(new UWPBluetoothDeviceFactory(aLogManager, aDeviceFactory));
                 });
 
             _bleWatcher = new BluetoothLEAdvertisementWatcher { ScanningMode = BluetoothLEScanningMode.Active };
@@ -72,7 +72,7 @@ namespace ButtplugUWPBluetoothManager.Core
                             select x;
 
             // We should always have either 0 or 1 factories.
-            var buttplugBluetoothDeviceFactories = factories as ButtplugBluetoothDeviceFactory[] ?? factories.ToArray();
+            var buttplugBluetoothDeviceFactories = factories as UWPBluetoothDeviceFactory[] ?? factories.ToArray();
             if (buttplugBluetoothDeviceFactories.Length != 1)
             {
                 if (buttplugBluetoothDeviceFactories.Any())

@@ -7,7 +7,7 @@ using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core
 {
-    internal abstract class ButtplugDevice : IButtplugDevice
+    public abstract class ButtplugDevice : IButtplugDevice
     {
         public string Name { get; }
 

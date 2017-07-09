@@ -10,3 +10,4 @@ coverage.xml
 /buttplug-schema/
 /raven-csharp/
 /websocket-sharp/
+*.DotSettings.user

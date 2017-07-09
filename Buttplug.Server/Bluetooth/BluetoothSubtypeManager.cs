@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Buttplug.Bluetooth.Devices;
 using Buttplug.Core;
 using Buttplug.Server;
+using Buttplug.Server.Bluetooth.Devices;
 using JetBrains.Annotations;
 
-namespace Buttplug.Bluetooth
+namespace Buttplug.Server.Bluetooth
 {
     public abstract class BluetoothSubtypeManager : DeviceSubtypeManager
     {

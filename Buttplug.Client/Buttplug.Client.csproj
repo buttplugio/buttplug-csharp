@@ -7,8 +7,8 @@
     <ProjectGuid>{1592D845-8FE5-4F33-A665-D7675C9AAEE4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ButtplugClient</RootNamespace>
-    <AssemblyName>ButtplugClient</AssemblyName>
+    <RootNamespace>Buttplug.Client</RootNamespace>
+    <AssemblyName>Buttplug.Client</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
