@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
-using Buttplug.Core;
-using Buttplug.Components.WebsocketServer;
-using Xunit;
 using System.Threading.Tasks;
+using Buttplug.Components.WebsocketServer;
+using Buttplug.Core;
 using Buttplug.Server;
+using Xunit;
 
 namespace Buttplug.Client.Test
 {
@@ -15,9 +15,10 @@ namespace Buttplug.Client.Test
             return new ButtplugService("Test service", 100);
         }
 
-        class ButtplugTestClient : ButtplugWSClient
+        private class ButtplugTestClient : ButtplugWSClient
         {
-            public ButtplugTestClient(string aClientName) : base(aClientName)
+            public ButtplugTestClient(string aClientName)
+                : base(aClientName)
             {
             }
 
@@ -38,22 +39,22 @@ namespace Buttplug.Client.Test
 
             Console.WriteLine("test msg 1");
             var msgId = client.nextMsgId;
-            var res = await client.SendMsg(new Messages.Test("Test string", msgId));
+            var res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
             Assert.True(res != null);
-            Assert.True(res is Messages.Test);
-            Assert.True(((Messages.Test)res).TestString == "Test string");
-            Assert.True(((Messages.Test)res).Id == msgId);
+            Assert.True(res is Core.Messages.Test);
+            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
+            Assert.True(((Core.Messages.Test)res).Id == msgId);
 
             // Check ping is working
             Thread.Sleep(400);
 
             Console.WriteLine("test msg 2");
             msgId = client.nextMsgId;
-            res = await client.SendMsg(new Messages.Test("Test string", msgId));
+            res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
             Assert.True(res != null);
-            Assert.True(res is Messages.Test);
-            Assert.True(((Messages.Test)res).TestString == "Test string");
-            Assert.True(((Messages.Test)res).Id == msgId);
+            Assert.True(res is Core.Messages.Test);
+            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
+            Assert.True(((Core.Messages.Test)res).Id == msgId);
 
             Assert.True(client.nextMsgId > 4);
 

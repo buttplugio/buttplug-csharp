@@ -5,7 +5,6 @@ using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
 using Xunit;
-using static Buttplug.Messages.Error;
 
 namespace ButtplugTest.Core
 {
@@ -14,7 +13,7 @@ namespace ButtplugTest.Core
         [Fact]
         public async void RejectOutgoingOnlyMessage()
         {
-            Assert.True((await new TestService().SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId))) is Error);
+            Assert.True((await new TestService().SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId))) is Error);
         }
 
         [Fact]
@@ -31,14 +30,14 @@ namespace ButtplugTest.Core
             };
 
             // Sending error messages will always cause an error, as they are outgoing, not incoming.
-            Assert.True(await s.SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
+            Assert.True(await s.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
             Assert.False(gotMessage);
             Assert.True(await s.SendMessage(new RequestLog("Trace")) is Ok);
-            Assert.True(await s.SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
+            Assert.True(await s.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
             Assert.True(gotMessage);
             await s.SendMessage(new RequestLog("Off"));
             gotMessage = false;
-            await s.SendMessage(new Error("Error", ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId));
+            await s.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId));
             Assert.False(gotMessage);
         }
 
