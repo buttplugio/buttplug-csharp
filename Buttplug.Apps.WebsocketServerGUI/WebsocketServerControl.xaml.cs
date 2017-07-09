@@ -1,7 +1,7 @@
-﻿using System.Windows;
+﻿using System.Net.Sockets;
+using System.Windows;
 using System.Windows.Controls;
 using Buttplug.Components.WebsocketServer;
-using System.Net.Sockets;
 using Buttplug.Server;
 
 namespace Buttplug.Apps.WebsocketServerGUI

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}</ProjectGuid>
     <OutputType>library</OutputType>
-    <RootNamespace>ButtplugControlLibrary</RootNamespace>
-    <AssemblyName>ButtplugControlLibrary</AssemblyName>
+    <RootNamespace>Buttplug.Components.Controls</RootNamespace>
+    <AssemblyName>Buttplug.Components.Controls</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -137,19 +137,19 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ButtplugShared\Buttplug.Core.csproj">
+    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
       <Name>Buttplug.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ButtplugUWPBluetoothManager\Buttplug.Server.UWPBluetoothManager.csproj">
+    <ProjectReference Include="..\Buttplug.Server.Managers.UWPBluetoothManager\Buttplug.Server.Managers.UWPBluetoothManager.csproj">
       <Project>{223ea194-8318-4189-bec8-73734c3f4a78}</Project>
       <Name>Buttplug.Server.UWPBluetoothManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ButtplugXInputGamepadManager\Buttplug.Server.XInputGamepadManager.csproj">
+    <ProjectReference Include="..\Buttplug.Server.Managers.XInputGamepadManager\Buttplug.Server.Managers.XInputGamepadManager.csproj">
       <Project>{c7d040e1-e18e-4f51-859f-cff8aa57bd64}</Project>
       <Name>Buttplug.Server.XInputGamepadManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Buttplug\Buttplug.Server.csproj">
+    <ProjectReference Include="..\Buttplug.Server\Buttplug.Server.csproj">
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug.Server</Name>
     </ProjectReference>

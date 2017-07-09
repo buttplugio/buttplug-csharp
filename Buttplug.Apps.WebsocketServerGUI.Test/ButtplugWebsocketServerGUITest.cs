@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Buttplug.Apps.WebsocketServerGUI.Test
 {
-    public class GUITest
+    public class ButtplugWebsocketServerGUITest
     {
         private Exception didStart;
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -114,19 +114,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ButtplugControlLibrary\Buttplug.Components.Controls.csproj">
+    <ProjectReference Include="..\Buttplug.Components.ControlLibrary\Buttplug.Components.Controls.csproj">
       <Project>{0e0d1e27-9efd-4a07-b6aa-bb556205c002}</Project>
       <Name>Buttplug.Components.Controls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ButtplugShared\Buttplug.Core.csproj">
+    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
       <Name>Buttplug.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ButtplugWebsockets\Buttplug.Components.WebsocketServer.csproj">
+    <ProjectReference Include="..\Buttplug.Components.WebsocketServer\Buttplug.Components.WebsocketServer.csproj">
       <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
       <Name>Buttplug.Components.WebsocketServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Buttplug\Buttplug.Server.csproj">
+    <ProjectReference Include="..\Buttplug.Server\Buttplug.Server.csproj">
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug.Server</Name>
     </ProjectReference>
