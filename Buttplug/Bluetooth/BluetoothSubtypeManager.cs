@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Buttplug.Bluetooth.Devices;
 using Buttplug.Core;
+using Buttplug.Server;
 using JetBrains.Annotations;
 
 namespace Buttplug.Bluetooth

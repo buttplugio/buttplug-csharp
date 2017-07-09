@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 
-namespace ButtplugKiirooEmulatorGUI
+namespace Buttplug.Apps.KiirooEmulatorGUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

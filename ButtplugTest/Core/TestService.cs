@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Buttplug.Core;
 using Buttplug.Messages;
+using Buttplug.Server;
 using NLog;
 using NLog.Config;
 using NLog.Targets;

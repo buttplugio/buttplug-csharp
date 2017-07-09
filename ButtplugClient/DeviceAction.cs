@@ -1,7 +1,6 @@
-﻿using Buttplug.Messages;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
-namespace ButtplugClient.Core
+namespace Buttplug.Client
 {
     public class DeviceEventArgs
     {

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Timers;
 using Buttplug.Messages;
 
-namespace ButtplugKiirooEmulatorGUI
+namespace Buttplug.Apps.KiirooEmulatorGUI
 {
     internal class VibrateEventArgs : EventArgs
     {

@@ -1,7 +1,8 @@
 ﻿using System;
+using Buttplug.Core;
 using JetBrains.Annotations;
 
-namespace Buttplug.Core
+namespace Buttplug.Server
 {
     public abstract class DeviceSubtypeManager : IDeviceSubtypeManager
     {

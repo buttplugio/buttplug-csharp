@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Messages;
 using JetBrains.Annotations;
 using static Buttplug.Messages.Error;
 
-namespace Buttplug.Core
+namespace Buttplug.Server
 {
     internal class DeviceManager
     {

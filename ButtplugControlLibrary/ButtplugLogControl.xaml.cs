@@ -11,7 +11,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace ButtplugControlLibrary
+namespace Buttplug.Components.Controls
 {
     public class LogList : ObservableCollection<string>
     {

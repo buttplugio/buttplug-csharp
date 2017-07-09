@@ -1,6 +1,6 @@
-﻿using Buttplug.Core;
+﻿using Buttplug.Server;
 
-namespace ButtplugControlLibrary
+namespace Buttplug.Components.Controls
 {
     /// <summary>
     /// Interaction logic for LicenseView.xaml

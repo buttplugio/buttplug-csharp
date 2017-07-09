@@ -8,11 +8,12 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Buttplug.Core;
 using Buttplug.Messages;
-using ButtplugKiirooPlatformEmulator;
+using Buttplug.Components.KiirooPlatformEmulator;
 using JetBrains.Annotations;
 using System.Net;
+using Buttplug.Server;
 
-namespace ButtplugKiirooEmulatorGUI
+namespace Buttplug.Apps.KiirooEmulatorGUI
 {
     public class Device
     {

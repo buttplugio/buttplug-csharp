@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}</ProjectGuid>
-    <OutputType>library</OutputType>
-    <RootNamespace>ButtplugControlLibrary</RootNamespace>
-    <AssemblyName>ButtplugControlLibrary</AssemblyName>
+    <ProjectGuid>{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ButtplugServerGUI</RootNamespace>
+    <AssemblyName>ButtplugServerGUI</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,6 +26,7 @@
     <CodeAnalysisRuleSet>..\Buttplug\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\Buttplug\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\buttplug-icon-1.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
@@ -39,16 +45,8 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpRaven, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpRaven.2.2.0\lib\net45\SharpRaven.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -63,37 +61,32 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ButtplugAboutControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ButtplugTabControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ButtplugLogControl.xaml">
+    <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="ButtplugAboutControl.xaml.cs">
-      <DependentUpon>ButtplugAboutControl.xaml</DependentUpon>
+    </ApplicationDefinition>
+    <Compile Include="ButtplugConfig.cs" />
+    <Compile Include="WebsocketServerControl.xaml.cs">
+      <DependentUpon>WebsocketServerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ButtplugTabControl.xaml.cs">
-      <DependentUpon>ButtplugTabControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ButtplugLogControl.xaml.cs">
-      <DependentUpon>ButtplugLogControl.xaml</DependentUpon>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="LicenseView.xaml">
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="WebsocketServerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LicenseView.xaml.cs">
-      <DependentUpon>LicenseView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -110,11 +103,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -122,47 +111,37 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ButtplugControlLibrary\Buttplug.Components.Controls.csproj">
+      <Project>{0e0d1e27-9efd-4a07-b6aa-bb556205c002}</Project>
+      <Name>Buttplug.Components.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ButtplugShared\Buttplug.Core.csproj">
+      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
+      <Name>Buttplug.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ButtplugWebsockets\Buttplug.Components.WebsocketServer.csproj">
+      <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
+      <Name>Buttplug.Components.WebsocketServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug\Buttplug.Server.csproj">
+      <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
+      <Name>Buttplug.Server</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\buttplug-icon-1.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\buttplug-logo-1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\buttplugin-with-qdot-intro-patreon-image.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ButtplugShared\ButtplugShared.csproj">
-      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
-      <Name>ButtplugShared</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ButtplugUWPBluetoothManager\ButtplugUWPBluetoothManager.csproj">
-      <Project>{223ea194-8318-4189-bec8-73734c3f4a78}</Project>
-      <Name>ButtplugUWPBluetoothManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ButtplugXInputGamepadManager\ButtplugXInputGamepadManager.csproj">
-      <Project>{c7d040e1-e18e-4f51-859f-cff8aa57bd64}</Project>
-      <Name>ButtplugXInputGamepadManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Buttplug\Buttplug.csproj">
-      <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
-      <Name>Buttplug</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\buttplug-logo-1.bmp" />
+    <AdditionalFiles Include="..\stylecop.json" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

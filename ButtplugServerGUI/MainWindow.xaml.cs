@@ -1,7 +1,6 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
-namespace ButtplugServerGUI
+namespace Buttplug.Apps.WebsocketServerGUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
