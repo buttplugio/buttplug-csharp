@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using Buttplug.Core;
 using Buttplug.Messages;
 using JetBrains.Annotations;
@@ -43,7 +45,11 @@ namespace ButtplugClient.Core
         private Timer _pingTimer;
 
         [CanBeNull]
-        private Thread _readThread;
+        private Task _readThread;
+
+        private CancellationTokenSource _tokenSource;
+
+        private Dispatcher _owningDispatcher;
 
         [NotNull]
         private int _counter;
@@ -63,6 +69,8 @@ namespace ButtplugClient.Core
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _parser = new ButtplugJsonMessageParser(_bpLogManager);
             _bpLogger.Trace("Finished setting up ButtplugClient");
+            _owningDispatcher = Dispatcher.CurrentDispatcher;
+            _tokenSource = new CancellationTokenSource();
         }
 
         ~ButtplugWSClient()
@@ -87,7 +95,7 @@ namespace ButtplugClient.Core
                 throw new Exception("Connection failed!");
             }
 
-            _readThread = new Thread(wsReader);
+            _readThread = new Task(() => { wsReader(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
             _readThread.Start();
 
             var res = await SendMessage(new RequestServerInfo(_clientName));
@@ -122,25 +130,22 @@ namespace ButtplugClient.Core
                 }
             }
 
-            if (_readThread != null && _readThread.IsAlive)
-            {
-                _readThread.Join();
-                _readThread = null;
-            }
+            _tokenSource.Cancel();
+            _readThread.Wait();
 
             _counter = 1;
         }
 
-        private async void wsReader()
+        private async void wsReader(CancellationToken aToken)
         {
             var sb = new StringBuilder();
-            while (_ws != null && _ws.State == WebSocketState.Open)
+            while (_ws != null && _ws.State == WebSocketState.Open && !aToken.IsCancellationRequested)
             {
                 try
                 {
                     var buffer = new byte[5];
                     var segment = new ArraySegment<byte>(buffer);
-                    var result = await _ws.ReceiveAsync(segment, CancellationToken.None);
+                    var result = await _ws.ReceiveAsync(segment, aToken);
                     var input = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
                     sb.Append(input);
@@ -154,8 +159,10 @@ namespace ButtplugClient.Core
                                 queued.TrySetResult(msg);
                                 continue;
                             }
-
-                            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
+                            _owningDispatcher.Invoke(() =>
+                            {
+                                MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
+                            });
                         }
 
                         sb.Clear();
