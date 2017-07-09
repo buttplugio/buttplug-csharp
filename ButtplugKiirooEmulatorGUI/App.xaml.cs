@@ -1,4 +1,4 @@
-﻿namespace ButtplugKiirooEmulatorGUI
+﻿namespace Buttplug.Apps.KiirooEmulatorGUI
 {
     /// <summary>
     /// Interaction logic for App.xaml

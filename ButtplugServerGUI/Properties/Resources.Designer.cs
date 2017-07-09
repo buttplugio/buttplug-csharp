@@ -16,7 +16,7 @@ using System.Globalization;
 using System.Resources;
 using System.Runtime.CompilerServices;
 
-namespace ButtplugServerGUI.Properties
+namespace Buttplug.Apps.WebsocketServerGUI.Properties
 {
 
 

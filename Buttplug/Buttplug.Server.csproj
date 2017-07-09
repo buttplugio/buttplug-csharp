@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -51,12 +51,12 @@
     <Compile Include="Bluetooth\Devices\VorzeA10Cyclone.cs" />
     <Compile Include="Bluetooth\IBluetoothDeviceInfo.cs" />
     <Compile Include="Bluetooth\IBluetoothDeviceInterface.cs" />
-    <Compile Include="Core\ButtplugService.cs" />
-    <Compile Include="Core\IButtplugServiceFactory.cs" />
-    <Compile Include="Core\DeviceAddedEventArgs.cs" />
-    <Compile Include="Core\DeviceManager.cs" />
-    <Compile Include="Core\DeviceSubtypeManager.cs" />
-    <Compile Include="Core\IDeviceSubtypeManager.cs" />
+    <Compile Include="ButtplugService.cs" />
+    <Compile Include="IButtplugServiceFactory.cs" />
+    <Compile Include="DeviceAddedEventArgs.cs" />
+    <Compile Include="DeviceManager.cs" />
+    <Compile Include="DeviceSubtypeManager.cs" />
+    <Compile Include="IDeviceSubtypeManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,9 +72,9 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ButtplugShared\ButtplugShared.csproj">
+    <ProjectReference Include="..\ButtplugShared\Buttplug.Core.csproj">
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
-      <Name>ButtplugShared</Name>
+      <Name>Buttplug.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

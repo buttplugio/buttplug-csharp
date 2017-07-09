@@ -12,7 +12,7 @@ using System.CodeDom.Compiler;
 using System.Configuration;
 using System.Runtime.CompilerServices;
 
-namespace ButtplugServerGUI.Properties
+namespace Buttplug.Apps.WebsocketServerGUI.Properties
 {
 
 

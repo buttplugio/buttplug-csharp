@@ -1,4 +1,5 @@
 ﻿using Buttplug.Core;
+using Buttplug.Server;
 using JetBrains.Annotations;
 
 namespace ButtplugTest.Core

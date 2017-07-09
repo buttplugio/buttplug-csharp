@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ButtplugControlLibrary.Properties {
+namespace Buttplug.Components.Controls.Properties {
     using System;
     
     

@@ -4,11 +4,12 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Timers;
+using Buttplug.Core;
 using Buttplug.Messages;
 using JetBrains.Annotations;
 using static Buttplug.Messages.Error;
 
-namespace Buttplug.Core
+namespace Buttplug.Server
 {
     public class ButtplugService
     {

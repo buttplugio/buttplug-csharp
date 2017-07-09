@@ -16,7 +16,7 @@ using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.X509;
 
-namespace ButtplugWebsockets
+namespace Buttplug.Components.WebsocketServer
 {
     internal static class CertUtils
     {

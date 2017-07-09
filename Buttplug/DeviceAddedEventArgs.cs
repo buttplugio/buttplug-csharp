@@ -1,6 +1,7 @@
 ﻿using System;
+using Buttplug.Core;
 
-namespace Buttplug.Core
+namespace Buttplug.Server
 {
     public class DeviceAddedEventArgs : EventArgs
     {

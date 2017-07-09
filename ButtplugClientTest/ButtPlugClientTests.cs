@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading;
 using Buttplug.Core;
-using Buttplug.Messages;
-using ButtplugClient.Core;
-using ButtplugWebsockets;
+using Buttplug.Components.WebsocketServer;
 using Xunit;
 using System.Threading.Tasks;
+using Buttplug.Server;
 
-namespace ButtplugClientTest
+namespace Buttplug.Client.Test
 {
     public class ButtplugClientTests : IButtplugServiceFactory
     {
@@ -39,22 +38,22 @@ namespace ButtplugClientTest
 
             Console.WriteLine("test msg 1");
             var msgId = client.nextMsgId;
-            var res = await client.SendMsg(new Test("Test string", msgId));
+            var res = await client.SendMsg(new Messages.Test("Test string", msgId));
             Assert.True(res != null);
-            Assert.True(res is Test);
-            Assert.True(((Test)res).TestString == "Test string");
-            Assert.True(((Test)res).Id == msgId);
+            Assert.True(res is Messages.Test);
+            Assert.True(((Messages.Test)res).TestString == "Test string");
+            Assert.True(((Messages.Test)res).Id == msgId);
 
             // Check ping is working
             Thread.Sleep(400);
 
             Console.WriteLine("test msg 2");
             msgId = client.nextMsgId;
-            res = await client.SendMsg(new Test("Test string", msgId));
+            res = await client.SendMsg(new Messages.Test("Test string", msgId));
             Assert.True(res != null);
-            Assert.True(res is Test);
-            Assert.True(((Test)res).TestString == "Test string");
-            Assert.True(((Test)res).Id == msgId);
+            Assert.True(res is Messages.Test);
+            Assert.True(((Messages.Test)res).TestString == "Test string");
+            Assert.True(((Messages.Test)res).Id == msgId);
 
             Assert.True(client.nextMsgId > 4);
 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ButtplugKiirooEmulatorGUI.Properties {
+namespace Buttplug.Apps.KiirooEmulatorGUI.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

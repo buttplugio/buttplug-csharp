@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -10,9 +9,9 @@ using System.Windows.Threading;
 using Buttplug.Core;
 using Buttplug.Messages;
 using JetBrains.Annotations;
-using static ButtplugClient.Core.DeviceEventArgs;
+using static Buttplug.Client.DeviceEventArgs;
 
-namespace ButtplugClient.Core
+namespace Buttplug.Client
 {
     public class ButtplugWSClient
     {

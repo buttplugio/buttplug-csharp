@@ -1,4 +1,4 @@
-﻿namespace Buttplug.Core
+﻿namespace Buttplug.Server
 {
     public interface IButtplugServiceFactory
     {

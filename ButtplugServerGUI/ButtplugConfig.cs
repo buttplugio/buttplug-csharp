@@ -4,7 +4,7 @@ using System.IO;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
-namespace ButtplugServerGUI
+namespace Buttplug.Apps.WebsocketServerGUI
 {
     public class ButtplugConfig
     {

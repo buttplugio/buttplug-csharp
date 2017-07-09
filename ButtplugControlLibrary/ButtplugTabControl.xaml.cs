@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using Buttplug.Core;
+using Buttplug.Server;
 using ButtplugUWPBluetoothManager.Core;
 using ButtplugXInputGamepadManager.Core;
 using JetBrains.Annotations;
@@ -15,7 +15,7 @@ using NLog.Targets;
 using SharpRaven;
 using SharpRaven.Data;
 
-namespace ButtplugControlLibrary
+namespace Buttplug.Components.Controls
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

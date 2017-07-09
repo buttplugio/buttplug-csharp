@@ -2,11 +2,11 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core;
+using Buttplug.Server;
 using JetBrains.Annotations;
 using vtortola.WebSockets;
 
-namespace ButtplugWebsockets
+namespace Buttplug.Components.WebsocketServer
 {
     public class ButtplugWebsocketServer
     {

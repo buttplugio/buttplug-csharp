@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 
-namespace ButtplugControlLibrary
+namespace Buttplug.Components.Controls
 {
     /// <summary>
     /// Interaction logic for ButtplugAboutControl.xaml

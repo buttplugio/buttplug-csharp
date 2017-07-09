@@ -3,39 +3,39 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug", "Buttplug\Buttplug.csproj", "{23D9EC18-2DBA-4149-A951-B84786D4BFA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server", "Buttplug\Buttplug.Server.csproj", "{23D9EC18-2DBA-4149-A951-B84786D4BFA6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0} = {FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugTest", "ButtplugTest\ButtplugTest.csproj", "{CADDB981-1F47-4BAF-8718-9970E46C3018}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Test", "ButtplugTest\Buttplug.Server.Test.csproj", "{CADDB981-1F47-4BAF-8718-9970E46C3018}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugKiirooPlatformEmulator", "ButtplugKiirooPlatformEmulator\ButtplugKiirooPlatformEmulator.csproj", "{C606B29A-EE61-452C-8557-9DC9B37E87D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.KiirooPlatformEmulator", "ButtplugKiirooPlatformEmulator\Buttplug.Components.KiirooPlatformEmulator.csproj", "{C606B29A-EE61-452C-8557-9DC9B37E87D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugUWPBluetoothManager", "ButtplugUWPBluetoothManager\ButtplugUWPBluetoothManager.csproj", "{223EA194-8318-4189-BEC8-73734C3F4A78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.UWPBluetoothManager", "ButtplugUWPBluetoothManager\Buttplug.Server.UWPBluetoothManager.csproj", "{223EA194-8318-4189-BEC8-73734C3F4A78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugXInputGamepadManager", "ButtplugXInputGamepadManager\ButtplugXInputGamepadManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.XInputGamepadManager", "ButtplugXInputGamepadManager\Buttplug.Server.XInputGamepadManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugWebsockets", "ButtplugWebsockets\ButtplugWebsockets.csproj", "{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.WebsocketServer", "ButtplugWebsockets\Buttplug.Components.WebsocketServer.csproj", "{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugServerGUI", "ButtplugServerGUI\ButtplugServerGUI.csproj", "{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.WebsocketServerGUI", "ButtplugServerGUI\Buttplug.Apps.WebsocketServerGUI.csproj", "{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugServerGUITest", "ButtplugServerGUITest\ButtplugServerGUITest.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.WebsocketServerGUI.Test", "ButtplugServerGUITest\Buttplug.Apps.WebsocketServerGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugControlLibrary", "ButtplugControlLibrary\ButtplugControlLibrary.csproj", "{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.Controls", "ButtplugControlLibrary\Buttplug.Components.Controls.csproj", "{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}"
 	ProjectSection(ProjectDependencies) = postProject
 		{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0} = {FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugKiirooEmulatorGUI", "ButtplugKiirooEmulatorGUI\ButtplugKiirooEmulatorGUI.csproj", "{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.KiirooEmulatorGUI", "ButtplugKiirooEmulatorGUI\Buttplug.Apps.KiirooEmulatorGUI.csproj", "{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugKiirooEmulatorGUITest", "ButtplugKiirooEmulatorGUITest\ButtplugKiirooEmulatorGUITest.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78395}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.KiirooEmulatorGUI.Test", "ButtplugKiirooEmulatorGUITest\Buttplug.Apps.KiirooEmulatorGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugShared", "ButtplugShared\ButtplugShared.csproj", "{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Core", "ButtplugShared\Buttplug.Core.csproj", "{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugClient", "ButtplugClient\ButtplugClient.csproj", "{1592D845-8FE5-4F33-A665-D7675C9AAEE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client", "ButtplugClient\Buttplug.Client.csproj", "{1592D845-8FE5-4F33-A665-D7675C9AAEE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ButtplugClientTest", "ButtplugClientTest\ButtplugClientTest.csproj", "{F8AAA25F-6C62-4BCC-A916-9B52B9A01F52}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client.Test", "ButtplugClientTest\Buttplug.Client.Test.csproj", "{F8AAA25F-6C62-4BCC-A916-9B52B9A01F52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

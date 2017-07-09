@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading;
-using ButtplugServerGUI;
 using Xunit;
 
-namespace ButtplugServerGUITest
+namespace Buttplug.Apps.WebsocketServerGUI.Test
 {
     public class GUITest
     {

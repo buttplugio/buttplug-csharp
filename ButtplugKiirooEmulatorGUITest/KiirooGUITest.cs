@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading;
-using ButtplugKiirooEmulatorGUI;
 using Xunit;
 
-namespace ButtplugKiirooEmulatorGUITest
+namespace Buttplug.Apps.KiirooEmulatorGUI.Test
 {
     public class KiirooGUITest
     {

@@ -1,4 +1,5 @@
 ﻿using Buttplug.Core;
+using Buttplug.Server;
 using ButtplugXInputGamepadManager.Devices;
 using SharpDX.XInput;
 

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Buttplug.Core;
-using ButtplugWebsockets;
+using Buttplug.Components.WebsocketServer;
 using System.Net.Sockets;
+using Buttplug.Server;
 
-namespace ButtplugServerGUI
+namespace Buttplug.Apps.WebsocketServerGUI
 {
     /// <summary>
     /// Interaction logic for WebsocketServerControl.xaml

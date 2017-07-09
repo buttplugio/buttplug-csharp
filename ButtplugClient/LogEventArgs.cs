@@ -1,7 +1,7 @@
 ﻿using Buttplug.Messages;
 using JetBrains.Annotations;
 
-namespace ButtplugClient.Core
+namespace Buttplug.Client
 {
     public class LogEventArgs
     {

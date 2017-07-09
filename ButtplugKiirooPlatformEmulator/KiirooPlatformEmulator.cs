@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Web;
 using JetBrains.Annotations;
-using System.Collections.Specialized;
 
-namespace ButtplugKiirooPlatformEmulator
+namespace Buttplug.Components.KiirooPlatformEmulator
 {
     public class KiirooPlatformEventArgs : EventArgs
     {
