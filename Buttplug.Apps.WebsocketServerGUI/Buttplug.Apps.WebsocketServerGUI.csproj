@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ButtplugServerGUI</RootNamespace>
-    <AssemblyName>ButtplugServerGUI</AssemblyName>
+    <RootNamespace>Buttplug.Apps.WebsocketServerGUI</RootNamespace>
+    <AssemblyName>ButtplugWebsocketServerGUI</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -114,7 +114,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Components.ControlLibrary\Buttplug.Components.Controls.csproj">
+    <ProjectReference Include="..\Buttplug.Components.Controls\Buttplug.Components.Controls.csproj">
       <Project>{0e0d1e27-9efd-4a07-b6aa-bb556205c002}</Project>
       <Name>Buttplug.Components.Controls</Name>
     </ProjectReference>
