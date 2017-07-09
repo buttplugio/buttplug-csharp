@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Buttplug.Core;
 using Newtonsoft.Json;
 
 namespace Buttplug.Core.Messages
