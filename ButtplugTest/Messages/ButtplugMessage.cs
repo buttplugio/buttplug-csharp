@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Buttplug.Core;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using Buttplug.Server;
 using ButtplugTest.Core;
 using Xunit;

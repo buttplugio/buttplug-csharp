@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Timers;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 
 namespace Buttplug.Apps.KiirooEmulatorGUI
 {

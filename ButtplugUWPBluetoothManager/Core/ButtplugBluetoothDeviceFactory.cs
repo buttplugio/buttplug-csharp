@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Bluetooth;
 using Buttplug.Core;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;

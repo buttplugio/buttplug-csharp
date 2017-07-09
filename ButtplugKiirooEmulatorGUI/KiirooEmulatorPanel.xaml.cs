@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Buttplug.Core;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using Buttplug.Components.KiirooPlatformEmulator;
 using JetBrains.Annotations;
 using System.Net;
