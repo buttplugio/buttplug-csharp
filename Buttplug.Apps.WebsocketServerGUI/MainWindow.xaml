@@ -1,12 +1,12 @@
-﻿<Window x:Class="Buttplug.Apps.KiirooEmulatorGUI.MainWindow"
+﻿<Window x:Class="Buttplug.Apps.WebsocketServerGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:buttplugControlLibrary="clr-namespace:Buttplug.Components.Controls;assembly=ButtplugControlLibrary"
+        xmlns:controls="clr-namespace:Buttplug.Components.Controls;assembly=Buttplug.Components.Controls"
         mc:Ignorable="d"
-        Title="Buttplug" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <buttplugControlLibrary:ButtplugTabControl Name="ButtplugTab"/>
+        <controls:ButtplugTabControl Name="ButtplugTab"/>
     </Grid>
 </Window>

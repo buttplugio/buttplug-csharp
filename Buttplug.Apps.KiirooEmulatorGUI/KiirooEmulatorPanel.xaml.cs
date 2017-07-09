@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Buttplug.Components.KiirooPlatformEmulator;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using Buttplug.Components.KiirooPlatformEmulator;
-using JetBrains.Annotations;
-using System.Net;
 using Buttplug.Server;
+using JetBrains.Annotations;
 
 namespace Buttplug.Apps.KiirooEmulatorGUI
 {
