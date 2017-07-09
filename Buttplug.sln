@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.KiirooEmulato
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.KiirooPlatformEmulator", "Buttplug.Components.KiirooPlatformEmulator\Buttplug.Components.KiirooPlatformEmulator.csproj", "{C606B29A-EE61-452C-8557-9DC9B37E87D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.Controls", "Buttplug.Components.ControlLibrary\Buttplug.Components.Controls.csproj", "{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.Controls", "Buttplug.Components.Controls\Buttplug.Components.Controls.csproj", "{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.KiirooEmulatorGUI.Test", "Buttplug.Apps.KiirooEmulatorGUI.Test\Buttplug.Apps.KiirooEmulatorGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78395}"
 EndProject
