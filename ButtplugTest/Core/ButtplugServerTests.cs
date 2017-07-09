@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Buttplug.Core;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using Buttplug.Server;
 using Xunit;
 using static Buttplug.Messages.Error;

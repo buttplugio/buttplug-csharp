@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using static Buttplug.Messages.Error;
 
 namespace Buttplug.Bluetooth.Devices

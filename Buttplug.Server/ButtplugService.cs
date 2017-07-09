@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using static Buttplug.Messages.Error;
 

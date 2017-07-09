@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 
 namespace ButtplugTest.Core
 {
