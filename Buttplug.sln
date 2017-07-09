@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Core", "Buttplug.Core\Buttplug.Core.csproj", "{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.ProjectFiles", "Buttplug.ProjectFiles\Buttplug.ProjectFiles.csproj", "{437B1971-00B6-4638-A700-756F4B7610AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{437B1971-00B6-4638-A700-756F4B7610AA}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{437B1971-00B6-4638-A700-756F4B7610AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

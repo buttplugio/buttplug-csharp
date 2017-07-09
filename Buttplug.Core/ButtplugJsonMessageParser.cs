@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
-using static Buttplug.Messages.Error;
+using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core
 {

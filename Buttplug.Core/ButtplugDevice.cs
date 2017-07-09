@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using static Buttplug.Messages.Error;
+using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core
 {
