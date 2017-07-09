@@ -1,4 +1,4 @@
-﻿using Buttplug.Messages;
+﻿using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
 namespace Buttplug.Client
