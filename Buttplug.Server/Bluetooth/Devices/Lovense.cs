@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using static Buttplug.Messages.Error;
 
 namespace Buttplug.Bluetooth.Devices
 {
@@ -138,7 +137,7 @@ namespace Buttplug.Bluetooth.Devices
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE, "Wrong Handler");
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
             // While there are 3 lovense revs right now, all of the characteristic arrays are the same.

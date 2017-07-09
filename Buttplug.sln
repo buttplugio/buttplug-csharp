@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.ProjectFiles", "Bu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client", "Buttplug.Client\Buttplug.Client.csproj", "{1592D845-8FE5-4F33-A665-D7675C9AAEE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server", "Buttplug.Server\Buttplug.Server.csproj", "{23D9EC18-2DBA-4149-A951-B84786D4BFA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{1592D845-8FE5-4F33-A665-D7675C9AAEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1592D845-8FE5-4F33-A665-D7675C9AAEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1592D845-8FE5-4F33-A665-D7675C9AAEE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23D9EC18-2DBA-4149-A951-B84786D4BFA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23D9EC18-2DBA-4149-A951-B84786D4BFA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23D9EC18-2DBA-4149-A951-B84786D4BFA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23D9EC18-2DBA-4149-A951-B84786D4BFA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
