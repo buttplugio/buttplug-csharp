@@ -39,7 +39,7 @@ namespace Buttplug.Core
             }
 
             var messageClasses = from t in allTypes
-                                 where t != null && t.IsClass && t.Namespace == "Buttplug.Messages" && typeof(ButtplugMessage).IsAssignableFrom(t)
+                                 where t != null && t.IsClass && t.Namespace == "Buttplug.Core.Messages" && typeof(ButtplugMessage).IsAssignableFrom(t)
                                  select t;
 
             var enumerable = messageClasses as Type[] ?? messageClasses.ToArray();
@@ -53,7 +53,7 @@ namespace Buttplug.Core
 
             // Load the schema for validation
             var assembly = Assembly.GetExecutingAssembly();
-            const string resourceName = "ButtplugShared.buttplug-schema.json";
+            const string resourceName = "Buttplug.Core.buttplug-schema.json";
             Stream stream = null;
             try
             {
