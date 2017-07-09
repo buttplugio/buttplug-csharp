@@ -3,7 +3,7 @@ using System.Reflection;
 using Buttplug.Core;
 using Newtonsoft.Json;
 
-namespace Buttplug.Messages
+namespace Buttplug.Core.Messages
 {
     public class Ok : ButtplugMessage, IButtplugMessageOutgoingOnly
     {

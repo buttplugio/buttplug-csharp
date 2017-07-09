@@ -1,8 +1,8 @@
 ﻿using System;
 using Buttplug.Logging;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using static Buttplug.Messages.Error;
+using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core
 {
