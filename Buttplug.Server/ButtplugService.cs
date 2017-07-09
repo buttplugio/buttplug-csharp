@@ -34,7 +34,7 @@ namespace Buttplug.Server
         public static string GetLicense()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "Buttplug.LICENSE";
+            var resourceName = "Buttplug.Server.LICENSE";
             Stream stream = null;
             try
             {

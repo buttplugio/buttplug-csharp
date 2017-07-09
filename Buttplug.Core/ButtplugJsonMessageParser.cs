@@ -12,7 +12,7 @@ using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core
 {
-    internal class ButtplugJsonMessageParser
+    public class ButtplugJsonMessageParser
     {
         [NotNull]
         private readonly Dictionary<string, Type> _messageTypes;

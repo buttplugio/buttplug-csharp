@@ -36,9 +36,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 // Let test project see internals
-[assembly: InternalsVisibleTo("Buttplug")]
-[assembly: InternalsVisibleTo("ButtplugTest")]
-[assembly: InternalsVisibleTo("ButtplugUWPBluetoothManager")]
-[assembly: InternalsVisibleTo("ButtplugXInputGamepadManager")]
-[assembly: InternalsVisibleTo("ButtplugUWPGamepadManager")]
-[assembly: InternalsVisibleTo("ButtplugClient")]
+[assembly: InternalsVisibleTo("Buttplug.Client.Test")]
+[assembly: InternalsVisibleTo("Buttplug.Server.Test")]

@@ -5,7 +5,7 @@ using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
-namespace Buttplug.Bluetooth.Devices
+namespace Buttplug.Server.Bluetooth.Devices
 {
     internal class KiirooBluetoothInfo : IBluetoothDeviceInfo
     {

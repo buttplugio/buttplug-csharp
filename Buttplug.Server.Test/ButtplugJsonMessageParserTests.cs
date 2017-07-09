@@ -2,7 +2,7 @@
 using Buttplug.Core.Messages;
 using Xunit;
 
-namespace ButtplugTest.Core
+namespace Buttplug.Server.Test
 {
     public class ButtplugJsonMessageParserTests
     {
@@ -11,8 +11,8 @@ namespace ButtplugTest.Core
         [Fact]
         public void JsonConversionTest()
         {
-            var m1 = new Test("ThisIsATest", ButtplugConsts.SystemMsgId);
-            var m2 = new Test("ThisIsAnotherTest", ButtplugConsts.SystemMsgId);
+            var m1 = new Core.Messages.Test("ThisIsATest", ButtplugConsts.SystemMsgId);
+            var m2 = new Core.Messages.Test("ThisIsAnotherTest", ButtplugConsts.SystemMsgId);
             var msg = _service.Serialize(m1);
             Assert.True(msg.Length > 0);
             Assert.Equal("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}]", msg);
@@ -63,7 +63,7 @@ namespace ButtplugTest.Core
                 case Error e:
                     Assert.True(false, $"Got Error: {e.ErrorMessage}");
                     break;
-                case Test tm:
+                case Core.Messages.Test tm:
                     Assert.True(tm.TestString == "Test");
                     break;
                 default:

@@ -7,7 +7,7 @@ using NLog.Config;
 using NLog.Targets;
 using Xunit;
 
-namespace ButtplugTest.Core
+namespace Buttplug.Server.Test
 {
     internal class TestService : ButtplugService
     {

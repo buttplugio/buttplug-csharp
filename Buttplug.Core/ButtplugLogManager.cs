@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace Buttplug.Core
 {
-    internal class ButtplugLogManager : IButtplugLogManager
+    public class ButtplugLogManager : IButtplugLogManager
     {
         [CanBeNull]
         public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;

@@ -7,8 +7,8 @@
     <ProjectGuid>{23D9EC18-2DBA-4149-A951-B84786D4BFA6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Buttplug</RootNamespace>
-    <AssemblyName>Buttplug</AssemblyName>
+    <RootNamespace>Buttplug.Server</RootNamespace>
+    <AssemblyName>Buttplug.Server</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

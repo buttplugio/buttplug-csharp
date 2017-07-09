@@ -6,7 +6,7 @@ using Buttplug.Core.Messages;
 using Buttplug.Server;
 using Xunit;
 
-namespace ButtplugTest.Core
+namespace Buttplug.Server.Test
 {
     public class ButtplugServerTests
     {
@@ -99,9 +99,8 @@ namespace ButtplugTest.Core
             var enumerable = msgarray as Type[] ?? msgarray.ToArray();
             Assert.True(enumerable.Length == 1);
             Assert.True(enumerable.Contains(typeof(SingleMotorVibrateCmd)));
-            var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
             var s = new TestService();
-            s.AddDeviceSubtypeManager(m);
+            s.AddDeviceSubtypeManager(aLogger => new TestDeviceSubtypeManager(new ButtplugLogManager(), d));
             ButtplugMessage msgReceived = null;
             s.MessageReceived += (aObj, aMsgArgs) =>
             {
@@ -129,8 +128,8 @@ namespace ButtplugTest.Core
             var s = new TestService();
 
             // Test echos back a test message with the same string and id
-            Assert.True(await s.SendMessage(new Test("Right", 2)) is Test);
-            Assert.True(await s.SendMessage(new Test("Wrong", 0)) is Error);
+            Assert.True(await s.SendMessage(new Core.Messages.Test("Right", 2)) is Core.Messages.Test);
+            Assert.True(await s.SendMessage(new Core.Messages.Test("Wrong", 0)) is Error);
         }
 
         [Fact]
@@ -146,7 +145,7 @@ namespace ButtplugTest.Core
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
             var s = new TestService();
-            s.AddDeviceSubtypeManager(m);
+            s.AddDeviceSubtypeManager(aLogger => { return m; });
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
             Assert.True(await s.SendMessage(new SingleMotorVibrateCmd(1, .2)) is Ok);
@@ -158,7 +157,7 @@ namespace ButtplugTest.Core
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
             var s = new TestService();
-            s.AddDeviceSubtypeManager(m);
+            s.AddDeviceSubtypeManager(aLogger => { return m; });
             Assert.True(await s.SendMessage(new StartScanning()) is Ok);
             Assert.True(await s.SendMessage(new StopScanning()) is Ok);
             Assert.True(await s.SendMessage(new FleshlightLaunchFW12Cmd(1, 0, 0)) is Error);
@@ -170,7 +169,7 @@ namespace ButtplugTest.Core
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(new ButtplugLogManager(), d);
             var s = new TestService();
-            s.AddDeviceSubtypeManager(m);
+            s.AddDeviceSubtypeManager(aLogger => { return m; });
             var msgReceived = false;
             s.MessageReceived += (aObj, aMsgArgs) =>
             {

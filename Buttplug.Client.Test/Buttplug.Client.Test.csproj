@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\xunit.runner.visualstudio.2.2.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.2.0\build\net20\xunit.runner.visualstudio.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -8,8 +8,8 @@
     <ProjectGuid>{F8AAA25F-6C62-4BCC-A916-9B52B9A01F52}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ButtplugClientTest</RootNamespace>
-    <AssemblyName>ButtplugClientTest</AssemblyName>
+    <RootNamespace>Buttplug.Client.Test</RootNamespace>
+    <AssemblyName>Buttplug.Client.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -74,13 +74,13 @@
       <Project>{1592d845-8fe5-4f33-a665-d7675c9aaee4}</Project>
       <Name>Buttplug.Client</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Components.WebsocketServer\Buttplug.Components.WebsocketServer.csproj">
+      <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
+      <Name>Buttplug.Components.WebsocketServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
       <Name>Buttplug.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ButtplugWebsockets\Buttplug.Components.WebsocketServer.csproj">
-      <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
-      <Name>Buttplug.Components.WebsocketServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Server\Buttplug.Server.csproj">
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>

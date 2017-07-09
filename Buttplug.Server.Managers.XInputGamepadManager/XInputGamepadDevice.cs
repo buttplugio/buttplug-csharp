@@ -2,9 +2,8 @@
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using SharpDX.XInput;
-using static Buttplug.Messages.Error;
 
-namespace ButtplugXInputGamepadManager.Devices
+namespace Buttplug.Server.Managers.XInputGamepadManager
 {
     internal class XInputGamepadDevice : ButtplugDevice
     {
@@ -28,7 +27,7 @@ namespace ButtplugXInputGamepadManager.Devices
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
             {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE, "Wrong Handler"));
+                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
             }
 
             var v = new Vibration()

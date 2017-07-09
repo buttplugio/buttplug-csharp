@@ -2,7 +2,7 @@
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 
-namespace ButtplugTest.Core
+namespace Buttplug.Server.Test
 {
     internal class TestDevice : ButtplugDevice
     {
