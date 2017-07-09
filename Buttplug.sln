@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Core", "Buttplug.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.ProjectFiles", "Buttplug.ProjectFiles\Buttplug.ProjectFiles.csproj", "{437B1971-00B6-4638-A700-756F4B7610AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client", "Buttplug.Client\Buttplug.Client.csproj", "{1592D845-8FE5-4F33-A665-D7675C9AAEE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{437B1971-00B6-4638-A700-756F4B7610AA}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{437B1971-00B6-4638-A700-756F4B7610AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1592D845-8FE5-4F33-A665-D7675C9AAEE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1592D845-8FE5-4F33-A665-D7675C9AAEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1592D845-8FE5-4F33-A665-D7675C9AAEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1592D845-8FE5-4F33-A665-D7675C9AAEE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

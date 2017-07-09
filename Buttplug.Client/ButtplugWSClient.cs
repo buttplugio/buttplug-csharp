@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Buttplug.Core;
-using Buttplug.Messages;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using static Buttplug.Client.DeviceEventArgs;
 
@@ -334,7 +334,7 @@ namespace Buttplug.Client
             catch (WebSocketException e)
             {
                 // Noop - WS probably closed on us during read
-                return new Error(e.Message, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId); ;
+                return new Error(e.Message, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
             }
         }
 
