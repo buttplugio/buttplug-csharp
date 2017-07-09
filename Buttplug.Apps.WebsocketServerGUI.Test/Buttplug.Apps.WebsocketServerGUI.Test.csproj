@@ -8,8 +8,8 @@
     <ProjectGuid>{DA1D2401-38BB-4822-BBCB-69873CB78394}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ButtplugServerGUITest</RootNamespace>
-    <AssemblyName>ButtplugServerGUITest</AssemblyName>
+    <RootNamespace>Buttplug.Apps.WebsocketServerGUI.Test</RootNamespace>
+    <AssemblyName>Buttplug.Apps.WebsocketServerGUI.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

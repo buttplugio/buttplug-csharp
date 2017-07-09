@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ButtplugKiirooEmulatorGUI</RootNamespace>
+    <RootNamespace>Buttplug.Apps.KiirooEmulatorGUI</RootNamespace>
     <AssemblyName>ButtplugKiirooEmulatorGUI</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -120,7 +120,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Components.ControlLibrary\Buttplug.Components.Controls.csproj">
+    <ProjectReference Include="..\Buttplug.Components.Controls\Buttplug.Components.Controls.csproj">
       <Project>{0e0d1e27-9efd-4a07-b6aa-bb556205c002}</Project>
       <Name>Buttplug.Components.Controls</Name>
     </ProjectReference>
