@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using static Buttplug.Messages.Error;
 
 namespace Buttplug.Bluetooth.Devices
 {
@@ -61,7 +60,7 @@ namespace Buttplug.Bluetooth.Devices
             var cmdMsg = aMsg as KiirooCmd;
             if (cmdMsg is null)
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE, "Wrong Handler");
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
             return await Interface.WriteValue(cmdMsg.Id,

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using static Buttplug.Messages.Error;
 
 namespace Buttplug.Server
 {
@@ -154,7 +153,7 @@ namespace Buttplug.Server
                         return new Ok(aMsg.Id);
                     }
 
-                    return new Error(errorMsg, ErrorClass.ERROR_DEVICE, aMsg.Id);
+                    return new Error(errorMsg, Error.ErrorClass.ERROR_DEVICE, aMsg.Id);
                 case RequestDeviceList _:
                     var msgDevices = _devices
                         .Select(aDevice => new DeviceMessageInfo(aDevice.Key, aDevice.Value.Name,
@@ -169,10 +168,10 @@ namespace Buttplug.Server
                         return await _devices[m.DeviceIndex].ParseMessage(m);
                     }
 
-                    return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_DEVICE, $"Dropping message for unknown device index {m.DeviceIndex}");
+                    return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_DEVICE, $"Dropping message for unknown device index {m.DeviceIndex}");
             }
 
-            return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_MSG, $"Message type {aMsg.GetType().Name} unhandled by this server.");
+            return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_MSG, $"Message type {aMsg.GetType().Name} unhandled by this server.");
         }
 
         private void StartScanning()

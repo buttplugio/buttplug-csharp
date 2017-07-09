@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -22,7 +22,8 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
@@ -62,17 +63,16 @@
   <ItemGroup>
     <None Include="app.config" />
     <EmbeddedResource Include="..\LICENSE" />
-    <None Include="ButtplugCodeAnalysisRules.ruleset" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Include="..\Buttplug.ProjectFiles\Buttplug.ProjectFiles\stylecop.json" />
+    <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ButtplugShared\Buttplug.Core.csproj">
+    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
       <Name>Buttplug.Core</Name>
     </ProjectReference>

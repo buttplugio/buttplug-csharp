@@ -7,7 +7,6 @@ using System.Timers;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using static Buttplug.Messages.Error;
 
 namespace Buttplug.Server
 {
@@ -93,7 +92,7 @@ namespace Buttplug.Server
         {
             _pingTimer?.Stop();
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
-                ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
+                Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
             SendMessage(new StopAllDevices()).Wait();
             _pingTimedOut = true;
         }
@@ -105,25 +104,25 @@ namespace Buttplug.Server
             var id = aMsg.Id;
             if (id == 0)
             {
-                return _bpLogger.LogWarnMsg(id, ErrorClass.ERROR_MSG,
+                return _bpLogger.LogWarnMsg(id, Error.ErrorClass.ERROR_MSG,
                     "Message Id 0 is reserved for outgoing system messages. Please use another Id.");
             }
 
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
-                return _bpLogger.LogWarnMsg(id, ErrorClass.ERROR_MSG,
+                return _bpLogger.LogWarnMsg(id, Error.ErrorClass.ERROR_MSG,
                     $"Message of type {aMsg.GetType().Name} cannot be sent to server");
             }
 
             if (_pingTimedOut)
             {
-                return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_PING, "Ping timed out.");
+                return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_PING, "Ping timed out.");
             }
 
             // If we get a message that's not RequestServerInfo first, return an error.
             if (!_receivedRequestServerInfo && !(aMsg is RequestServerInfo))
             {
-                return _bpLogger.LogErrorMsg(id, ErrorClass.ERROR_INIT,
+                return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_INIT,
                     "RequestServerInfo must be first message received by server!");
             }
 
