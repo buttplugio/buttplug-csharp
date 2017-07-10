@@ -48,6 +48,7 @@ assembly_info:
 before_build:
   - nuget restore
 build:
+  parallel: true
   project: Buttplug.sln
 after_build:
   - cmd: InspectCode.exe -o=resharper-clt-output.xml --project=Buttplug* Buttplug.sln
