@@ -64,6 +64,9 @@ namespace Buttplug.Client
         public event EventHandler<ScanningFinishedEventArgs> ScanningFinished;
 
         [CanBeNull]
+        public event EventHandler<ErrorEventArgs> ErrorReceived;
+
+        [CanBeNull]
         public event EventHandler<LogEventArgs> Log;
 
         [CanBeNull]
@@ -131,7 +134,10 @@ namespace Buttplug.Client
                     break;
 
                 case Error e:
-                    break;
+                    throw new Exception(e.ErrorMessage);
+
+                default:
+                    throw new Exception("Unexpecte message returned: " + res.GetType().ToString());
             }
         }
 
@@ -147,7 +153,7 @@ namespace Buttplug.Client
             {
                 if (_ws.State != WebSocketState.CloseSent && _ws.State != WebSocketState.Closed)
                 {
-                    await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client shutdown", CancellationToken.None);
+                    await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client shutdown", _tokenSource.Token);
                 }
             }
 
@@ -228,6 +234,13 @@ namespace Buttplug.Client
                                         ScanningFinished?.Invoke(this, new ScanningFinishedEventArgs(sf));
                                     });
                                     break;
+
+                                case Error e:
+                                    _owningDispatcher.Invoke(() =>
+                                    {
+                                        ErrorReceived?.Invoke(this, new ErrorEventArgs(e));
+                                    });
+                                    break;
                             }
                         }
 
@@ -243,10 +256,24 @@ namespace Buttplug.Client
 
         private async void onPingTimer(object state)
         {
-            var msg = await SendMessage(new Ping(nextMsgId));
-            if (msg is Error)
+            try
             {
-                // Do something with the error!
+                var msg = await SendMessage(new Ping(nextMsgId));
+                if (msg is Error)
+                {
+                    _owningDispatcher.Invoke(() =>
+                    {
+                        ErrorReceived?.Invoke(this, new ErrorEventArgs((msg as Error)));
+                    });
+                    throw new Exception((msg as Error).ErrorMessage);
+                }
+            }
+            catch
+            {
+                if (_ws != null)
+                {
+                    await Disconnect();
+                }
             }
         }
 
@@ -295,9 +322,9 @@ namespace Buttplug.Client
         {
             if (_devices.TryGetValue(aDevice.Index, out ButtplugClientDevice dev))
             {
-                if (!dev.AllowedMessages.Contains(aDeviceMsg.GetType().ToString()))
+                if (!dev.AllowedMessages.Contains(aDeviceMsg.GetType().Name))
                 {
-                    return new Error("Device does not accept that message type.", Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId);
+                    return new Error("Device does not accept message type: " + aDeviceMsg.GetType().Name, Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId);
                 }
 
                 aDeviceMsg.DeviceIndex = aDevice.Index;
@@ -326,7 +353,14 @@ namespace Buttplug.Client
             {
                 lock (sendLock)
                 {
-                    _ws.SendAsync(segment1, WebSocketMessageType.Text, true, CancellationToken.None).Wait();
+                    if (_ws != null && _ws.State == WebSocketState.Open)
+                    {
+                        _ws.SendAsync(segment1, WebSocketMessageType.Text, true, _tokenSource.Token).Wait();
+                    }
+                    else
+                    {
+                        return new Error("Bad WS state!", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
+                    }
                 }
 
                 return await promise.Task;
