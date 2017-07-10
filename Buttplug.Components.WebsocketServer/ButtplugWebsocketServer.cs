@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Buttplug.Server;
 using JetBrains.Annotations;
 using vtortola.WebSockets;
+using Buttplug.Core.Messages;
 
 namespace Buttplug.Components.WebsocketServer
 {
@@ -66,6 +67,11 @@ namespace Buttplug.Components.WebsocketServer
                     {
                         ws.WriteString(msg);
                     }
+
+                    if (aEvent.Message is Error && (aEvent.Message as Error).ErrorCode == Error.ErrorClass.ERROR_PING && ws != null && ws.IsConnected)
+                    {
+                        ws.Close();
+                    }
                 }
                 catch (WebSocketException)
                 {
@@ -82,8 +88,17 @@ namespace Buttplug.Components.WebsocketServer
                     var msg = await ws.ReadStringAsync(cancellation).ConfigureAwait(false);
                     if (msg != null)
                     {
-                        var respMsg = buttplug.Serialize(await buttplug.SendMessage(msg));
+                        var respMsgs = await buttplug.SendMessage(msg);
+                        var respMsg = buttplug.Serialize(respMsgs);
                         await ws.WriteStringAsync(respMsg, cancellation);
+
+                        foreach (var m in respMsgs)
+                        {
+                            if (m is Error && (m as Error).ErrorCode == Error.ErrorClass.ERROR_PING && ws != null && ws.IsConnected)
+                            {
+                                ws.Close();
+                            }
+                        }
                     }
                 }
             }
