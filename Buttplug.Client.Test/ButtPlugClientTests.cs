@@ -58,6 +58,8 @@ namespace Buttplug.Client.Test
 
             Assert.True(client.nextMsgId > 4);
 
+            await client.RequestDeviceList();
+
             Console.WriteLine("FINISHED CLIENT DISCONNECT");
 
             // Shut it down
