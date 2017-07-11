@@ -30,10 +30,10 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
                 return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
             }
 
-            var v = new Vibration()
+            var v = new Vibration
             {
-                LeftMotorSpeed = (ushort)(cmdMsg.Speed * 65536),
-                RightMotorSpeed = (ushort)(cmdMsg.Speed * 65536),
+                LeftMotorSpeed = (ushort)(cmdMsg.Speed * ushort.MaxValue),
+                RightMotorSpeed = (ushort)(cmdMsg.Speed * ushort.MaxValue),
             };
             _device.SetVibration(v);
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
