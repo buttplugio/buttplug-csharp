@@ -12,7 +12,7 @@ namespace Buttplug.Client.Test
     {
         public ButtplugService GetService()
         {
-            return new ButtplugService("Test service", 100);
+            return new ButtplugService("Test service", 200);
         }
 
         private class ButtplugTestClient : ButtplugWSClient
