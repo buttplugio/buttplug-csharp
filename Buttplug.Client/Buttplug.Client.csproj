@@ -53,6 +53,7 @@
     <Compile Include="ButtplugClientDevice.cs" />
     <Compile Include="ButtplugWSClient.cs" />
     <Compile Include="DeviceAction.cs" />
+    <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="LogEventArgs.cs" />
     <Compile Include="ScanningFinishedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
