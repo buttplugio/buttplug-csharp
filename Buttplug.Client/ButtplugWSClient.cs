@@ -153,7 +153,7 @@ namespace Buttplug.Client
             {
                 if (_ws.State != WebSocketState.CloseSent && _ws.State != WebSocketState.Closed)
                 {
-                    await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client shutdown", _tokenSource.Token);
+                    await _ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Client shutdown", _tokenSource.Token);
                 }
             }
 
@@ -184,7 +184,17 @@ namespace Buttplug.Client
                 {
                     var buffer = new byte[5];
                     var segment = new ArraySegment<byte>(buffer);
-                    var result = await _ws.ReceiveAsync(segment, aToken);
+                    WebSocketReceiveResult result;
+                    try
+                    {
+                        result = await _ws.ReceiveAsync(segment, aToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // If the operation is cancelled, just continue so we fall out of the loop
+                        continue;
+                    }
+
                     var input = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
                     sb.Append(input);
