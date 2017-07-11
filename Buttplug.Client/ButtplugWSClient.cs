@@ -290,6 +290,11 @@ namespace Buttplug.Client
         public async Task RequestDeviceList()
         {
             var deviceList = (await SendMessage(new RequestDeviceList(nextMsgId))) as DeviceList;
+            if (deviceList.Devices == null)
+            {
+                return;
+            }
+
             foreach (var d in deviceList.Devices)
             {
                 if (!_devices.ContainsKey(d.DeviceIndex))
