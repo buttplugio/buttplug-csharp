@@ -21,15 +21,19 @@ install:
   - ps: choco install -y -r --no-progress fxcop
   - ps: choco install -y -r --no-progress InnoSetup
   - ps: |
-      function gitVersion(){
-        $gitVersion=git describe --tags --abbrev=0 $env:APPVEYOR_REPO_BRANCH
-        
-        $newVersion="$gitVersion.$env:APPVEYOR_BUILD_NUMBER"
+      function gitVersion() {
         $env:newhash=git rev-parse HEAD
         $env:shorthash=git rev-parse --short HEAD
-        $env:appveyor_build_version="$newVersion"
-        $env:appveyor_info_version="$($newVersion)-alpha"
-        appveyor UpdateBuild -Version "$newVersion"
+        If ($env:appveyor_repo_tag -eq $TRUE) {
+          $env:newVersion=$env:appveyor_repo_tag_name
+          $env:appveyor_info_version=$env:appveyor_repo_tag_name
+        } Else {
+          $gitVersion=git describe --tags --abbrev=0 $env:APPVEYOR_REPO_BRANCH
+          $env:newVersion="$gitVersion.$env:APPVEYOR_BUILD_NUMBER"
+          $env:appveyor_info_version="$env:newVersion-alpha"
+        }      
+        $env:appveyor_build_version="$env:newVersion"
+        appveyor UpdateBuild -Version "$env:newVersion"
         write-host "Using hash for build version: $env:newhash"
         write-host "Update appveyor build version to: $env:appveyor_build_version"
         write-host "Update appveyor info version to: $env:appveyor_info_version"
