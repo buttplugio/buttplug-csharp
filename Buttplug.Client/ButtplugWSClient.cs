@@ -289,13 +289,21 @@ namespace Buttplug.Client
 
         public async Task RequestDeviceList()
         {
-            var deviceList = (await SendMessage(new RequestDeviceList(nextMsgId))) as DeviceList;
-            if (deviceList.Devices == null)
+            var resp = await SendMessage(new RequestDeviceList(nextMsgId));
+            if (!(resp is DeviceList) || (resp as DeviceList).Devices == null)
             {
+                if (resp is Error)
+                {
+                    _owningDispatcher.Invoke(() =>
+                    {
+                        ErrorReceived?.Invoke(this, new ErrorEventArgs(resp as Error));
+                    });
+                }
+
                 return;
             }
 
-            foreach (var d in deviceList.Devices)
+            foreach (var d in (resp as DeviceList).Devices)
             {
                 if (!_devices.ContainsKey(d.DeviceIndex))
                 {
