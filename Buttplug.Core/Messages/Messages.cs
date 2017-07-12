@@ -76,11 +76,14 @@ namespace Buttplug.Core.Messages
 
     public class DeviceMessageInfo
     {
+        [JsonProperty(Required = Required.Always)]
         public string DeviceName;
 
+        [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex;
 
-        public string[] DeviceMessages;
+        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
+        public string[] DeviceMessages = new string[0];
 
         public DeviceMessageInfo(uint aIndex, string aName, string[] aMessages)
         {
@@ -92,7 +95,8 @@ namespace Buttplug.Core.Messages
 
     public class DeviceList : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
-        public readonly DeviceMessageInfo[] Devices;
+        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
+        public readonly DeviceMessageInfo[] Devices = new DeviceMessageInfo[0];
 
         public DeviceList(DeviceMessageInfo[] aDeviceList, uint aId)
              : base(aId)
@@ -103,9 +107,11 @@ namespace Buttplug.Core.Messages
 
     public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
     {
+        [JsonProperty(Required = Required.Always)]
         public string DeviceName;
 
-        public string[] DeviceMessages;
+        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
+        public string[] DeviceMessages = new string[0];
 
         public DeviceAdded(uint aIndex, string aName, string[] aMessages)
             : base(ButtplugConsts.SystemMsgId, aIndex)
@@ -117,6 +123,7 @@ namespace Buttplug.Core.Messages
 
     public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
+        [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex;
 
         public DeviceRemoved(uint aIndex)
@@ -187,11 +194,11 @@ namespace Buttplug.Core.Messages
 
     public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
+        [JsonProperty(Required = Required.Always)]
         public ButtplugLogLevel LogLevel;
 
-        // Needs to be left in for serialization
-        // ReSharper disable once UnusedAutoPropertyAccessor.Local
-        private string LogMessage;
+        [JsonProperty(Required = Required.Always)]
+        public string LogMessage;
 
         public Log(ButtplugLogLevel aLogLevel, string aLogMessage)
             : base(ButtplugConsts.SystemMsgId)
