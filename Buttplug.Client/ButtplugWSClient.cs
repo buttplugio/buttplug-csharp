@@ -273,7 +273,7 @@ namespace Buttplug.Client
                 {
                     _owningDispatcher.Invoke(() =>
                     {
-                        ErrorReceived?.Invoke(this, new ErrorEventArgs((msg as Error)));
+                        ErrorReceived?.Invoke(this, new ErrorEventArgs(msg as Error));
                     });
                     throw new Exception((msg as Error).ErrorMessage);
                 }

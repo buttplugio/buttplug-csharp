@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
+using Buttplug.Server.Bluetooth;
 
 namespace Buttplug.Server.Test
 {
