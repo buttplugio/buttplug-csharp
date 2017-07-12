@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
@@ -15,12 +15,15 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
     {
         public string Name => _bleDevice.Name;
 
-        [CanBeNull]
-        private BluetoothLEDevice _bleDevice;
         [NotNull]
         private readonly GattCharacteristic[] _gattCharacteristics;
+
+        [CanBeNull]
+        private BluetoothLEDevice _bleDevice;
+
         [NotNull]
         private readonly IButtplugLog _bpLogger;
+
         [CanBeNull]
         private IAsyncOperation<GattCommunicationStatus> _currentTask;
 

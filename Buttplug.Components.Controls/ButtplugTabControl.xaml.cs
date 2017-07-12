@@ -50,6 +50,7 @@ namespace Buttplug.Components.Controls
             {
                 _guiLog.Error("Sentry URL invalid, cannot submit crash reports!");
             }
+
             // Cover all of the possible bases for WPF failure
             // http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;

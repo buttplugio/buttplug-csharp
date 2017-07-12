@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
+using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
-using Buttplug.Server;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {

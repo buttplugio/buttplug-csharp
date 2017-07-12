@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
+using Buttplug.Server.Bluetooth;
 using Xunit;
 
 namespace Buttplug.Server.Test

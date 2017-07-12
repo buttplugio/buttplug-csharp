@@ -2,10 +2,10 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core.Messages;
 using Buttplug.Server;
 using JetBrains.Annotations;
 using vtortola.WebSockets;
-using Buttplug.Core.Messages;
 
 namespace Buttplug.Components.WebsocketServer
 {
@@ -105,8 +105,14 @@ namespace Buttplug.Components.WebsocketServer
             catch (Exception)
             {
                 // TODO Log here.
-                try { ws.Close(); }
-                catch { }
+                try
+                {
+                    ws.Close();
+                }
+                catch
+                {
+                    // noop
+                }
             }
             finally
             {

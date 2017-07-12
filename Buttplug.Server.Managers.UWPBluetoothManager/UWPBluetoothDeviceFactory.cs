@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Buttplug.Server.Bluetooth;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;

@@ -1,6 +1,6 @@
 ﻿using System;
-using Buttplug.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Logging;
 using JetBrains.Annotations;
 using static Buttplug.Core.Messages.Error;
 
