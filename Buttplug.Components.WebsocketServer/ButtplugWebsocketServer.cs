@@ -111,6 +111,7 @@ namespace Buttplug.Components.WebsocketServer
             finally
             {
                 buttplug.MessageReceived -= msgReceived;
+                buttplug.Shutdown();
                 buttplug = null;
                 ws.Dispose();
             }

@@ -20,6 +20,11 @@ namespace Buttplug.Server.Bluetooth
             Interface.DeviceRemoved += DeviceRemovedHandler;
         }
 
+        public override void Disconnect()
+        {
+            Interface.Disconnect();
+        }
+
         private void DeviceRemovedHandler(object aObject, EventArgs aEvent)
         {
             InvokeDeviceRemoved();

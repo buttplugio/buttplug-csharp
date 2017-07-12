@@ -15,8 +15,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
     {
         public string Name => _bleDevice.Name;
 
-        [NotNull]
-        private readonly BluetoothLEDevice _bleDevice;
+        [CanBeNull]
+        private BluetoothLEDevice _bleDevice;
         [NotNull]
         private readonly GattCharacteristic[] _gattCharacteristics;
         [NotNull]
@@ -40,7 +40,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         private void ConnectionStatusChangedHandler([NotNull] BluetoothLEDevice aDevice, [NotNull] object aObj)
         {
-            if (_bleDevice.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
+            if (_bleDevice?.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
             {
                 DeviceRemoved?.Invoke(this, new EventArgs());
             }
@@ -86,6 +86,18 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
 
             return new Ok(aMsgId);
+        }
+
+        public void Disconnect()
+        {
+            DeviceRemoved?.Invoke(this, new EventArgs());
+            for (int i = 0; i < _gattCharacteristics.Length; i++)
+            {
+                _gattCharacteristics[i] = null;
+            }
+
+            _bleDevice.Dispose();
+            _bleDevice = null;
         }
     }
 }

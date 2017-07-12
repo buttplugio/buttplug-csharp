@@ -174,6 +174,15 @@ namespace Buttplug.Server
             return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_MSG, $"Message type {aMsg.GetType().Name} unhandled by this server.");
         }
 
+        internal void RemoveAllDevices()
+        {
+            StopScanning();
+            foreach (var d in _devices.Values)
+            {
+                d.Disconnect();
+            }
+        }
+
         private void StartScanning()
         {
             _sentFinished = false;

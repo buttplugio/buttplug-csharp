@@ -153,6 +153,11 @@ namespace Buttplug.Server
             return await _deviceManager.SendMessage(aMsg);
         }
 
+        public void Shutdown()
+        {
+            _deviceManager.RemoveAllDevices();
+        }
+
         [ItemNotNull]
         public async Task<ButtplugMessage[]> SendMessage(string aJsonMsgs)
         {
