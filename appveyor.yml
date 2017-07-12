@@ -92,3 +92,5 @@ deploy:
     on:
       branch: master
       configuration: release
+      appveyor_repo_provider: github
+      appveyor_repo_name: metafetish/buttplug-csharp
