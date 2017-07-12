@@ -24,5 +24,7 @@ namespace Buttplug.Core
 
         [NotNull]
         Task<ButtplugMessage> Initialize();
+
+        void Disconnect();
     }
 }

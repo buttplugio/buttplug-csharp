@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 
@@ -21,6 +22,11 @@ namespace Buttplug.Server.Test
         public void RemoveDevice()
         {
             InvokeDeviceRemoved();
+        }
+
+        public override void Disconnect()
+        {
+            RemoveDevice();
         }
     }
 }

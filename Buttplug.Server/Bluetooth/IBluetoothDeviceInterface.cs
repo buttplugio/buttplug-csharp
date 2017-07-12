@@ -13,5 +13,7 @@ namespace Buttplug.Server.Bluetooth
         ulong GetAddress();
 
         event EventHandler DeviceRemoved;
+
+        void Disconnect();
     }
 }

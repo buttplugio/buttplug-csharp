@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using SharpDX.XInput;
@@ -7,7 +8,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
 {
     internal class XInputGamepadDevice : ButtplugDevice
     {
-        private readonly Controller _device;
+        private Controller _device;
 
         public XInputGamepadDevice(IButtplugLogManager aLogManager, Controller aDevice)
             : base(aLogManager, "XBox Compatible Gamepad (XInput)", aDevice.UserIndex.ToString())
@@ -35,8 +36,43 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
                 LeftMotorSpeed = (ushort)(cmdMsg.Speed * ushort.MaxValue),
                 RightMotorSpeed = (ushort)(cmdMsg.Speed * ushort.MaxValue),
             };
-            _device.SetVibration(v);
+
+            try
+            {
+                _device?.SetVibration(v);
+            }
+            catch (Exception e)
+            {
+                if (_device?.IsConnected != true)
+                {
+                    InvokeDeviceRemoved();
+
+                    // Don't throw a spanner in the works
+                    return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
+                }
+
+                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, e.Message));
+            }
+
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
+        }
+
+        public override void Disconnect()
+        {
+            var v = new Vibration
+            {
+                LeftMotorSpeed = 0,
+                RightMotorSpeed = 0,
+            };
+            try
+            {
+                _device?.SetVibration(v);
+                _device = null;
+            }
+            finally
+            {
+                _device = null;
+            }
         }
     }
 }

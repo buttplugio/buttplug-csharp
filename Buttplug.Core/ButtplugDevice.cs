@@ -67,5 +67,7 @@ namespace Buttplug.Core
             // ReSharper disable once AssignNullToNotNullAttribute
             return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SystemMsgId));
         }
+
+        public abstract void Disconnect();
     }
 }
