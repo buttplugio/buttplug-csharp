@@ -39,6 +39,14 @@ namespace Buttplug.Apps.WebsocketServerGUI
 
             PortTextBox.Text = _port.ToString();
             SecureCheckBox.IsChecked = _secure;
+
+            _ws.OnException += WebSocketExceptionHandler;
+        }
+
+        private void WebSocketExceptionHandler(object aObj, UnhandledExceptionEventArgs aEx)
+        {
+            Console.WriteLine("Exception of type " + aEx.ExceptionObject.GetType().ToString() + " encountered: " + (aEx.ExceptionObject as Exception)?.Message ?? "Unknown");
+            MessageBox.Show((aEx.ExceptionObject as Exception)?.Message ?? "Unknown", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
         public void StartServer()
