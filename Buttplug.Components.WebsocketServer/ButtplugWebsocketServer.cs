@@ -15,6 +15,9 @@ namespace Buttplug.Components.WebsocketServer
         [NotNull]
         private IButtplugServiceFactory _factory;
 
+        [CanBeNull]
+        public EventHandler<UnhandledExceptionEventArgs> OnException;
+
         public void StartServer([NotNull] IButtplugServiceFactory aFactory, int aPort = 12345, bool aSecure = false)
         {
             CancellationTokenSource cancellation = new CancellationTokenSource();
@@ -49,7 +52,7 @@ namespace Buttplug.Components.WebsocketServer
                 }
                 catch (Exception aEx)
                 {
-                    // TODO: Actually log here.
+                    OnException?.Invoke(this, new UnhandledExceptionEventArgs(aEx, false));
                 }
             }
         }
