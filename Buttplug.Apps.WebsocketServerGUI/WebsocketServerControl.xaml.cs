@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using Buttplug.Components.WebsocketServer;
 using Buttplug.Server;
+using System.Windows.Input;
+using System;
 
 namespace Buttplug.Apps.WebsocketServerGUI
 {
@@ -47,6 +49,10 @@ namespace Buttplug.Apps.WebsocketServerGUI
                 ConnToggleButton.Content = "Stop";
                 SecureCheckBox.IsEnabled = false;
                 PortTextBox.IsEnabled = false;
+                ConnectionUrl.Text = (_secure ? "wss" : "ws") + "://localhost:" + _port.ToString() + "/buttplug";
+                TestUrl.Inlines.Clear();
+                TestUrl.Inlines.Add((_secure ? "https" : "http") + "://localhost:" + _port.ToString());
+                ConnInfo.Visibility = Visibility.Visible;
             }
             catch (SocketException e)
             {
@@ -60,6 +66,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             ConnToggleButton.Content = "Start";
             SecureCheckBox.IsEnabled = true;
             PortTextBox.IsEnabled = true;
+            ConnInfo.Visibility = Visibility.Collapsed;
         }
 
         private void ConnToggleButton_Click(object aObj, RoutedEventArgs aEvent)
@@ -95,6 +102,11 @@ namespace Buttplug.Apps.WebsocketServerGUI
         private void SecureCheckBox_Checked(object aObj, RoutedEventArgs aEvent)
         {
             _secure = true;
+        }
+
+        private void TestUrl_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(new Uri((_secure ? "https" : "http") + "://localhost:" + _port.ToString()).AbsoluteUri);
         }
     }
 }
