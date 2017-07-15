@@ -38,33 +38,27 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
             else if (_deviceInfo.Names.Any() && !aAdvertisement.ServiceUuids.Any())
             {
-#if DEBUG
-                Console.WriteLine("Found " + aAdvertisement.LocalName + " for " + _deviceInfo.GetType().ToString());
-                Console.WriteLine("No advertised services?");
-#endif
+                _bpLogger.Debug("Found " + aAdvertisement.LocalName + " for " + _deviceInfo.GetType().ToString());
+                _bpLogger.Debug("No advertised services?");
                 return true;
             }
 
-#if DEBUG
-            Console.WriteLine("Found " + aAdvertisement.LocalName + " for " + _deviceInfo.GetType().ToString());
+            _bpLogger.Debug("Found " + aAdvertisement.LocalName + " for " + _deviceInfo.GetType().ToString());
             foreach (var s in _deviceInfo.Services)
             {
-                Console.WriteLine("Expecting " + s.ToString());
+                _bpLogger.Debug("Expecting " + s.ToString());
             }
 
             foreach (var s in aAdvertisement.ServiceUuids)
             {
-                Console.WriteLine("Got " + s.ToString());
+                _bpLogger.Debug("Got " + s.ToString());
             }
-#endif
 
             // Intersect doesn't intersect until the enumerator is called
             var sv = _deviceInfo.Services.Intersect(aAdvertisement.ServiceUuids);
             foreach (var s in sv)
             {
-#if DEBUG
-                Console.WriteLine("Matched " + s.ToString());
-#endif
+                _bpLogger.Debug("Matched " + s.ToString());
                 return true;
             }
 
@@ -79,13 +73,13 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             var services = await aDevice.GetGattServicesAsync(BluetoothCacheMode.Cached);
             foreach (var s in services.Services)
             {
-                _bpLogger.Trace("Found service UUID: " + s.Uuid + " (" + aDevice.Name + ")");
+                _bpLogger.Debug("Found service UUID: " + s.Uuid + " (" + aDevice.Name + ")");
             }
 
             var srvResult = await aDevice.GetGattServicesForUuidAsync(_deviceInfo.Services[0], BluetoothCacheMode.Cached);
             if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
             {
-                _bpLogger.Trace("Cannot find service for device (" + aDevice.Name + ")");
+                _bpLogger.Debug("Cannot find service for device (" + aDevice.Name + ")");
                 return null;
             }
 
