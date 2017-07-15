@@ -3,8 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using Buttplug.Components.WebsocketServer;
 using Buttplug.Server;
-using System.Windows.Input;
 using System;
+using JetBrains.Annotations;
+using NLog;
 
 namespace Buttplug.Apps.WebsocketServerGUI
 {
@@ -43,9 +44,10 @@ namespace Buttplug.Apps.WebsocketServerGUI
             _ws.OnException += WebSocketExceptionHandler;
         }
 
-        private void WebSocketExceptionHandler(object aObj, UnhandledExceptionEventArgs aEx)
+        private void WebSocketExceptionHandler(object aObj, [NotNull] UnhandledExceptionEventArgs aEx)
         {
-            Console.WriteLine("Exception of type " + aEx.ExceptionObject.GetType().ToString() + " encountered: " + (aEx.ExceptionObject as Exception)?.Message ?? "Unknown");
+            var log = LogManager.GetCurrentClassLogger();
+            log.Error("Exception of type " + aEx.ExceptionObject.GetType() + " encountered: " + (aEx.ExceptionObject as Exception)?.Message);
             MessageBox.Show((aEx.ExceptionObject as Exception)?.Message ?? "Unknown", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 

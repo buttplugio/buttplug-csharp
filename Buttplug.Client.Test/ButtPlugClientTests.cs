@@ -37,7 +37,6 @@ namespace Buttplug.Client.Test
             var client = new ButtplugTestClient("Test client");
             await client.Connect(new Uri("ws://localhost:12345/buttplug"));
 
-            Console.WriteLine("test msg 1");
             var msgId = client.nextMsgId;
             var res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
             Assert.True(res != null);
@@ -48,7 +47,6 @@ namespace Buttplug.Client.Test
             // Check ping is working
             Thread.Sleep(400);
 
-            Console.WriteLine("test msg 2");
             msgId = client.nextMsgId;
             res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
             Assert.True(res != null);
@@ -59,8 +57,6 @@ namespace Buttplug.Client.Test
             Assert.True(client.nextMsgId > 4);
 
             await client.RequestDeviceList();
-
-            Console.WriteLine("FINISHED CLIENT DISCONNECT");
 
             // Shut it down
             await client.Disconnect();
