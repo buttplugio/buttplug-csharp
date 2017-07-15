@@ -130,7 +130,10 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
             _bpServer.SendMessage(new StopScanning()).Wait();
             _bpServer.SendMessage(new StopAllDevices()).Wait();
             _kiirooEmulator.StopServer();
-            ServerButton.Content = "Start Server";
+            Dispatcher.InvokeAsync(() =>
+            {
+                ServerButton.Content = "Start Server";
+            });
         }
 
         private void OperationCompletedHandler(object aObj, EventArgs aEvent)
