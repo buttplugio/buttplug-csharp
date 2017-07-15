@@ -29,6 +29,7 @@ namespace Buttplug.Components.Controls
         private string _serverName;
         private uint _maxPingTime;
         private bool _sentCrashLog;
+        public DeviceManager _deviceManager;
 
         public ButtplugTabControl()
         {
@@ -82,7 +83,19 @@ namespace Buttplug.Components.Controls
         private ButtplugServer InitializeButtplugServer(string aServerName, uint aMaxPingTime)
         {
             // Set up internal services
-            var bpServer = new ButtplugServer(aServerName, aMaxPingTime);
+            ButtplugServer bpServer;
+            // Due to the weird inability to close BLE devices, we have to share device managers across buttplug
+            // server instances. Otherwise we'll just hold device connections open forever.
+            if (_deviceManager == null)
+            {
+                bpServer = new ButtplugServer(aServerName, aMaxPingTime);
+                _deviceManager = bpServer.DeviceManager;
+            }
+            else
+            {
+                bpServer = new ButtplugServer(aServerName, aMaxPingTime, _deviceManager);
+                return bpServer;
+            }
             if (!(Environment.OSVersion is null))
             {
                 _guiLog.Info($"Windows Version: {Environment.OSVersion.VersionString}");
