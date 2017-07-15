@@ -36,8 +36,39 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             {
                 return false;
             }
+            else if (_deviceInfo.Names.Any() && !aAdvertisement.ServiceUuids.Any())
+            {
+#if DEBUG
+                Console.WriteLine("Found " + aAdvertisement.LocalName + " for " + _deviceInfo.GetType().ToString());
+                Console.WriteLine("No advertised services?");
+#endif
+                return true;
+            }
 
-            return !aAdvertisement.ServiceUuids.Any() || _deviceInfo.Services.Union(aAdvertisement.ServiceUuids).Any();
+#if DEBUG
+            Console.WriteLine("Found " + aAdvertisement.LocalName + " for " + _deviceInfo.GetType().ToString());
+            foreach (var s in _deviceInfo.Services)
+            {
+                Console.WriteLine("Expecting " + s.ToString());
+            }
+
+            foreach (var s in aAdvertisement.ServiceUuids)
+            {
+                Console.WriteLine("Got " + s.ToString());
+            }
+#endif
+
+            // Intersect doesn't intersect until the enumerator is called
+            var sv = _deviceInfo.Services.Intersect(aAdvertisement.ServiceUuids);
+            foreach (var s in sv)
+            {
+#if DEBUG
+                Console.WriteLine("Matched " + s.ToString());
+#endif
+                return true;
+            }
+
+            return false;
         }
 
         // TODO Have this throw exceptions instead of return null. Once we've made it this far, if we don't find what we're expecting, that's weird.
@@ -48,13 +79,13 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             var services = await aDevice.GetGattServicesAsync(BluetoothCacheMode.Cached);
             foreach (var s in services.Services)
             {
-                _bpLogger.Trace("Found service UUID: " + s.Uuid);
+                _bpLogger.Trace("Found service UUID: " + s.Uuid + " (" + aDevice.Name + ")");
             }
 
             var srvResult = await aDevice.GetGattServicesForUuidAsync(_deviceInfo.Services[0], BluetoothCacheMode.Cached);
             if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
             {
-                _bpLogger.Trace("Cannot find service for device");
+                _bpLogger.Trace("Cannot find service for device (" + aDevice.Name + ")");
                 return null;
             }
 
