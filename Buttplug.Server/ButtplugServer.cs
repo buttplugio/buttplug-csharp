@@ -21,7 +21,13 @@ namespace Buttplug.Server
         [NotNull]
         private readonly IButtplugLog _bpLogger;
         [NotNull]
-        private readonly DeviceManager _deviceManager;
+        private DeviceManager _deviceManager;
+
+        public DeviceManager DeviceManager
+        {
+            get => _deviceManager;
+        }
+
         [NotNull]
         private readonly IButtplugLogManager _bpLogManager;
         private readonly Timer _pingTimer;
@@ -51,7 +57,7 @@ namespace Buttplug.Server
             }
         }
 
-        public ButtplugServer([NotNull] string aServerName, uint aMaxPingTime)
+        public ButtplugServer([NotNull] string aServerName, uint aMaxPingTime, DeviceManager aDeviceManager = null)
         {
             _serverName = aServerName;
             _maxPingTime = aMaxPingTime;
@@ -66,7 +72,14 @@ namespace Buttplug.Server
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Trace("Setting up ButtplugServer");
             _parser = new ButtplugJsonMessageParser(_bpLogManager);
-            _deviceManager = new DeviceManager(_bpLogManager);
+            if (aDeviceManager != null)
+            {
+                _deviceManager = aDeviceManager;
+            }
+            else
+            {
+                _deviceManager = new DeviceManager(_bpLogManager);
+            }
             _bpLogger.Trace("Finished setting up ButtplugServer");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished += ScanningFinishedHandler;
@@ -155,7 +168,13 @@ namespace Buttplug.Server
 
         public void Shutdown()
         {
-            _deviceManager.RemoveAllDevices();
+            // Don't disconnect devices on shutdown, as they won't actually close.
+            // Uncomment this once we figure out how to close bluetooth devices.
+            // _deviceManager.RemoveAllDevices();
+            _deviceManager.StopScanning();
+            _deviceManager.DeviceMessageReceived -= DeviceMessageReceivedHandler;
+            _deviceManager.ScanningFinished -= ScanningFinishedHandler;
+            _bpLogManager.LogMessageReceived -= LogMessageReceivedHandler;
         }
 
         [ItemNotNull]

@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 
 namespace Buttplug.Server
 {
-    internal class DeviceManager
+    public class DeviceManager
     {
         private readonly List<IDeviceSubtypeManager> _managers;
 
@@ -192,7 +192,7 @@ namespace Buttplug.Server
             _managers.ForEach(aMgr => aMgr.StartScanning());
         }
 
-        private void StopScanning()
+        internal void StopScanning()
         {
             _managers.ForEach(aMgr => aMgr.StopScanning());
         }
