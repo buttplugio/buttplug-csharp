@@ -42,7 +42,7 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
 
     public partial class KiirooEmulatorPanel
     {
-        private readonly ButtplugService _bpServer;
+        private readonly ButtplugServer _bpServer;
         private readonly DeviceList _devices;
 
         [NotNull]
@@ -54,9 +54,9 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
         [NotNull]
         private readonly List<DispatcherOperation> _ops;
 
-        public KiirooEmulatorPanel(ButtplugService aBpService)
+        public KiirooEmulatorPanel(ButtplugServer aBpServer)
         {
-            _bpServer = aBpService;
+            _bpServer = aBpServer;
             _bpServer.SendMessage(new RequestServerInfo("Kiiroo Emulator")).Wait();
             _devices = new DeviceList();
             InitializeComponent();

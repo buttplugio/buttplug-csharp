@@ -13,12 +13,12 @@ namespace Buttplug.Components.WebsocketServer
     {
         private WebSocketListener _server;
         [NotNull]
-        private IButtplugServiceFactory _factory;
+        private IButtplugServerFactory _factory;
 
         [CanBeNull]
         public EventHandler<UnhandledExceptionEventArgs> OnException;
 
-        public void StartServer([NotNull] IButtplugServiceFactory aFactory, int aPort = 12345, bool aSecure = false)
+        public void StartServer([NotNull] IButtplugServerFactory aFactory, int aPort = 12345, bool aSecure = false)
         {
             CancellationTokenSource cancellation = new CancellationTokenSource();
             _factory = aFactory;
@@ -59,7 +59,7 @@ namespace Buttplug.Components.WebsocketServer
 
         private async Task HandleConnectionAsync(WebSocket ws, CancellationToken cancellation)
         {
-            var buttplug = _factory.GetService();
+            var buttplug = _factory.GetServer();
 
             EventHandler<Buttplug.Core.MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
             {

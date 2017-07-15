@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 namespace Buttplug.Server
 {
-    public class ButtplugService
+    public class ButtplugServer
     {
         [NotNull]
         private readonly ButtplugJsonMessageParser _parser;
@@ -51,7 +51,7 @@ namespace Buttplug.Server
             }
         }
 
-        public ButtplugService([NotNull] string aServerName, uint aMaxPingTime)
+        public ButtplugServer([NotNull] string aServerName, uint aMaxPingTime)
         {
             _serverName = aServerName;
             _maxPingTime = aMaxPingTime;
@@ -64,10 +64,10 @@ namespace Buttplug.Server
 
             _bpLogManager = new ButtplugLogManager();
             _bpLogger = _bpLogManager.GetLogger(GetType());
-            _bpLogger.Trace("Setting up ButtplugService");
+            _bpLogger.Trace("Setting up ButtplugServer");
             _parser = new ButtplugJsonMessageParser(_bpLogManager);
             _deviceManager = new DeviceManager(_bpLogManager);
-            _bpLogger.Trace("Finished setting up ButtplugService");
+            _bpLogger.Trace("Finished setting up ButtplugServer");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished += ScanningFinishedHandler;
             _bpLogManager.LogMessageReceived += LogMessageReceivedHandler;

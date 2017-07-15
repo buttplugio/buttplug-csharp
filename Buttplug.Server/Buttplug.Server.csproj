@@ -55,8 +55,8 @@
     <Compile Include="Bluetooth\Devices\VorzeA10Cyclone.cs" />
     <Compile Include="Bluetooth\IBluetoothDeviceInfo.cs" />
     <Compile Include="Bluetooth\IBluetoothDeviceInterface.cs" />
-    <Compile Include="ButtplugService.cs" />
-    <Compile Include="IButtplugServiceFactory.cs" />
+    <Compile Include="ButtplugServer.cs" />
+    <Compile Include="IButtplugServerFactory.cs" />
     <Compile Include="DeviceAddedEventArgs.cs" />
     <Compile Include="DeviceManager.cs" />
     <Compile Include="DeviceSubtypeManager.cs" />

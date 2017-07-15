@@ -9,13 +9,13 @@ using Xunit;
 
 namespace Buttplug.Server.Test
 {
-    internal class TestService : ButtplugService
+    internal class TestServer : ButtplugServer
     {
         public readonly List<string> OutgoingAsync = new List<string>();
 
         // Set MaxPingTime to zero (infinite ping/ping checks off) by default for tests
-        public TestService(uint aMaxPingTime = 0)
-            : base("Test Service", aMaxPingTime)
+        public TestServer(uint aMaxPingTime = 0)
+            : base("Test Server", aMaxPingTime)
         {
             // Build ourselves an NLog manager just so we can see what's going on.
             var dt = new DebuggerTarget();

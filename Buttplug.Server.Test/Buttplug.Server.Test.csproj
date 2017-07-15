@@ -64,7 +64,7 @@
     <Compile Include="TestBluetoothSubtypeManager.cs" />
     <Compile Include="TestDevice.cs" />
     <Compile Include="TestDeviceSubtypeManager.cs" />
-    <Compile Include="TestService.cs" />
+    <Compile Include="TestServer.cs" />
     <Compile Include="ButtplugMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

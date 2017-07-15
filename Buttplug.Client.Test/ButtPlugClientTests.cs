@@ -8,11 +8,11 @@ using Xunit;
 
 namespace Buttplug.Client.Test
 {
-    public class ButtplugClientTests : IButtplugServiceFactory
+    public class ButtplugClientTests : IButtplugServerFactory
     {
-        public ButtplugService GetService()
+        public ButtplugServer GetServer()
         {
-            return new ButtplugService("Test service", 200);
+            return new ButtplugServer("Test server", 200);
         }
 
         private class ButtplugTestClient : ButtplugWSClient

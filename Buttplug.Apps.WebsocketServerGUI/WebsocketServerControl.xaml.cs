@@ -14,12 +14,12 @@ namespace Buttplug.Apps.WebsocketServerGUI
     public partial class WebsocketServerControl
     {
         private readonly ButtplugWebsocketServer _ws;
-        private readonly IButtplugServiceFactory _bpFactory;
+        private readonly IButtplugServerFactory _bpFactory;
         private readonly ButtplugConfig _config;
         private uint _port;
         private bool _secure;
 
-        public WebsocketServerControl(IButtplugServiceFactory bpFactory)
+        public WebsocketServerControl(IButtplugServerFactory bpFactory)
         {
             InitializeComponent();
             _ws = new ButtplugWebsocketServer();
