@@ -20,7 +20,7 @@ namespace Buttplug.Components.Controls
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ButtplugTabControl : IButtplugServiceFactory
+    public partial class ButtplugTabControl : IButtplugServerFactory
     {
         private readonly RavenClient _ravenClient;
         [NotNull]
@@ -79,10 +79,10 @@ namespace Buttplug.Components.Controls
             AboutControl.AboutImageClickedABunch += (aObj, aEvent) => DeveloperTab.Visibility = Visibility.Visible;
         }
 
-        private ButtplugService InitializeButtplugServer(string aServerName, uint aMaxPingTime)
+        private ButtplugServer InitializeButtplugServer(string aServerName, uint aMaxPingTime)
         {
             // Set up internal services
-            var bpServer = new ButtplugService(aServerName, aMaxPingTime);
+            var bpServer = new ButtplugServer(aServerName, aMaxPingTime);
             if (!(Environment.OSVersion is null))
             {
                 _guiLog.Info($"Windows Version: {Environment.OSVersion.VersionString}");
@@ -204,11 +204,11 @@ namespace Buttplug.Components.Controls
             }
         }
 
-        public ButtplugService GetService()
+        public ButtplugServer GetServer()
         {
             if (_serverName == null)
             {
-                throw new AccessViolationException("SetServerDetails() must be called before GetService()");
+                throw new AccessViolationException("SetServerDetails() must be called before GetServer()");
             }
 
             return InitializeButtplugServer(_serverName, _maxPingTime);

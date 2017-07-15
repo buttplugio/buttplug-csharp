@@ -10,7 +10,7 @@ namespace Buttplug.Components.Controls
         public LicenseView()
         {
             InitializeComponent();
-            LicenseText.Text = ButtplugService.GetLicense();
+            LicenseText.Text = ButtplugServer.GetLicense();
         }
     }
 }
