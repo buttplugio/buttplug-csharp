@@ -18,7 +18,7 @@ namespace Buttplug.Components.WebsocketServer
         [CanBeNull]
         public EventHandler<UnhandledExceptionEventArgs> OnException;
 
-        public void StartServer([NotNull] IButtplugServerFactory aFactory, int aPort = 12345, bool aSecure = false)
+        public void StartServer([NotNull] IButtplugServerFactory aFactory, int aPort = 12345, bool aSecure = false, string aHostname = "localhost")
         {
             CancellationTokenSource cancellation = new CancellationTokenSource();
             _factory = aFactory;
@@ -29,7 +29,7 @@ namespace Buttplug.Components.WebsocketServer
             _server.Standards.RegisterStandard(rfc6455);
             if (aSecure)
             {
-                var cert = CertUtils.GetCert("Buttplug");
+                var cert = CertUtils.GetCert("Buttplug", aHostname);
                 _server.ConnectionExtensions.RegisterExtension(new WebSocketSecureConnectionExtension(cert));
             }
 

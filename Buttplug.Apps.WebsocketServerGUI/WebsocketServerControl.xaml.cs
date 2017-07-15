@@ -19,6 +19,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
         private readonly ButtplugConfig _config;
         private uint _port;
         private bool _secure;
+        private string _hostname;
 
         public WebsocketServerControl(IButtplugServerFactory bpFactory)
         {
@@ -27,16 +28,18 @@ namespace Buttplug.Apps.WebsocketServerGUI
             _bpFactory = bpFactory;
             _config = new ButtplugConfig("Buttplug");
             _port = 12345;
-            _secure = false;
             if (uint.TryParse(_config.GetValue("buttplug.server.port", "12345"), out uint pres))
             {
                 _port = pres;
             }
 
+            _secure = false;
             if (bool.TryParse(_config.GetValue("buttplug.server.secure", "false"), out bool sres))
             {
                 _secure = sres;
             }
+
+            _hostname = _config.GetValue("buttplug.server.hostname", "localhost");
 
             PortTextBox.Text = _port.ToString();
             SecureCheckBox.IsChecked = _secure;
@@ -55,7 +58,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
         {
             try
             {
-                _ws.StartServer(_bpFactory, (int)_port, _secure);
+                _ws.StartServer(_bpFactory, (int)_port, _secure, _hostname);
                 ConnToggleButton.Content = "Stop";
                 SecureCheckBox.IsEnabled = false;
                 PortTextBox.IsEnabled = false;
