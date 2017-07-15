@@ -177,8 +177,11 @@ namespace Buttplug.Server
         internal void RemoveAllDevices()
         {
             StopScanning();
-            foreach (var d in _devices.Values)
+            var removeDevices = _devices.Values;
+            _devices.Clear();
+            foreach (var d in removeDevices)
             {
+                d.DeviceRemoved -= DeviceRemovedHandler;
                 d.Disconnect();
             }
         }
