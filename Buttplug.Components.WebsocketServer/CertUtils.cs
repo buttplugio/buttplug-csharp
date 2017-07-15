@@ -15,13 +15,14 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.X509;
+using System.Collections.Generic;
 
 namespace Buttplug.Components.WebsocketServer
 {
     internal static class CertUtils
     {
         // Note: Much of this code comes from https://stackoverflow.com/a/22247129
-        private static X509Certificate2 GenerateSelfSignedCertificate(string subjectName, string issuerName, AsymmetricKeyParameter issuerPrivKey)
+        private static X509Certificate2 GenerateSelfSignedCertificate(string subject, X509Certificate2 issuer, AsymmetricCipherKeyPair issuerKeyPair)
         {
             const int keyStrength = 2048;
 
@@ -33,18 +34,29 @@ namespace Buttplug.Components.WebsocketServer
             var certificateGenerator = new X509V3CertificateGenerator();
 
             // Serial Number
-            var serialNumber = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), random);
-            certificateGenerator.SetSerialNumber(serialNumber);
+            certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), random));
 
-            // Signature Algorithm
-            const string signatureAlgorithm = "SHA256WithRSA";
-            var signatureFactory = new Asn1SignatureFactory(signatureAlgorithm, issuerPrivKey);
+            // Issuer
+            certificateGenerator.SetIssuerDN(new X509Name(issuer.Subject));
+            certificateGenerator.AddExtension(X509Extensions.AuthorityKeyIdentifier, false, new AuthorityKeyIdentifier(SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(issuerKeyPair.Public)));
 
-            // Issuer and Subject Name
-            var subjectDN = new X509Name(subjectName);
-            var issuerDN = new X509Name(issuerName);
-            certificateGenerator.SetIssuerDN(issuerDN);
-            certificateGenerator.SetSubjectDN(subjectDN);
+            // Subject DN
+            certificateGenerator.SetSubjectDN(new X509Name("CN=" + subject));
+
+            // Subject Alternative Name
+            var subjectAlternativeNames = new List<Asn1Encodable>()
+            {
+                new GeneralName(GeneralName.DnsName, Environment.MachineName),
+                new GeneralName(GeneralName.DnsName, "localhost"),
+                new GeneralName(GeneralName.IPAddress, "127.0.0.1"),
+            };
+
+            if (subject != "localhost" && subject != Environment.MachineName)
+            {
+                subjectAlternativeNames.Add(new GeneralName(GeneralName.DnsName, subject));
+            }
+
+            certificateGenerator.AddExtension(X509Extensions.SubjectAlternativeName.Id, false, new DerSequence(subjectAlternativeNames.ToArray()));
 
             // Valid For
             var notBefore = DateTime.UtcNow.Date;
@@ -58,6 +70,16 @@ namespace Buttplug.Components.WebsocketServer
             keyPairGenerator.Init(keyGenerationParameters);
             var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
             certificateGenerator.SetPublicKey(subjectKeyPair.Public);
+            certificateGenerator.AddExtension(X509Extensions.SubjectKeyIdentifier.Id, false, new SubjectKeyIdentifier(SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(subjectKeyPair.Public)));
+
+            // Add basic constraint
+            certificateGenerator.AddExtension(X509Extensions.BasicConstraints.Id, true, new BasicConstraints(false));
+
+            certificateGenerator.AddExtension(X509Extensions.ExtendedKeyUsage.Id, false, new ExtendedKeyUsage(new[] { KeyPurposeID.IdKPServerAuth }));
+
+            // Signature Algorithm
+            const string signatureAlgorithm = "SHA256WithRSA";
+            var signatureFactory = new Asn1SignatureFactory(signatureAlgorithm, issuerKeyPair.Private);
 
             // selfsign certificate
             var certificate = certificateGenerator.Generate(signatureFactory);
@@ -105,7 +127,7 @@ namespace Buttplug.Components.WebsocketServer
         }
 
         // ReSharper disable once RedundantAssignment
-        private static X509Certificate2 GenerateCACertificate(string subjectName, ref AsymmetricKeyParameter caPrivateKey)
+        private static X509Certificate2 GenerateCACertificate(string subjectName, ref AsymmetricCipherKeyPair caKeyPair)
         {
             const int keyStrength = 2048;
 
@@ -116,6 +138,12 @@ namespace Buttplug.Components.WebsocketServer
             // The Certificate Generator
             var certificateGenerator = new X509V3CertificateGenerator();
 
+            // Subject Public Key
+            var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
+            var keyPairGenerator = new RsaKeyPairGenerator();
+            keyPairGenerator.Init(keyGenerationParameters);
+            caKeyPair = keyPairGenerator.GenerateKeyPair();
+
             // Serial Number
             var serialNumber = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), random);
             certificateGenerator.SetSerialNumber(serialNumber);
@@ -123,11 +151,17 @@ namespace Buttplug.Components.WebsocketServer
             // Signature Algorithm
             const string signatureAlgorithm = "SHA256WithRSA";
 
+            // Set the public key
+            certificateGenerator.SetPublicKey(caKeyPair.Public);
+            certificateGenerator.AddExtension(X509Extensions.SubjectKeyIdentifier.Id, false, new SubjectKeyIdentifier(SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(caKeyPair.Public)));
+
             // Issuer and Subject Name
             var subjectDN = new X509Name(subjectName);
-            var issuerDN = subjectDN;
-            certificateGenerator.SetIssuerDN(issuerDN);
             certificateGenerator.SetSubjectDN(subjectDN);
+
+            // Issuer
+            certificateGenerator.SetIssuerDN(subjectDN);
+            certificateGenerator.AddExtension(X509Extensions.AuthorityKeyIdentifier, false, new AuthorityKeyIdentifier(SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(caKeyPair.Public)));
 
             // Valid For
             var notBefore = DateTime.UtcNow.Date;
@@ -135,36 +169,28 @@ namespace Buttplug.Components.WebsocketServer
             certificateGenerator.SetNotBefore(notBefore);
             certificateGenerator.SetNotAfter(notAfter);
 
-            // Subject Public Key
-            var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
-            var keyPairGenerator = new RsaKeyPairGenerator();
-            keyPairGenerator.Init(keyGenerationParameters);
-            var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
-            certificateGenerator.SetPublicKey(subjectKeyPair.Public);
-
-            // Generating the Certificate
-            var issuerKeyPair = subjectKeyPair;
+            // Make this a CA
+            certificateGenerator.AddExtension(X509Extensions.BasicConstraints.Id, true, new BasicConstraints(true));
 
             // selfsign certificate
-            var signatureFactory = new Asn1SignatureFactory(signatureAlgorithm, issuerKeyPair.Private);
+            var signatureFactory = new Asn1SignatureFactory(signatureAlgorithm, caKeyPair.Private);
             var certificate = certificateGenerator.Generate(signatureFactory);
             var x509 = new X509Certificate2(certificate.GetEncoded());
-            caPrivateKey = issuerKeyPair.Private;
             return x509;
 
             // return issuerKeyPair.Private;
         }
 
-        public static X509Certificate2 GetCert(string app)
+        public static X509Certificate2 GetCert(string app, string hostname = "localhost")
         {
             var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), app);
             var caPfx = Path.Combine(appPath, "ca.pfx");
             var certPfx = Path.Combine(appPath, "cert.pfx");
             if (!File.Exists(caPfx) || !File.Exists(certPfx))
             {
-                AsymmetricKeyParameter caPrivateKey = null;
-                var caCert = GenerateCACertificate("CN=" + app + "CA", ref caPrivateKey);
-                var clientCert = GenerateSelfSignedCertificate("CN=127.0.0.1", "CN=" + app + "CA", caPrivateKey);
+                AsymmetricCipherKeyPair caKeyPair = null;
+                var caCert = GenerateCACertificate("CN=" + app + "CA", ref caKeyPair);
+                var clientCert = GenerateSelfSignedCertificate(hostname, caCert, caKeyPair);
                 var p12ca = new X509Certificate2(caCert.Export(X509ContentType.Pfx), (string)null).Export(X509ContentType.Pfx);
                 var p12cert = clientCert.Export(X509ContentType.Pfx);
                 Directory.CreateDirectory(appPath);
