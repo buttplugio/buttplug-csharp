@@ -166,11 +166,17 @@ namespace Buttplug.Server
             return await _deviceManager.SendMessage(aMsg);
         }
 
-        public void Shutdown()
+        public async Task Shutdown()
         {
             // Don't disconnect devices on shutdown, as they won't actually close.
             // Uncomment this once we figure out how to close bluetooth devices.
             // _deviceManager.RemoveAllDevices();
+            var msg = await _deviceManager.SendMessage(new StopAllDevices());
+            if (msg is Error)
+            {
+                _bpLogger.Error("An error occured while stopping devices on shutdown.");
+                _bpLogger.Error((msg as Error).ErrorMessage);
+            }
             _deviceManager.StopScanning();
             _deviceManager.DeviceMessageReceived -= DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished -= ScanningFinishedHandler;
