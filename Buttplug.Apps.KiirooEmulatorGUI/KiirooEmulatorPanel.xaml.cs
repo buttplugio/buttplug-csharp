@@ -72,21 +72,6 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
             _ops = new List<DispatcherOperation>();
         }
 
-        ~KiirooEmulatorPanel()
-        {
-            StopServer();
-            _ops.ForEach(aDispatchOp =>
-            {
-                try
-                {
-                    aDispatchOp.Wait();
-                }
-                catch (TaskCanceledException)
-                {
-                }
-            });
-        }
-
         private void SelectionChangedHandler(object aObj, EventArgs aEvent)
         {
             var currentDevices = DeviceListBox.SelectedItems.Cast<Device>().ToList();
@@ -125,12 +110,12 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
             }
         }
 
-        public void StopServer()
+        public async void StopServer()
         {
-            _bpServer.SendMessage(new StopScanning()).Wait();
-            _bpServer.SendMessage(new StopAllDevices()).Wait();
             _kiirooEmulator.StopServer();
-            Dispatcher.InvokeAsync(() =>
+            await _bpServer.SendMessage(new StopScanning());
+            await _bpServer.SendMessage(new StopAllDevices());
+            await Dispatcher.InvokeAsync(() =>
             {
                 ServerButton.Content = "Start Server";
             });
