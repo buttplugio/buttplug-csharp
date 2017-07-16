@@ -83,5 +83,10 @@ namespace Buttplug.Core
             Warn(aMsg, false);
             return new Error(aMsg, aCode, aId);
         }
+
+        public void LogException(Exception aEx, bool aLocalOnly = true)
+        {
+            Error(aEx.GetType().ToString() + ": " + aEx.Message + "\n" + aEx.StackTrace, aLocalOnly);
+        }
     }
 }

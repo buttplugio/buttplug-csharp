@@ -18,6 +18,9 @@ namespace Buttplug.Server
         [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
+        [CanBeNull]
+        public event EventHandler<MessageReceivedEventArgs> ClientConnected;
+
         [NotNull]
         private readonly IButtplugLog _bpLogger;
         [NotNull]
@@ -80,6 +83,7 @@ namespace Buttplug.Server
             {
                 _deviceManager = new DeviceManager(_bpLogManager);
             }
+
             _bpLogger.Trace("Finished setting up ButtplugServer");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished += ScanningFinishedHandler;
@@ -154,9 +158,10 @@ namespace Buttplug.Server
 
                     return new Ok(id);
 
-                case RequestServerInfo _:
+                case RequestServerInfo rsi:
                     _receivedRequestServerInfo = true;
                     _pingTimer?.Start();
+                    ClientConnected?.Invoke(this, new MessageReceivedEventArgs(rsi));
                     return new ServerInfo(_serverName, 1, _maxPingTime, id);
 
                 case Test m:
@@ -177,6 +182,7 @@ namespace Buttplug.Server
                 _bpLogger.Error("An error occured while stopping devices on shutdown.");
                 _bpLogger.Error((msg as Error).ErrorMessage);
             }
+
             _deviceManager.StopScanning();
             _deviceManager.DeviceMessageReceived -= DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished -= ScanningFinishedHandler;

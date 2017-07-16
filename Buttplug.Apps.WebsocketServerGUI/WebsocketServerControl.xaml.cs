@@ -1,9 +1,9 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 using System.Windows;
 using System.Windows.Controls;
 using Buttplug.Components.WebsocketServer;
 using Buttplug.Server;
-using System;
 using JetBrains.Annotations;
 using NLog;
 
@@ -45,6 +45,9 @@ namespace Buttplug.Apps.WebsocketServerGUI
             SecureCheckBox.IsChecked = _secure;
 
             _ws.OnException += WebSocketExceptionHandler;
+            _ws.ConnectionAccepted += WebSocketConnectionAccepted;
+            _ws.ConnectionUpdated += WebSocketConnectionAccepted;
+            _ws.ConnectionClosed += WebSocketConnectionClosed;
         }
 
         private void WebSocketExceptionHandler(object aObj, [NotNull] UnhandledExceptionEventArgs aEx)
@@ -52,6 +55,22 @@ namespace Buttplug.Apps.WebsocketServerGUI
             var log = LogManager.GetCurrentClassLogger();
             log.Error("Exception of type " + aEx.ExceptionObject.GetType() + " encountered: " + (aEx.ExceptionObject as Exception)?.Message);
             MessageBox.Show((aEx.ExceptionObject as Exception)?.Message ?? "Unknown", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        }
+
+        private void WebSocketConnectionAccepted(object aObj, [NotNull] ConnectionEventArgs aEvent)
+        {
+            Dispatcher.InvokeAsync(() =>
+            {
+                ConnStatus.Content = "(Connected) " + aEvent.ClientName;
+            });
+        }
+
+        private void WebSocketConnectionClosed(object aObj, [NotNull] ConnectionEventArgs aEvent)
+        {
+            Dispatcher.InvokeAsync(() =>
+            {
+                ConnStatus.Content = "(Not Connected)";
+            });
         }
 
         public void StartServer()

@@ -1,27 +1,53 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
 using JetBrains.Annotations;
 using vtortola.WebSockets;
+using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Components.WebsocketServer
 {
     public class ButtplugWebsocketServer
     {
+        [NotNull]
         private WebSocketListener _server;
+
         [NotNull]
         private IButtplugServerFactory _factory;
 
+        [NotNull]
+        private IButtplugLogManager _logManager;
+
+        [NotNull]
+        private IButtplugLog _logger;
+
         [CanBeNull]
         public EventHandler<UnhandledExceptionEventArgs> OnException;
+
+        [CanBeNull]
+        public EventHandler<ConnectionEventArgs> ConnectionAccepted;
+
+        [CanBeNull]
+        public EventHandler<ConnectionEventArgs> ConnectionUpdated;
+
+        [CanBeNull]
+        public EventHandler<ConnectionEventArgs> ConnectionClosed;
+
+        [NotNull]
+        private ConcurrentDictionary<string, WebSocket> _connections = new ConcurrentDictionary<string, WebSocket>();
 
         public void StartServer([NotNull] IButtplugServerFactory aFactory, int aPort = 12345, bool aSecure = false, string aHostname = "localhost")
         {
             CancellationTokenSource cancellation = new CancellationTokenSource();
             _factory = aFactory;
+
+            _logManager = new ButtplugLogManager();
+            _logger = _logManager.GetLogger(this.GetType());
 
             var endpoint = new IPEndPoint(IPAddress.Any, aPort);
             _server = new WebSocketListener(endpoint);
@@ -47,7 +73,7 @@ namespace Buttplug.Components.WebsocketServer
                     var ws = await aServer.AcceptWebSocketAsync(aToken).ConfigureAwait(false);
                     if (ws != null)
                     {
-                       Task.Run(() => HandleConnectionAsync(ws, aToken));
+                        Task.Run(() => HandleConnectionAsync(ws, aToken));
                     }
                 }
                 catch (Exception aEx)
@@ -59,9 +85,33 @@ namespace Buttplug.Components.WebsocketServer
 
         private async Task HandleConnectionAsync(WebSocket ws, CancellationToken cancellation)
         {
+            if (!_connections.IsEmpty)
+            {
+                try
+                {
+                    ws.WriteString(new ButtplugJsonMessageParser(_logManager).Serialize(_logger.LogErrorMsg(
+                        ButtplugConsts.SystemMsgId, ErrorClass.ERROR_INIT, "WebSocketServer already in use!")));
+                    ws.Close();
+                }
+                catch
+                {
+                    // noop
+                }
+                finally
+                {
+                    ws.Dispose();
+                }
+
+                return;
+            }
+
+            var remoteId = ws.RemoteEndpoint.ToString();
+            _connections.AddOrUpdate(remoteId, ws, (oldWs, newWs) => newWs);
+            ConnectionAccepted?.Invoke(this, new ConnectionEventArgs(remoteId));
+
             var buttplug = _factory.GetServer();
 
-            EventHandler<Buttplug.Core.MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
+            EventHandler<MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
             {
                 var msg = buttplug.Serialize(aEvent.Message);
                 try
@@ -76,13 +126,23 @@ namespace Buttplug.Components.WebsocketServer
                         ws.Close();
                     }
                 }
-                catch (WebSocketException)
+                catch (WebSocketException e)
                 {
-                    // Log? - probably means we're repling to a message we recieved just before shutdown.
+                    // Probably means we're repling to a message we recieved just before shutdown.
+                    _logger.Error(e.Message, true);
                 }
             };
 
             buttplug.MessageReceived += msgReceived;
+
+            EventHandler<MessageReceivedEventArgs> clientConnected = (aObject, aEvent) =>
+            {
+                var msg = aEvent.Message as RequestServerInfo;
+                var clientName = msg?.ClientName ?? "Unknown client";
+                ConnectionUpdated?.Invoke(this, new ConnectionEventArgs(remoteId, clientName));
+            };
+
+            buttplug.ClientConnected += clientConnected;
 
             try
             {
@@ -105,9 +165,9 @@ namespace Buttplug.Components.WebsocketServer
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO Log here.
+                _logger.Error(e.Message, true);
                 try
                 {
                     ws.Close();
@@ -123,6 +183,8 @@ namespace Buttplug.Components.WebsocketServer
                 await buttplug.Shutdown();
                 buttplug = null;
                 ws.Dispose();
+                _connections.TryRemove(remoteId, out _);
+                ConnectionClosed?.Invoke(this, new ConnectionEventArgs(remoteId));
             }
         }
 

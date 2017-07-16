@@ -21,6 +21,7 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="auto"/>
 					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
 				</Grid.RowDefinitions>
 				<Label Content="Port:"  Grid.Row="0" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
 				<TextBox Name="ConnectionUrl" Grid.Row="0" Height="23" Margin="104,14,0,-18" TextWrapping="Wrap" VerticalAlignment="Top" Text="ws://localhost:12345/buttplug" IsReadOnly="True"/>
@@ -28,6 +29,8 @@
 				<Label Content="Test URL:"  Grid.Row="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
 				<TextBlock Grid.Row="1" Height="23" Margin="104,10,0,-18"  VerticalAlignment="Top" ><Hyperlink Name="TestUrl" NavigateUri="http://localhost:12345" RequestNavigate="TestUrl_RequestNavigate">http://localhost:12345</Hyperlink></TextBlock>
 
+				<Label Content="Status:"  Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+				<Label Name="ConnStatus" Content="(Not Connected)" Grid.Row="2" HorizontalAlignment="Left" Margin="100,00,0,0" VerticalAlignment="Top"/>
 			</Grid>
 		</GroupBox>
 

@@ -1,5 +1,6 @@
 ﻿using Buttplug.Core.Messages;
 using JetBrains.Annotations;
+using System;
 using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core
@@ -19,6 +20,8 @@ namespace Buttplug.Core
         // Fatal is kept here for completeness, even if it is not yet used.
         // ReSharper disable once UnusedMember.Global
         void Fatal(string aMsg, bool aLocalOnly = false);
+
+        void LogException(Exception aMsg, bool aLocalOnly = true);
 
         [NotNull]
         Error LogErrorMsg(uint aId, ErrorClass aCode, string aMsg);

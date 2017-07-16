@@ -84,6 +84,7 @@ namespace Buttplug.Components.Controls
         {
             // Set up internal services
             ButtplugServer bpServer;
+
             // Due to the weird inability to close BLE devices, we have to share device managers across buttplug
             // server instances. Otherwise we'll just hold device connections open forever.
             if (_deviceManager == null)
@@ -96,6 +97,7 @@ namespace Buttplug.Components.Controls
                 bpServer = new ButtplugServer(aServerName, aMaxPingTime, _deviceManager);
                 return bpServer;
             }
+
             if (!(Environment.OSVersion is null))
             {
                 _guiLog.Info($"Windows Version: {Environment.OSVersion.VersionString}");
