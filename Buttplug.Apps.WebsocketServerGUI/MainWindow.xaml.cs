@@ -13,7 +13,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
         {
             var config = new ButtplugConfig("Buttplug");
             uint ping;
-            uint.TryParse(config.GetValue("buttplug.server.maxPing", "100"), out ping);
+            uint.TryParse(config.GetValue("buttplug.server.maxPing", "1000"), out ping);
 
             InitializeComponent();
 
