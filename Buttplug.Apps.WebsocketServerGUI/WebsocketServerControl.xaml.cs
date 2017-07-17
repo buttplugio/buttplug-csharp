@@ -62,6 +62,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             Dispatcher.InvokeAsync(() =>
             {
                 ConnStatus.Content = "(Connected) " + aEvent.ClientName;
+                DisconnectButton.IsEnabled = true;
             });
         }
 
@@ -70,6 +71,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             Dispatcher.InvokeAsync(() =>
             {
                 ConnStatus.Content = "(Not Connected)";
+                DisconnectButton.IsEnabled = false;
             });
         }
 
@@ -84,6 +86,8 @@ namespace Buttplug.Apps.WebsocketServerGUI
                 ConnectionUrl.Text = (_secure ? "wss" : "ws") + "://localhost:" + _port.ToString() + "/buttplug";
                 TestUrl.Inlines.Clear();
                 TestUrl.Inlines.Add((_secure ? "https" : "http") + "://localhost:" + _port.ToString());
+                ConnStatus.Content = "(Not Connected)";
+                DisconnectButton.IsEnabled = false;
                 ConnInfo.Visibility = Visibility.Visible;
             }
             catch (SocketException e)
@@ -139,6 +143,11 @@ namespace Buttplug.Apps.WebsocketServerGUI
         private void TestUrl_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             System.Diagnostics.Process.Start(new Uri((_secure ? "https" : "http") + "://localhost:" + _port.ToString()).AbsoluteUri);
+        }
+
+        private void DisconnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            _ws.Disconnect();
         }
     }
 }

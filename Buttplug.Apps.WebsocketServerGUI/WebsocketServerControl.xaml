@@ -31,6 +31,7 @@
 
 				<Label Content="Status:"  Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
 				<Label Name="ConnStatus" Content="(Not Connected)" Grid.Row="2" HorizontalAlignment="Left" Margin="100,00,0,0" VerticalAlignment="Top"/>
+				<Button Name="DisconnectButton"  Height="25" Grid.Row="2" Content="Disconnect" IsEnabled="False" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="DisconnectButton_Click"/>
 			</Grid>
 		</GroupBox>
 

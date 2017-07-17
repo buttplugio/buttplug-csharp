@@ -192,5 +192,23 @@ namespace Buttplug.Components.WebsocketServer
         {
             _server?.Stop();
         }
+
+        public void Disconnect(string remoteId = null)
+        {
+            if (remoteId == null)
+            {
+                foreach (var conn in _connections.Values)
+                {
+                    conn.Close();
+                }
+
+                return;
+            }
+
+            if (_connections.TryGetValue(remoteId, out WebSocket ws))
+            {
+                ws.Close();
+            }
+        }
     }
 }
