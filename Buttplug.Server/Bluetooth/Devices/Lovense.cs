@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using System.Collections.Generic;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
@@ -117,10 +118,21 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class Lovense : ButtplugBluetoothDevice
     {
+        private static Dictionary<string, string> FriendlyNames = new Dictionary<string, string>()
+        {
+            { "LVS-A011", "Nora" },
+            { "LVS-C011", "Nora" },
+            { "LVS-B011", "Max" },
+            { "LVS-L009", "Ambi" },
+            { "LVS-S001", "Lush" },
+            { "LVS-Z001", "Hush" },
+            { "LVS-P36", "Edge" },
+        };
+
         public Lovense(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface)
             : base(aLogManager,
-                   $"Lovense Device ({aInterface.Name})",
+                   $"Lovense Device ({FriendlyNames[aInterface.Name]})",
                    aInterface)
         {
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
