@@ -69,12 +69,6 @@ namespace Buttplug.Client
         [CanBeNull]
         public event EventHandler<LogEventArgs> Log;
 
-        [CanBeNull]
-        private bool _gotServerInfo;
-
-        [CanBeNull]
-        private bool _gotError;
-
         public uint nextMsgId
         {
             get
@@ -110,8 +104,6 @@ namespace Buttplug.Client
             _waitingMsgs.Clear();
             _devices.Clear();
             _counter = 1;
-            _gotServerInfo = false;
-            _gotError = false;
             await _ws.ConnectAsync(aURL, CancellationToken.None);
 
             if (_ws.State != WebSocketState.Open)
@@ -149,16 +141,34 @@ namespace Buttplug.Client
                 _pingTimer = null;
             }
 
-            while (_ws != null && _ws.State != WebSocketState.Closed && _ws.State != WebSocketState.Aborted)
+            try
             {
-                if (_ws.State != WebSocketState.CloseSent && _ws.State != WebSocketState.Closed)
+                while (_ws != null && _ws.State != WebSocketState.Closed && _ws.State != WebSocketState.Aborted)
                 {
-                    await _ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Client shutdown", _tokenSource.Token);
+                    if (_ws.State != WebSocketState.CloseSent && _ws.State != WebSocketState.Closed)
+                    {
+                        await _ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Client shutdown", _tokenSource.Token);
+                    }
                 }
             }
+            catch
+            {
+                // noop - something when wrong closing the socket, but we're
+                // about to dispose of it anyway.
+            }
 
-            _tokenSource.Cancel();
-            _readThread.Wait();
+            try
+            {
+                _tokenSource.Cancel();
+                _readThread.Wait();
+            }
+            catch
+            {
+                // noop - something when wrong closing the socket, but we're
+                // about to dispose of it anyway.
+            }
+
+            _ws = null;
 
             var max = 3;
             while (max-- > 0 && _waitingMsgs.Count != 0)
