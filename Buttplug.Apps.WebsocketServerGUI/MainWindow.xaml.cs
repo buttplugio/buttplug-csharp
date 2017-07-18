@@ -17,6 +17,14 @@ namespace Buttplug.Apps.WebsocketServerGUI
 
             InitializeComponent();
 
+            long logLimit = 1000;
+            if (long.TryParse(config.GetValue("buttplug.log.max", "1000"), out long res))
+            {
+                logLimit = res;
+            }
+
+            ButtplugTab.GetLogControl().MaxLogs = logLimit;
+
             ButtplugTab.SetServerDetails("Websocket Server", ping);
             _wsTab = new WebsocketServerControl(ButtplugTab);
             ButtplugTab.SetApplicationTab("Websocket Server", _wsTab);

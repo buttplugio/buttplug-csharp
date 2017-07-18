@@ -10,6 +10,8 @@ using Microsoft.Win32;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using System.Windows.Input;
+using System.Text;
 
 namespace Buttplug.Components.Controls
 {
@@ -22,19 +24,28 @@ namespace Buttplug.Components.Controls
     {
         private readonly LogList _logs;
         private readonly Thread _winThread;
+        public long MaxLogs;
 
-        public ButtplugGUIMessageNLogTarget(LogList aList, Thread aWinThread)
+        public ButtplugGUIMessageNLogTarget(LogList aList, Thread aWinThread, long aMaxLogs = 1000)
         {
             // TODO This totally needs a mutex or something
             _logs = aList;
             _winThread = aWinThread;
+            MaxLogs = aMaxLogs;
         }
 
         protected override void Write(LogEventInfo aLogEvent)
         {
             try
             {
-                Dispatcher.FromThread(_winThread).Invoke(() => _logs.Add(Layout.Render(aLogEvent)));
+                Dispatcher.FromThread(_winThread).Invoke(() =>
+                {
+                    _logs.Add(Layout.Render(aLogEvent));
+                    while (_logs.Count > MaxLogs)
+                    {
+                        _logs.RemoveAt(0);
+                    }
+                });
             }
             catch (TaskCanceledException)
             {
@@ -51,6 +62,19 @@ namespace Buttplug.Components.Controls
         private readonly LogList _logs;
         private readonly ButtplugGUIMessageNLogTarget _logTarget;
         private LoggingRule _outgoingLoggingRule;
+
+        public long MaxLogs
+        {
+            get
+            {
+                return _logTarget.MaxLogs;
+            }
+
+            set
+            {
+                _logTarget.MaxLogs = value;
+            }
+        }
 
         public ButtplugLogControl()
         {
@@ -127,6 +151,38 @@ namespace Buttplug.Components.Controls
             catch (ArgumentException)
             {
                 LogManager.GetCurrentClassLogger().Error($"Log Level \"{level}\" is not a valid log level!");
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _logs.Clear();
+        }
+
+        private void LogListBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (sender != LogListBox)
+            {
+                return;
+            }
+
+            if ((e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) || e.KeyboardDevice.IsKeyDown(Key.RightCtrl))
+                && e.Key == Key.C)
+            {
+                var builder = new StringBuilder();
+                foreach (var item in LogListBox.SelectedItems)
+                {
+                    if (item is string)
+                    {
+                        builder.AppendLine(item as string);
+                    }
+                    else if (item is ListBoxItem)
+                    {
+                        builder.AppendLine((item as ListBoxItem).Content as string);
+                    }
+                }
+
+                Clipboard.SetText(builder.ToString());
             }
         }
     }

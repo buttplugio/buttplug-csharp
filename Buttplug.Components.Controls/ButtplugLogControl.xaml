@@ -8,10 +8,11 @@
     <Grid Background="#FFE5E5E5" >
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="0" Name="LogListBox" Margin="10,10,10,0" />
-        <ComboBox Name="LogLevelComboBox" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="78,3.667,0,-0.333">
+		<ListBox Grid.Row="0" Name="LogListBox" Margin="10,10,10,0" SelectionMode="Multiple" KeyUp="LogListBox_KeyUp" />
+		<Label Grid.Row="1" Content="Log Level:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+		<ComboBox Name="LogLevelComboBox" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="80,2,0,0">
             <ComboBoxItem Content="Off" />
             <ComboBoxItem Content="Fatal" />
             <ComboBoxItem Content="Error" />
@@ -19,8 +20,8 @@
             <ComboBoxItem Content="Info"/>
             <ComboBoxItem IsSelected="true" Content="Debug" />
             <ComboBoxItem Content="Trace"/>
-        </ComboBox>
-        <Label Grid.Row="1" Content="Log Level:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
-        <Button Grid.Row="1" Content="Save To File" HorizontalAlignment="Right" Margin="403,3.667,15,0" VerticalAlignment="Top" Width="70" Click="SaveLogFileButton_Click"/>
+		</ComboBox>
+		<Button Grid.Row="1" Content="Clear Log" HorizontalAlignment="Right" Margin="0,5,90,0" VerticalAlignment="Top" Width="70" Click="Button_Click" />
+		<Button Grid.Row="1" Content="Save To File" HorizontalAlignment="Right" Margin="0,5,10,0" VerticalAlignment="Top" Width="70" Click="SaveLogFileButton_Click"/>
     </Grid>
 </UserControl>

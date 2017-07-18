@@ -190,6 +190,11 @@ namespace Buttplug.Components.Controls
             ApplicationTab.Content = aTabControl;
         }
 
+        public ButtplugLogControl GetLogControl()
+        {
+            return LogControl;
+        }
+
         public void SetServerDetails(string serverName, uint maxPingTime)
         {
             _serverName = serverName;
