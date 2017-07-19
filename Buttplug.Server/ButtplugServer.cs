@@ -73,7 +73,7 @@ namespace Buttplug.Server
 
             _bpLogManager = new ButtplugLogManager();
             _bpLogger = _bpLogManager.GetLogger(GetType());
-            _bpLogger.Trace("Setting up ButtplugServer");
+            _bpLogger.Debug("Setting up ButtplugServer");
             _parser = new ButtplugJsonMessageParser(_bpLogManager);
             if (aDeviceManager != null)
             {
@@ -84,7 +84,7 @@ namespace Buttplug.Server
                 _deviceManager = new DeviceManager(_bpLogManager);
             }
 
-            _bpLogger.Trace("Finished setting up ButtplugServer");
+            _bpLogger.Info("Finished setting up ButtplugServer");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished += ScanningFinishedHandler;
             _bpLogManager.LogMessageReceived += LogMessageReceivedHandler;

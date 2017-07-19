@@ -35,7 +35,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         public UWPBluetoothManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
         {
-            BpLogger.Debug("Loading UWP Bluetooth Manager");
+            BpLogger.Info("Loading UWP Bluetooth Manager");
             _currentlyConnecting = new List<ulong>();
 
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
@@ -120,19 +120,19 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         private void OnWatcherStopped(BluetoothLEAdvertisementWatcher aObj,
                                       BluetoothLEAdvertisementWatcherStoppedEventArgs aEvent)
         {
-            BpLogger.Trace("Stopped BLE Scanning");
+            BpLogger.Info("Stopped BLE Scanning");
             InvokeScanningFinished();
         }
 
         public override void StartScanning()
         {
-            BpLogger.Trace("Starting BLE Scanning");
+            BpLogger.Info("Starting BLE Scanning");
             _bleWatcher.Start();
         }
 
         public override void StopScanning()
         {
-            BpLogger.Trace("Stopping BLE Scanning");
+            BpLogger.Info("Stopping BLE Scanning");
             _bleWatcher.Stop();
         }
 

@@ -30,7 +30,7 @@ namespace Buttplug.Server
         {
             _bpLogManager = aLogManager;
             _bpLogger = _bpLogManager.GetLogger(GetType());
-            _bpLogger.Trace("Setting up DeviceManager");
+            _bpLogger.Info("Setting up DeviceManager");
             _sentFinished = true;
             _devices = new Dictionary<uint, IButtplugDevice>();
             _deviceIndexCounter = 0;
@@ -59,11 +59,11 @@ namespace Buttplug.Server
                 select x;
             if (duplicates.Any())
             {
-                _bpLogger.Trace($"Already have device {aEvent.Device.Name} in Devices list");
+                _bpLogger.Debug($"Already have device {aEvent.Device.Name} in Devices list");
                 return;
             }
 
-            _bpLogger.Debug($"Adding Device {aEvent.Device.Name} at index {deviceIndex}");
+            _bpLogger.Info($"Adding Device {aEvent.Device.Name} at index {deviceIndex}");
             _devices.Add(deviceIndex, aEvent.Device);
             aEvent.Device.DeviceRemoved += DeviceRemovedHandler;
             var msg = new DeviceAdded(deviceIndex, aEvent.Device.Name, GetAllowedMessageTypesAsStrings(aEvent.Device).ToArray());
