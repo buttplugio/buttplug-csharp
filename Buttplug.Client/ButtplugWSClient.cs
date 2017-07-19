@@ -83,7 +83,7 @@ namespace Buttplug.Client
             _bpLogManager = new ButtplugLogManager();
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _parser = new ButtplugJsonMessageParser(_bpLogManager);
-            _bpLogger.Trace("Finished setting up ButtplugClient");
+            _bpLogger.Info("Finished setting up ButtplugClient");
             _owningDispatcher = Dispatcher.CurrentDispatcher;
             _tokenSource = new CancellationTokenSource();
         }

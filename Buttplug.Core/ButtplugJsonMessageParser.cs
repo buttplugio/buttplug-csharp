@@ -24,7 +24,7 @@ namespace Buttplug.Core
         public ButtplugJsonMessageParser([NotNull] IButtplugLogManager aLogManager)
         {
             _bpLogger = aLogManager.GetLogger(GetType());
-            _bpLogger.Debug($"Setting up {GetType().Name}");
+            _bpLogger.Info($"Setting up {GetType().Name}");
             IEnumerable<Type> allTypes;
 
             // Some classes in the library may not load on certain platforms due to missing symbols.
@@ -84,7 +84,7 @@ namespace Buttplug.Core
             }
             catch (JsonReaderException e)
             {
-                res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, "Not valid JSON"));
+                res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, $"Not valid JSON: {aJsonMsg} - {e.Message}"));
                 return res.ToArray();
             }
 

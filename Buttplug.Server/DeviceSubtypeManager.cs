@@ -19,7 +19,7 @@ namespace Buttplug.Server
         {
             LogManager = aLogManager;
             BpLogger = aLogManager.GetLogger(GetType());
-            BpLogger.Trace($"Setting up Device Manager {GetType().Name}");
+            BpLogger.Debug($"Setting up Device Manager {GetType().Name}");
         }
 
         protected void InvokeDeviceAdded([NotNull] DeviceAddedEventArgs aEventArgs)

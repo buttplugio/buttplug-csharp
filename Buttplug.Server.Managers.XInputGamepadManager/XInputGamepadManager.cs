@@ -8,12 +8,12 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
         public XInputGamepadManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
         {
-            BpLogger.Debug("Loading XInput Gamepad Manager");
+            BpLogger.Info("Loading XInput Gamepad Manager");
         }
 
         public override void StartScanning()
         {
-            BpLogger.Trace("XInputGamepadManager start scanning");
+            BpLogger.Info("XInputGamepadManager start scanning");
             var controllers = new[]
             {
                 new Controller(UserIndex.One),
@@ -38,7 +38,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
         public override void StopScanning()
         {
             // noop
-            BpLogger.Trace("XInputGamepadManager stop scanning");
+            BpLogger.Info("XInputGamepadManager stop scanning");
         }
 
         public override bool IsScanning()

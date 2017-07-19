@@ -116,7 +116,7 @@ namespace Buttplug.Components.Controls
                 }
                 catch (PlatformNotSupportedException e)
                 {
-                    _guiLog.Warn(e, "Something went wrong whilst setting up bluetooth.");
+                    _guiLog.Error(e, "Something went wrong whilst setting up bluetooth.");
                 }
             }
             else
@@ -209,12 +209,12 @@ namespace Buttplug.Components.Controls
             }
             catch (Exception)
             {
-                _guiLog.Error("Cannot retreive Release ID for OS! Will not load bluetooth manager.");
+                _guiLog.Warn("Cannot retreive Release ID for OS! Will not load bluetooth manager.");
             }
 
             if (!UWPBluetoothManager.HasRegistryKeysSet())
             {
-                _guiLog.Error("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
+                _guiLog.Warn("Registry keys not set for UWP bluetooth API security. This may cause Bluetooth devices to not be seen.");
 
                 // Only show this if we're running a full application.
                 if (Application.Current != null)
