@@ -41,7 +41,7 @@ namespace Buttplug.Components.WebsocketServer
         [NotNull]
         private ConcurrentDictionary<string, WebSocket> _connections = new ConcurrentDictionary<string, WebSocket>();
 
-        public void StartServer([NotNull] IButtplugServerFactory aFactory, int aPort = 12345, bool aSecure = false, string aHostname = "localhost")
+        public void StartServer([NotNull] IButtplugServerFactory aFactory, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
         {
             CancellationTokenSource cancellation = new CancellationTokenSource();
             _factory = aFactory;
@@ -49,7 +49,7 @@ namespace Buttplug.Components.WebsocketServer
             _logManager = new ButtplugLogManager();
             _logger = _logManager.GetLogger(this.GetType());
 
-            var endpoint = new IPEndPoint(IPAddress.Any, aPort);
+            var endpoint = new IPEndPoint(aLoopBack ? IPAddress.Loopback : IPAddress.Any, aPort);
             _server = new WebSocketListener(endpoint);
             var rfc6455 = new vtortola.WebSockets.Rfc6455.WebSocketFactoryRfc6455(_server);
             _server.Standards.RegisterStandard(rfc6455);
