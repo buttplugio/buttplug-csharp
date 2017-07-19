@@ -1,13 +1,2 @@
-.vs
-bin
-obj
-*.pfx
-installer
-packages
-coverage.xml
-*.csproj.user
-/test-data/
-/buttplug-schema/
-/raven-csharp/
-/websocket-sharp/
-*.DotSettings.user
+.DS_Store
+node_modules

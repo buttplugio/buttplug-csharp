@@ -162,4 +162,5 @@ available at [http://contributor-covenant.org/version/1/4][version]
 [version]: http://contributor-covenant.org/version/1/4/
 
 The Moderation portion of this Code of Conduct is adapted from
-the [Rust Language Code of Conduct](https://www.rust-lang.org/en-US/conduct.html).
+the
+[Rust Language Code of Conduct](https://www.rust-lang.org/en-US/conduct.html).
