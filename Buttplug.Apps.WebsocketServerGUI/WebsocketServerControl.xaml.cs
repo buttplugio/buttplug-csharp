@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,7 +22,9 @@ namespace Buttplug.Apps.WebsocketServerGUI
         private readonly ButtplugConfig _config;
         private uint _port;
         private bool _secure;
+        private bool _loopback;
         private string _hostname;
+        private ConnUrlList _connUrls;
 
         public WebsocketServerControl(IButtplugServerFactory bpFactory)
         {
@@ -27,6 +32,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             _ws = new ButtplugWebsocketServer();
             _bpFactory = bpFactory;
             _config = new ButtplugConfig("Buttplug");
+            _connUrls = new ConnUrlList();
             _port = 12345;
             if (uint.TryParse(_config.GetValue("buttplug.server.port", "12345"), out uint pres))
             {
@@ -39,10 +45,19 @@ namespace Buttplug.Apps.WebsocketServerGUI
                 _secure = sres;
             }
 
+            _loopback = true;
+            if (bool.TryParse(_config.GetValue("buttplug.server.loopbackOnly", "true"), out bool lres))
+            {
+                _loopback = lres;
+            }
+
             _hostname = _config.GetValue("buttplug.server.hostname", "localhost");
 
             PortTextBox.Text = _port.ToString();
             SecureCheckBox.IsChecked = _secure;
+            LoopbackCheckBox.IsChecked = _loopback;
+
+            ConnectionUrl.ItemsSource = _connUrls;
 
             _ws.OnException += WebSocketExceptionHandler;
             _ws.ConnectionAccepted += WebSocketConnectionAccepted;
@@ -79,13 +94,25 @@ namespace Buttplug.Apps.WebsocketServerGUI
         {
             try
             {
-                _ws.StartServer(_bpFactory, (int)_port, _secure, _hostname);
+                _ws.StartServer(_bpFactory, (int)_port, _loopback, _secure, _hostname);
                 ConnToggleButton.Content = "Stop";
                 SecureCheckBox.IsEnabled = false;
                 PortTextBox.IsEnabled = false;
-                ConnectionUrl.Text = (_secure ? "wss" : "ws") + "://localhost:" + _port.ToString() + "/buttplug";
-                TestUrl.Inlines.Clear();
-                TestUrl.Inlines.Add((_secure ? "https" : "http") + "://localhost:" + _port.ToString());
+                LoopbackCheckBox.IsEnabled = false;
+                _connUrls.Clear();
+                _connUrls.Add(new ConnUrlData(_secure, "localhost", _port));
+
+                foreach (var network in NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    foreach (IPAddressInformation address in network.GetIPProperties().UnicastAddresses)
+                    {
+                        if (address.Address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(address.Address))
+                        {
+                            _connUrls.Add(new ConnUrlData(_secure, address.Address.ToString(), _port));
+                        }
+                    }
+                }
+
                 ConnStatus.Content = "(Not Connected)";
                 DisconnectButton.IsEnabled = false;
                 ConnInfo.Visibility = Visibility.Visible;
@@ -102,6 +129,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             ConnToggleButton.Content = "Start";
             SecureCheckBox.IsEnabled = true;
             PortTextBox.IsEnabled = true;
+            LoopbackCheckBox.IsEnabled = true;
             ConnInfo.Visibility = Visibility.Collapsed;
         }
 
@@ -112,6 +140,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
                 StartServer();
                 _config.SetValue("buttplug.server.port", _port.ToString());
                 _config.SetValue("buttplug.server.secure", _secure.ToString());
+                _config.SetValue("buttplug.server.loopbackOnly", _loopback.ToString());
             }
             else
             {
@@ -148,6 +177,55 @@ namespace Buttplug.Apps.WebsocketServerGUI
         private void DisconnectButton_Click(object sender, RoutedEventArgs e)
         {
             _ws.Disconnect();
+        }
+
+        private void LoopbackCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            _loopback = false;
+        }
+
+        private void LoopbackCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            _loopback = true;
+        }
+
+        private void ConnItemCopy_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button)
+            {
+                var data = (sender as Button).DataContext as ConnUrlData;
+                Clipboard.SetText(data.WsUrl);
+            }
+        }
+
+        private void ConnItemTest_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button)
+            {
+                var data = (sender as Button).DataContext as ConnUrlData;
+                System.Diagnostics.Process.Start(new Uri(data.TestUrl).AbsoluteUri);
+            }
+        }
+    }
+
+    public class ConnUrlList : ObservableCollection<ConnUrlData>
+    {
+    }
+
+    public class ConnUrlData
+    {
+        public string WsUrl;
+        public string TestUrl;
+
+        public ConnUrlData(bool aSecure, string aHost, uint aPort)
+        {
+            WsUrl = (aSecure ? "wss" : "ws") + "://" + aHost + ":" + aPort.ToString() + "/buttplug";
+            TestUrl = (aSecure ? "https" : "http") + "://" + aHost + ":" + aPort.ToString() + "/";
+        }
+
+        public override string ToString()
+        {
+            return WsUrl;
         }
     }
 }

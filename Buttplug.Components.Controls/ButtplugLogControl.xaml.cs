@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using System.Windows.Input;
-using System.Text;
 
 namespace Buttplug.Components.Controls
 {
