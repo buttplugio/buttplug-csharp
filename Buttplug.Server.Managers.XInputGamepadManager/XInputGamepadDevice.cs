@@ -20,6 +20,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
 
         private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
+            BpLogger.Debug("Stopping Device " + Name);
             return HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id));
         }
 

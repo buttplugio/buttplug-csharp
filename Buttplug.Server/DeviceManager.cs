@@ -126,14 +126,17 @@ namespace Buttplug.Server
             switch (aMsg)
             {
                 case StartScanning _:
+                    _bpLogger.Debug("Got StartScanning Message");
                     StartScanning();
                     return new Ok(id);
 
                 case StopScanning _:
+                    _bpLogger.Debug("Got StopScanning Message");
                     StopScanning();
                     return new Ok(id);
 
                 case StopAllDevices _:
+                    _bpLogger.Debug("Got StopAllDevices Message");
                     var isOk = true;
                     var errorMsg = string.Empty;
                     foreach (var d in _devices.ToList())
@@ -155,6 +158,7 @@ namespace Buttplug.Server
 
                     return new Error(errorMsg, Error.ErrorClass.ERROR_DEVICE, aMsg.Id);
                 case RequestDeviceList _:
+                    _bpLogger.Debug("Got RequestDeviceList Message");
                     var msgDevices = _devices
                         .Select(aDevice => new DeviceMessageInfo(aDevice.Key, aDevice.Value.Name,
                                 GetAllowedMessageTypesAsStrings(aDevice.Value).ToArray())).ToList();

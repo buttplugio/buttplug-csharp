@@ -141,6 +141,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
+            BpLogger.Debug("Stopping Device " + Name);
             return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id));
         }
 

@@ -146,6 +146,7 @@ namespace Buttplug.Server
             switch (aMsg)
             {
                 case RequestLog m:
+                    _bpLogger.Debug("Got RequestLog Message");
                     _bpLogManager.Level = m.LogLevel;
                     return new Ok(id);
 
@@ -159,6 +160,7 @@ namespace Buttplug.Server
                     return new Ok(id);
 
                 case RequestServerInfo rsi:
+                    _bpLogger.Debug("Got RequestServerInfo Message");
                     _receivedRequestServerInfo = true;
                     _pingTimer?.Start();
                     ClientConnected?.Invoke(this, new MessageReceivedEventArgs(rsi));

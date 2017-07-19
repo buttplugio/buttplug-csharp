@@ -52,6 +52,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             // Right now, this is a nop. The Onyx doesn't have any sort of permanent movement state,
             // and its longest movement is like 150ms or so. The Pearl is supposed to vibrate but I've
             // never gotten that to work. So for now, we just return ok.
+            BpLogger.Debug("Stopping Device " + Name);
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 

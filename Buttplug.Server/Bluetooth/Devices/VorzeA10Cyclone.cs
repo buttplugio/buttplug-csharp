@@ -44,6 +44,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
+            BpLogger.Debug("Stopping Device " + Name);
             return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, false, aMsg.Id));
         }
 

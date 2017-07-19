@@ -70,6 +70,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             // actually stop movement. It just makes it move really slow.
             // However, since each move it makes is finite (unlike setting vibration on some devices),
             // so we can assume it will be a short move, similar to what we do for the Kiiroo toys.
+            BpLogger.Debug("Stopping Device " + Name);
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 

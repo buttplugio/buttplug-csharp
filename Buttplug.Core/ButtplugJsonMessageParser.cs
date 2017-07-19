@@ -77,46 +77,44 @@ namespace Buttplug.Core
             _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
 
             var res = new List<ButtplugMessage>();
-            JArray a;
+            JArray msgArray;
             try
             {
-                a = JArray.Parse(aJsonMsg);
+                msgArray = JArray.Parse(aJsonMsg);
             }
             catch (JsonReaderException e)
             {
-                _bpLogger.Debug($"Not valid JSON: {aJsonMsg}");
-                _bpLogger.Debug(e.Message);
-                res.Add(new Error("Not valid JSON", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
+                res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, "Not valid JSON"));
                 return res.ToArray();
             }
 
-            var errors = _schema.Validate(a);
+            var errors = _schema.Validate(msgArray);
             if (errors.Any())
             {
-                res.Add(new Error("Message does not conform to schema: " + string.Join(", ", errors.Select(aErr => aErr.ToString()).ToArray()), ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
+                res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, "Message does not conform to schema: " + string.Join(", ", errors.Select(aErr => aErr.ToString()).ToArray())));
                 return res.ToArray();
             }
 
-            if (!a.Any())
+            if (!msgArray.Any())
             {
-                res.Add(new Error("No messages in array", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
+                res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, "No messages in array"));
                 return res.ToArray();
             }
 
             // JSON input is an array of messages.
             // We currently only handle the first one.
-            foreach (var o in a.Children<JObject>())
+            foreach (var o in msgArray.Children<JObject>())
             {
                 if (!o.Properties().Any())
                 {
-                    res.Add(new Error("No message name available", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
+                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, "No message name available"));
                     continue;
                 }
 
                 var msgName = o.Properties().First().Name;
                 if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
                 {
-                    res.Add(new Error($"{msgName} is not a valid message class", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId));
+                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, $"{msgName} is not a valid message class"));
                     continue;
                 }
 
