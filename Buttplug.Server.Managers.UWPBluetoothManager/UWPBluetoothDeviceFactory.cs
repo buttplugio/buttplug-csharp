@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using System.Collections.Generic;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
@@ -32,30 +33,35 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         public bool MayBeDevice(BluetoothLEAdvertisement aAdvertisement)
         {
-            if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(aAdvertisement.LocalName))
+            var advertName = aAdvertisement.LocalName;
+            var advertGUIDs = new List<Guid>();
+            advertGUIDs.AddRange(aAdvertisement.ServiceUuids);
+
+            if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(advertName))
             {
                 return false;
             }
-            else if (_deviceInfo.Names.Any() && !aAdvertisement.ServiceUuids.Any())
+
+            if (_deviceInfo.Names.Any() && !advertGUIDs.Any())
             {
-                _bpLogger.Debug("Found " + aAdvertisement.LocalName + " for " + _deviceInfo.GetType().ToString());
+                _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType().ToString());
                 _bpLogger.Debug("No advertised services?");
                 return true;
             }
 
-            _bpLogger.Debug("Found " + aAdvertisement.LocalName + " for " + _deviceInfo.GetType().ToString());
+            _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType().ToString());
             foreach (var s in _deviceInfo.Services)
             {
                 _bpLogger.Debug("Expecting " + s.ToString());
             }
 
-            foreach (var s in aAdvertisement.ServiceUuids)
+            foreach (var s in advertGUIDs)
             {
                 _bpLogger.Debug("Got " + s.ToString());
             }
 
             // Intersect doesn't intersect until the enumerator is called
-            var sv = _deviceInfo.Services.Intersect(aAdvertisement.ServiceUuids);
+            var sv = _deviceInfo.Services.Intersect(advertGUIDs);
             foreach (var s in sv)
             {
                 _bpLogger.Debug("Matched " + s.ToString());
@@ -89,6 +95,11 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             if (chrResult.Status != GattCommunicationStatus.Success)
             {
                 return null;
+            }
+
+            foreach (var s in chrResult.Characteristics)
+            {
+                _bpLogger.Trace("Found characteristics UUID: " + s.Uuid + " (" + aDevice.Name + ")");
             }
 
             var chrs = from x in chrResult.Characteristics
