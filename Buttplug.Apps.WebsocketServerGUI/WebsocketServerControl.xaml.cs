@@ -102,13 +102,17 @@ namespace Buttplug.Apps.WebsocketServerGUI
                 _connUrls.Clear();
                 _connUrls.Add(new ConnUrlData(_secure, "localhost", _port));
 
-                foreach (var network in NetworkInterface.GetAllNetworkInterfaces())
+                if (!_loopback)
                 {
-                    foreach (IPAddressInformation address in network.GetIPProperties().UnicastAddresses)
+                    foreach (var network in NetworkInterface.GetAllNetworkInterfaces())
                     {
-                        if (address.Address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(address.Address))
+                        foreach (IPAddressInformation address in network.GetIPProperties().UnicastAddresses)
                         {
-                            _connUrls.Add(new ConnUrlData(_secure, address.Address.ToString(), _port));
+                            if (address.Address.AddressFamily == AddressFamily.InterNetwork &&
+                                !IPAddress.IsLoopback(address.Address))
+                            {
+                                _connUrls.Add(new ConnUrlData(_secure, address.Address.ToString(), _port));
+                            }
                         }
                     }
                 }
