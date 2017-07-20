@@ -41,9 +41,12 @@ namespace Buttplug.Components.WebsocketServer
         [NotNull]
         private ConcurrentDictionary<string, WebSocket> _connections = new ConcurrentDictionary<string, WebSocket>();
 
+        [NotNull]
+        private CancellationTokenSource _cancellation;
+
         public void StartServer([NotNull] IButtplugServerFactory aFactory, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
         {
-            CancellationTokenSource cancellation = new CancellationTokenSource();
+            _cancellation = new CancellationTokenSource();
             _factory = aFactory;
 
             _logManager = new ButtplugLogManager();
@@ -61,7 +64,7 @@ namespace Buttplug.Components.WebsocketServer
 
             _server.Start();
 
-            Task.Run(() => AcceptWebSocketClientsAsync(_server, cancellation.Token));
+            Task.Run(() => AcceptWebSocketClientsAsync(_server, _cancellation.Token));
         }
 
         private async Task AcceptWebSocketClientsAsync(WebSocketListener aServer, CancellationToken aToken)
@@ -191,6 +194,7 @@ namespace Buttplug.Components.WebsocketServer
         public void StopServer()
         {
             _server?.Stop();
+            _cancellation.Cancel();
         }
 
         public void Disconnect(string remoteId = null)

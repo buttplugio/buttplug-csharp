@@ -6,9 +6,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="525">
         <Grid Background="#FFE5E5E5">
-            <Image Name="IconImage" Source="pack://application:,,,/ButtplugControlLibrary;component/Resources/buttplug-logo-1.png" HorizontalAlignment="Left" Height="128" Margin="10,10,0,0" VerticalAlignment="Top" Width="128" MouseDown="IconImage_Click">
-            </Image>
-            <TextBlock HorizontalAlignment="Left" Margin="143,10,0,0" VerticalAlignment="Top" Height="128" Width="360">
+		<Image Name="IconImage" Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplug-logo-1.png" HorizontalAlignment="Left" Height="128" Margin="10,10,0,0" VerticalAlignment="Top" Width="128" MouseDown="IconImage_Click"/>
+		<TextBlock HorizontalAlignment="Left" Margin="143,10,0,0" VerticalAlignment="Top" Height="128" Width="360">
                 <Span FontSize="19" FontWeight="Bold">Buttplug <Run Name="AboutVersionNumber">1.0.0.0-ffffffff</Run> (C# Edition)</Span><LineBreak />
                 By <Hyperlink NavigateUri="https://metafetish.com" RequestNavigate="Hyperlink_RequestNavigate">Metafetish</Hyperlink><LineBreak />
                 <LineBreak/>
@@ -22,6 +21,6 @@
                 If you would like to help sponsor further development of this and other adult toy and interface software, 
                 please consider donating to our patreon campaign at <Hyperlink NavigateUri="https://patreon.com/qdot" RequestNavigate="Hyperlink_RequestNavigate">http://patreon.com/qdot</Hyperlink>, or by clicking on the Patreon image below. Thanks, and enjoy buttpluging!
             </TextBlock>
-            <Image Source="pack://application:,,,/ButtplugControlLibrary;component/Resources/buttplugin-with-qdot-intro-patreon-image.png"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="116" Height="65" Margin="0,10,0,10" MouseDown="PatreonRequestNavigate" />
+			<Image Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplugin-with-qdot-intro-patreon-image.png"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="116" Height="65" Margin="0,10,0,10" MouseDown="PatreonRequestNavigate" />
         </Grid>
 </UserControl>
