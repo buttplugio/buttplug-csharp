@@ -315,12 +315,22 @@ namespace Buttplug.Core.Messages
 
     public class KiirooCmd : ButtplugDeviceMessage
     {
-        private uint _positionImpl;
-
         [JsonProperty(Required = Required.Always)]
+        public string Command;
+
+        [JsonIgnore]
         public uint Position
         {
-            get => _positionImpl;
+            get
+            {
+                if (uint.TryParse(Command, out uint pos) && pos <= 4)
+                {
+                    return pos;
+                }
+
+                return 0;
+            }
+
             set
             {
                 if (value > 4)
@@ -328,7 +338,7 @@ namespace Buttplug.Core.Messages
                     throw new ArgumentException("KiirooRawCmd Position cannot be greater than 4");
                 }
 
-                _positionImpl = value;
+                Command = value.ToString();
             }
         }
 
