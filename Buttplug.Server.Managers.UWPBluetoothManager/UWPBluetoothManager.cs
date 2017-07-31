@@ -58,16 +58,21 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         private async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher aObj,
                                                   BluetoothLEAdvertisementReceivedEventArgs aEvent)
         {
+            var advertName = aEvent.Advertisement.LocalName;
+            var advertGUIDs = new List<Guid>();
+            advertGUIDs.AddRange(aEvent.Advertisement.ServiceUuids);
+            var btAddr = aEvent.BluetoothAddress;
+
             // BpLogger.Trace($"Got BLE Advertisement for device: {aEvent.Advertisement.LocalName} / {aEvent.BluetoothAddress}");
-            if (_currentlyConnecting.Contains(aEvent.BluetoothAddress))
+            if (_currentlyConnecting.Contains(btAddr))
             {
                 // BpLogger.Trace($"Ignoring advertisement for already connecting device: {aEvent.Advertisement.LocalName} / {aEvent.BluetoothAddress}");
                 return;
             }
 
-            BpLogger.Trace("BLE device found: " + aEvent.Advertisement.LocalName);
+            BpLogger.Trace("BLE device found: " + advertName);
             var factories = from x in _deviceFactories
-                            where x.MayBeDevice(aEvent.Advertisement)
+                            where x.MayBeDevice(advertName, advertGUIDs)
                             select x;
 
             // We should always have either 0 or 1 factories.
@@ -76,7 +81,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             {
                 if (buttplugBluetoothDeviceFactories.Any())
                 {
-                    BpLogger.Warn($"Found multiple BLE factories for {aEvent.Advertisement.LocalName} {aEvent.BluetoothAddress}:");
+                    BpLogger.Warn($"Found multiple BLE factories for {advertName} {btAddr}:");
                     buttplugBluetoothDeviceFactories.ToList().ForEach(x => BpLogger.Warn(x.GetType().Name));
                 }
                 else
@@ -87,12 +92,12 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 return;
             }
 
-            _currentlyConnecting.Add(aEvent.BluetoothAddress);
+            _currentlyConnecting.Add(btAddr);
             var factory = buttplugBluetoothDeviceFactories.First();
             BpLogger.Debug($"Found BLE factory: {factory.GetType().Name}");
 
             // If we actually have a factory for this device, go ahead and create the device
-            var fromBluetoothAddressAsync = BluetoothLEDevice.FromBluetoothAddressAsync(aEvent.BluetoothAddress);
+            var fromBluetoothAddressAsync = BluetoothLEDevice.FromBluetoothAddressAsync(btAddr);
             if (fromBluetoothAddressAsync != null)
             {
                 var dev = await fromBluetoothAddressAsync;
@@ -108,13 +113,13 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 catch (Exception ex)
                 {
                     BpLogger.Error(
-                        $"Cannot connect to device {aEvent.Advertisement.LocalName} {aEvent.BluetoothAddress}: {ex.Message}");
-                    _currentlyConnecting.Remove(aEvent.BluetoothAddress);
+                        $"Cannot connect to device {advertName} {btAddr}: {ex.Message}");
+                    _currentlyConnecting.Remove(btAddr);
                     return;
                 }
             }
 
-            _currentlyConnecting.Remove(aEvent.BluetoothAddress);
+            _currentlyConnecting.Remove(btAddr);
         }
 
         private void OnWatcherStopped(BluetoothLEAdvertisementWatcher aObj,
