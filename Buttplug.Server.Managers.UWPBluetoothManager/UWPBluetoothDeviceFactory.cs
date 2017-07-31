@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -8,7 +9,6 @@ using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using System.Collections.Generic;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
@@ -31,12 +31,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             _deviceInfo = aInfo;
         }
 
-        public bool MayBeDevice(BluetoothLEAdvertisement aAdvertisement)
+        public bool MayBeDevice(string advertName, List<Guid> advertGUIDs)
         {
-            var advertName = aAdvertisement.LocalName;
-            var advertGUIDs = new List<Guid>();
-            advertGUIDs.AddRange(aAdvertisement.ServiceUuids);
-
             if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(advertName))
             {
                 return false;
