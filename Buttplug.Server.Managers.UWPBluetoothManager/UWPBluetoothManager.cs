@@ -58,9 +58,15 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         private async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher aObj,
                                                   BluetoothLEAdvertisementReceivedEventArgs aEvent)
         {
-            var advertName = aEvent.Advertisement.LocalName;
+            if (aEvent == null || aEvent.Advertisement == null)
+            {
+                BpLogger.Debug("Null BLE advertisement recieved: skipping");
+                return;
+            }
+
+            var advertName = aEvent.Advertisement.LocalName ?? string.Empty;
             var advertGUIDs = new List<Guid>();
-            advertGUIDs.AddRange(aEvent.Advertisement.ServiceUuids);
+            advertGUIDs.AddRange(aEvent.Advertisement.ServiceUuids ?? new Guid[] { });
             var btAddr = aEvent.BluetoothAddress;
 
             // BpLogger.Trace($"Got BLE Advertisement for device: {aEvent.Advertisement.LocalName} / {aEvent.BluetoothAddress}");
