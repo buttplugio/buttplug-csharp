@@ -15,39 +15,34 @@ hardware that can communicate with computers.
 
 The core of buttplug works as a router. It is an application that
 connects to driver libraries, to register and communicate with
-different hardware. Clients can then connect over websockets or
-network ports, to claim and interact with the hardware.
+different hardware. Clients can then connect over different means
+(network, websockets, etc...), to interact with the hardware.
 
-## C# Version
+## Other Buttplug Implementations
 
-Buttplug is currently coming together in 3 languages simultaniously.
-This may sound stupid/nuts, and that's because it is. However,
-buttplug itself is fairly simple, so the goal here is to make the
-hardware support as transparent as possible for the user/developer.
-
-The current implementation projects are in:
-
-- [C#](http://github.com/metafetish/buttplug-csharp), for Windows, Unity, etc...
-- [Rust](http://github.com/metafetish/buttplug-rs), for all platforms,
-  but currently requiring a LOT of yak shaving to get where we need to
-  be with library
-  support.
-  [See this blog post for more info.](https://buttplug.io/blog/2017/03/26/the-yak-factory/)
-- Javascript (no central repo yet), for platforms with WebBluetooth
-  support, and developers that want node or cordova support.
-  
-Whether any of these will get done is a really good question.
+Buttplug implementations are available in multiple languages (rust,
+javascript, etc)/frameworks/platforms. For a full
+list,
+[see the README in the main buttplug repo](http://github.com/metafetish/buttplug).
 
 ## Platform Support
 
 Buttplug C# Supports the following platforms:
 
 - Windows 10 - Creators Update (15063)
-  - BLE Devices: Fleshlight Launch, Lovense Toys, Vorze Interactive
+  - BLE Devices: Fleshlight Launch, Lovense Toys, Vorze Interactive,
+    Vibratissimo, Magic Motion
   - Other devices: Xbox Gamepads (XInput)
   
 - Windows 7/8 and 10 pre 15063
   - Other devices: Xbox Gamepads (XInput)
+
+## Development
+
+Packages and libraries from the buttplug-csharp repo are available
+via [nuget](http://nuget.org). Simply run a search for "buttplug",
+or
+[follow this link to the nuget "buttplug" search](https://www.nuget.org/packages?q=buttplug).
 
 ## Special Installation Steps
 
@@ -75,7 +70,7 @@ write code for!
 
 Buttplug is BSD licensed.
 
-    Copyright (c) 2016, Metafetish
+    Copyright (c) 2016-2017, Metafetish
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
