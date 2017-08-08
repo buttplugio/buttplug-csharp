@@ -16,11 +16,7 @@
                 Source code at <Hyperlink NavigateUri="https://github.com/metafetish" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/metafetish</Hyperlink><LineBreak/>
                 License information <Hyperlink Click="LicenseHyperlink_Click" >here</Hyperlink><LineBreak/>
             </TextBlock>
-            <TextBlock HorizontalAlignment="Left" Margin="7,147,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
-                Buttplug and the corresponding applications and libraries are provided open source and free of charge. 
-                If you would like to help sponsor further development of this and other adult toy and interface software, 
-                please consider donating to our patreon campaign at <Hyperlink NavigateUri="https://patreon.com/qdot" RequestNavigate="Hyperlink_RequestNavigate">http://patreon.com/qdot</Hyperlink>, or by clicking on the Patreon image below. Thanks, and enjoy buttpluging!
-            </TextBlock>
-			<Image Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplugin-with-qdot-intro-patreon-image.png"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="116" Height="65" Margin="0,10,0,10" MouseDown="PatreonRequestNavigate" />
+        <TextBlock HorizontalAlignment="Left" Margin="7,147,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Buttplug and the corresponding applications and libraries are provided open source and free of charge. If you would like to help sponsor further development of this and other adult toy and interface software, please consider donating to our patreon campaign at "/><Hyperlink NavigateUri="https://patreon.com/qdot"><Run Text="http://patreon.com/qdot"/></Hyperlink><Run Text=", or by clicking on the Patreon image below. Thanks, and enjoy buttplugging!"/></TextBlock>
+        <Image Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplugin-with-qdot-intro-patreon-image.png"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="116" Height="65" Margin="0,10,0,10" MouseDown="PatreonRequestNavigate" />
         </Grid>
 </UserControl>
