@@ -118,7 +118,7 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
             _stopwatch.Start();
 
             // Position Conversion
-            var position = (ushort)(_currentGoalPosition > 2 ? 95 : 5);
+            var position = (ushort)(_currentGoalPosition > 2 ? 5 : 95);
             if (elapsed <= 150)
             {
                 if (_limitedSpeed == 0)
