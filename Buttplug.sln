@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Core", "Buttplug.Core\Buttplug.Core.csproj", "{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}"
 EndProject
@@ -32,6 +32,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.WebsocketServerGUI", "Buttplug.Apps.WebsocketServerGUI\Buttplug.Apps.WebsocketServerGUI.csproj", "{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.WebsocketServerGUI.Test", "Buttplug.Apps.WebsocketServerGUI.Test\Buttplug.Apps.WebsocketServerGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.XInputInjector.GUI", "Buttplug.Apps.XInputInjector.GUI\Buttplug.Apps.XInputInjector.GUI.csproj", "{63449568-98E9-404F-A196-3ACF3B638264}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.XInputInjector.Payload", "Buttplug.Apps.XInputInjector.Payload\Buttplug.Apps.XInputInjector.Payload.csproj", "{4BABA791-1C9A-42DE-A825-30F43CB0859B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.XInputInjector.Interface", "Buttplug.Apps.XInputInjector.Interface\Buttplug.Apps.XInputInjector.Interface.csproj", "{9837DF40-954F-4FD5-BAB8-4026359F89E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +103,18 @@ Global
 		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63449568-98E9-404F-A196-3ACF3B638264}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63449568-98E9-404F-A196-3ACF3B638264}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63449568-98E9-404F-A196-3ACF3B638264}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63449568-98E9-404F-A196-3ACF3B638264}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BABA791-1C9A-42DE-A825-30F43CB0859B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BABA791-1C9A-42DE-A825-30F43CB0859B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BABA791-1C9A-42DE-A825-30F43CB0859B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BABA791-1C9A-42DE-A825-30F43CB0859B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9837DF40-954F-4FD5-BAB8-4026359F89E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9837DF40-954F-4FD5-BAB8-4026359F89E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9837DF40-954F-4FD5-BAB8-4026359F89E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9837DF40-954F-4FD5-BAB8-4026359F89E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
