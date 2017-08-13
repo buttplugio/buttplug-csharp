@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -29,7 +30,10 @@ namespace Buttplug.Components.Controls
         private string _serverName;
         private uint _maxPingTime;
         private bool _sentCrashLog;
+        private bool _hasDevicePanel = false;
         public DeviceManager _deviceManager;
+
+        public event EventHandler<List<ButtplugDeviceInfo>> SelectedDevicesChanged;
 
         public ButtplugTabControl()
         {
@@ -78,6 +82,13 @@ namespace Buttplug.Components.Controls
             }
 
             AboutControl.AboutImageClickedABunch += (aObj, aEvent) => DeveloperTab.Visibility = Visibility.Visible;
+            DevicesTab.Visibility = Visibility.Hidden;
+            DeviceControl.DeviceSelectionChanged += OnSelectedDevicesChanged;
+        }
+
+        private void OnSelectedDevicesChanged(object aObj, List<ButtplugDeviceInfo> aDevices)
+        {
+            SelectedDevicesChanged?.Invoke(aObj, aDevices);
         }
 
         private ButtplugServer InitializeButtplugServer(string aServerName, uint aMaxPingTime)
@@ -126,6 +137,17 @@ namespace Buttplug.Components.Controls
 
             bpServer.AddDeviceSubtypeManager(aLogger => new XInputGamepadManager(aLogger));
             return bpServer;
+        }
+
+        public void AddDevicePanel(ButtplugServer aServer)
+        {
+            if (_hasDevicePanel)
+            {
+                return;
+            }
+
+            DevicesTab.Visibility = Visibility.Visible;
+            DeviceControl.SetButtplugServer(aServer);
         }
 
         private void SendExceptionToSentry(Exception aEx)
