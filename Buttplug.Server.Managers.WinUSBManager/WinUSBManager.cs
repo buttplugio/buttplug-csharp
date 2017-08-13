@@ -1,0 +1,93 @@
+﻿using System;
+using Buttplug.Core;
+using MadWizard.WinUSBNet;
+using Microsoft.Win32;
+
+namespace Buttplug.Server.Managers.WinUSBManager
+{
+    public class WinUSBManager : DeviceSubtypeManager
+    {
+        public WinUSBManager(IButtplugLogManager aLogManager)
+            : base(aLogManager)
+        {
+            BpLogger.Info("Loading WinUSB Manager");
+        }
+
+        public override void StartScanning()
+        {
+            BpLogger.Info("WinUSBManager start scanning");
+            var deviceKey =
+                Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Enum\USB\VID_0B49&PID_064F");
+            if (deviceKey == null)
+            {
+                BpLogger.Debug("No TranceVibrator Devices found in registry.");
+                InvokeScanningFinished();
+                return;
+            }
+
+            var deviceKeyNames = deviceKey.GetSubKeyNames();
+            if (deviceKeyNames.Length == 0)
+            {
+                BpLogger.Debug("No TranceVibrator Devices with drivers found in registry.");
+                InvokeScanningFinished();
+                return;
+            }
+
+            var deviceSubKey = deviceKey.OpenSubKey(deviceKeyNames[0]);
+            if (deviceSubKey == null)
+            {
+                BpLogger.Debug("No TranceVibrator Devices with drivers subkeys found in registry.");
+                InvokeScanningFinished();
+                return;
+            }
+
+            var deviceParameters = deviceSubKey.OpenSubKey("Device Parameters");
+            if (deviceParameters == null)
+            {
+                BpLogger.Debug("No TranceVibrator Devices with drivers parameters found in registry.");
+                InvokeScanningFinished();
+                return;
+            }
+
+            var deviceGUID = (string[])deviceParameters.GetValue("DeviceInterfaceGUIDs", string.Empty);
+            if (deviceGUID == null || deviceGUID.ToString().Length == 0)
+            {
+                BpLogger.Debug("No TranceVibrator Devices Driver GUIDs found in registry.");
+                InvokeScanningFinished();
+                return;
+            }
+
+            // Only valid for our Trancevibrator install
+            var devices = USBDevice.GetDevices(deviceGUID[0]);
+            if (devices == null || devices.Length == 0)
+            {
+                BpLogger.Error("No USB Device found!");
+                InvokeScanningFinished();
+                return;
+            }
+
+            uint index = 0;
+            foreach (var deviceinfo in devices)
+            {
+                var device = new USBDevice(deviceinfo);
+                BpLogger.Debug($"Found TranceVibrator Device");
+                var tvDevice = new RezTranceVibratorDevice(LogManager, device, index);
+                index += 1;
+                InvokeDeviceAdded(new DeviceAddedEventArgs(tvDevice));
+            }
+
+            InvokeScanningFinished();
+        }
+
+        public override void StopScanning()
+        {
+            // noop
+        }
+
+        public override bool IsScanning()
+        {
+            // noop
+            return false;
+        }
+    }
+}

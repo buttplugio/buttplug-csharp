@@ -7,6 +7,7 @@ using Buttplug.Server;
 using Buttplug.Server.Managers.ETSerialManager;
 using Buttplug.Server.Managers.SimulatorManager;
 using Buttplug.Server.Managers.UWPBluetoothManager;
+using Buttplug.Server.Managers.WinUSBManager;
 using Buttplug.Server.Managers.XInputGamepadManager;
 using JetBrains.Annotations;
 using Microsoft.Win32;
@@ -139,7 +140,7 @@ namespace Buttplug.Components.Controls
 
             bpServer.AddDeviceSubtypeManager(aLogger => new XInputGamepadManager(aLogger));
             bpServer.AddDeviceSubtypeManager(aLogger => new ETSerialManager(aLogger));
-
+            bpServer.AddDeviceSubtypeManager(aLogger => new WinUSBManager(aLogger));
 #if DEBUG
             bpServer.AddDeviceSubtypeManager(aLogger => new SimulatorManager(aLogger));
 #endif
