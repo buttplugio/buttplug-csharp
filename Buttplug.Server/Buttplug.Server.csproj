@@ -51,6 +51,7 @@
     <Compile Include="Bluetooth\ButtplugBluetoothDevice.cs" />
     <Compile Include="Bluetooth\Devices\FleshlightLaunch.cs" />
     <Compile Include="Bluetooth\Devices\Kiiroo.cs" />
+    <Compile Include="Bluetooth\Devices\WeVibe.cs" />
     <Compile Include="Bluetooth\Devices\MagicMotion.cs" />
     <Compile Include="Bluetooth\Devices\Vibratissimo.cs" />
     <Compile Include="Bluetooth\Devices\Lovense.cs" />
