@@ -9,6 +9,9 @@
     <Grid>
         <TabControl Margin="0,0,-0.333,-0.333">           
             <TabItem Header="Application" Name="ApplicationTab"/>
+            <TabItem Header="Devices" Name="DevicesTab">
+                <local:ButtplugDeviceControl x:Name="DeviceControl" />
+            </TabItem>
             <TabItem Header="Logs">
                 <local:ButtplugLogControl x:Name="LogControl" />
             </TabItem>

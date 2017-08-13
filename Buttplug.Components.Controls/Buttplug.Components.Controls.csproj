@@ -67,6 +67,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ButtplugDeviceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ButtplugTabControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -78,6 +82,10 @@
     <Compile Include="ButtplugAboutControl.xaml.cs">
       <DependentUpon>ButtplugAboutControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ButtplugDeviceControl.xaml.cs">
+      <DependentUpon>ButtplugDeviceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ButtplugDeviceInfo.cs" />
     <Compile Include="ButtplugTabControl.xaml.cs">
       <DependentUpon>ButtplugTabControl.xaml</DependentUpon>
     </Compile>
