@@ -4,6 +4,7 @@ using EasyHook;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting;
@@ -24,6 +25,7 @@ namespace Buttplug.Apps.XInputInjector.GUI
         {
             public String FileName;
             public Int32 Id;
+            public String Owner;
 
             public override string ToString()
             {
@@ -58,9 +60,11 @@ namespace Buttplug.Apps.XInputInjector.GUI
         public event EventHandler<int> ProcessAttachRequested;
         public event EventHandler<bool> ProcessDetachRequested;
         private bool _attached;
+        private readonly Logger _log;
 
         public ProcessTab()
         {
+            _log = LogManager.GetCurrentClassLogger();
             InitializeComponent();
             ProcessListBox.ItemsSource = _processList;
             ProcessListBox.SelectionChanged += OnSelectionChanged;
@@ -74,14 +78,29 @@ namespace Buttplug.Apps.XInputInjector.GUI
             {
                 try
                 {
+                    // This can sometimes happen between calling GetProcesses and getting here. Save ourselves the throw.
+                    if (currentProc.HasExited)
+                    {
+                        continue;
+                    }
                     _processList.Add(new ProcessInfo
                     {
-                        FileName = currentProc.MainModule.FileName,
-                        Id = currentProc.Id
+                        FileName = currentProc.ProcessName,
+                        Id = currentProc.Id,
+                        Owner = RemoteHooking.GetProcessIdentity(currentProc.Id).Name
                     });
                 }
-                catch
+                catch (AccessViolationException)
                 {
+                    // noop, there's a lot of system processes we can't see.
+                }
+                catch (Win32Exception Ex)
+                {
+                    // noop, there's a lot of system processes we can't see.
+                }
+                catch (Exception Ex)
+                {
+                    _log.Error(Ex);
                 }
             }
         }
