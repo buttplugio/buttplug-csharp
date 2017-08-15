@@ -16,6 +16,17 @@ namespace Buttplug.Apps.XInputInjector.Payload
         private static Exception _ex;
         private static ButtplugXInputInjectorPayload _instance;
 
+        // Search newest to oldest. It seems that some games link both xinput1_4 and xinput9_1_0, but seem to 
+        // prefer xinput9_1_0? Not quite sure about difference yet. 
+        private enum XInputVersion
+        {
+            xinput9_1_0,
+            xinput1_3,
+            xinput1_4
+        };
+
+        private static XInputVersion _hookedVersion;
+
         public ButtplugXInputInjectorPayload(
             RemoteHooking.IContext aInContext,
             String aInChannelName)
@@ -29,22 +40,33 @@ namespace Buttplug.Apps.XInputInjector.Payload
             String aInArg1)
         {
             _interface.Ping(RemoteHooking.GetCurrentProcessId(), "Payload installed. Running payload loop.");
-            try
-            {
-                _xinputSetStateHookObj = LocalHook.Create(
-                    LocalHook.GetProcAddress("xinput1_3.dll", "XInputSetState"),
-                    new XInputSetStateDelegate(XInputSetStateHookFunc),
-                    null);
 
-                // Set hook for all threads.
-                _xinputSetStateHookObj.ThreadACL.SetExclusiveACL(new Int32[1]);
-            }
-            catch (Exception e)
+            foreach (var xinputVersion in Enum.GetValues(typeof(XInputVersion)))
             {
-                _interface.ReportError(RemoteHooking.GetCurrentProcessId(), e);
+                try
+                {
+                    _interface.Ping(RemoteHooking.GetCurrentProcessId(), $"Trying to hook {xinputVersion}.dll");
+                    _xinputSetStateHookObj = LocalHook.Create(
+                        LocalHook.GetProcAddress($"{xinputVersion}.dll", "XInputSetState"),
+                        new XInputSetStateDelegate(XInputSetStateHookFunc),
+                        null);
+                    _hookedVersion = (XInputVersion)xinputVersion;
+                    _interface.Ping(RemoteHooking.GetCurrentProcessId(), $"Hooked {xinputVersion}.dll");
+                    break;
+                }
+                catch
+                {
+                    // noop
+                    _interface.Ping(RemoteHooking.GetCurrentProcessId(), $"Hooking {xinputVersion}.dll failed");
+                }
+            }
+            if (_xinputSetStateHookObj == null)
+            {
+                _interface.ReportError(RemoteHooking.GetCurrentProcessId(), new Exception("No viable DLL to hook, payload exiting"));
                 return;
             }
-
+            // Set hook for all threads.
+            _xinputSetStateHookObj.ThreadACL.SetExclusiveACL(new Int32[1]);
             try
             {
                 while (_interface.Ping(RemoteHooking.GetCurrentProcessId(), ""))
@@ -75,11 +97,26 @@ namespace Buttplug.Apps.XInputInjector.Payload
         }
 
         [DllImport("xinput1_3.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "XInputSetState")]
-        private static extern unsafe int XInputSetState(int arg0, void* arg1);
+        private static extern unsafe int XInputSetState1_3(int arg0, void* arg1);
+
+        [DllImport("xinput1_4.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "XInputSetState")]
+        private static extern unsafe int XInputSetState1_4(int arg0, void* arg1);
+
+        [DllImport("xinput9_1_0.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "XInputSetState")]
+        private static extern unsafe int XInputSetState9_1_0(int arg0, void* arg1);
 
         private static unsafe int XInputSetStateShim(int aUserIndex, Vibration aVibrationRef)
         {
-            return XInputSetState(aUserIndex, &aVibrationRef);
+            switch (_hookedVersion)
+            {
+                case XInputVersion.xinput1_3:
+                    return XInputSetState1_3(aUserIndex, &aVibrationRef);
+                case XInputVersion.xinput1_4:
+                    return XInputSetState1_4(aUserIndex, &aVibrationRef);
+                case XInputVersion.xinput9_1_0:
+                    return XInputSetState9_1_0(aUserIndex, &aVibrationRef);
+            }
+            return 0;
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
