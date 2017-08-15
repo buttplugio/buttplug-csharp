@@ -44,18 +44,19 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new MagicMotion(aLogManager,
-                aInterface);
+            return new MagicMotion(aLogManager, aInterface, this);
         }
     }
 
     internal class MagicMotion : ButtplugBluetoothDevice
     {
         public MagicMotion(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface)
+                           IBluetoothDeviceInterface aInterface,
+                           IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
                    $"MagicMotion Device ({aInterface.Name})",
-                   aInterface)
+                   aInterface,
+                   aInfo)
         {
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
@@ -78,7 +79,9 @@ namespace Buttplug.Server.Bluetooth.Devices
             data[9] = Convert.ToByte(cmdMsg.Speed * byte.MaxValue);
 
             // While there are 3 lovense revs right now, all of the characteristic arrays are the same.
-            return await Interface.WriteValue(aMsg.Id, (uint)MagicMotionBluetoothInfo.Chrs.Tx, data);
+            return await Interface.WriteValue(aMsg.Id,
+                Info.Characteristics[(uint)MagicMotionBluetoothInfo.Chrs.Tx],
+                data);
         }
     }
 }

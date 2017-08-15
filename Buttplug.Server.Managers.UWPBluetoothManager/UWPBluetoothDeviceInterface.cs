@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -56,7 +58,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         [ItemNotNull]
         public async Task<ButtplugMessage> WriteValue(uint aMsgId,
-            uint aCharacteristicIndex,
+            Guid aCharacteristic,
             byte[] aValue,
             bool aWriteOption = false)
         {
@@ -66,12 +68,22 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 _bpLogger.Error("Cancelling device transfer in progress for new transfer.");
             }
 
-            var gattCharacteristic = _gattCharacteristics[aCharacteristicIndex];
-            if (gattCharacteristic == null)
+            var chrs = from x in _gattCharacteristics
+                       where x.Uuid == aCharacteristic
+                       select x;
+
+            var gattCharacteristics = chrs.ToArray();
+
+            if (!gattCharacteristics.Any())
             {
-                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"Requested character {aCharacteristicIndex} out of range");
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"Requested characteristic {aCharacteristic} not found");
+            }
+            else if (gattCharacteristics.Length > 1)
+            {
+                _bpLogger.Warn($"Multiple gattCharacteristics for {aCharacteristic} found");
             }
 
+            var gattCharacteristic = gattCharacteristics[0];
             _currentTask = gattCharacteristic.WriteValueAsync(aValue.AsBuffer(), aWriteOption ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
             try
             {

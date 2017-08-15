@@ -42,8 +42,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new Lovense(aLogManager,
-                aInterface);
+            return new Lovense(aLogManager, aInterface, this);
         }
     }
 
@@ -78,8 +77,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new Lovense(aLogManager,
-                               aInterface);
+            return new Lovense(aLogManager, aInterface, this);
         }
     }
 
@@ -111,8 +109,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new Lovense(aLogManager,
-                aInterface);
+            return new Lovense(aLogManager, aInterface, this);
         }
     }
 
@@ -130,10 +127,12 @@ namespace Buttplug.Server.Bluetooth.Devices
         };
 
         public Lovense(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface)
+                       IBluetoothDeviceInterface aInterface,
+                       IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
                    $"Lovense Device ({FriendlyNames[aInterface.Name]})",
-                   aInterface)
+                   aInterface,
+                   aInfo)
         {
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
@@ -154,8 +153,9 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             // While there are 3 lovense revs right now, all of the characteristic arrays are the same.
-            return await Interface.WriteValue(aMsg.Id, (uint)LovenseRev1BluetoothInfo.Chrs.Tx,
-                                              Encoding.ASCII.GetBytes($"Vibrate:{(int)(cmdMsg.Speed * 20)};"));
+            return await Interface.WriteValue(aMsg.Id,
+                Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
+                Encoding.ASCII.GetBytes($"Vibrate:{(int)(cmdMsg.Speed * 20)};"));
         }
     }
 }

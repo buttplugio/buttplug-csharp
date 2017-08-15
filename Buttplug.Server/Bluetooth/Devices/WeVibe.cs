@@ -34,18 +34,19 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new WeVibe(aLogManager,
-                aInterface);
+            return new WeVibe(aLogManager, aInterface, this);
         }
     }
 
     internal class WeVibe : ButtplugBluetoothDevice
     {
         public WeVibe(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface)
+                      IBluetoothDeviceInterface aInterface,
+                      IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
                    $"WeVibe Device ({aInterface.Name})",
-                   aInterface)
+                   aInterface,
+                   aInfo)
         {
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
@@ -67,17 +68,19 @@ namespace Buttplug.Server.Bluetooth.Devices
             var rSpeed = Convert.ToUInt16(cmdMsg.Speed * 15);
 
             // 0f 03 00 bc 00 00 00 00
-            var data = new byte[] { 0x0f, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            var data = new byte[] { 0x0f, 0x03, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00 };
             data[3] = Convert.ToByte(rSpeed); // External
             data[3] |= Convert.ToByte(rSpeed << 4); // Internal
 
             if (rSpeed == 0)
             {
                 data[1] = 0x00;
+                data[5] = 0x00;
             }
 
-            Console.Out.WriteLine(BitConverter.ToString(data));
-            return await Interface.WriteValue(aMsg.Id, (uint)WeVibeBluetoothInfo.Chrs.Tx, data);
+            return await Interface.WriteValue(aMsg.Id,
+                Info.Characteristics[(uint)WeVibeBluetoothInfo.Chrs.Tx],
+                data);
         }
     }
 }
