@@ -35,9 +35,6 @@ namespace Buttplug.Server.Bluetooth.Devices
         public Guid[] Characteristics { get; } =
         {
             // tx characteristic
-            new Guid("78667579-7b48-43db-b8c5-7928a6b0a335"),
-
-            // other characteristic... this one's advertised
             new Guid("78667579-a914-49a4-8333-aa3c0cd8fedc"),
         };
 
