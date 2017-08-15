@@ -25,18 +25,19 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new VorzeA10Cyclone(aLogManager,
-                aInterface);
+            return new VorzeA10Cyclone(aLogManager, aInterface, this);
         }
     }
 
     internal class VorzeA10Cyclone : ButtplugBluetoothDevice
     {
         public VorzeA10Cyclone(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
+                               IBluetoothDeviceInterface aInterface,
+                               IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
                    "Vorze A10 Cyclone",
-                   aInterface)
+                   aInterface,
+                   aInfo)
         {
             MsgFuncs.Add(typeof(VorzeA10CycloneCmd), HandleVorzeA10CycloneCmd);
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
@@ -58,7 +59,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var rawSpeed = (byte)(((byte)(cmdMsg.Clockwise ? 1 : 0)) << 7 | (byte)cmdMsg.Speed);
             return await Interface.WriteValue(aMsg.Id,
-                (uint)VorzeA10CycloneInfo.Chrs.Tx,
+                Info.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
                 new byte[] { 0x01, 0x01, rawSpeed });
         }
     }

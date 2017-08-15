@@ -9,14 +9,19 @@ namespace Buttplug.Server.Bluetooth
         [NotNull]
         protected readonly IBluetoothDeviceInterface Interface;
 
+        [NotNull]
+        protected readonly IBluetoothDeviceInfo Info;
+
         protected ButtplugBluetoothDevice([NotNull] IButtplugLogManager aLogManager,
             [NotNull] string aName,
-            [NotNull] IBluetoothDeviceInterface aInterface)
+            [NotNull] IBluetoothDeviceInterface aInterface,
+            [NotNull] IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
                    aName,
                    aInterface.GetAddress().ToString())
         {
             Interface = aInterface;
+            Info = aInfo;
             Interface.DeviceRemoved += DeviceRemovedHandler;
         }
 

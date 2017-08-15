@@ -31,17 +31,19 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new Kiiroo(aLogManager, aInterface);
+            return new Kiiroo(aLogManager, aInterface, this);
         }
     }
 
     internal class Kiiroo : ButtplugBluetoothDevice
     {
         public Kiiroo([NotNull] IButtplugLogManager aLogManager,
-                      [NotNull] IBluetoothDeviceInterface aInterface)
+                      [NotNull] IBluetoothDeviceInterface aInterface,
+                      [NotNull] IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
                    $"Kiiroo {aInterface.Name}",
-                   aInterface)
+                   aInterface,
+                   aInfo)
         {
             MsgFuncs.Add(typeof(KiirooCmd), HandleKiirooRawCmd);
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
@@ -65,8 +67,8 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValue(cmdMsg.Id,
-                                              (uint)KiirooBluetoothInfo.Chrs.Tx,
-                                              Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"));
+                Info.Characteristics[(uint)KiirooBluetoothInfo.Chrs.Tx],
+                Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"));
         }
     }
 }

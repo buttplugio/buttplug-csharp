@@ -35,18 +35,19 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new Vibratissimo(aLogManager,
-                aInterface);
+            return new Vibratissimo(aLogManager, aInterface, this);
         }
     }
 
     internal class Vibratissimo : ButtplugBluetoothDevice
     {
         public Vibratissimo(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface)
+                            IBluetoothDeviceInterface aInterface,
+                            IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
                    $"Vibratissimo Device ({aInterface.Name})",
-                   aInterface)
+                   aInterface,
+                   aInfo)
         {
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
@@ -69,11 +70,15 @@ namespace Buttplug.Server.Bluetooth.Devices
             var data = new byte[2];
             data[0] = 0x03;
             data[1] = 0xFF;
-            await Interface.WriteValue(aMsg.Id, (uint)VibratissimoBluetoothInfo.Chrs.TxMode, data);
+            await Interface.WriteValue(aMsg.Id,
+                Info.Characteristics[(uint)VibratissimoBluetoothInfo.Chrs.TxMode],
+                data);
 
             data[0] = Convert.ToByte(cmdMsg.Speed * byte.MaxValue);
             data[1] = 0x00;
-            return await Interface.WriteValue(aMsg.Id, (uint)VibratissimoBluetoothInfo.Chrs.TxSpeed, data);
+            return await Interface.WriteValue(aMsg.Id,
+                Info.Characteristics[(uint)VibratissimoBluetoothInfo.Chrs.TxSpeed],
+                data);
         }
     }
 }

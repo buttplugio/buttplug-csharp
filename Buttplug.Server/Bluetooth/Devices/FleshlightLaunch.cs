@@ -36,18 +36,19 @@ namespace Buttplug.Server.Bluetooth.Devices
             IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new FleshlightLaunch(aLogManager,
-                                        aInterface);
+            return new FleshlightLaunch(aLogManager, aInterface, this);
         }
     }
 
     internal class FleshlightLaunch : ButtplugBluetoothDevice
     {
         public FleshlightLaunch([NotNull] IButtplugLogManager aLogManager,
-                                [NotNull] IBluetoothDeviceInterface aInterface)
+                                [NotNull] IBluetoothDeviceInterface aInterface,
+                                [NotNull] IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
                    "Fleshlight Launch",
-                   aInterface)
+                   aInterface,
+                   aInfo)
         {
             // Setup message function array
             MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), HandleFleshlightLaunchRawCmd);
@@ -58,7 +59,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             BpLogger.Trace($"Initializing {Name}");
             return await Interface.WriteValue(ButtplugConsts.SystemMsgId,
-                (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd,
+                Info.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd],
                 new byte[] { 0 },
                 true);
         }
@@ -84,7 +85,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValue(aMsg.Id,
-                (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx,
+                Info.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],
                 new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed });
         }
     }
