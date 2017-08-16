@@ -18,10 +18,12 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public string[] Names { get; } =
         {
-            "Pivot",
-            "Verge",
+            "4 Plus",
+            "Ditto",
             "Nova",
-            "4 Plus"
+            "Pivot",
+            "Wish",
+            "Verge",
         };
 
         public Guid[] Characteristics { get; } =
