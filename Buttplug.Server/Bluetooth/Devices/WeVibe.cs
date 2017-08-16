@@ -20,6 +20,8 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             "Pivot",
             "Verge",
+            "Nova",
+            "4 Plus"
         };
 
         public Guid[] Characteristics { get; } =
