@@ -121,16 +121,16 @@ namespace Buttplug.Apps.XInputInjector.GUI
                 _xinputHookServer = RemoteHooking.IpcCreateServer<ButtplugXInputInjectorInterface>(
                     ref _channelName,
                     WellKnownObjectMode.Singleton);
+                var dllFile = System.IO.Path.Combine(
+                    System.IO.Path.GetDirectoryName(typeof(ButtplugXInputInjectorPayload).Assembly.Location), 
+                    "ButtplugXInputInjectorPayload.dll");
                 _log.Info($"Beginning process injection on {aProcessId}...");
+                _log.Info($"Injecting DLL {dllFile}");
                 RemoteHooking.Inject(
                     aProcessId,
                     InjectionOptions.Default,
-                    System.IO.Path.Combine(
-                        System.IO.Path.GetDirectoryName(typeof(ButtplugXInputInjectorPayload).Assembly.Location),
-                        "ButtplugXInputInjectorPayload.dll"),
-                    System.IO.Path.Combine(
-                        System.IO.Path.GetDirectoryName(typeof(ButtplugXInputInjectorPayload).Assembly.Location),
-                        "ButtplugXInputInjectorPayload.dll"),
+                    dllFile,
+                    dllFile,
                     // the optional parameter list...
                     _channelName);
                 _log.Info($"Finished process injection on {aProcessId}...");
