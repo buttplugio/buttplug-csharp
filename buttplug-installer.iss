@@ -27,13 +27,13 @@ OutputDir=.\installer
 LicenseFile=LICENSE
 
 [Files]
-Source: "Buttplug.Apps.KiirooEmulatorGUI\bin\{#Configuration}\ButtplugKiirooEmulatorGUI.exe"; DestDir: "{app}"
+Source: "Buttplug.Apps.KiirooEmulatorGUI\bin\{#Configuration}\*.exe"; DestDir: "{app}"
 Source: "Buttplug.Apps.KiirooEmulatorGUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
 Source: "Buttplug.Apps.KiirooEmulatorGUI\bin\{#Configuration}\*.config"; DestDir: "{app}"
-Source: "Buttplug.Apps.WebsocketServerGUI\bin\{#Configuration}\ButtplugWebsocketServerGUI.exe"; DestDir: "{app}"
+Source: "Buttplug.Apps.WebsocketServerGUI\bin\{#Configuration}\*.exe"; DestDir: "{app}"
 Source: "Buttplug.Apps.WebsocketServerGUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
 Source: "Buttplug.Apps.WebsocketServerGUI\bin\{#Configuration}\*.config"; DestDir: "{app}"
-Source: "Buttplug.Apps.XInputInjector.GUI\bin\{#Configuration}\ButtplugXInputInjectorGUI.exe"; DestDir: "{app}"
+Source: "Buttplug.Apps.XInputInjector.GUI\bin\{#Configuration}\*.exe"; DestDir: "{app}"
 Source: "Buttplug.Apps.XInputInjector.GUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
 Source: "Buttplug.Apps.XInputInjector.GUI\bin\{#Configuration}\*.config"; DestDir: "{app}"
 Source: "Readme.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme
