@@ -13,6 +13,9 @@ namespace Buttplug.Core
         [NotNull]
         string Identifier { get; }
 
+        [NotNull]
+        bool IsConnected { get; }
+
         [CanBeNull]
         event EventHandler DeviceRemoved;
 
