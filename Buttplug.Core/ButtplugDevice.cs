@@ -13,6 +13,8 @@ namespace Buttplug.Core
 
         public string Identifier { get; }
 
+        public bool IsConnected { get { return !_isDisconnected; } }
+
         [CanBeNull]
         public event EventHandler DeviceRemoved;
 

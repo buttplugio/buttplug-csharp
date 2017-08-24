@@ -45,26 +45,26 @@ namespace Buttplug.Server
 
         private void DeviceAddedHandler(object aObj, DeviceAddedEventArgs aEvent)
         {
-            // If we get to 4 billion devices connected, this may be a problem.
-            var deviceIndex = (uint)Interlocked.Increment(ref _deviceIndexCounter);
-
             // Devices can be turned off by the time they get to this point, at which point they end up null. Make sure the device isn't null.
             if (aEvent.Device == null)
             {
                 return;
             }
 
-            var duplicates = from x in _devices.Values
-                where x.Identifier == aEvent.Device.Identifier
+            var duplicates = from x in _devices
+                where x.Value.Identifier == aEvent.Device.Identifier
                 select x;
-            if (duplicates.Any())
+            if (duplicates.Any() && (duplicates.Count() > 1 || duplicates.First().Value.IsConnected))
             {
                 _bpLogger.Debug($"Already have device {aEvent.Device.Name} in Devices list");
                 return;
             }
 
-            _bpLogger.Info($"Adding Device {aEvent.Device.Name} at index {deviceIndex}");
-            _devices.Add(deviceIndex, aEvent.Device);
+            // If we get to 4 billion devices connected, this may be a problem.
+            var deviceIndex = duplicates.Any() ? duplicates.First().Key : (uint)Interlocked.Increment(ref _deviceIndexCounter);
+            _bpLogger.Info((duplicates.Any() ? "Re-" : string.Empty) + $"Adding Device {aEvent.Device.Name} at index {deviceIndex}");
+
+            _devices[deviceIndex] = aEvent.Device;
             aEvent.Device.DeviceRemoved += DeviceRemovedHandler;
             var msg = new DeviceAdded(deviceIndex, aEvent.Device.Name, GetAllowedMessageTypesAsStrings(aEvent.Device).ToArray());
 
@@ -97,7 +97,6 @@ namespace Buttplug.Server
             {
                 pair.Value.DeviceRemoved -= DeviceRemovedHandler;
                 _bpLogger.Info($"Device removed: {pair.Key} - {pair.Value.Name}");
-                _devices.Remove(pair.Key);
                 DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(new DeviceRemoved(pair.Key)));
             }
         }
@@ -141,6 +140,11 @@ namespace Buttplug.Server
                     var errorMsg = string.Empty;
                     foreach (var d in _devices.ToList())
                     {
+                        if (!d.Value.IsConnected)
+                        {
+                            continue;
+                        }
+
                         var r = await d.Value.ParseMessage(new StopDeviceCmd(d.Key, aMsg.Id));
                         if (r is Ok)
                         {
@@ -159,7 +163,7 @@ namespace Buttplug.Server
                     return new Error(errorMsg, Error.ErrorClass.ERROR_DEVICE, aMsg.Id);
                 case RequestDeviceList _:
                     _bpLogger.Debug("Got RequestDeviceList Message");
-                    var msgDevices = _devices
+                    var msgDevices = _devices.Where(aDevice => aDevice.Value.IsConnected)
                         .Select(aDevice => new DeviceMessageInfo(aDevice.Key, aDevice.Value.Name,
                                 GetAllowedMessageTypesAsStrings(aDevice.Value).ToArray())).ToList();
                     return new DeviceList(msgDevices.ToArray(), id);

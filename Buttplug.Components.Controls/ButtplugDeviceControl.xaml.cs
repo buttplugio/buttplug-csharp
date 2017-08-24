@@ -1,14 +1,16 @@
-﻿using Buttplug.Core;
-using Buttplug.Core.Messages;
-using Buttplug.Server;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Buttplug.Core;
+using Buttplug.Core.Messages;
+using Buttplug.Server;
+using JetBrains.Annotations;
+using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace Buttplug.Components.Controls
 {
@@ -17,8 +19,32 @@ namespace Buttplug.Components.Controls
     /// </summary>
     public partial class ButtplugDeviceControl : UserControl
     {
-        private class DeviceList : ObservableCollection<ButtplugDeviceInfo>
+        public class DeviceListItem
         {
+            public ButtplugDeviceInfo Info;
+
+            public bool Connected;
+
+            public DeviceListItem(ButtplugDeviceInfo aInfo)
+            {
+                Info = aInfo;
+                Connected = true;
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            public override string ToString()
+            {
+                return $"{Info}" + (Connected ? string.Empty : " (disconnected)");
+            }
+        }
+
+        private class DeviceList : ObservableCollection<DeviceListItem>
+        {
+            public void UpdateList()
+            {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
         }
 
         public event EventHandler<List<ButtplugDeviceInfo>> DeviceSelectionChanged;
@@ -54,16 +80,31 @@ namespace Buttplug.Components.Controls
                 switch (aEvent.Message)
                 {
                     case DeviceAdded m:
-                        _devices.Add(new ButtplugDeviceInfo(m.DeviceIndex, m.DeviceName, m.DeviceMessages));
+                        var devAdd = from dl in _devices
+                                     where dl.Info.Index == m.DeviceIndex
+                                     select dl;
+                        if (devAdd.Any())
+                        {
+                            foreach (var dr in devAdd.ToList())
+                            {
+                                dr.Connected = true;
+                                _devices.UpdateList();
+                            }
+                        }
+                        else
+                        {
+                            _devices.Add(new DeviceListItem(new ButtplugDeviceInfo(m.DeviceIndex, m.DeviceName, m.DeviceMessages)));
+                        }
                         break;
 
                     case DeviceRemoved d:
-                        var device = from dl in _devices
-                                     where dl.Index == d.DeviceIndex
+                        var devRem = from dl in _devices
+                                     where dl.Info.Index == d.DeviceIndex
                                      select dl;
-                        foreach (var dr in device.ToList())
+                        foreach (var dr in devRem.ToList())
                         {
-                            _devices.Remove(dr);
+                            dr.Connected = false;
+                            _devices.UpdateList();
                         }
                         break;
                 }
@@ -79,7 +120,10 @@ namespace Buttplug.Components.Controls
 
         private void SelectionChangedHandler(object aObj, EventArgs aEvent)
         {
-            DeviceSelectionChanged?.Invoke(this, DeviceListBox.SelectedItems.Cast<ButtplugDeviceInfo>().ToList());
+            DeviceSelectionChanged?.Invoke(this,
+                DeviceListBox.SelectedItems.Cast<DeviceListItem>()
+                    .Where(aLI => aLI.Connected)
+                    .Select(aLI => aLI.Info).ToList());
         }
 
         private async void ScanButton_Click(object aSender, RoutedEventArgs aEvent)
