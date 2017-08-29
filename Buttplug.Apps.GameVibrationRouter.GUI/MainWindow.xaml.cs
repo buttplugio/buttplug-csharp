@@ -1,5 +1,5 @@
-﻿using Buttplug.Apps.XInputInjector.Interface;
-using Buttplug.Apps.XInputInjector.Payload;
+﻿using Buttplug.Apps.GameVibrationRouter.Interface;
+using Buttplug.Apps.GameVibrationRouter.Payload;
 using Buttplug.Components.Controls;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
@@ -14,7 +14,7 @@ using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Buttplug.Apps.XInputInjector.GUI
+namespace Buttplug.Apps.GameVibrationRouter.GUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -44,14 +44,14 @@ namespace Buttplug.Apps.XInputInjector.GUI
             }
             ButtplugTab.GetLogControl().MaxLogs = 10000;
 
-            ButtplugTab.SetServerDetails("XInput Hijack Server", 0);
+            ButtplugTab.SetServerDetails("Game Vibration Router Server", 0);
             _bpServer = ButtplugTab.GetServer();
             _log = LogManager.GetCurrentClassLogger();
-            ButtplugXInputInjectorInterface.VibrationCommandReceived += OnVibrationCommand;
-            ButtplugXInputInjectorInterface.VibrationPingMessageReceived += OnVibrationPingMessage;
-            ButtplugXInputInjectorInterface.VibrationExceptionReceived += OnVibrationException;
-            ButtplugXInputInjectorInterface.VibrationExitReceived += OnVibrationExit;
-            Task.FromResult(_bpServer.SendMessage(new RequestServerInfo("Buttplug XInput Injector")));
+            ButtplugGameVibrationRouterInterface.VibrationCommandReceived += OnVibrationCommand;
+            ButtplugGameVibrationRouterInterface.VibrationPingMessageReceived += OnVibrationPingMessage;
+            ButtplugGameVibrationRouterInterface.VibrationExceptionReceived += OnVibrationException;
+            ButtplugGameVibrationRouterInterface.VibrationExitReceived += OnVibrationExit;
+            Task.FromResult(_bpServer.SendMessage(new RequestServerInfo("Buttplug Game Vibration Router")));
             _processTab = new ProcessTab();
             _processTab.ProcessAttachRequested += OnAttachRequested;
             _processTab.ProcessDetachRequested += OnDetachRequested;
@@ -91,7 +91,7 @@ namespace Buttplug.Apps.XInputInjector.GUI
 
         private void Detach()
         {
-            ButtplugXInputInjectorInterface.Detach();
+            ButtplugGameVibrationRouterInterface.Detach();
             _processTab.Attached = false;
             _channelName = null;
             _xinputHookServer = null;
@@ -118,12 +118,12 @@ namespace Buttplug.Apps.XInputInjector.GUI
         {
             try
             {
-                _xinputHookServer = RemoteHooking.IpcCreateServer<ButtplugXInputInjectorInterface>(
+                _xinputHookServer = RemoteHooking.IpcCreateServer<ButtplugGameVibrationRouterInterface>(
                     ref _channelName,
                     WellKnownObjectMode.Singleton);
                 var dllFile = System.IO.Path.Combine(
-                    System.IO.Path.GetDirectoryName(typeof(ButtplugXInputInjectorPayload).Assembly.Location), 
-                    "ButtplugXInputInjectorPayload.dll");
+                    System.IO.Path.GetDirectoryName(typeof(ButtplugGameVibrationRouterPayload).Assembly.Location), 
+                    "Buttplug.Apps.GameVibrationRouter.Payload.dll");
                 _log.Info($"Beginning process injection on {aProcessId}...");
                 _log.Info($"Injecting DLL {dllFile}");
                 RemoteHooking.Inject(

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Core", "Buttplug.Core\Buttplug.Core.csproj", "{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}"
 EndProject
@@ -33,11 +33,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.WebsocketServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.WebsocketServerGUI.Test", "Buttplug.Apps.WebsocketServerGUI.Test\Buttplug.Apps.WebsocketServerGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.XInputInjector.GUI", "Buttplug.Apps.XInputInjector.GUI\Buttplug.Apps.XInputInjector.GUI.csproj", "{63449568-98E9-404F-A196-3ACF3B638264}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.GUI", "Buttplug.Apps.GameVibrationRouter.GUI\Buttplug.Apps.GameVibrationRouter.GUI.csproj", "{C5244A21-A2F0-4505-BE96-431F045D8163}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.XInputInjector.Payload", "Buttplug.Apps.XInputInjector.Payload\Buttplug.Apps.XInputInjector.Payload.csproj", "{4BABA791-1C9A-42DE-A825-30F43CB0859B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.Interface", "Buttplug.Apps.GameVibrationRouter.Interface\Buttplug.Apps.GameVibrationRouter.Interface.csproj", "{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.XInputInjector.Interface", "Buttplug.Apps.XInputInjector.Interface\Buttplug.Apps.XInputInjector.Interface.csproj", "{9837DF40-954F-4FD5-BAB8-4026359F89E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.Payload", "Buttplug.Apps.GameVibrationRouter.Payload\Buttplug.Apps.GameVibrationRouter.Payload.csproj", "{DACAECFE-B190-4584-B50E-0BAAD557F0CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,20 +103,23 @@ Global
 		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63449568-98E9-404F-A196-3ACF3B638264}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63449568-98E9-404F-A196-3ACF3B638264}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63449568-98E9-404F-A196-3ACF3B638264}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63449568-98E9-404F-A196-3ACF3B638264}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4BABA791-1C9A-42DE-A825-30F43CB0859B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4BABA791-1C9A-42DE-A825-30F43CB0859B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4BABA791-1C9A-42DE-A825-30F43CB0859B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4BABA791-1C9A-42DE-A825-30F43CB0859B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9837DF40-954F-4FD5-BAB8-4026359F89E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9837DF40-954F-4FD5-BAB8-4026359F89E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9837DF40-954F-4FD5-BAB8-4026359F89E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9837DF40-954F-4FD5-BAB8-4026359F89E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5244A21-A2F0-4505-BE96-431F045D8163}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5244A21-A2F0-4505-BE96-431F045D8163}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5244A21-A2F0-4505-BE96-431F045D8163}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5244A21-A2F0-4505-BE96-431F045D8163}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BBB843FD-4B1A-42DA-853F-FD2F9F3D5B35}
 	EndGlobalSection
 EndGlobal
