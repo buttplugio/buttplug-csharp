@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Timers;
 
-namespace Buttplug.Apps.XInputInjector.Interface
+namespace Buttplug.Apps.GameVibrationRouter.Interface
 {
     [Serializable]
     public struct Vibration
@@ -13,7 +12,7 @@ namespace Buttplug.Apps.XInputInjector.Interface
     }
 
 
-    public class ButtplugXInputInjectorInterface : MarshalByRefObject
+    public class ButtplugGameVibrationRouterInterface : MarshalByRefObject
     {
         // This will be used as a singleton in the IPC Server, and we should only ever have one process hooked 
         // with this interface. Just make the EventHandler static so we can attach as needed from anywhere.
@@ -25,7 +24,7 @@ namespace Buttplug.Apps.XInputInjector.Interface
 
         private Timer _exitTimer = new Timer();
         private bool _hasPinged = false;
-        public ButtplugXInputInjectorInterface()
+        public ButtplugGameVibrationRouterInterface()
         {
             // Every time we create a new instance, reset the static stopping variable.
             _shouldStop = false;

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Buttplug.Apps.XInputInjector.GUI.Properties
+namespace Buttplug.Apps.GameVibrationRouter.GUI.Properties
 {
 
 

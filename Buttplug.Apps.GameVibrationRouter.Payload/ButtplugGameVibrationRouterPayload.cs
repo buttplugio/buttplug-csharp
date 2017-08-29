@@ -3,18 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Buttplug.Apps.XInputInjector.Interface;
+using Buttplug.Apps.GameVibrationRouter.Interface;
 
-namespace Buttplug.Apps.XInputInjector.Payload
+namespace Buttplug.Apps.GameVibrationRouter.Payload
 {
-    public class ButtplugXInputInjectorPayload : IEntryPoint
+    public class ButtplugGameVibrationRouterPayload : IEntryPoint
     {
-        private readonly ButtplugXInputInjectorInterface _interface;
+        private readonly ButtplugGameVibrationRouterInterface _interface;
         private LocalHook _xinputSetStateHookObj;
         private Vibration _lastMessage = new Vibration {LeftMotorSpeed = 65535, RightMotorSpeed = 65535};
         private readonly Queue<Vibration> _messageQueue = new Queue<Vibration>();
         private static Exception _ex;
-        private static ButtplugXInputInjectorPayload _instance;
+        private static ButtplugGameVibrationRouterPayload _instance;
 
         // Search newest to oldest. It seems that some games link both xinput1_4 and xinput9_1_0, but seem to 
         // prefer xinput9_1_0? Not quite sure about difference yet. 
@@ -27,11 +27,11 @@ namespace Buttplug.Apps.XInputInjector.Payload
 
         private static XInputVersion _hookedVersion;
 
-        public ButtplugXInputInjectorPayload(
+        public ButtplugGameVibrationRouterPayload(
             RemoteHooking.IContext aInContext,
             String aInChannelName)
         {
-            _interface = RemoteHooking.IpcConnectClient<ButtplugXInputInjectorInterface>(aInChannelName);
+            _interface = RemoteHooking.IpcConnectClient<ButtplugGameVibrationRouterInterface>(aInChannelName);
             _instance = this;
         }
 
@@ -129,7 +129,7 @@ namespace Buttplug.Apps.XInputInjector.Payload
                 // Always send to the controller first, then do what we need to.
                 XInputSetStateShim(aGamePadIndex, aVibrationRef);
 
-                ButtplugXInputInjectorPayload This = _instance;
+                ButtplugGameVibrationRouterPayload This = _instance;
                 // No reason to send duplicate packets.
                 if (This._lastMessage.LeftMotorSpeed == aVibrationRef.LeftMotorSpeed &&
                     This._lastMessage.RightMotorSpeed == aVibrationRef.RightMotorSpeed)

@@ -1,19 +1,12 @@
-﻿using Buttplug.Apps.XInputInjector.Interface;
-using Buttplug.Apps.XInputInjector.Payload;
-using EasyHook;
+﻿using EasyHook;
+using NLog;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels.Ipc;
-using Buttplug.Core.Messages;
-using Buttplug.Server;
-using NLog;
 
-namespace Buttplug.Apps.XInputInjector.GUI
+namespace Buttplug.Apps.GameVibrationRouter.GUI
 {
     /// <summary>
     /// Interaction logic for UserControl1.xaml
@@ -55,10 +48,12 @@ namespace Buttplug.Apps.XInputInjector.GUI
             set { ErrorLabel.Content = value; }
         }
 
-
         private readonly ProcessInfoList _processList = new ProcessInfoList();
+
         public event EventHandler<int> ProcessAttachRequested;
+
         public event EventHandler<bool> ProcessDetachRequested;
+
         private bool _attached;
         private readonly Logger _log;
 
@@ -94,13 +89,13 @@ namespace Buttplug.Apps.XInputInjector.GUI
                 {
                     // noop, there's a lot of system processes we can't see.
                 }
-                catch (Win32Exception Ex)
+                catch (Win32Exception)
                 {
                     // noop, there's a lot of system processes we can't see.
                 }
-                catch (Exception Ex)
+                catch (Exception aEx)
                 {
-                    _log.Error(Ex);
+                    _log.Error(aEx);
                 }
             }
         }

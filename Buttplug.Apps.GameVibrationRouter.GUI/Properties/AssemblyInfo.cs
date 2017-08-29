@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Buttplug.Apps.XInputInjector.GUI")]
+[assembly: AssemblyTitle("Buttplug.Apps.GameVibrationRouter.GUI")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Buttplug.Apps.XInputInjector.GUI")]
+[assembly: AssemblyProduct("Buttplug.Apps.GameVibrationRouter.GUI")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

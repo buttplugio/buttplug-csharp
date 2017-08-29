@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ButtplugXInputInjectorPayload")]
+[assembly: AssemblyTitle("Buttplug.Apps.GameVibrationRouter.Interface")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ButtplugXInputInjectorPayload")]
+[assembly: AssemblyProduct("Buttplug.Apps.GameVibrationRouter.Interface")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4baba791-1c9a-42de-a825-30f43cb0859b")]
+[assembly: Guid("0d0dc1a1-bfb6-4b97-88c6-7fb7a31533dc")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Buttplug.Apps.XInputInjector.GUI
+namespace Buttplug.Apps.GameVibrationRouter.GUI
 {
     /// <summary>
     /// Interaction logic for App.xaml

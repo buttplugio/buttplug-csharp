@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{63449568-98E9-404F-A196-3ACF3B638264}</ProjectGuid>
+    <ProjectGuid>{C5244A21-A2F0-4505-BE96-431F045D8163}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Buttplug.Apps.XInputInjector.GUI</RootNamespace>
-    <AssemblyName>ButtplugXInputInjectorGUI</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>Buttplug.Apps.GameVibrationRouter.GUI</RootNamespace>
+    <AssemblyName>ButtplugGameVibrationRouterGUI</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -47,9 +47,15 @@
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -62,9 +68,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ProcessTab.xaml.cs">
-      <DependentUpon>ProcessTab.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -78,11 +81,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ProcessTab.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProcessTab.xaml.cs">
+      <DependentUpon>ProcessTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -110,21 +116,29 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Apps.XInputInjector.Interface\Buttplug.Apps.XInputInjector.Interface.csproj">
-      <Project>{9837df40-954f-4fd5-bab8-4026359f89e3}</Project>
-      <Name>Buttplug.Apps.XInputInjector.Interface</Name>
+    <ProjectReference Include="..\Buttplug.Apps.GameVibrationRouter.Interface\Buttplug.Apps.GameVibrationRouter.Interface.csproj">
+      <Project>{0d0dc1a1-bfb6-4b97-88c6-7fb7a31533dc}</Project>
+      <Name>Buttplug.Apps.GameVibrationRouter.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Apps.XInputInjector.Payload\Buttplug.Apps.XInputInjector.Payload.csproj">
-      <Project>{4baba791-1c9a-42de-a825-30f43cb0859b}</Project>
-      <Name>Buttplug.Apps.XInputInjector.Payload</Name>
+    <ProjectReference Include="..\Buttplug.Apps.GameVibrationRouter.Payload\Buttplug.Apps.GameVibrationRouter.Payload.csproj">
+      <Project>{dacaecfe-b190-4584-b50e-0baad557f0ce}</Project>
+      <Name>Buttplug.Apps.GameVibrationRouter.Payload</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Components.Controls\Buttplug.Components.Controls.csproj">
-      <Project>{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}</Project>
+      <Project>{0e0d1e27-9efd-4a07-b6aa-bb556205c002}</Project>
       <Name>Buttplug.Components.Controls</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
-      <Project>{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}</Project>
+      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
       <Name>Buttplug.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.UWPBluetoothManager\Buttplug.Server.Managers.UWPBluetoothManager.csproj">
+      <Project>{223ea194-8318-4189-bec8-73734c3f4a78}</Project>
+      <Name>Buttplug.Server.Managers.UWPBluetoothManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.XInputGamepadManager\Buttplug.Server.Managers.XInputGamepadManager.csproj">
+      <Project>{c7d040e1-e18e-4f51-859f-cff8aa57bd64}</Project>
+      <Name>Buttplug.Server.Managers.XInputGamepadManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Server\Buttplug.Server.csproj">
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
@@ -151,7 +165,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\buttplug_icon_green_1_RBp_icon.ico" />
-    <None Include="Resources\GreenButtplugIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
