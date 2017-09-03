@@ -11,6 +11,7 @@ namespace Buttplug.Components.Controls
     public partial class ButtplugAboutControl
     {
         private string _gitHash;
+        private string _buildType;
         private uint _clickCounter;
 
         public event EventHandler AboutImageClickedABunch;
@@ -23,12 +24,26 @@ namespace Buttplug.Components.Controls
         public void InitializeVersion()
         {
             AboutVersionNumber.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            _gitHash = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ResourceAssembly.Location)
+            var longVer = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ResourceAssembly.Location)
                 .ProductVersion;
-            if (_gitHash.Length > 0)
+            if (longVer.Length > 0)
             {
-                AboutVersionNumber.Text += $"-{_gitHash.Substring(0, 8)}";
-                AboutVersionNumber.MouseDown += GithubRequestNavigate;
+                AboutVersionNumber.Text = longVer;
+            }
+
+            // AssemblyInformationalVersion("1.0.0.0-dev")
+            // version-type-hash
+
+            var pos = longVer.IndexOf('-');
+            if (pos > 0)
+            {
+                _buildType = longVer.Substring(pos);
+                pos = _buildType.IndexOf('-');
+                if (pos > 0)
+                {
+                    _gitHash = _buildType.Substring(pos);
+                    AboutVersionNumber.MouseDown += GithubRequestNavigate;
+                }
             }
         }
 
