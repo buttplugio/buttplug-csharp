@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using Buttplug.Core;
 
 namespace Buttplug.Components.Controls
 {
@@ -32,24 +33,26 @@ namespace Buttplug.Components.Controls
             }
 
             // AssemblyInformationalVersion("1.0.0.0-dev")
-            // version-type-hash
 
             var pos = longVer.IndexOf('-');
             if (pos > 0)
             {
                 _buildType = longVer.Substring(pos);
-                pos = _buildType.IndexOf('-');
-                if (pos > 0)
-                {
-                    _gitHash = _buildType.Substring(pos);
-                    AboutVersionNumber.MouseDown += GithubRequestNavigate;
-                }
+            }
+
+            AboutGitVersion.Text = string.Empty;
+            var attribute = Assembly.GetEntryAssembly().GetCustomAttributes(typeof(AssemblyGitVersion), false)[0];
+            if (attribute != null && ((AssemblyGitVersion)attribute).Value.Length > 0)
+            {
+                _gitHash = ((AssemblyGitVersion)attribute).Value;
+                AboutGitVersion.Text = _gitHash;
+                AboutGitVersion.MouseDown += GithubRequestNavigate;
             }
         }
 
         public string GetAboutVersion()
         {
-            return AboutVersionNumber.Text;
+            return AboutVersionNumber.Text + " " + _gitHash;
         }
 
         private void GithubRequestNavigate(object aObj, MouseButtonEventArgs aEvent)
