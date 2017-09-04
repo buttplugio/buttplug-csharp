@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Buttplug.Core;
-using Buttplug.Server;
 using Buttplug.Server.Bluetooth.Devices;
 using JetBrains.Annotations;
 
@@ -26,6 +25,7 @@ namespace Buttplug.Server.Bluetooth
                 new LovenseRev2BluetoothInfo(),
                 new LovenseRev3BluetoothInfo(),
                 new LovenseRev4BluetoothInfo(),
+                new LovenseRev5BluetoothInfo(),
                 new MagicMotionBluetoothInfo(),
                 new VibratissimoBluetoothInfo(),
                 new VorzeA10CycloneInfo(),
