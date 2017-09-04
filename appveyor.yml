@@ -25,16 +25,23 @@ install:
       function gitVersion() {
         $env:newhash=git rev-parse HEAD
         $env:shorthash=git rev-parse --short HEAD
-        If ($env:appveyor_repo_tag -eq $TRUE) {
-          $env:newVersion=$env:appveyor_repo_tag_name
-          $env:appveyor_info_version=$env:appveyor_repo_tag_name
+        If ($env:APPVEYOR_REPO_TAG -eq $TRUE) {
+          $env:newVersion="$env:APPVEYOR_REPO_TAG_NAME.$env:APPVEYOR_BUILD_NUMBER"
+          $env:appveyor_info_version="$env:APPVEYOR_REPO_TAG_NAME"
         } Else {
           $gitVersion=git describe --tags --abbrev=0 $env:APPVEYOR_REPO_BRANCH
           $env:newVersion="$gitVersion.$env:APPVEYOR_BUILD_NUMBER"
-          $env:appveyor_info_version="$env:newVersion-alpha"
+          $env:appveyor_info_version="$env:newVersion-$env:APPVEYOR_REPO_BRANCH"
         }      
         $env:appveyor_build_version="$env:newVersion"
         appveyor UpdateBuild -Version "$env:newVersion"
+        
+        $regex = [regex]"AssemblyGitVersion\(.*\)"
+        Get-ChildItem $env.APPVEYOR_BUILD_FOLDER AssemblyInfo.* -recurse | Foreach-Object {
+          $c = ($_ | Get-Content)
+          $c = [regex]::replace($c -join "`r`n", $regex,"AssemblyGitVersion(`"$env:APPVEYOR_REPO_COMMIT`")")
+          $c | Set-Content $_.FullName
+        }
         write-host "Using hash for build version: $env:newhash"
         write-host "Update appveyor build version to: $env:appveyor_build_version"
         write-host "Update appveyor info version to: $env:appveyor_info_version"

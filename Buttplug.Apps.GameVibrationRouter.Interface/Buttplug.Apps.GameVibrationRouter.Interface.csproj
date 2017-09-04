@@ -43,5 +43,11 @@
     <Compile Include="ButtplugGameVibrationRouterInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
+      <Project>{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}</Project>
+      <Name>Buttplug.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

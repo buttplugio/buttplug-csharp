@@ -54,6 +54,10 @@
       <Project>{0d0dc1a1-bfb6-4b97-88c6-7fb7a31533dc}</Project>
       <Name>Buttplug.Apps.GameVibrationRouter.Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
+      <Project>{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}</Project>
+      <Name>Buttplug.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="EasyHook32.dll">

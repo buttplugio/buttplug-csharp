@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using Buttplug.Core;
 
 namespace Buttplug.Components.Controls
 {
@@ -11,6 +12,7 @@ namespace Buttplug.Components.Controls
     public partial class ButtplugAboutControl
     {
         private string _gitHash;
+        private string _buildType;
         private uint _clickCounter;
 
         public event EventHandler AboutImageClickedABunch;
@@ -23,18 +25,34 @@ namespace Buttplug.Components.Controls
         public void InitializeVersion()
         {
             AboutVersionNumber.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            _gitHash = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ResourceAssembly.Location)
+            var longVer = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ResourceAssembly.Location)
                 .ProductVersion;
-            if (_gitHash.Length > 0)
+            if (longVer.Length > 0)
             {
-                AboutVersionNumber.Text += $"-{_gitHash.Substring(0, 8)}";
-                AboutVersionNumber.MouseDown += GithubRequestNavigate;
+                AboutVersionNumber.Text = longVer;
+            }
+
+            // AssemblyInformationalVersion("1.0.0.0-dev")
+
+            var pos = longVer.IndexOf('-');
+            if (pos > 0)
+            {
+                _buildType = longVer.Substring(pos);
+            }
+
+            AboutGitVersion.Text = string.Empty;
+            var attribute = Assembly.GetEntryAssembly().GetCustomAttributes(typeof(AssemblyGitVersion), false)[0];
+            if (attribute != null && ((AssemblyGitVersion)attribute).Value.Length > 0)
+            {
+                _gitHash = ((AssemblyGitVersion)attribute).Value;
+                AboutGitVersion.Text = _gitHash;
+                AboutGitVersion.MouseDown += GithubRequestNavigate;
             }
         }
 
         public string GetAboutVersion()
         {
-            return AboutVersionNumber.Text;
+            return AboutVersionNumber.Text + " " + _gitHash;
         }
 
         private void GithubRequestNavigate(object aObj, MouseButtonEventArgs aEvent)

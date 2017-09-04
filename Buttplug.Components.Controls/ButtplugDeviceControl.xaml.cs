@@ -1,14 +1,14 @@
-﻿using Buttplug.Core;
-using Buttplug.Core.Messages;
-using Buttplug.Server;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Buttplug.Core;
+using Buttplug.Core.Messages;
+using Buttplug.Server;
+using JetBrains.Annotations;
 
 namespace Buttplug.Components.Controls
 {

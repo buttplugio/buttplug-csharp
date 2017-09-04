@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using System.Collections.Generic;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
@@ -144,9 +144,10 @@ namespace Buttplug.Server.Bluetooth.Devices
             return new Lovense(aLogManager, aInterface, this);
         }
     }
+
     internal class Lovense : ButtplugBluetoothDevice
     {
-        private static Dictionary<string, string> FriendlyNames = new Dictionary<string, string>()
+        private static Dictionary<string, string> friendlyNames = new Dictionary<string, string>()
         {
             { "LVS-A011", "Nora" },
             { "LVS-C011", "Nora" },
@@ -162,7 +163,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"Lovense Device ({FriendlyNames[aInterface.Name]})",
+                   $"Lovense Device ({friendlyNames[aInterface.Name]})",
                    aInterface,
                    aInfo)
         {
