@@ -8,7 +8,8 @@
         <Grid Background="#FFE5E5E5">
 		<Image Name="IconImage" Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplug-logo-1.png" HorizontalAlignment="Left" Height="128" Margin="10,10,0,0" VerticalAlignment="Top" Width="128" MouseDown="IconImage_Click"/>
 		<TextBlock HorizontalAlignment="Left" Margin="143,10,0,0" VerticalAlignment="Top" Height="128" Width="360">
-                <Span FontSize="19" FontWeight="Bold">Buttplug <Run Name="AboutVersionNumber">1.0.0.0-ffffffff</Run> (C# Edition)</Span><LineBreak />
+                <Span FontSize="19" FontWeight="Bold">Buttplug <Run Name="AboutVersionNumber">1.0.0.0-branch</Run> (C# Edition)</Span><LineBreak />
+			<Span FontSize="19"><Run Name="AboutGitVersion">0123456789abcdef0123456789abcdef01234567</Run></Span><LineBreak />
                 By <Hyperlink NavigateUri="https://metafetish.com" RequestNavigate="Hyperlink_RequestNavigate">Metafetish</Hyperlink><LineBreak />
                 <LineBreak/>
                 Software updates at <Hyperlink NavigateUri="https://github.com/metafetish" RequestNavigate="Hyperlink_RequestNavigate">https://buttplug.io/</Hyperlink><LineBreak/>

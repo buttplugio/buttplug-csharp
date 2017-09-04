@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
+    <Compile Include="AssemblyGitVersion.cs" />
     <Compile Include="ButtplugConsts.cs" />
     <Compile Include="ButtplugDeviceMessage.cs" />
     <Compile Include="ButtplugJsonMessageParser.cs" />

@@ -72,6 +72,10 @@
       <Project>{76e03b47-dca6-49d1-99c2-2ea28d3a8e78}</Project>
       <Name>Buttplug.Apps.KiirooEmulatorGUI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
+      <Project>{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}</Project>
+      <Name>Buttplug.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />

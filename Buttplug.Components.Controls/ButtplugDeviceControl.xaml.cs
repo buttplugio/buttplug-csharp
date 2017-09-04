@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,8 +11,6 @@ using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
 using JetBrains.Annotations;
-using System.ComponentModel;
-using System.Collections.Specialized;
 
 namespace Buttplug.Components.Controls
 {
