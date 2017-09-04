@@ -29,7 +29,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public string[] Names { get; } =
         {
-            "Smart Mini Vibe"
+            "Smart Mini Vibe",
         };
 
         public Guid[] Characteristics { get; } =

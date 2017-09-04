@@ -1,6 +1,6 @@
-﻿using Buttplug.Core.Messages;
+﻿using System;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using System;
 using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core

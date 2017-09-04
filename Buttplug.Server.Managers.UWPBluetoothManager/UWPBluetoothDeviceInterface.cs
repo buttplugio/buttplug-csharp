@@ -20,11 +20,11 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         [NotNull]
         private readonly GattCharacteristic[] _gattCharacteristics;
 
-        [CanBeNull]
-        private BluetoothLEDevice _bleDevice;
-
         [NotNull]
         private readonly IButtplugLog _bpLogger;
+
+        [CanBeNull]
+        private BluetoothLEDevice _bleDevice;
 
         [CanBeNull]
         private IAsyncOperation<GattCommunicationStatus> _currentTask;
