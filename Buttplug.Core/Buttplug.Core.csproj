@@ -70,6 +70,7 @@
     <Compile Include="IButtplugDevice.cs" />
     <Compile Include="IButtplugLog.cs" />
     <Compile Include="IButtplugLogManager.cs" />
+    <Compile Include="LogExceptionEventArgs.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="ButtplugDevice.cs" />
     <Compile Include="Messages\Messages.cs" />

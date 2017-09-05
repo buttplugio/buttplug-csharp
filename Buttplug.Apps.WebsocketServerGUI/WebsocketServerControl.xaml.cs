@@ -6,9 +6,11 @@ using System.Net.Sockets;
 using System.Windows;
 using System.Windows.Controls;
 using Buttplug.Components.WebsocketServer;
+using Buttplug.Core;
 using Buttplug.Server;
 using JetBrains.Annotations;
-using NLog;
+using Microsoft.Win32;
+using Windows.UI.Notifications;
 
 namespace Buttplug.Apps.WebsocketServerGUI
 {
@@ -20,6 +22,8 @@ namespace Buttplug.Apps.WebsocketServerGUI
         private readonly ButtplugWebsocketServer _ws;
         private readonly IButtplugServerFactory _bpFactory;
         private readonly ButtplugConfig _config;
+        private readonly ButtplugLogManager _logManager;
+        private readonly IButtplugLog _log;
         private uint _port;
         private bool _secure;
         private bool _loopback;
@@ -29,6 +33,8 @@ namespace Buttplug.Apps.WebsocketServerGUI
         public WebsocketServerControl(IButtplugServerFactory bpFactory)
         {
             InitializeComponent();
+            _logManager = new ButtplugLogManager();
+            _log = _logManager.GetLogger(GetType());
             _ws = new ButtplugWebsocketServer();
             _bpFactory = bpFactory;
             _config = new ButtplugConfig("Buttplug");
@@ -39,8 +45,8 @@ namespace Buttplug.Apps.WebsocketServerGUI
                 _port = pres;
             }
 
-            _secure = false;
-            if (bool.TryParse(_config.GetValue("buttplug.server.secure", "false"), out bool sres))
+            _secure = true;
+            if (bool.TryParse(_config.GetValue("buttplug.server.secure", "true"), out bool sres))
             {
                 _secure = sres;
             }
@@ -63,13 +69,25 @@ namespace Buttplug.Apps.WebsocketServerGUI
             _ws.ConnectionAccepted += WebSocketConnectionAccepted;
             _ws.ConnectionUpdated += WebSocketConnectionAccepted;
             _ws.ConnectionClosed += WebSocketConnectionClosed;
+
+            _log.OnLogException += ExceptionLogged;
         }
 
         private void WebSocketExceptionHandler(object aObj, [NotNull] UnhandledExceptionEventArgs aEx)
         {
-            var log = LogManager.GetCurrentClassLogger();
-            log.Error("Exception of type " + aEx.ExceptionObject.GetType() + " encountered: " + (aEx.ExceptionObject as Exception)?.Message);
-            MessageBox.Show((aEx.ExceptionObject as Exception)?.Message ?? "Unknown", "Connection Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            var errorMessage = (aEx.ExceptionObject as Exception)?.Message ?? "Unknown";
+            if (_secure &&
+                (errorMessage.Contains("An established connection was aborted by the software in your host machine") ||
+                 errorMessage.Contains("Not GET request")))
+            {
+                errorMessage += "\n\nThis usually means that the client/browser has not accepted our SSL certificate. Try hitting the test button on the \"Websocket Server\" tab.";
+            }
+            else if (_secure && errorMessage.Contains("The handshake failed due to an unexpected packet format"))
+            {
+                errorMessage += "\n\nThis usually means that the client/browser tried to connect without SSL. Make sure the client is set use the wss:// URI scheme.";
+            }
+
+            _log.LogException(aEx.ExceptionObject as Exception, true, errorMessage);
         }
 
         private void WebSocketConnectionAccepted(object aObj, [NotNull] ConnectionEventArgs aEvent)
@@ -88,6 +106,30 @@ namespace Buttplug.Apps.WebsocketServerGUI
                 ConnStatus.Content = "(Not Connected)";
                 DisconnectButton.IsEnabled = false;
             });
+        }
+
+        private void ExceptionLogged(object aObj, [NotNull] LogExceptionEventArgs aEvent)
+        {
+            if (aEvent.ErrorMessage != null)
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    // Show the error message in the app
+                    LastError.Text = aEvent.ErrorMessage;
+
+                    // Use the toast system to notify the user
+                    var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
+                    var tmp = toastXml.GetXml();
+                    toastXml.SelectSingleNode("//*[@id='1']").InnerText = "Buttplug Error";
+                    toastXml.SelectSingleNode("//*[@id='2']").InnerText = aEvent.ErrorMessage;
+                    var toast = new ToastNotification(toastXml);
+                    var appId = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Classes\AppID\" + AppDomain.CurrentDomain.FriendlyName, "AppId", string.Empty);
+                    if (appId != null && appId.Length > 0)
+                    {
+                        ToastNotificationManager.CreateToastNotifier(appId).Show(toast);
+                    }
+                });
+            }
         }
 
         public void StartServer()
@@ -123,6 +165,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             }
             catch (SocketException e)
             {
+                _log.LogException(e);
                 MessageBox.Show(e.Message, "Buttplug Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }

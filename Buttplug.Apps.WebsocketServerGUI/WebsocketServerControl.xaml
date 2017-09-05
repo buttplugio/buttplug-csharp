@@ -22,6 +22,7 @@
 					<RowDefinition Height="auto"/>
 					<RowDefinition Height="auto"/>
 					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
 				</Grid.RowDefinitions>
 				<Label Content="Port:"  Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
 				<ListView Name="ConnectionUrl" Grid.Row="0" Height="auto" Margin="60,0,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Stretch">
@@ -44,6 +45,9 @@
 				<Label Content="Status:"  Grid.Row="2" HorizontalAlignment="Left" Margin="0,5,0,0" VerticalAlignment="Top"/>
 				<Label Name="ConnStatus" Content="(Not Connected)" Grid.Row="2" HorizontalAlignment="Left" Margin="60,5,0,0" VerticalAlignment="Top"/>
 				<Button Name="DisconnectButton"  Height="25" Grid.Row="2" Content="Disconnect" IsEnabled="False" HorizontalAlignment="Right" Margin="0,5,0,0" VerticalAlignment="Top" Width="75" Click="DisconnectButton_Click"/>
+
+				<Label Content="Last Error:"  Grid.Row="3" HorizontalAlignment="Left" Margin="0,5,0,0" VerticalAlignment="Top"/>
+				<TextBlock Name="LastError" Text="" Grid.Row="3" HorizontalAlignment="Left" Margin="65,10,0,0" VerticalAlignment="Top" TextWrapping="Wrap"/>
 			</Grid>
 		</GroupBox>
 

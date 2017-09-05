@@ -21,7 +21,10 @@ namespace Buttplug.Core
         // ReSharper disable once UnusedMember.Global
         void Fatal(string aMsg, bool aLocalOnly = false);
 
-        void LogException(Exception aMsg, bool aLocalOnly = true);
+        void LogException(Exception aEx, bool aLocalOnly = true, string aMsg = null);
+
+        [CanBeNull]
+        event EventHandler<LogExceptionEventArgs> OnLogException;
 
         [NotNull]
         Error LogErrorMsg(uint aId, ErrorClass aCode, string aMsg);

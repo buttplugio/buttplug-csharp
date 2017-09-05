@@ -10,6 +10,7 @@ using Buttplug.Components.KiirooPlatformEmulator;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
 using JetBrains.Annotations;
+using System.Threading;
 
 namespace Buttplug.Apps.KiirooEmulatorGUI
 {
@@ -97,7 +98,7 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
             switch (aEvent.ExceptionObject)
             {
                 case HttpListenerException hle:
-                    MessageBox.Show(hle.Message, "Error Encountered", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    new Thread(() => MessageBox.Show(hle.Message, "Error Encountered", MessageBoxButton.OK, MessageBoxImage.Exclamation)).Start();
                     StopServer();
                     if (hle.ErrorCode != 183)
                     {
