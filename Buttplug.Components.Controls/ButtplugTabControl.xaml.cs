@@ -82,7 +82,7 @@ namespace Buttplug.Components.Controls
             }
 
             AboutControl.AboutImageClickedABunch += (aObj, aEvent) => DeveloperTab.Visibility = Visibility.Visible;
-            DevicesTab.Visibility = Visibility.Hidden;
+            DevicesTab.Visibility = Visibility.Collapsed;
             DeviceControl.DeviceSelectionChanged += OnSelectedDevicesChanged;
         }
 
