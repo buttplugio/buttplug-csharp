@@ -7,9 +7,9 @@
              d:DesignHeight="300" d:DesignWidth="525">
         <Grid Background="#FFE5E5E5">
 		<Image Name="IconImage" Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplug-logo-1.png" HorizontalAlignment="Left" Height="128" Margin="10,10,0,0" VerticalAlignment="Top" Width="128" MouseDown="IconImage_Click"/>
-		<TextBlock HorizontalAlignment="Left" Margin="143,10,0,0" VerticalAlignment="Top" Height="128" Width="360">
+		<TextBlock HorizontalAlignment="Left" Margin="143,10,0,0" VerticalAlignment="Top" Height="auto" Width="360">
                 <Span FontSize="19" FontWeight="Bold">Buttplug <Run Name="AboutVersionNumber">1.0.0.0-branch</Run> (C# Edition)</Span><LineBreak />
-			<Span FontSize="19"><Run Name="AboutGitVersion">0123456789abcdef0123456789abcdef01234567</Run></Span><LineBreak />
+                <Run Name="AboutGitVersion" Cursor="Hand">0123456789abcdef0123456789abcdef01234567</Run><LineBreak />
                 By <Hyperlink NavigateUri="https://metafetish.com" RequestNavigate="Hyperlink_RequestNavigate">Metafetish</Hyperlink><LineBreak />
                 <LineBreak/>
                 Software updates at <Hyperlink NavigateUri="https://github.com/metafetish" RequestNavigate="Hyperlink_RequestNavigate">https://buttplug.io/</Hyperlink><LineBreak/>
@@ -17,7 +17,7 @@
                 Source code at <Hyperlink NavigateUri="https://github.com/metafetish" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/metafetish</Hyperlink><LineBreak/>
                 License information <Hyperlink Click="LicenseHyperlink_Click" >here</Hyperlink><LineBreak/>
             </TextBlock>
-        <TextBlock HorizontalAlignment="Left" Margin="7,147,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Buttplug and the corresponding applications and libraries are provided open source and free of charge. If you would like to help sponsor further development of this and other adult toy and interface software, please consider donating to our patreon campaign at "/><Hyperlink NavigateUri="https://patreon.com/qdot"><Run Text="http://patreon.com/qdot"/></Hyperlink><Run Text=", or by clicking on the Patreon image below. Thanks, and enjoy buttplugging!"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="7,152,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Buttplug and the corresponding applications and libraries are provided open source and free of charge. If you would like to help sponsor further development of this and other adult toy and interface software, please consider donating to our patreon campaign at "/><Hyperlink NavigateUri="https://patreon.com/qdot"><Run Text="http://patreon.com/qdot"/></Hyperlink><Run Text=", or by clicking on the Patreon image below. Thanks, and enjoy buttplugging!"/></TextBlock>
         <Image Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplugin-with-qdot-intro-patreon-image.png"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="116" Height="65" Margin="0,10,0,10" MouseDown="PatreonRequestNavigate" />
         </Grid>
 </UserControl>

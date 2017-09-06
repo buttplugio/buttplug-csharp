@@ -12,6 +12,7 @@ using Microsoft.Win32;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using Buttplug.Core;
 
 namespace Buttplug.Components.Controls
 {
@@ -166,8 +167,7 @@ namespace Buttplug.Components.Controls
                 return;
             }
 
-            if ((e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) || e.KeyboardDevice.IsKeyDown(Key.RightCtrl))
-                && e.Key == Key.C)
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
             {
                 var builder = new StringBuilder();
                 foreach (var item in LogListBox.SelectedItems)
@@ -182,7 +182,18 @@ namespace Buttplug.Components.Controls
                     }
                 }
 
-                Clipboard.SetText(builder.ToString());
+                try
+                {
+                    Clipboard.SetText(builder.ToString());
+                }
+                catch (Exception ex)
+                {
+                    // We've seen weird instances of can't open clipboard
+                    // but it's pretty rare. Log it.
+                    var logMan = new ButtplugLogManager();
+                    var log = logMan.GetLogger(GetType());
+                    log.LogException(ex);
+                }
             }
         }
     }

@@ -195,7 +195,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             }
         }
 
-        private void PortTextBox_TextChanged(object aObj, TextChangedEventArgs aEvent)
+        private void PortTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (uint.TryParse(PortTextBox.Text, out uint port) && port >= 1024 && port <= 65535)
             {
@@ -240,8 +240,17 @@ namespace Buttplug.Apps.WebsocketServerGUI
         {
             if (sender is Button)
             {
-                var data = (sender as Button).DataContext as ConnUrlData;
-                Clipboard.SetText(data.WsUrl);
+                try
+                {
+                    var data = (sender as Button).DataContext as ConnUrlData;
+                    Clipboard.SetText(data.WsUrl);
+                }
+                catch (Exception ex)
+                {
+                    // We've seen weird instances of can't open clipboard
+                    // but it's pretty rare. Log it.
+                    _log.LogException(ex);
+                }
             }
         }
 
