@@ -97,6 +97,12 @@ namespace Buttplug.Components.Controls
 
         public void CheckUpdate([NotNull] ButtplugConfig config, [NotNull] string appName)
         {
+            if (Application.Current == null)
+            {
+                // Avoid test harness
+                return;
+            }
+
             _config = config;
             _appName = appName;
 
