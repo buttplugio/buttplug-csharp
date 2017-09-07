@@ -58,6 +58,9 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             ButtplugTab.SetApplicationTab("Processes", _processTab);
             ButtplugTab.AddDevicePanel(_bpServer);
             ButtplugTab.SelectedDevicesChanged += OnSelectedDevicesChanged;
+
+            var config = new ButtplugConfig("Buttplug");
+            ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");
         }
 
         private void OnSelectedDevicesChanged(object aObj, List<ButtplugDeviceInfo> aDevices)

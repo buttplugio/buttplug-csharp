@@ -11,6 +11,7 @@ using Buttplug.Server;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Windows.UI.Notifications;
+using Buttplug.Components.Controls;
 
 namespace Buttplug.Apps.WebsocketServerGUI
 {

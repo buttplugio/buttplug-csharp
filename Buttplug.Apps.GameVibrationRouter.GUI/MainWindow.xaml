@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Buttplug.Apps.GameVibrationRouter.GUI"
         xmlns:controls="clr-namespace:Buttplug.Components.Controls;assembly=Buttplug.Components.Controls"
         mc:Ignorable="d"
-        Title="Buttplug Game Vibration Router" Height="350" Width="525">
+        Title="Buttplug Game Vibration Router" Height="500" Width="600">
     <Grid>
         <controls:ButtplugTabControl Name="ButtplugTab"/>
     </Grid>

@@ -82,6 +82,7 @@
     <Compile Include="ButtplugAboutControl.xaml.cs">
       <DependentUpon>ButtplugAboutControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ButtplugConfig.cs" />
     <Compile Include="ButtplugDeviceControl.xaml.cs">
       <DependentUpon>ButtplugDeviceControl.xaml</DependentUpon>
     </Compile>

@@ -8,11 +8,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Buttplug.Core;
 using Microsoft.Win32;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using Buttplug.Core;
 
 namespace Buttplug.Components.Controls
 {

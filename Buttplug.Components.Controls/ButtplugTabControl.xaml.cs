@@ -217,6 +217,11 @@ namespace Buttplug.Components.Controls
             return LogControl;
         }
 
+        public ButtplugAboutControl GetAboutControl()
+        {
+            return AboutControl;
+        }
+
         public void SetServerDetails(string serverName, uint maxPingTime)
         {
             _serverName = serverName;

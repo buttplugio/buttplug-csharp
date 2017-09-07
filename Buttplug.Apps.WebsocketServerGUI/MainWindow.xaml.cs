@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Buttplug.Components.Controls;
 
 namespace Buttplug.Apps.WebsocketServerGUI
 {
@@ -28,6 +29,8 @@ namespace Buttplug.Apps.WebsocketServerGUI
             ButtplugTab.SetServerDetails("Websocket Server", ping);
             _wsTab = new WebsocketServerControl(ButtplugTab);
             ButtplugTab.SetApplicationTab("Websocket Server", _wsTab);
+
+            ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");
             Closing += ClosingHandler;
             _wsTab.StartServer();
         }

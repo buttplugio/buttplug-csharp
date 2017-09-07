@@ -57,6 +57,9 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
             StartServer();
             emu.ServerStatusChanged += OnServerStatusChanged;
             ButtplugTab.SelectedDevicesChanged += SelectionChangedHandler;
+
+            var config = new ButtplugConfig("Buttplug");
+            ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");
         }
 
         private void OnServerStatusChanged(object aObj, bool aIsRunning)

@@ -6,24 +6,24 @@
              xmlns:local="clr-namespace:Buttplug.Components.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <TabControl Margin="0,0,-0.333,-0.333">           
-            <TabItem Header="Application" Name="ApplicationTab"/>
-            <TabItem Header="Devices" Name="DevicesTab">
-                <local:ButtplugDeviceControl x:Name="DeviceControl" />
-            </TabItem>
-            <TabItem Header="Logs">
-                <local:ButtplugLogControl x:Name="LogControl" />
-            </TabItem>
-            <TabItem Header="About">
-                <local:ButtplugAboutControl x:Name="AboutControl" />
-            </TabItem>
-            <TabItem Name="DeveloperTab" Header="Developer" Visibility="Hidden">
-                <Grid Background="#FFE5E5E5">
-                    <Button Content="Crash Application" Margin="10,10,0,232" HorizontalAlignment="Left" Click="CrashButton_Click" Width="108" Height="30"/>
-                    <Button Content="Send Logs" Margin="10,56,0,186" HorizontalAlignment="Left" Click="SendLogsButton_Click" Width="108" Height="30"/>
-                </Grid>
-            </TabItem>
-        </TabControl>
-    </Grid>
+	<Grid>
+		<TabControl Margin="0,0,-0.333,-0.333">
+			<TabItem Header="Application" Name="ApplicationTab"/>
+			<TabItem Header="Devices" Name="DevicesTab">
+				<local:ButtplugDeviceControl x:Name="DeviceControl" />
+			</TabItem>
+			<TabItem Header="Logs">
+				<local:ButtplugLogControl x:Name="LogControl" />
+			</TabItem>
+			<TabItem Header="About"  Name="AboutTab">
+				<local:ButtplugAboutControl x:Name="AboutControl" ScrollViewer.CanContentScroll="True" />
+			</TabItem>
+			<TabItem Name="DeveloperTab" Header="Developer" Visibility="Collapsed">
+				<Grid Background="#FFE5E5E5">
+					<Button Content="Crash Application" Margin="10,10,0,232" HorizontalAlignment="Left" Click="CrashButton_Click" Width="108" Height="30"/>
+					<Button Content="Send Logs" Margin="10,56,0,186" HorizontalAlignment="Left" Click="SendLogsButton_Click" Width="108" Height="30"/>
+				</Grid>
+			</TabItem>
+		</TabControl>
+	</Grid>
 </UserControl>

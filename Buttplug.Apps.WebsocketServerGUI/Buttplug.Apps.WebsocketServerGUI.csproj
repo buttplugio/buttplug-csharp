@@ -72,7 +72,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ButtplugConfig.cs" />
     <Compile Include="WebsocketServerControl.xaml.cs">
       <DependentUpon>WebsocketServerControl.xaml</DependentUpon>
     </Compile>
