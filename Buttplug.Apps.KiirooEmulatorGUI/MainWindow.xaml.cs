@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Buttplug.Components.Controls;
@@ -10,7 +11,6 @@ using Buttplug.Components.KiirooPlatformEmulator;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
 using JetBrains.Annotations;
-using System.Threading;
 
 namespace Buttplug.Apps.KiirooEmulatorGUI
 {

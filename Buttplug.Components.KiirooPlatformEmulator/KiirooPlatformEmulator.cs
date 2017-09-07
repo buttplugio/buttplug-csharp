@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Web;
+using Buttplug.Core;
 using JetBrains.Annotations;
 
 namespace Buttplug.Components.KiirooPlatformEmulator
@@ -24,6 +25,7 @@ namespace Buttplug.Components.KiirooPlatformEmulator
         private readonly HttpListener _httpListener;
         private bool _stop;
         private bool _isRunning;
+        private IButtplugLog _log;
 
         public event EventHandler<KiirooPlatformEventArgs> OnKiirooPlatformEvent;
 
@@ -31,6 +33,7 @@ namespace Buttplug.Components.KiirooPlatformEmulator
 
         public KiirooPlatformEmulator()
         {
+            _log = new ButtplugLogManager().GetLogger(GetType());
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add("http://localhost:6969/");
             _stop = false;
@@ -75,6 +78,7 @@ namespace Buttplug.Components.KiirooPlatformEmulator
             }
             catch (Exception e)
             {
+                _log.LogException(e);
                 OnException?.Invoke(this, new UnhandledExceptionEventArgs(e, true));
                 _isRunning = false;
                 return;
@@ -89,12 +93,18 @@ namespace Buttplug.Components.KiirooPlatformEmulator
                 }
                 catch (HttpListenerException ex)
                 {
+                    _log.LogException(ex);
                     if (ex.ErrorCode == 995)
                     {
                         StopServer();
                         _isRunning = false;
                         return;
                     }
+                }
+                catch (Exception e)
+                {
+                    _log.LogException(e);
+                    OnException?.Invoke(this, new UnhandledExceptionEventArgs(e, true));
                 }
 
                 if (ctx == null)
