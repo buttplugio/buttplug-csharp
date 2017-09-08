@@ -10,13 +10,12 @@
 		<Grid Background="#FFE5E5E5">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="auto"/>
-				<RowDefinition Height="auto"/>
-				<RowDefinition Height="auto"/>
-				<RowDefinition Height="auto"/>
-			</Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
 
 			<Image Grid.Row="0" Name="IconImage" Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplug-logo-1.png" HorizontalAlignment="Left" Height="128" Margin="10,10,0,0" VerticalAlignment="Top" Width="128" MouseDown="IconImage_Click"/>
-			<TextBlock Grid.Row="0" HorizontalAlignment="Left" Margin="150,0,0,0" VerticalAlignment="Top" Height="auto" Width="auto">
+			<TextBlock Grid.Row="0" HorizontalAlignment="Left" Margin="150,0,0,0" VerticalAlignment="Stretch" Height="auto" Width="auto">
                 <Span FontSize="19" FontWeight="Bold">Buttplug <Run Name="AboutVersionNumber">1.0.0.0-branch</Run> (C# Edition)</Span><LineBreak />
                 <Run Name="AboutGitVersion" Cursor="Hand">0123456789abcdef0123456789abcdef01234567</Run><LineBreak />
                 By <Hyperlink NavigateUri="https://metafetish.com" RequestNavigate="Hyperlink_RequestNavigate">Metafetish</Hyperlink><LineBreak />
@@ -28,9 +27,9 @@
 			</TextBlock>
 
 			<TextBlock Grid.Row="1" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Buttplug and the corresponding applications and libraries are provided open source and free of charge. If you would like to help sponsor further development of this and other adult toy and interface software, please consider donating to our patreon campaign at "/><Hyperlink NavigateUri="https://patreon.com/qdot"><Run Text="http://patreon.com/qdot"/></Hyperlink><Run Text=", or by clicking on the Patreon image below. Thanks, and enjoy buttplugging!"/></TextBlock>
-			<Image Grid.Row="2" Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplugin-with-qdot-intro-patreon-image.png"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="116" Height="65" Margin="0,10,0,10" MouseDown="PatreonRequestNavigate" />
+			<Image Grid.Row="2" Source="pack://application:,,,/Buttplug.Components.Controls;component/Resources/buttplugin-with-qdot-intro-patreon-image.png"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="116" Height="65" Margin="10,10,10,10" MouseDown="PatreonRequestNavigate" />
 
-			<GroupBox Grid.Row="3" Name="UpdateGroup" Height="auto" Padding="5" Margin="5" Header="Updates:" Visibility="Collapsed">
+			<GroupBox Grid.Row="2" Name="UpdateGroup" Width="auto" Height="auto" Padding="5" Margin="5,5,131,5" Header="Updates:" Visibility="Collapsed">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="auto"/>

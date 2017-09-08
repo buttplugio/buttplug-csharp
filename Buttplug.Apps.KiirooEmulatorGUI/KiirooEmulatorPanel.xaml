@@ -5,12 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Background="#FFE5E5E5">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Grid.Row="1" Name="ServerButton" Content="Stop Server" Margin="0,0,195,0" HorizontalAlignment="Right" Width="95" Click="ServerButton_Click" />
+        <Button Name="ServerButton" Grid.Row="0" Content="Stop Server" Margin="10, 10, 10, 10" HorizontalAlignment="Left" Width="Auto" Height="Auto" Click="ServerButton_Click" />
     </Grid>
 </UserControl>
