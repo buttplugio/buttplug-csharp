@@ -44,6 +44,8 @@ namespace Buttplug.Components.WebsocketServer
         [NotNull]
         private CancellationTokenSource _cancellation;
 
+        public bool IsConnected => _server.IsStarted;
+
         public void StartServer([NotNull] IButtplugServerFactory aFactory, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
         {
             _cancellation = new CancellationTokenSource();
@@ -71,9 +73,10 @@ namespace Buttplug.Components.WebsocketServer
         {
             while (!aToken.IsCancellationRequested)
             {
+                WebSocket ws = null;
                 try
                 {
-                    var ws = await aServer.AcceptWebSocketAsync(aToken).ConfigureAwait(false);
+                    ws = await aServer.AcceptWebSocketAsync(aToken).ConfigureAwait(false);
                     if (ws != null)
                     {
                         Task.Run(() => HandleConnectionAsync(ws, aToken));
@@ -81,7 +84,7 @@ namespace Buttplug.Components.WebsocketServer
                 }
                 catch (Exception aEx)
                 {
-                    OnException?.Invoke(this, new UnhandledExceptionEventArgs(aEx, false));
+                    OnException?.Invoke(this, new UnhandledExceptionEventArgs(aEx, !(ws?.IsConnected ?? false)));
                 }
             }
         }
