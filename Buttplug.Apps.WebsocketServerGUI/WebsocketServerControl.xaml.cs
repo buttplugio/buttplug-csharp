@@ -77,15 +77,20 @@ namespace Buttplug.Apps.WebsocketServerGUI
         private void WebSocketExceptionHandler(object aObj, [NotNull] UnhandledExceptionEventArgs aEx)
         {
             var errorMessage = (aEx.ExceptionObject as Exception)?.Message ?? "Unknown";
-            if (_secure &&
-                (errorMessage.Contains("An established connection was aborted by the software in your host machine") ||
-                 errorMessage.Contains("Not GET request")))
+
+            if (_secure && errorMessage.Contains("Not GET request") && _ws != null && !aEx.IsTerminating)
             {
-                errorMessage += "\n\nThis usually means that the client/browser has not accepted our SSL certificate. Try hitting the test button on the \"Websocket Server\" tab.";
+                _log.LogException(aEx.ExceptionObject as Exception, true, errorMessage);
+                return;
             }
-            else if (_secure && errorMessage.Contains("The handshake failed due to an unexpected packet format"))
+
+            if (_secure && errorMessage.Contains("The handshake failed due to an unexpected packet format"))
             {
                 errorMessage += "\n\nThis usually means that the client/browser tried to connect without SSL. Make sure the client is set use the wss:// URI scheme.";
+            }
+            else if (_secure)
+            {
+                errorMessage += "\n\nThis could mean that the client/browser has not accepted our SSL certificate. Try hitting the test button on the \"Websocket Server\" tab.";
             }
 
             _log.LogException(aEx.ExceptionObject as Exception, true, errorMessage);
