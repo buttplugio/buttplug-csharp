@@ -129,6 +129,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
                     toastXml.SelectSingleNode("//*[@id='1']").InnerText = "Buttplug Error";
                     toastXml.SelectSingleNode("//*[@id='2']").InnerText = aEvent.ErrorMessage;
                     var toast = new ToastNotification(toastXml);
+                    toast.Activated += OnActivatedToast;
                     var appId = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Classes\AppID\" + AppDomain.CurrentDomain.FriendlyName, "AppId", string.Empty);
                     if (appId != null && appId.Length > 0)
                     {
@@ -136,6 +137,11 @@ namespace Buttplug.Apps.WebsocketServerGUI
                     }
                 });
             }
+        }
+
+        private void OnActivatedToast(ToastNotification sender, object args)
+        {
+            Dispatcher.Invoke(() => { Window.GetWindow(this).Activate(); });
         }
 
         public void StartServer()
