@@ -111,6 +111,7 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
                     break;
 
                 default:
+                    // There could be other exceptions thrown here, but we don't know what they all are yet.
                     throw aEvent.ExceptionObject as Exception;
             }
         }
