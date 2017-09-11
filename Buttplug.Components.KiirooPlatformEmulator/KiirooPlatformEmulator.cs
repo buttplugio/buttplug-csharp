@@ -101,6 +101,10 @@ namespace Buttplug.Components.KiirooPlatformEmulator
                         return;
                     }
                 }
+                catch (ObjectDisposedException)
+                {
+                    return;
+                }
                 catch (Exception e)
                 {
                     _log.LogException(e);
