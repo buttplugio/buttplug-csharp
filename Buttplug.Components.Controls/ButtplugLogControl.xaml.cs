@@ -13,6 +13,7 @@ using Microsoft.Win32;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using System.Collections.Specialized;
 
 namespace Buttplug.Components.Controls
 {
@@ -39,14 +40,25 @@ namespace Buttplug.Components.Controls
         {
             try
             {
-                Dispatcher.FromThread(_winThread).Invoke(() =>
+                if (_winThread != Dispatcher.CurrentDispatcher.Thread)
+                {
+                    Dispatcher.FromThread(_winThread).Invoke(() =>
+                    {
+                        _logs.Add(Layout.Render(aLogEvent));
+                        while (_logs.Count > MaxLogs)
+                        {
+                            _logs.RemoveAt(0);
+                        }
+                    });
+                }
+                else
                 {
                     _logs.Add(Layout.Render(aLogEvent));
                     while (_logs.Count > MaxLogs)
                     {
                         _logs.RemoveAt(0);
                     }
-                });
+                }
             }
             catch (TaskCanceledException)
             {
