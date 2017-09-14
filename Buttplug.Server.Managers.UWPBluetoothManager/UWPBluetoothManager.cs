@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
@@ -53,12 +54,28 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             // classes whenever we receive a device.
             _bleWatcher.Received += OnAdvertisementReceived;
             _bleWatcher.Stopped += OnWatcherStopped;
+            var adapterTask = Task.Run(() => BluetoothAdapter.GetDefaultAsync().AsTask());
+            adapterTask.Wait();
+            var adapter = adapterTask.Result;
+            if (adapter == null)
+            {
+                BpLogger.Warn("No bluetooth adapter available for UWP Bluetooth Manager Connection");
+                return;
+            }
+
+            if (!adapter.IsLowEnergySupported)
+            {
+                BpLogger.Warn("Bluetooth adapter available but does not support Bluetooth Low Energy.");
+                return;
+            }
+
+            BpLogger.Debug("UWP Manager found working Bluetooth LE Adapter");
         }
 
         private async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher aObj,
                                                   BluetoothLEAdvertisementReceivedEventArgs aEvent)
         {
-            if (aEvent == null || aEvent.Advertisement == null)
+            if (aEvent?.Advertisement == null)
             {
                 BpLogger.Debug("Null BLE advertisement recieved: skipping");
                 return;
