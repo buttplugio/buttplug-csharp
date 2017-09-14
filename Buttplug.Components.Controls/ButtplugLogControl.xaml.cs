@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Microsoft.Win32;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using System.Collections.Specialized;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Buttplug.Components.Controls
 {
@@ -25,44 +22,22 @@ namespace Buttplug.Components.Controls
     public sealed class ButtplugGUIMessageNLogTarget : TargetWithLayoutHeaderAndFooter
     {
         private readonly LogList _logs;
-        private readonly Thread _winThread;
+        private readonly object _logLock = new object();
         public long MaxLogs;
 
-        public ButtplugGUIMessageNLogTarget(LogList aList, Thread aWinThread, long aMaxLogs = 1000)
+        public ButtplugGUIMessageNLogTarget(LogList aList, long aMaxLogs = 1000)
         {
-            // TODO This totally needs a mutex or something
             _logs = aList;
-            _winThread = aWinThread;
             MaxLogs = aMaxLogs;
+            BindingOperations.EnableCollectionSynchronization(_logs, _logLock);
         }
 
         protected override void Write(LogEventInfo aLogEvent)
         {
-            try
+            _logs.Add(Layout.Render(aLogEvent));
+            while (_logs.Count > MaxLogs)
             {
-                if (_winThread != Dispatcher.CurrentDispatcher.Thread)
-                {
-                    Dispatcher.FromThread(_winThread).Invoke(() =>
-                    {
-                        _logs.Add(Layout.Render(aLogEvent));
-                        while (_logs.Count > MaxLogs)
-                        {
-                            _logs.RemoveAt(0);
-                        }
-                    });
-                }
-                else
-                {
-                    _logs.Add(Layout.Render(aLogEvent));
-                    while (_logs.Count > MaxLogs)
-                    {
-                        _logs.RemoveAt(0);
-                    }
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                // noop
+                _logs.RemoveAt(0);
             }
         }
     }
@@ -97,7 +72,7 @@ namespace Buttplug.Components.Controls
             // Null check Dispatcher, otherwise test bringup for GUI tests will fail.
             if (Dispatcher != null)
             {
-                _logTarget = new ButtplugGUIMessageNLogTarget(_logs, Dispatcher.Thread);
+                _logTarget = new ButtplugGUIMessageNLogTarget(_logs);
                 c.AddTarget("ButtplugGuiLogger", _logTarget);
                 _outgoingLoggingRule = new LoggingRule("*", LogLevel.Debug, _logTarget);
                 c.LoggingRules.Add(_outgoingLoggingRule);
