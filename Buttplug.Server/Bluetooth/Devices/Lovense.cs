@@ -65,8 +65,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "LVS-Z001",
 
             // Hush Prototype
-            "LVS_Z001",
-
+            "LVS_Z001"
         };
 
         public Guid[] Characteristics { get; } =
@@ -191,7 +190,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "LVS-L009", "Ambi" },
             { "LVS-S001", "Lush" },
             { "LVS-Z001", "Hush" },
-            { "LVS_Z001", "Hush" },
+            { "LVS_Z001", "Hush Prototype" },
             { "LVS-P36", "Edge" },
             { "LVS-Z36", "Hush" },
             { "LVS-Domi37", "Domi" },
