@@ -5,10 +5,14 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Buttplug.Core;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
+using TabControl = System.Windows.Controls.TabControl;
 
 namespace Buttplug.Components.Controls
 {
@@ -109,7 +113,7 @@ namespace Buttplug.Components.Controls
             var check = _config.GetValue(appName + ".updateCheck");
             if (check == null)
             {
-                var result = MessageBox.Show("Do you want Buttplug to automaticaly check for updates on start?", "Update Checking", MessageBoxButton.YesNo);
+                var result = System.Windows.MessageBox.Show("Do you want Buttplug to automatically check for updates on start?", "Update Checking", MessageBoxButton.YesNo, MessageBoxImage.Asterisk);
                 check = result == MessageBoxResult.Yes ? "true" : "false";
                 _config.SetValue(appName + ".updateCheck", check);
             }
@@ -177,12 +181,13 @@ namespace Buttplug.Components.Controls
                     {
                         // Update available
                         UpdateCheckStatus.Text = "Update Available! (" + DateTime.Now.ToString() + ")";
+                        Hyperlink hyperlink = null;
                         try
                         {
                             var location = json[_appName]["location"]?.ToString();
                             if (location != null)
                             {
-                                var hyperlink = new Hyperlink(new Run(location))
+                                hyperlink = new Hyperlink(new Run(location))
                                 {
                                     NavigateUri = new Uri(location),
                                 };
@@ -196,7 +201,14 @@ namespace Buttplug.Components.Controls
                             // noop - there was an update, we just don't know where
                         }
 
-                        MessageBox.Show("A new buttplug update is available!", "Buttplug Update");
+                        if (MessageBox.Show("A new buttplug update is available! Would you like to go to the update site?",
+                                            "Buttplug Update",
+                                            MessageBoxButton.YesNo,
+                                            MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
+                        {
+                            hyperlink?.DoClick();
+                        }
+
                         try
                         {
                             ((TabControl)((TabItem)Parent).Parent).SelectedItem = Parent;
