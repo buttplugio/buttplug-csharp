@@ -12,7 +12,8 @@
 
 ## Bugfixes
 
-- SSL Errors in Websocket Server are now shown in GUI or as a notification, not in modal dialogs.
+- Fixed hang when no XBox controllers and no Bluetooth adapters are connected
+- SSL Errors in Websocket Server are now shown in GUI or as a notification, not in modal dialogs
 - Fixed ObjectDisposed Exception in Kiiroo App
 - Fixed port number changing in Websocket Server
 - Fixed crash when copying IP addresses in Websocket Server
