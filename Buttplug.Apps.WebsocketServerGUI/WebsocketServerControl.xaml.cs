@@ -1,17 +1,18 @@
-﻿using Buttplug.Components.Controls;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Timers;
+using System.Windows;
+using System.Windows.Controls;
+using Buttplug.Components.Controls;
 using Buttplug.Components.WebsocketServer;
 using Buttplug.Core;
 using Buttplug.Server;
 using JetBrains.Annotations;
 using Microsoft.Win32;
-using System;
-using System.Collections.ObjectModel;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Timers;
-using System.Windows;
-using System.Windows.Controls;
 using Windows.UI.Notifications;
 
 namespace Buttplug.Apps.WebsocketServerGUI
@@ -107,6 +108,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             {
                 errorMessage += "\n\nIf your connection is working, you can ignore this message. Otherwise, this could mean that the client/browser has not accepted our SSL certificate. Try hitting the test button on the \"Websocket Server\" tab.";
             }
+
             _currentExceptionMessage = errorMessage;
             _log.LogException(aEx.ExceptionObject as Exception, true, errorMessage);
         }
@@ -204,8 +206,11 @@ namespace Buttplug.Apps.WebsocketServerGUI
             }
             catch (SocketException e)
             {
-                _log.LogException(e);
-                MessageBox.Show(e.Message, "Buttplug Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                _log.LogException(e, true, e.Message);
+            }
+            catch (CryptographicException e)
+            {
+                _log.LogException(e, true, e.Message);
             }
         }
 
