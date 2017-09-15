@@ -47,10 +47,10 @@ namespace Buttplug.Apps.WebsocketServerGUI
             _port = 12345;
 
             // Usually, if we throw errors then connect, it's not actually an error.
-            // If we don't connect after half a second of throwing an exception, pop the toaster, but not before then.
+            // If we don't connect after a second of throwing an exception, pop the toaster, but not before then.
             _toastTimer = new Timer
             {
-                Interval = 500,
+                Interval = 1000,
                 AutoReset = false,
                 Enabled = false,
             };
