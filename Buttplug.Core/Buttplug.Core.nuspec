@@ -10,8 +10,7 @@
     <projectUrl>http://www.github.com/metafetish/buttplug-csharp</projectUrl>
     <iconUrl>https://github.com/metafetish/buttplug-csharp/blob/master/Buttplug.Components.Controls/Resources/buttplug-logo-1.png?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Core Library for the Buttplug Sex Toy Control Protocol</description>
-    <releaseNotes>Prerelease package. Abandon all hope, ye who enter here.</releaseNotes>
-    <copyright>Copyright 2017 Metafetish</copyright>
+    <description>Core Library for the Buttplug Sex Toy Control Protocol. Contains base classes for message creation, abstract devices/transports, and utilities for Client/Server creation.</description>
+    <copyright>Copyright 2017 Nonpolynomial Labs, LLC</copyright>
   </metadata>
 </package>
