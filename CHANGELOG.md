@@ -20,6 +20,7 @@
 - Fixed port number changing in Websocket Server
 - Fixed crash when copying IP addresses in Websocket Server
 - Fixed version number listing in logs
+- Vibratissimo devices now required to be named "Vibratissimo"
 
 # 0.1.0 (2017-08-07)
 
