@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Windows;
-using System.Windows.Controls;
+﻿using Buttplug.Components.Controls;
 using Buttplug.Components.WebsocketServer;
 using Buttplug.Core;
 using Buttplug.Server;
 using JetBrains.Annotations;
 using Microsoft.Win32;
+using System;
+using System.Collections.ObjectModel;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Timers;
+using System.Windows;
+using System.Windows.Controls;
 using Windows.UI.Notifications;
-using Buttplug.Components.Controls;
 
 namespace Buttplug.Apps.WebsocketServerGUI
 {
@@ -30,6 +31,8 @@ namespace Buttplug.Apps.WebsocketServerGUI
         private bool _loopback;
         private string _hostname;
         private ConnUrlList _connUrls;
+        private Timer _toastTimer;
+        private string _currentExceptionMessage;
 
         public WebsocketServerControl(IButtplugServerFactory bpFactory)
         {
@@ -41,6 +44,17 @@ namespace Buttplug.Apps.WebsocketServerGUI
             _config = new ButtplugConfig("Buttplug");
             _connUrls = new ConnUrlList();
             _port = 12345;
+
+            // Usually, if we throw errors then connect, it's not actually an error.
+            // If we don't connect after half a second of throwing an exception, pop the toaster, but not before then.
+            _toastTimer = new Timer
+            {
+                Interval = 500,
+                AutoReset = false,
+                Enabled = false,
+            };
+            _toastTimer.Elapsed += PopToaster;
+
             if (uint.TryParse(_config.GetValue("buttplug.server.port", "12345"), out uint pres))
             {
                 _port = pres;
@@ -76,6 +90,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
 
         private void WebSocketExceptionHandler(object aObj, [NotNull] UnhandledExceptionEventArgs aEx)
         {
+            _toastTimer.Enabled = true;
             var errorMessage = (aEx.ExceptionObject as Exception)?.Message ?? "Unknown";
 
             if (_secure && errorMessage.Contains("Not GET request") && _ws != null && !aEx.IsTerminating)
@@ -90,14 +105,15 @@ namespace Buttplug.Apps.WebsocketServerGUI
             }
             else if (_secure)
             {
-                errorMessage += "\n\nThis could mean that the client/browser has not accepted our SSL certificate. Try hitting the test button on the \"Websocket Server\" tab.";
+                errorMessage += "\n\nIf your connection is working, you can ignore this message. Otherwise, this could mean that the client/browser has not accepted our SSL certificate. Try hitting the test button on the \"Websocket Server\" tab.";
             }
-
+            _currentExceptionMessage = errorMessage;
             _log.LogException(aEx.ExceptionObject as Exception, true, errorMessage);
         }
 
         private void WebSocketConnectionAccepted(object aObj, [NotNull] ConnectionEventArgs aEvent)
         {
+            _toastTimer.Enabled = false;
             Dispatcher.InvokeAsync(() =>
             {
                 ConnStatus.Content = "(Connected) " + aEvent.ClientName;
@@ -107,10 +123,33 @@ namespace Buttplug.Apps.WebsocketServerGUI
 
         private void WebSocketConnectionClosed(object aObj, [NotNull] ConnectionEventArgs aEvent)
         {
+            _toastTimer.Enabled = false;
             Dispatcher.InvokeAsync(() =>
             {
                 ConnStatus.Content = "(Not Connected)";
                 DisconnectButton.IsEnabled = false;
+            });
+        }
+
+        private void PopToaster(object aObj, ElapsedEventArgs aArgs)
+        {
+            _toastTimer.Enabled = false;
+            Dispatcher.InvokeAsync(() =>
+            {
+                // Use the toast system to notify the user
+                var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
+                var tmp = toastXml.GetXml();
+                toastXml.SelectSingleNode("//*[@id='1']").InnerText = "Buttplug Error";
+                toastXml.SelectSingleNode("//*[@id='2']").InnerText = _currentExceptionMessage;
+                var toast = new ToastNotification(toastXml);
+                toast.Activated += OnActivatedToast;
+                var appId = (string)Registry.GetValue(
+                    @"HKEY_LOCAL_MACHINE\SOFTWARE\Classes\AppID\" + AppDomain.CurrentDomain.FriendlyName, "AppId",
+                    string.Empty);
+                if (appId != null && appId.Length > 0)
+                {
+                    ToastNotificationManager.CreateToastNotifier(appId).Show(toast);
+                }
             });
         }
 
@@ -122,20 +161,8 @@ namespace Buttplug.Apps.WebsocketServerGUI
                 {
                     // Show the error message in the app
                     LastError.Text = aEvent.ErrorMessage;
-
-                    // Use the toast system to notify the user
-                    var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
-                    var tmp = toastXml.GetXml();
-                    toastXml.SelectSingleNode("//*[@id='1']").InnerText = "Buttplug Error";
-                    toastXml.SelectSingleNode("//*[@id='2']").InnerText = aEvent.ErrorMessage;
-                    var toast = new ToastNotification(toastXml);
-                    toast.Activated += OnActivatedToast;
-                    var appId = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Classes\AppID\" + AppDomain.CurrentDomain.FriendlyName, "AppId", string.Empty);
-                    if (appId != null && appId.Length > 0)
-                    {
-                        ToastNotificationManager.CreateToastNotifier(appId).Show(toast);
-                    }
                 });
+                _toastTimer.Enabled = true;
             }
         }
 
