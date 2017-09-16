@@ -1,3 +1,9 @@
+# 0.1.2 (2017-09-15)
+
+## Bugfixes
+
+- Fix ArgumentOutOfBoundsException in updater
+
 # 0.1.1 (2017-09-15)
 
 ## Features

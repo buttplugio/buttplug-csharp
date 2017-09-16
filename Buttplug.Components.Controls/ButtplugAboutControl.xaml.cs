@@ -170,59 +170,63 @@ namespace Buttplug.Components.Controls
 
                 var json = JObject.Parse(html);
                 var latest = json[_appName]["version"]?.ToString();
-                if (latest != null)
+                if (latest == null)
                 {
-                    var numericVer = AboutVersionNumber.Text.Substring(0, AboutVersionNumber.Text.IndexOf('-'));
-                    var cVer = Version.Parse(numericVer);
-                    var lVer = Version.Parse(latest);
+                    return;
+                }
+                // Why isn't this just using the AssemblyVersion?!?!
+                var dashPosition = AboutVersionNumber.Text.IndexOf('-');
+                string numericVer;
+                numericVer = dashPosition >= 0 ? AboutVersionNumber.Text.Substring(0, dashPosition) : AboutVersionNumber.Text;
+                var cVer = Version.Parse(numericVer);
+                var lVer = Version.Parse(latest);
 
-                    // Reverse this sign to test
-                    if (cVer.CompareTo(lVer) < 0)
+                // Reverse this sign to test
+                if (cVer.CompareTo(lVer) < 0)
+                {
+                    // Update available
+                    UpdateCheckStatus.Text = "Update Available! (" + DateTime.Now.ToString() + ")";
+                    Hyperlink hyperlink = null;
+                    try
                     {
-                        // Update available
-                        UpdateCheckStatus.Text = "Update Available! (" + DateTime.Now.ToString() + ")";
-                        Hyperlink hyperlink = null;
-                        try
+                        var location = json[_appName]["location"]?.ToString();
+                        if (location != null)
                         {
-                            var location = json[_appName]["location"]?.ToString();
-                            if (location != null)
+                            hyperlink = new Hyperlink(new Run(location))
                             {
-                                hyperlink = new Hyperlink(new Run(location))
-                                {
-                                    NavigateUri = new Uri(location),
-                                };
-                                hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
-                                UpdateCheckStatus.Text += "\n";
-                                UpdateCheckStatus.Inlines.Add(hyperlink);
-                            }
-                        }
-                        catch
-                        {
-                            // noop - there was an update, we just don't know where
-                        }
-
-                        if (MessageBox.Show("A new buttplug update is available! Would you like to go to the update site?",
-                                            "Buttplug Update",
-                                            MessageBoxButton.YesNo,
-                                            MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
-                        {
-                            hyperlink?.DoClick();
-                        }
-
-                        try
-                        {
-                            ((TabControl)((TabItem)Parent).Parent).SelectedItem = Parent;
-                            UpdateCheckStatus.Focus();
-                        }
-                        catch
-                        {
-                            // noop - things went bang
+                                NavigateUri = new Uri(location),
+                            };
+                            hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
+                            UpdateCheckStatus.Text += "\n";
+                            UpdateCheckStatus.Inlines.Add(hyperlink);
                         }
                     }
-                    else
+                    catch
                     {
-                        UpdateCheckStatus.Text = "No new updates! (" + DateTime.Now.ToString() + ")";
+                        // noop - there was an update, we just don't know where
                     }
+
+                    if (MessageBox.Show("A new buttplug update is available! Would you like to go to the update site?",
+                            "Buttplug Update",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
+                    {
+                        hyperlink?.DoClick();
+                    }
+
+                    try
+                    {
+                        ((TabControl)((TabItem)Parent).Parent).SelectedItem = Parent;
+                        UpdateCheckStatus.Focus();
+                    }
+                    catch
+                    {
+                        // noop - things went bang
+                    }
+                }
+                else
+                {
+                    UpdateCheckStatus.Text = "No new updates! (" + DateTime.Now.ToString() + ")";
                 }
             }
             catch (Exception ex)
