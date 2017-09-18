@@ -56,6 +56,7 @@
     <Compile Include="Bluetooth\Devices\Vibratissimo.cs" />
     <Compile Include="Bluetooth\Devices\Lovense.cs" />
     <Compile Include="Bluetooth\Devices\VorzeA10Cyclone.cs" />
+    <Compile Include="Bluetooth\Devices\Youcups.cs" />
     <Compile Include="Bluetooth\IBluetoothDeviceInfo.cs" />
     <Compile Include="Bluetooth\IBluetoothDeviceInterface.cs" />
     <Compile Include="ButtplugServer.cs" />
