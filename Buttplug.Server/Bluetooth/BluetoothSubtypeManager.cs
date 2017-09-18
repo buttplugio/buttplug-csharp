@@ -21,6 +21,7 @@ namespace Buttplug.Server.Bluetooth
             {
                 new FleshlightLaunchBluetoothInfo(),
                 new KiirooBluetoothInfo(),
+                new YoucupsBluetoothInfo(),
                 new LovenseRev1BluetoothInfo(),
                 new LovenseRev2BluetoothInfo(),
                 new LovenseRev3BluetoothInfo(),
