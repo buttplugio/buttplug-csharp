@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Core", "Buttplug.Core\Buttplug.Core.csproj", "{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}"
 EndProject
@@ -38,6 +38,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.Interface", "Buttplug.Apps.GameVibrationRouter.Interface\Buttplug.Apps.GameVibrationRouter.Interface.csproj", "{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.Payload", "Buttplug.Apps.GameVibrationRouter.Payload\Buttplug.Apps.GameVibrationRouter.Payload.csproj", "{DACAECFE-B190-4584-B50E-0BAAD557F0CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.ExampleClientGUI", "Buttplug.Apps.ExampleClientGUI\Buttplug.Apps.ExampleClientGUI.csproj", "{A9A0B839-BF6F-4016-966A-64A6F122D65B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +117,10 @@ Global
 		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9A0B839-BF6F-4016-966A-64A6F122D65B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9A0B839-BF6F-4016-966A-64A6F122D65B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9A0B839-BF6F-4016-966A-64A6F122D65B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9A0B839-BF6F-4016-966A-64A6F122D65B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

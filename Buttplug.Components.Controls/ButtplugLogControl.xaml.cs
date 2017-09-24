@@ -1,9 +1,4 @@
-﻿using Buttplug.Core;
-using Microsoft.Win32;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -11,6 +6,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Buttplug.Core;
+using Microsoft.Win32;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace Buttplug.Components.Controls
 {
