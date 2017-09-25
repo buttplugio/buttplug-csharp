@@ -77,6 +77,16 @@ namespace Buttplug.Client
             }
         }
 
+        public bool IsConnected
+        {
+            get
+            {
+                return _ws != null &&
+                      (_ws.State == WebSocketState.Connecting ||
+                       _ws.State == WebSocketState.Open);
+            }
+        }
+
         public ButtplugWSClient(string aClientName)
         {
             _clientName = aClientName;

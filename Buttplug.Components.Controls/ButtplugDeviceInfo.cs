@@ -2,7 +2,7 @@
 {
     public class ButtplugDeviceInfo
     {
-        private string Name { get; }
+        public string Name { get; }
 
         public uint Index { get; }
 

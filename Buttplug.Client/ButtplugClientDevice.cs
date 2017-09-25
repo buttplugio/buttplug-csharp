@@ -22,6 +22,13 @@ namespace Buttplug.Client
             AllowedMessages = new List<string>(aDevInfo.DeviceMessages);
         }
 
+        public ButtplugClientDevice(uint aIndex, string aName, string[] aMessages)
+        {
+            Index = aIndex;
+            Name = aName;
+            AllowedMessages = new List<string>(aMessages);
+        }
+
         public ButtplugClientDevice(DeviceAdded aDevInfo)
         {
             Index = aDevInfo.DeviceIndex;
