@@ -15,6 +15,7 @@ using NLog.Targets;
 #endif
 using SharpRaven;
 using SharpRaven.Data;
+using Buttplug.Server.Managers.SimulatorManager;
 
 namespace Buttplug.Components.Controls
 {
@@ -136,6 +137,11 @@ namespace Buttplug.Components.Controls
             }
 
             bpServer.AddDeviceSubtypeManager(aLogger => new XInputGamepadManager(aLogger));
+
+#if DEBUG
+            bpServer.AddDeviceSubtypeManager(aLogger => new SimulatorManager(aLogger));
+#endif
+
             return bpServer;
         }
 
