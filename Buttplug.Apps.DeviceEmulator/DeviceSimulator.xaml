@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Buttplug.Apps.DeviceEmulator.DeviceSimulator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="600">
+	<Grid Background="#FFE5E5E5">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="auto"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="auto"/>
+		</Grid.ColumnDefinitions>
+		
+		<Label Content="DeviceName" Grid.Column="0" Grid.Row="0"/>
+		<TextBox Name="DeviceName" Grid.Column="1" Grid.Row="0"/>
+		
+		<Label Content="DeviceId" Grid.Column="0" Grid.Row="1"/>
+		<TextBox Name="DeviceId" Grid.Column="1" Grid.Row="1"/>
+
+		<CheckBox Name="DeviceHasLinear" Content="Linear" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"/>
+		<Label Content="Linear Position" Grid.Column="0" Grid.Row="3"/>
+		<ProgressBar Name="LinearPosition" Grid.Column="1" Grid.Row="3"/>
+
+		<CheckBox Name="DeviceHasVibrator" Content="Vibrator" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"/>
+		<Label Content="Vibrator Speed" Grid.Column="0" Grid.Row="5"/>
+		<ProgressBar Name="VibratorSpeed" Grid.Column="1" Grid.Row="5"/>
+
+		<CheckBox Name="DeviceHasRotator" Content="Rotator" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2"/>
+		<Label Content="Rotatot Speed" Grid.Column="0" Grid.Row="7"/>
+		<ProgressBar Name="RotatorSpeed" Grid.Column="1" Grid.Row="7"/>
+
+	</Grid>
+</UserControl>
