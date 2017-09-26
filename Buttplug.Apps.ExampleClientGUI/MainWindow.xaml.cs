@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using Buttplug.Components.Controls;
 using Buttplug.Client;
+using Buttplug.Components.Controls;
 
 namespace Buttplug.Apps.ExampleClientGUI
 {
@@ -10,7 +10,7 @@ namespace Buttplug.Apps.ExampleClientGUI
     /// </summary>
     public partial class MainWindow
     {
-        private ExampleClientPanel _clientPanel = new ExampleClientPanel();
+        private ExampleClientPanel _clientPanel;
 
         public MainWindow()
         {
@@ -20,6 +20,7 @@ namespace Buttplug.Apps.ExampleClientGUI
                 return;
             }
 
+            _clientPanel = new ExampleClientPanel(ButtplugTab.AddDevicePanel());
             ButtplugTab.SetServerDetails("Buttplug Client", 0);
             ButtplugTab.SetApplicationTab("Buttplug Client", _clientPanel);
 

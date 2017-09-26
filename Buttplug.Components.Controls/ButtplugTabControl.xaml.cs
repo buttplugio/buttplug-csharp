@@ -145,15 +145,27 @@ namespace Buttplug.Components.Controls
             return bpServer;
         }
 
-        public void AddDevicePanel(ButtplugServer aServer)
+        public ButtplugDeviceControl AddDevicePanel(ButtplugServer aServer)
         {
             if (_hasDevicePanel)
             {
-                return;
+                return DeviceControl;
             }
 
             DevicesTab.Visibility = Visibility.Visible;
             DeviceControl.SetButtplugServer(aServer);
+            return DeviceControl;
+        }
+
+        public ButtplugDeviceControl AddDevicePanel()
+        {
+            if (_hasDevicePanel)
+            {
+                return DeviceControl;
+            }
+
+            DevicesTab.Visibility = Visibility.Visible;
+            return DeviceControl;
         }
 
         private void SendExceptionToSentry(Exception aEx)

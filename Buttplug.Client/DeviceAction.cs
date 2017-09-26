@@ -11,15 +11,15 @@ namespace Buttplug.Client
         }
 
         [NotNull]
-        private readonly ButtplugClientDevice device;
+        public readonly ButtplugClientDevice Device;
 
         [NotNull]
-        private readonly DeviceAction action;
+        public readonly DeviceAction Action;
 
         public DeviceEventArgs(ButtplugClientDevice aDevice, DeviceAction aAction)
         {
-            device = aDevice;
-            action = aAction;
+            Device = aDevice;
+            Action = aAction;
         }
     }
 }
