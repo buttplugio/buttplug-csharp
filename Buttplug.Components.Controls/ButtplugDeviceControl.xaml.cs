@@ -49,6 +49,10 @@ namespace Buttplug.Components.Controls
 
         public event EventHandler<List<ButtplugDeviceInfo>> DeviceSelectionChanged;
 
+        public event EventHandler StartScanning;
+
+        public event EventHandler StopScanning;
+
         private readonly DeviceList _devices;
 
         [NotNull]
@@ -73,6 +77,43 @@ namespace Buttplug.Components.Controls
             _bpServer.MessageReceived += OnMessageReceived;
         }
 
+        public void Reset()
+        {
+            _devices.Clear();
+            StoppedScanning();
+        }
+
+        public void DeviceAdded(ButtplugDeviceInfo aDev)
+        {
+            var devAdd = from dl in _devices
+                         where dl.Info.Index == aDev.Index
+                         select dl;
+            if (devAdd.Any())
+            {
+                foreach (var dr in devAdd.ToList())
+                {
+                    dr.Connected = true;
+                    _devices.UpdateList();
+                }
+            }
+            else
+            {
+                _devices.Add(new DeviceListItem(aDev));
+            }
+        }
+
+        public void DeviceRemoved(uint aIndex)
+        {
+            var devRem = from dl in _devices
+                         where dl.Info.Index == aIndex
+                         select dl;
+            foreach (var dr in devRem.ToList())
+            {
+                dr.Connected = false;
+                _devices.UpdateList();
+            }
+        }
+
         private void OnMessageReceived(object aObj, MessageReceivedEventArgs aEvent)
         {
             var op = Dispatcher.InvokeAsync(() =>
@@ -80,32 +121,11 @@ namespace Buttplug.Components.Controls
                 switch (aEvent.Message)
                 {
                     case DeviceAdded m:
-                        var devAdd = from dl in _devices
-                                     where dl.Info.Index == m.DeviceIndex
-                                     select dl;
-                        if (devAdd.Any())
-                        {
-                            foreach (var dr in devAdd.ToList())
-                            {
-                                dr.Connected = true;
-                                _devices.UpdateList();
-                            }
-                        }
-                        else
-                        {
-                            _devices.Add(new DeviceListItem(new ButtplugDeviceInfo(m.DeviceIndex, m.DeviceName, m.DeviceMessages)));
-                        }
+                        DeviceAdded(new ButtplugDeviceInfo(m.DeviceIndex, m.DeviceName, m.DeviceMessages));
                         break;
 
                     case DeviceRemoved d:
-                        var devRem = from dl in _devices
-                                     where dl.Info.Index == d.DeviceIndex
-                                     select dl;
-                        foreach (var dr in devRem.ToList())
-                        {
-                            dr.Connected = false;
-                            _devices.UpdateList();
-                        }
+                        DeviceRemoved(d.DeviceIndex);
                         break;
                 }
             });
@@ -126,23 +146,33 @@ namespace Buttplug.Components.Controls
                     .Select(aLI => aLI.Info).ToList());
         }
 
+        public void StoppedScanning()
+        {
+            ScanButton.Content = "Start Scanning";
+        }
+
         private async void ScanButton_Click(object aSender, RoutedEventArgs aEvent)
         {
-            if (_bpServer == null)
-            {
-                return;
-            }
-
             // Disable button until we're done here
             ScanButton.Click -= ScanButton_Click;
             if ((string)ScanButton.Content == "Start Scanning")
             {
-                await _bpServer.SendMessage(new StartScanning());
+                StartScanning?.Invoke(this, new EventArgs());
+                if (_bpServer != null)
+                {
+                    await _bpServer.SendMessage(new StartScanning());
+                }
+
                 ScanButton.Content = "Stop Scanning";
             }
             else
             {
-                await _bpServer.SendMessage(new StopScanning());
+                StopScanning?.Invoke(this, new EventArgs());
+                if (_bpServer != null)
+                {
+                    await _bpServer?.SendMessage(new StopScanning());
+                }
+
                 ScanButton.Content = "Start Scanning";
             }
 

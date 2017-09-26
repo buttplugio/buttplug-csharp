@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Windows;
 using System.Windows.Threading;
+using static Buttplug.Client.DeviceEventArgs;
 
 namespace Buttplug.Apps.ExampleClientGUI
 {
@@ -14,17 +15,28 @@ namespace Buttplug.Apps.ExampleClientGUI
 
         private ButtplugWSClient _client;
 
-        public ExampleClientPanel()
+        private ButtplugDeviceControl devControl;
+
+        public ExampleClientPanel(ButtplugDeviceControl aDevControl)
         {
             InitializeComponent();
-            _client = new ButtplugWSClient("Example Client");
+            devControl = aDevControl;
+
+            devControl.StartScanning += OnStartScanning;
+            devControl.StopScanning += OnStopScanning;
         }
 
         private void ConnToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_client.IsConnected)
+            if (ConnToggleButton.Content == "Disconnect")
             {
-                _client.Disconnect().Wait();
+                if (_client != null)
+                {
+                    _client.Disconnect();
+                    _client = null;
+                    devControl.Reset();
+                }
+
                 ConnToggleButton.Content = "Connect";
                 AdressTextBox.IsEnabled = true;
             }
@@ -32,7 +44,60 @@ namespace Buttplug.Apps.ExampleClientGUI
             {
                 ConnToggleButton.Content = "Disconnect";
                 AdressTextBox.IsEnabled = false;
-                _client.Connect(new Uri(AdressTextBox.Text));
+                if (_client == null)
+                {
+                    devControl.Reset();
+                    _client = new ButtplugWSClient("Example Client");
+
+                    _client.DeviceAdded += OnDeviceChanged;
+                    _client.DeviceRemoved += OnDeviceChanged;
+
+                    Connect();
+                }
+            }
+        }
+
+        private async void Connect()
+        {
+            if (_client != null)
+            {
+                await _client.Connect(new Uri(AdressTextBox.Text));
+                await _client.RequestDeviceList();
+
+                foreach (var dev in _client.getDevices())
+                {
+                    devControl.DeviceAdded(new ButtplugDeviceInfo(dev.Index, dev.Name, dev.AllowedMessages.ToArray()));
+                }
+            }
+        }
+
+        private void OnDeviceChanged(object sender, DeviceEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case DeviceAction.ADDED:
+                    devControl.DeviceAdded(new ButtplugDeviceInfo(e.Device.Index, e.Device.Name, e.Device.AllowedMessages.ToArray()));
+                    break;
+
+                case DeviceAction.REMOVED:
+                    devControl.DeviceRemoved(e.Device.Index);
+                    break;
+            }
+        }
+
+        private void OnStartScanning(object sender, EventArgs args)
+        {
+            if (_client != null)
+            {
+                _client.StartScanning();
+            }
+        }
+
+        private void OnStopScanning(object sender, EventArgs args)
+        {
+            if (_client != null)
+            {
+                _client.StopScanning();
             }
         }
 
