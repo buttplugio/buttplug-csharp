@@ -26,13 +26,14 @@ namespace Buttplug.Apps.ExampleClientGUI
             devControl.StopScanning += OnStopScanning;
         }
 
-        private void ConnToggleButton_Click(object sender, RoutedEventArgs e)
+        private async void ConnToggleButton_Click(object sender, RoutedEventArgs e)
         {
+            ConnToggleButton.IsEnabled = false;
             if (ConnToggleButton.Content == "Disconnect")
             {
                 if (_client != null)
                 {
-                    _client.Disconnect();
+                    await _client.Disconnect();
                     _client = null;
                     devControl.Reset();
                 }
@@ -55,6 +56,8 @@ namespace Buttplug.Apps.ExampleClientGUI
                     Connect();
                 }
             }
+
+            ConnToggleButton.IsEnabled = true;
         }
 
         private async void Connect()
