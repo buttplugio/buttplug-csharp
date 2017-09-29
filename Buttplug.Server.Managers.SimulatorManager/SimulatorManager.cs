@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.DeviceSimulator.PipeMessages;
+using System.Collections.Concurrent;
 
 namespace Buttplug.Server.Managers.SimulatorManager
 {
@@ -13,6 +14,7 @@ namespace Buttplug.Server.Managers.SimulatorManager
         private NamedPipeServerStream _pipeServer;
 
         private Task _readThread;
+        private Task _writeThread;
 
         private CancellationTokenSource _tokenSource;
 
@@ -21,6 +23,8 @@ namespace Buttplug.Server.Managers.SimulatorManager
         private PipeMessageParser _parser;
 
         private ButtplugLogManager _logManager;
+
+        private ConcurrentQueue<IDeviceSimulatorPipeMessage> _msgQueue = new ConcurrentQueue<IDeviceSimulatorPipeMessage>();
 
         public SimulatorManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
@@ -36,25 +40,19 @@ namespace Buttplug.Server.Managers.SimulatorManager
 
             _tokenSource = new CancellationTokenSource();
             _readThread = new Task(() => { connAccepter(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
+            _writeThread = new Task(() => { pipeWriter(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
             _readThread.Start();
+            _writeThread.Start();
         }
 
         internal void Vibrate(SimulatedButtplugDevice aDev, double aSpeed)
         {
-            if (_pipeServer.IsConnected)
-            {
-                var msg = _parser.Serialize(new Vibrate(aDev.Identifier, aSpeed));
-                _pipeServer.Write(Encoding.ASCII.GetBytes(msg), 0, msg.Length);
-            }
+            _msgQueue.Enqueue(new Vibrate(aDev.Identifier, aSpeed));
         }
 
         internal void StopDevice(SimulatedButtplugDevice aDev)
         {
-            if (_pipeServer.IsConnected)
-            {
-                var msg = _parser.Serialize(new StopDevice(aDev.Identifier));
-                _pipeServer.Write(Encoding.ASCII.GetBytes(msg), 0, msg.Length);
-            }
+            _msgQueue.Enqueue(new StopDevice(aDev.Identifier));
         }
 
         private void connAccepter(CancellationToken aCancellationToken)
@@ -91,7 +89,7 @@ namespace Buttplug.Server.Managers.SimulatorManager
                             return;
                         }
 
-                        Thread.Sleep(100);
+                        Thread.Sleep(10);
                     }
 
                     len = waiter.GetAwaiter().GetResult();
@@ -123,26 +121,37 @@ namespace Buttplug.Server.Managers.SimulatorManager
             }
         }
 
+        private void pipeWriter(CancellationToken aCancellationToken)
+        {
+            while (!aCancellationToken.IsCancellationRequested)
+            {
+                if (_pipeServer.IsConnected && _msgQueue.TryDequeue(out IDeviceSimulatorPipeMessage msg))
+                {
+                    var str = _parser.Serialize(msg);
+                    if (str != null)
+                    {
+                        _pipeServer.Write(Encoding.ASCII.GetBytes(str), 0, str.Length);
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(10);
+                }
+            }
+        }
+
         public override void StartScanning()
         {
             BpLogger.Info("SimulatorManager start scanning");
-            if (_pipeServer.IsConnected)
-            {
-                _scanning = true;
-                var msg = _parser.Serialize(new StartScanning());
-                _pipeServer.Write(Encoding.ASCII.GetBytes(msg), 0, msg.Length);
-            }
+            _scanning = true;
+            _msgQueue.Enqueue(new StartScanning());
         }
 
         public override void StopScanning()
         {
             BpLogger.Info("SimulatorManager stop scanning");
-            if (_pipeServer.IsConnected)
-            {
-                _scanning = false;
-                var msg = _parser.Serialize(new StopScanning());
-                _pipeServer.Write(Encoding.ASCII.GetBytes(msg), 0, msg.Length);
-            }
+            _scanning = false;
+            _msgQueue.Enqueue(new StopScanning());
         }
 
         public override bool IsScanning()
