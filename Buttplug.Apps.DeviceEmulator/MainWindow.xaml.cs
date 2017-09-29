@@ -73,7 +73,7 @@ namespace Buttplug.Apps.DeviceEmulator
                             return;
                         }
 
-                        Thread.Sleep(100);
+                        Thread.Sleep(10);
                     }
 
                     len = waiter.GetAwaiter().GetResult();
