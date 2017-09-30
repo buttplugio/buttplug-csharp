@@ -58,7 +58,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
         }
 
 
-        private async void posUpdater(CancellationToken aCancellationToken)
+        private void posUpdater(CancellationToken aCancellationToken)
         {
             LinearCurrentTime = DateTime.Now.Ticks;
             while (!aCancellationToken.IsCancellationRequested)

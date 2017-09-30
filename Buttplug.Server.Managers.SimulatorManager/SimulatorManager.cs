@@ -1,11 +1,10 @@
-﻿using System;
+﻿using System.Collections.Concurrent;
 using System.IO.Pipes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.DeviceSimulator.PipeMessages;
-using System.Collections.Concurrent;
 
 namespace Buttplug.Server.Managers.SimulatorManager
 {

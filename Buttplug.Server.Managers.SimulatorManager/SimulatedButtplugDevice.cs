@@ -9,7 +9,7 @@ namespace Buttplug.Server.Managers.SimulatorManager
 {
     internal class SimulatedButtplugDevice : ButtplugDevice
     {
-        SimulatorManager _manager;
+        private SimulatorManager _manager;
 
         public SimulatedButtplugDevice(
             SimulatorManager aManager,

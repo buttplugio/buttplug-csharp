@@ -1,10 +1,9 @@
-﻿using Buttplug.Client;
-using Buttplug.Components.Controls;
-using Buttplug.Core.Messages;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Windows;
-using System.Windows.Threading;
+using Buttplug.Client;
+using Buttplug.Components.Controls;
+using Buttplug.Core.Messages;
 using static Buttplug.Client.DeviceEventArgs;
 
 namespace Buttplug.Apps.ExampleClientGUI
@@ -29,7 +28,7 @@ namespace Buttplug.Apps.ExampleClientGUI
         private async void ConnToggleButton_Click(object sender, RoutedEventArgs e)
         {
             ConnToggleButton.IsEnabled = false;
-            if (ConnToggleButton.Content == "Disconnect")
+            if (ConnToggleButton.Content as string == "Disconnect")
             {
                 if (_client != null)
                 {
