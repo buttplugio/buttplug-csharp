@@ -1,11 +1,13 @@
 ﻿using Buttplug.DeviceSimulator.PipeMessages;
 using System;
+using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Buttplug.Apps.DeviceEmulator
 {
@@ -21,6 +23,8 @@ namespace Buttplug.Apps.DeviceEmulator
         private CancellationTokenSource _tokenSource;
 
         private PipeMessageParser _parser;
+
+        private Dictionary<int, DeviceSimulator> tabs = new Dictionary<int, DeviceSimulator>();
 
         public MainWindow()
         {
@@ -93,23 +97,17 @@ namespace Buttplug.Apps.DeviceEmulator
                 switch (parsed)
                 {
                     case StartScanning s1:
-                        foreach (TabItem tab in DeviceTabs.Items)
+                        foreach (DeviceSimulator dev in tabs.Values)
                         {
-                            Dispatcher.Invoke(() =>
-                            {
-                                var dev = (tab.Content as DeviceSimulator);
-                                if (dev == null)
-                                {
-                                    return;
-                                }
+                            var devAdded = new DeviceAdded();
+                            devAdded.Name = dev.Name;
+                            devAdded.Id = dev.Id;
+                            devAdded.HasLinear = dev.HasLinear;
+                            devAdded.HasVibrator = dev.HasVibrator;
+                            devAdded.HasRotator = dev.HasRotator;
 
-                                var devAdded = new DeviceAdded();
-                                devAdded.Name = dev.DeviceName.Text;
-                                devAdded.Id = dev.DeviceId.Text;
-
-                                byte[] bytes = Encoding.ASCII.GetBytes(_parser.Serialize(devAdded));
-                                _pipeClient.Write(bytes, 0, bytes.Length);
-                            });
+                            byte[] bytes = Encoding.ASCII.GetBytes(_parser.Serialize(devAdded));
+                            _pipeClient.Write(bytes, 0, bytes.Length);
                         }
 
                         byte[] bytes2 = Encoding.ASCII.GetBytes(_parser.Serialize(new FinishedScanning()));
@@ -120,40 +118,81 @@ namespace Buttplug.Apps.DeviceEmulator
                         break;
 
                     case StopDevice sd:
-                        foreach (TabItem tab in DeviceTabs.Items)
+                        foreach (DeviceSimulator dev in tabs.Values)
                         {
+                            if (dev == null || dev.Id != sd.Id)
+                            {
+                                return;
+                            }
+
                             Dispatcher.Invoke(() =>
                             {
-                                var dev = (tab.Content as DeviceSimulator);
-                                if (dev == null || dev.DeviceId.Text != sd.Id)
-                                {
-                                    return;
-                                }
-
-                                if(dev.DeviceHasVibrator.IsChecked.GetValueOrDefault(false))
+                                if (dev.DeviceHasVibrator.IsChecked.GetValueOrDefault(false))
                                 {
                                     dev.VibratorSpeed.Value = 0;
+                                }
+                                if (dev.DeviceHasRotator.IsChecked.GetValueOrDefault(false))
+                                {
+                                    dev.RotatorSpeed.Value = 0;
+                                }
+                                if (dev.DeviceHasLinear.IsChecked.GetValueOrDefault(false))
+                                {
+                                    // Complicated stuff: position stays the same
                                 }
                             });
                         }
                         break;
 
                     case Vibrate v:
-                        foreach (TabItem tab in DeviceTabs.Items)
+                        foreach (DeviceSimulator dev in tabs.Values)
                         {
-                            Dispatcher.Invoke(() =>
+                            if (dev == null || dev.Id != v.Id)
                             {
-                                var dev = (tab.Content as DeviceSimulator);
-                                if (dev == null || dev.DeviceId.Text != v.Id)
-                                {
-                                    return;
-                                }
+                                return;
+                            }
 
-                                if (dev.DeviceHasVibrator.IsChecked.GetValueOrDefault(false))
+                            if (dev.HasVibrator)
+                            {
+                                Dispatcher.Invoke(() =>
                                 {
                                     dev.VibratorSpeed.Value = Math.Min(v.Speed, 1) * dev.VibratorSpeed.Maximum;
-                                }
-                            });
+                                });
+                            }
+                        }
+                        break;
+
+                    case Linear l:
+                        foreach (DeviceSimulator dev in tabs.Values)
+                        {
+                            if (dev == null || dev.Id != l.Id)
+                            {
+                                return;
+                            }
+
+                            if (dev.HasLinear)
+                            {
+                                dev.LinearTargetPosition = Math.Min(l.Position, 99);
+                                dev.LinearSpeed = Math.Min(l.Speed, 99);
+                            }
+                        }
+                        break;
+
+                    case Rotate r:
+                        foreach (DeviceSimulator dev in tabs.Values)
+                        {
+                            if (dev == null || dev.Id != r.Id)
+                            {
+                                return;
+                            }
+
+                            if (dev.HasRotator)
+                            {
+                                Dispatcher.Invoke(() =>
+                                {
+                                    dev.RotatorSpeed.Value = (Convert.ToDouble(Math.Min(r.Speed, 99)) / 100) * dev.RotatorSpeed.Maximum;
+                                    dev.RotatorSpeed.Foreground = r.Clockwise ? Brushes.Red : Brushes.GreenYellow;
+                                });
+                            }
                         }
                         break;
 
@@ -174,8 +213,10 @@ namespace Buttplug.Apps.DeviceEmulator
         private void AddDevice_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             var tab = new TabItem();
-            tab.Content = new DeviceSimulator(DeviceTabs.Items.Count);
+            var sim = new DeviceSimulator(DeviceTabs.Items.Count);
+            tab.Content = sim;
             tab.Header = (tab.Content as DeviceSimulator).DeviceName.Text;
+            tabs.Add(DeviceTabs.Items.Count, sim);
             DeviceTabs.Items.Add(tab);
             DeviceTabs.SelectedIndex = DeviceTabs.Items.Count - 1;
         }

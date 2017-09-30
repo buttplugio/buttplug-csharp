@@ -50,9 +50,19 @@ namespace Buttplug.Server.Managers.SimulatorManager
             _msgQueue.Enqueue(new Vibrate(aDev.Identifier, aSpeed));
         }
 
+        internal void Rotate(SimulatedButtplugDevice aDev, uint aSpeed, bool aClockwise)
+        {
+            _msgQueue.Enqueue(new Rotate(aDev.Identifier, aSpeed, aClockwise));
+        }
+
         internal void StopDevice(SimulatedButtplugDevice aDev)
         {
             _msgQueue.Enqueue(new StopDevice(aDev.Identifier));
+        }
+
+        internal void Linear(SimulatedButtplugDevice aDev, uint aSpeed, uint aPosition)
+        {
+            _msgQueue.Enqueue(new Linear(aDev.Identifier, aSpeed, aPosition));
         }
 
         private void connAccepter(CancellationToken aCancellationToken)
@@ -108,7 +118,7 @@ namespace Buttplug.Server.Managers.SimulatorManager
                         break;
 
                     case DeviceAdded da:
-                        InvokeDeviceAdded(new DeviceAddedEventArgs(new SimulatedButtplugDevice(this, _logManager, da.Name, da.Id)));
+                        InvokeDeviceAdded(new DeviceAddedEventArgs(new SimulatedButtplugDevice(this, _logManager, da)));
                         break;
 
                     case DeviceRemoved dr:

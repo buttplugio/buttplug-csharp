@@ -14,12 +14,25 @@ namespace Buttplug.Server.Managers.SimulatorManager
         public SimulatedButtplugDevice(
             SimulatorManager aManager,
             [NotNull] IButtplugLogManager aLogManager,
-            [NotNull] string aName,
-            [NotNull] string aIdentifier)
-            : base(aLogManager, aName, aIdentifier)
+            [NotNull] DeviceSimulator.PipeMessages.DeviceAdded da)
+            : base(aLogManager, da.Name, da.Id)
         {
             _manager = aManager;
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
+            if (da.HasLinear)
+            {
+                MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), HandleFleshlightLaunchFW12Cmd);
+            }
+
+            if (da.HasVibrator)
+            {
+                MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
+            }
+
+            if (da.HasRotator)
+            {
+                MsgFuncs.Add(typeof(VorzeA10CycloneCmd), HandleVorzeA10CycloneCmd);
+            }
+
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
         }
 
@@ -36,6 +49,18 @@ namespace Buttplug.Server.Managers.SimulatorManager
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
             _manager.Vibrate(this, (aMsg as SingleMotorVibrateCmd).Speed);
+            return new Ok(aMsg.Id);
+        }
+
+        private async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg)
+        {
+            _manager.Rotate(this, (aMsg as VorzeA10CycloneCmd).Speed, (aMsg as VorzeA10CycloneCmd).Clockwise);
+            return new Ok(aMsg.Id);
+        }
+
+        private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg)
+        {
+            _manager.Linear(this, (aMsg as FleshlightLaunchFW12Cmd).Speed, (aMsg as FleshlightLaunchFW12Cmd).Position);
             return new Ok(aMsg.Id);
         }
     }

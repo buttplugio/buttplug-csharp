@@ -29,7 +29,7 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 				<Label Content="Position:" Grid.Row="0" Grid.Column="0"/>
-				<Slider Name="LinearPosition" Grid.Row="0" Grid.Column="1" Maximum="99" SmallChange="1" LargeChange="2"/>
+				<Slider Name="LinearPosition" Grid.Row="0" Grid.Column="1" Maximum="99" SmallChange="1" LargeChange="10"/>
 				<Label Content="Speed:" Grid.Row="1" Grid.Column="0"/>
 				<Slider Name="LinearSpeed" Grid.Row="1" Grid.Column="1" Maximum="99" SmallChange="1" LargeChange="10"/>
 				<Button Name="SendLinear" Content="Send" Grid.Row="1" Grid.Column="2" Click="SendLinear_Click"/>
@@ -46,7 +46,7 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 				<Label Content="Speed:" Grid.Row="0" Grid.Column="0"/>
-				<Slider Name="VibrateSpeed" Grid.Row="0" Grid.Column="1" Maximum="1" SmallChange="0.01"/>
+				<Slider Name="VibrateSpeed" Grid.Row="0" Grid.Column="1" Maximum="1" LargeChange="0.1" SmallChange="0.01"/>
 				<Button Name="SendVibrate" Content="Send" Grid.Row="0" Grid.Column="2" Click="SendVibrate_Click"/>
 			</Grid>
 		</GroupBox>
@@ -61,7 +61,7 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 				<Label Content="Speed:" Grid.Row="0" Grid.Column="0"/>
-				<Slider Name="RotateSpeed" Grid.Row="0" Grid.Column="1" SmallChange="2" LargeChange="20" Maximum="100" Minimum="-100"/>
+				<Slider Name="RotateSpeed" Grid.Row="0" Grid.Column="1" SmallChange="2" LargeChange="20" Maximum="99" Minimum="-99"/>
 				<Button Name="SendRotate" Content="Send" Grid.Row="0" Grid.Column="2" Height="26" Click="SendRotate_Click"/>
 			</Grid>
 		</GroupBox>

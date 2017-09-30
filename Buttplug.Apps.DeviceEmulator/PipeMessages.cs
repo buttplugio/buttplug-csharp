@@ -48,6 +48,12 @@ namespace Buttplug.DeviceSimulator.PipeMessages
 
         public string Id;
 
+        public bool HasLinear;
+
+        public bool HasVibrator;
+
+        public bool HasRotator;
+
         public DeviceAdded()
         {
         }
@@ -69,6 +75,7 @@ namespace Buttplug.DeviceSimulator.PipeMessages
             Id = aId;
         }
     }
+
     class Vibrate : IDeviceSimulatorPipeMessage
     {
         public string Id;
@@ -78,6 +85,34 @@ namespace Buttplug.DeviceSimulator.PipeMessages
         {
             Id = aId;
             Speed = aSpeed;
+        }
+    }
+
+    class Linear : IDeviceSimulatorPipeMessage
+    {
+        public string Id;
+        public uint Speed;
+        public uint Position;
+
+        public Linear(string aId, uint aSpeed, uint aPosition)
+        {
+            Id = aId;
+            Speed = aSpeed;
+            Position = aPosition;
+        }
+    }
+
+    class Rotate : IDeviceSimulatorPipeMessage
+    {
+        public string Id;
+        public uint Speed;
+        public bool Clockwise;
+
+        public Rotate(string aId, uint aSpeed, bool aClockwise)
+        {
+            Id = aId;
+            Speed = aSpeed;
+            Clockwise = aClockwise;
         }
     }
 
