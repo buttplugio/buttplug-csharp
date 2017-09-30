@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Buttplug.Apps.DeviceEmulator
+namespace Buttplug.Apps.DeviceSimulatorGUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
