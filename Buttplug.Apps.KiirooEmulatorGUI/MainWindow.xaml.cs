@@ -30,7 +30,6 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
 
         private readonly ButtplugServer _bpServer;
         private List<ButtplugDeviceInfo> _devices = new List<ButtplugDeviceInfo>();
-        private KiirooEmulatorPanel _emu;
 
         public MainWindow()
         {

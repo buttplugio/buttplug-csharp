@@ -59,7 +59,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
             }
         }
 
-        private async void pipeReader(CancellationToken aCancellationToken)
+        private void pipeReader(CancellationToken aCancellationToken)
         {
             while (!aCancellationToken.IsCancellationRequested && _pipeClient != null && _pipeClient.IsConnected)
             {

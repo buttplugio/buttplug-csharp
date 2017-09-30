@@ -174,6 +174,7 @@ namespace Buttplug.Components.Controls
                 {
                     return;
                 }
+
                 // Why isn't this just using the AssemblyVersion?!?!
                 var dashPosition = AboutVersionNumber.Text.IndexOf('-');
                 string numericVer;

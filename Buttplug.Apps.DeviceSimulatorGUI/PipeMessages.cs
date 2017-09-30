@@ -76,7 +76,7 @@ namespace Buttplug.DeviceSimulator.PipeMessages
         }
     }
 
-    class Vibrate : IDeviceSimulatorPipeMessage
+    internal class Vibrate : IDeviceSimulatorPipeMessage
     {
         public string Id;
         public double Speed;
@@ -88,7 +88,7 @@ namespace Buttplug.DeviceSimulator.PipeMessages
         }
     }
 
-    class Linear : IDeviceSimulatorPipeMessage
+    internal class Linear : IDeviceSimulatorPipeMessage
     {
         public string Id;
         public uint Speed;
@@ -102,7 +102,7 @@ namespace Buttplug.DeviceSimulator.PipeMessages
         }
     }
 
-    class Rotate : IDeviceSimulatorPipeMessage
+    internal class Rotate : IDeviceSimulatorPipeMessage
     {
         public string Id;
         public uint Speed;
@@ -191,4 +191,3 @@ namespace Buttplug.DeviceSimulator.PipeMessages
         }
     }
 }
-
