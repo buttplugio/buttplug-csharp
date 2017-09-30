@@ -31,7 +31,6 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
 
         internal uint LinearSpeed;
 
-
         private Task _posThread;
 
         private CancellationTokenSource _tokenSource;
@@ -57,7 +56,6 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
             _posThread.Start();
         }
 
-
         private void posUpdater(CancellationToken aCancellationToken)
         {
             LinearCurrentTime = DateTime.Now.Ticks;
@@ -77,6 +75,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                     {
                         diff = Math.Min(diff2, diff);
                     }
+
                     LinearCurrentPosition += diff;
 
                     Dispatcher.Invoke(() =>
@@ -95,7 +94,6 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
             var diff = mil - (Convert.ToDouble(time) / 1e6);
             return 90 - ((diff / mil) * 90);
         }
-
 
         private void IdChangedEventHandler(object o, TextChangedEventArgs args)
         {

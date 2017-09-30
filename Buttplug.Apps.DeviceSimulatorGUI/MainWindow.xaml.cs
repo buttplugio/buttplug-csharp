@@ -1,5 +1,5 @@
-﻿using Buttplug.DeviceSimulator.PipeMessages;
-using System;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Security.Principal;
@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Buttplug.DeviceSimulator.PipeMessages;
 
 namespace Buttplug.Apps.DeviceSimulatorGUI
 {
@@ -19,12 +20,15 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
         private NamedPipeClientStream _pipeClient;
 
         private Task _readThread;
+        private Task _writeThread;
 
         private CancellationTokenSource _tokenSource;
 
         private PipeMessageParser _parser;
 
         private Dictionary<int, DeviceSimulator> tabs = new Dictionary<int, DeviceSimulator>();
+
+        private ConcurrentQueue<IDeviceSimulatorPipeMessage> _msgQueue = new ConcurrentQueue<IDeviceSimulatorPipeMessage>();
 
         public MainWindow()
         {
@@ -34,6 +38,18 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
 
         private void Connect_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            if (Connect.Content as string == "Disconnect")
+            {
+                if (_pipeClient.IsConnected)
+                {
+                    _pipeClient.Close();
+                }
+
+                _pipeClient = null;
+                Connect.Content = "Connect";
+                return;
+            }
+
             try
             {
                 _pipeClient = new NamedPipeClientStream(".",
@@ -46,6 +62,9 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                 _tokenSource = new CancellationTokenSource();
                 _readThread = new Task(() => { pipeReader(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
                 _readThread.Start();
+
+                _writeThread = new Task(() => { pipeWriter(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
+                _writeThread.Start();
             }
             catch
             {
@@ -63,24 +82,30 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
         {
             while (!aCancellationToken.IsCancellationRequested && _pipeClient != null && _pipeClient.IsConnected)
             {
-
                 var buffer = new byte[4096];
                 string msg = string.Empty;
                 var len = -1;
                 while (len < 0 || (len == buffer.Length && buffer[4095] != '\0'))
                 {
-                    var waiter = _pipeClient.ReadAsync(buffer, 0, buffer.Length);
-                    while (!waiter.GetAwaiter().IsCompleted)
+                    try
                     {
-                        if (!_pipeClient.IsConnected)
+                        var waiter = _pipeClient.ReadAsync(buffer, 0, buffer.Length);
+                        while (!waiter.GetAwaiter().IsCompleted)
                         {
-                            return;
+                            if (!_pipeClient.IsConnected)
+                            {
+                                return;
+                            }
+
+                            Thread.Sleep(10);
                         }
 
-                        Thread.Sleep(10);
+                        len = waiter.GetAwaiter().GetResult();
                     }
-
-                    len = waiter.GetAwaiter().GetResult();
+                    catch
+                    {
+                        continue;
+                    }
 
                     if (len > 0)
                     {
@@ -106,12 +131,10 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                             devAdded.HasVibrator = dev.HasVibrator;
                             devAdded.HasRotator = dev.HasRotator;
 
-                            byte[] bytes = Encoding.ASCII.GetBytes(_parser.Serialize(devAdded));
-                            _pipeClient.Write(bytes, 0, bytes.Length);
+                            _msgQueue.Enqueue(devAdded);
                         }
 
-                        byte[] bytes2 = Encoding.ASCII.GetBytes(_parser.Serialize(new FinishedScanning()));
-                        _pipeClient.Write(bytes2, 0, bytes2.Length);
+                        _msgQueue.Enqueue(new FinishedScanning());
                         break;
 
                     case StopScanning s1:
@@ -141,6 +164,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                                 }
                             });
                         }
+
                         break;
 
                     case Vibrate v:
@@ -159,6 +183,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                                 });
                             }
                         }
+
                         break;
 
                     case Linear l:
@@ -175,6 +200,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                                 dev.LinearSpeed = Math.Min(l.Speed, 99);
                             }
                         }
+
                         break;
 
                     case Rotate r:
@@ -194,6 +220,11 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                                 });
                             }
                         }
+
+                        break;
+
+                    case Ping p:
+                        _msgQueue.Enqueue(new Ping());
                         break;
 
                     default:
@@ -207,7 +238,35 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
             }
 
             _pipeClient = null;
-            Connect.Content = "Connect";
+            Dispatcher.Invoke(() =>
+            {
+                Connect.Content = "Connect";
+            });
+        }
+
+        private void pipeWriter(CancellationToken aCancellationToken)
+        {
+            while (!aCancellationToken.IsCancellationRequested)
+            {
+                if (_pipeClient != null && _pipeClient.IsConnected && _msgQueue.TryDequeue(out IDeviceSimulatorPipeMessage msg))
+                {
+                    var str = _parser.Serialize(msg);
+                    if (str != null)
+                    {
+                        try
+                        {
+                            _pipeClient.Write(Encoding.ASCII.GetBytes(str), 0, str.Length);
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(10);
+                }
+            }
         }
 
         private void AddDevice_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -220,6 +279,5 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
             DeviceTabs.Items.Add(tab);
             DeviceTabs.SelectedIndex = DeviceTabs.Items.Count - 1;
         }
-        
     }
 }

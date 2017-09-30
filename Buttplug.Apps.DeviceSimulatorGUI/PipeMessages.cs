@@ -28,6 +28,13 @@ namespace Buttplug.DeviceSimulator.PipeMessages
         }
     }
 
+    public class Ping : IDeviceSimulatorPipeMessage
+    {
+        public Ping()
+        {
+        }
+    }
+
     public class StopScanning : IDeviceSimulatorPipeMessage
     {
         public StopScanning()
