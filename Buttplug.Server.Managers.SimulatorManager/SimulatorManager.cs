@@ -14,6 +14,7 @@ namespace Buttplug.Server.Managers.SimulatorManager
 
         private Task _readThread;
         private Task _writeThread;
+        private Task _pingThread;
 
         private CancellationTokenSource _tokenSource;
 
@@ -40,8 +41,11 @@ namespace Buttplug.Server.Managers.SimulatorManager
             _tokenSource = new CancellationTokenSource();
             _readThread = new Task(() => { connAccepter(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
             _writeThread = new Task(() => { pipeWriter(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
+            _pingThread = new Task(() => { pingWriter(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
+
             _readThread.Start();
             _writeThread.Start();
+            _pingThread.Start();
         }
 
         internal void Vibrate(SimulatedButtplugDevice aDev, double aSpeed)
@@ -73,10 +77,23 @@ namespace Buttplug.Server.Managers.SimulatorManager
                     _scanning = false;
                     _pipeServer.WaitForConnection();
                     pipeReader(aCancellationToken);
+                    _pipeServer.Disconnect();
                 }
                 else
                 {
                     Thread.Sleep(500);
+                }
+            }
+        }
+
+        private void pingWriter(CancellationToken aCancellationToken)
+        {
+            while (!aCancellationToken.IsCancellationRequested)
+            {
+                if (_pipeServer.IsConnected && _msgQueue.IsEmpty)
+                {
+                    _msgQueue.Enqueue(new Ping());
+                    Thread.Sleep(100);
                 }
             }
         }
@@ -90,22 +107,28 @@ namespace Buttplug.Server.Managers.SimulatorManager
                 var len = -1;
                 while (len < 0 || (len == buffer.Length && buffer[4095] != '\0'))
                 {
-                    var waiter = _pipeServer.ReadAsync(buffer, 0, buffer.Length);
-                    while (!waiter.GetAwaiter().IsCompleted)
+                    try
                     {
-                        if (!_pipeServer.IsConnected)
+                        var waiter = _pipeServer.ReadAsync(buffer, 0, buffer.Length);
+                        while (!waiter.GetAwaiter().IsCompleted)
                         {
-                            return;
+                            if (!_pipeServer.IsConnected)
+                            {
+                                return;
+                            }
+
+                            Thread.Sleep(10);
                         }
 
-                        Thread.Sleep(10);
+                        len = waiter.GetAwaiter().GetResult();
+                        if (len > 0)
+                        {
+                            msg += Encoding.ASCII.GetString(buffer, 0, len);
+                        }
                     }
-
-                    len = waiter.GetAwaiter().GetResult();
-
-                    if (len > 0)
+                    catch
                     {
-                        msg += Encoding.ASCII.GetString(buffer, 0, len);
+                        continue;
                     }
                 }
 
@@ -139,7 +162,13 @@ namespace Buttplug.Server.Managers.SimulatorManager
                     var str = _parser.Serialize(msg);
                     if (str != null)
                     {
-                        _pipeServer.Write(Encoding.ASCII.GetBytes(str), 0, str.Length);
+                        try
+                        {
+                            _pipeServer.Write(Encoding.ASCII.GetBytes(str), 0, str.Length);
+                        }
+                        catch
+                        {
+                        }
                     }
                 }
                 else
