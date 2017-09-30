@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Buttplug.Apps.DeviceEmulator
+namespace Buttplug.Apps.DeviceSimulatorGUI
 {
     /// <summary>
     /// Interaction logic for DeviceSimulation.xaml

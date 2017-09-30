@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.ExampleClientGUI", "Buttplug.Apps.ExampleClientGUI\Buttplug.Apps.ExampleClientGUI.csproj", "{A9A0B839-BF6F-4016-966A-64A6F122D65B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.DeviceEmulator", "Buttplug.Apps.DeviceEmulator\Buttplug.Apps.DeviceEmulator.csproj", "{EBF5270A-54CB-4328-8E54-37972920EF1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.DeviceSimulatorGUI", "Buttplug.Apps.DeviceSimulatorGUI\Buttplug.Apps.DeviceSimulatorGUI.csproj", "{EBF5270A-54CB-4328-8E54-37972920EF1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.SimulatorManager", "Buttplug.Server.Managers.SimulatorManager\Buttplug.Server.Managers.SimulatorManager.csproj", "{334D5731-7619-471E-85C3-240831514741}"
 EndProject

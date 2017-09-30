@@ -46,7 +46,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Buttplug.Apps.DeviceEmulator\PipeMessages.cs">
+    <Compile Include="..\Buttplug.Apps.DeviceSimulatorGUI\PipeMessages.cs">
       <Link>PipeMessages.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
