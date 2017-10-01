@@ -51,6 +51,7 @@ namespace Buttplug.Apps.ExampleClientGUI
 
                     _client.DeviceAdded += OnDeviceChanged;
                     _client.DeviceRemoved += OnDeviceChanged;
+                    _client.ErrorReceived += OnError;
 
                     Connect();
                 }
@@ -61,15 +62,22 @@ namespace Buttplug.Apps.ExampleClientGUI
 
         private async void Connect()
         {
-            if (_client != null)
+            try
             {
-                await _client.Connect(new Uri(AdressTextBox.Text));
-                await _client.RequestDeviceList();
-
-                foreach (var dev in _client.getDevices())
+                if (_client != null)
                 {
-                    devControl.DeviceAdded(new ButtplugDeviceInfo(dev.Index, dev.Name, dev.AllowedMessages.ToArray()));
+                    await _client.Connect(new Uri(AdressTextBox.Text));
+                    await _client.RequestDeviceList();
+
+                    foreach (var dev in _client.getDevices())
+                    {
+                        devControl.DeviceAdded(new ButtplugDeviceInfo(dev.Index, dev.Name, dev.AllowedMessages.ToArray()));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                OnError(this, new ErrorEventArgs(new Error(ex.Message, Error.ErrorClass.ERROR_UNKNOWN, 0)));
             }
         }
 
@@ -85,6 +93,21 @@ namespace Buttplug.Apps.ExampleClientGUI
                     devControl.DeviceRemoved(e.Device.Index);
                     break;
             }
+        }
+
+        private void OnError(object sender, ErrorEventArgs e)
+        {
+            Dispatcher.Invoke(async () =>
+            {
+                MessageBox.Show(e.Message.ErrorMessage, "Error");
+                if (_client.IsConnected)
+                {
+                    await _client.Disconnect();
+                }
+                _client = null;
+                ConnToggleButton.Content = "Connect";
+                AdressTextBox.IsEnabled = true;
+            });
         }
 
         private void OnStartScanning(object sender, EventArgs args)
