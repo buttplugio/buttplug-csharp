@@ -275,7 +275,7 @@ namespace Buttplug.Components.Controls
         {
             if (_serverName == null)
             {
-                throw new AccessViolationException("SetServerDetails() must be called before GetServer()");
+                throw new InvalidOperationException("SetServerDetails() must be called before GetServer()");
             }
 
             return InitializeButtplugServer(_serverName, _maxPingTime);
