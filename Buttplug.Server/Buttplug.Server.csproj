@@ -10,6 +10,7 @@
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <!--This isn't default as far as I'm aware (TODO: Check this)-->
     <DebugType>full</DebugType>
   </PropertyGroup>
 
@@ -18,19 +19,6 @@
     <PackageReference Include="NLog" version="5.0.0-beta11" />
     <PackageReference Include="StyleCop.Analyzers" version="1.1.0-beta004" PrivateAssets="All" />
     <PackageReference Include="System.Threading.Timer" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '' == 'net452'">
-    <PackageReference Include="Microsoft.CSharp" version="4.4.0" />
-    <Reference Include="JetBrains.Annotations, Version=11.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.11.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
