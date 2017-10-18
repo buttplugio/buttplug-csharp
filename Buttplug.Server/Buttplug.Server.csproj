@@ -1,41 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{23D9EC18-2DBA-4149-A951-B84786D4BFA6}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Buttplug.Server</RootNamespace>
     <AssemblyName>Buttplug.Server</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFrameworks>net452;netstandard1.4</TargetFrameworks>
+    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+  
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" version="11.0.0" />
+    <PackageReference Include="NLog" version="5.0.0-beta11" />
+    <PackageReference Include="StyleCop.Analyzers" version="1.1.0-beta004" PrivateAssets="All" />
+    <PackageReference Include="System.Threading.Timer" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '' == 'net452'">
+    <PackageReference Include="Microsoft.CSharp" version="4.4.0" />
     <Reference Include="JetBrains.Annotations, Version=11.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.11.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
@@ -46,47 +32,19 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Bluetooth\BluetoothSubtypeManager.cs" />
-    <Compile Include="Bluetooth\ButtplugBluetoothDevice.cs" />
-    <Compile Include="Bluetooth\Devices\FleshlightLaunch.cs" />
-    <Compile Include="Bluetooth\Devices\Kiiroo.cs" />
-    <Compile Include="Bluetooth\Devices\WeVibe.cs" />
-    <Compile Include="Bluetooth\Devices\MagicMotion.cs" />
-    <Compile Include="Bluetooth\Devices\Vibratissimo.cs" />
-    <Compile Include="Bluetooth\Devices\Lovense.cs" />
-    <Compile Include="Bluetooth\Devices\VorzeA10Cyclone.cs" />
-    <Compile Include="Bluetooth\Devices\Youcups.cs" />
-    <Compile Include="Bluetooth\IBluetoothDeviceInfo.cs" />
-    <Compile Include="Bluetooth\IBluetoothDeviceInterface.cs" />
-    <Compile Include="ButtplugServer.cs" />
-    <Compile Include="IButtplugServerFactory.cs" />
-    <Compile Include="DeviceAddedEventArgs.cs" />
-    <Compile Include="DeviceManager.cs" />
-    <Compile Include="DeviceSubtypeManager.cs" />
-    <Compile Include="IDeviceSubtypeManager.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <EmbeddedResource Include="..\LICENSE" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
-      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
-      <Name>Buttplug.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
+  <ItemGroup>
+    <EmbeddedResource Include="..\LICENSE" />
+    <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj" />
+  </ItemGroup>
+  
 </Project>

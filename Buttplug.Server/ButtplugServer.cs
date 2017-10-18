@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
@@ -42,7 +42,11 @@ namespace Buttplug.Server
 
         public static string GetLicense()
         {
+#if NETSTANDARD1_4
+            var assembly = typeof(ButtplugServer).GetTypeInfo().Assembly;
+#else
             var assembly = Assembly.GetExecutingAssembly();
+#endif
             var resourceName = "Buttplug.Server.LICENSE";
             Stream stream = null;
             try
@@ -67,8 +71,8 @@ namespace Buttplug.Server
             _pingTimedOut = false;
             if (aMaxPingTime != 0)
             {
-                _pingTimer = new Timer(_maxPingTime);
-                _pingTimer.Elapsed += PingTimeoutHandler;
+                // Create a new timer that wont fire any events jsut yet
+                _pingTimer = new Timer(PingTimeoutHandler, null, Timeout.Infinite, Timeout.Infinite);
             }
 
             _bpLogManager = new ButtplugLogManager();
@@ -105,9 +109,10 @@ namespace Buttplug.Server
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new ScanningFinished()));
         }
 
-        private void PingTimeoutHandler([NotNull] object aObj, EventArgs e)
+        private void PingTimeoutHandler([NotNull] object aObj)
         {
-            _pingTimer?.Stop();
+            // Stop the timer by specifying an infinate due period (See: https://msdn.microsoft.com/en-us/library/yz1c7148(v=vs.110).aspx)
+            _pingTimer?.Change(Timeout.Infinite, (int)_maxPingTime);
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
                 Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
             SendMessage(new StopAllDevices()).Wait();
@@ -153,8 +158,8 @@ namespace Buttplug.Server
                 case Ping _:
                     if (_pingTimer != null)
                     {
-                        _pingTimer.Stop();
-                        _pingTimer.Start();
+                        // Cause the timer to fire immediately
+                        _pingTimer.Change(0, (int)_maxPingTime);
                     }
 
                     return new Ok(id);
@@ -162,7 +167,9 @@ namespace Buttplug.Server
                 case RequestServerInfo rsi:
                     _bpLogger.Debug("Got RequestServerInfo Message");
                     _receivedRequestServerInfo = true;
-                    _pingTimer?.Start();
+
+                    // Start the timer
+                    _pingTimer?.Change((int)_maxPingTime, (int)_maxPingTime);
                     ClientConnected?.Invoke(this, new MessageReceivedEventArgs(rsi));
                     return new ServerInfo(_serverName, 1, _maxPingTime, id);
 
