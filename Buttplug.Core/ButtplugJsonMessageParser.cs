@@ -31,16 +31,24 @@ namespace Buttplug.Core
             // If this is the case, we should still find messages even though an exception was thrown.
             try
             {
+#if NETSTANDARD1_4
+                allTypes = typeof(ButtplugMessage).GetTypeInfo().Assembly.GetTypes();
+#else
                 allTypes = Assembly.GetAssembly(typeof(ButtplugMessage)).GetTypes();
+#endif
             }
             catch (ReflectionTypeLoadException e)
             {
                 allTypes = e.Types;
             }
 
-            var messageClasses = from t in allTypes
-                                 where t != null && t.IsClass && t.Namespace == "Buttplug.Core.Messages" && typeof(ButtplugMessage).IsAssignableFrom(t)
-                                 select t;
+            var messageClasses = allTypes
+#if NETSTANDARD1_4
+                                         .Where(t => t.GetTypeInfo().IsClass)
+#else
+                                         .Where(t => t.IsClass)
+#endif
+                                         .Where(t => t != null && t.Namespace == "Buttplug.Core.Messages" && typeof(ButtplugMessage).IsAssignableFrom(t));
 
             var enumerable = messageClasses as Type[] ?? messageClasses.ToArray();
             _bpLogger.Debug($"Message type count: {enumerable.Length}");
@@ -52,7 +60,11 @@ namespace Buttplug.Core
             });
 
             // Load the schema for validation
+#if NETSTANDARD1_4
+            var assembly = GetType().GetTypeInfo().Assembly;
+#else
             var assembly = Assembly.GetExecutingAssembly();
+#endif
             const string resourceName = "Buttplug.Core.buttplug-schema.json";
             Stream stream = null;
             try

@@ -254,9 +254,14 @@ namespace Buttplug.Core.Messages
             ServerName = aServerName;
             MessageVersion = aMessageVersion;
             MaxPingTime = aMaxPingTime;
-            MajorVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major;
-            MinorVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor;
-            BuildVersion = Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build;
+#if NETSTANDARD1_4
+            var assembly = typeof(ServerInfo).GetTypeInfo().Assembly;
+#else
+            var assembly = Assembly.GetAssembly(typeof(ServerInfo));
+#endif
+            MajorVersion = assembly.GetName().Version.Major;
+            MinorVersion = assembly.GetName().Version.Minor;
+            BuildVersion = assembly.GetName().Version.Build;
         }
     }
 
