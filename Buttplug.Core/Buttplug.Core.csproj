@@ -2,7 +2,7 @@
   
   <PropertyGroup>
     <PackageId />
-    <PackageVersion>Buttplug.Core</PackageVersion>
+    <PackageVersion>1.0.0-dev</PackageVersion>
     <RootNamespace>Buttplug.Core</RootNamespace>
     <AssemblyName>Buttplug.Core</AssemblyName>
     <TargetFrameworks>net452;netstandard1.4</TargetFrameworks>
