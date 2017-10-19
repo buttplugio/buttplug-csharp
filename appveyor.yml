@@ -63,7 +63,7 @@ assembly_info:
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  package_version: $(appveyor_build_version)
+  package_version: $(appveyor_info_version)
 
 # Automatically register private account and/or project AppVeyor NuGet feeds.
 nuget:
