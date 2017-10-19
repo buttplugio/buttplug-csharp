@@ -158,8 +158,8 @@ namespace Buttplug.Server
                 case Ping _:
                     if (_pingTimer != null)
                     {
-                        // Cause the timer to fire immediately
-                        _pingTimer.Change(0, (int)_maxPingTime);
+                        // Start the timer
+                        _pingTimer.Change((int)_maxPingTime, (int)_maxPingTime);
                     }
 
                     return new Ok(id);
