@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <PackageId />
+    <PackageVersion>Buttplug.Client</PackageVersion>
     <RootNamespace>Buttplug.Client</RootNamespace>
     <AssemblyName>Buttplug.Client</AssemblyName>
     <TargetFrameworks>net452;netstandard1.4</TargetFrameworks>

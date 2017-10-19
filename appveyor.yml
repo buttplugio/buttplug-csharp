@@ -58,6 +58,12 @@ assembly_info:
   assembly_version: $(appveyor_build_version)
   assembly_file_version: $(appveyor_build_version)
   assembly_informational_version: $(appveyor_info_version)
+  
+# Patch <PackageVersion> in new .csproj files
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  package_version: $(appveyor_build_version)
 
 # Automatically register private account and/or project AppVeyor NuGet feeds.
 nuget:
