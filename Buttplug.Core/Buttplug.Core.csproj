@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
+    <PackageId />
     <RootNamespace>Buttplug.Core</RootNamespace>
     <AssemblyName>Buttplug.Core</AssemblyName>
     <TargetFrameworks>net452;netstandard1.4</TargetFrameworks>
@@ -9,12 +10,15 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>Buttplug Core Library</Product>
     <Authors>qdot</Authors>
-    <Company>qdot</Company>
     <Copyright>Copyright 2017 Nonpolynomial Labs, LLC</Copyright>
     <Description>Core Library for the Buttplug Sex Toy Control Protocol. Contains base classes for message creation, abstract devices/transports, and utilities for Client/Server creation.</Description>
     <PackageIconUrl>https://github.com/metafetish/buttplug-csharp/blob/master/Buttplug.Components.Controls/Resources/buttplug-logo-1.png?raw=true</PackageIconUrl>
     <PackageProjectUrl>http://www.github.com/metafetish/buttplug-csharp</PackageProjectUrl>
     <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
+
+    <!--Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps-->
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
 
     <!--Don't auto generate AssemblyInfo-->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
