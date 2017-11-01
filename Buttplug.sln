@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Core", "Buttplug.Core\Buttplug.Core.csproj", "{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}"
 EndProject
@@ -44,6 +44,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.DeviceSimulatorGUI", "Buttplug.Apps.DeviceSimulatorGUI\Buttplug.Apps.DeviceSimulatorGUI.csproj", "{EBF5270A-54CB-4328-8E54-37972920EF1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.SimulatorManager", "Buttplug.Server.Managers.SimulatorManager\Buttplug.Server.Managers.SimulatorManager.csproj", "{334D5731-7619-471E-85C3-240831514741}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.ETSerialManager", "Buttplug.Server.Managers.ErosTek\Buttplug.Server.Managers.ETSerialManager.csproj", "{436CF4FF-AE10-45DA-8909-9AACF1ED6425}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,6 +135,10 @@ Global
 		{334D5731-7619-471E-85C3-240831514741}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{334D5731-7619-471E-85C3-240831514741}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{334D5731-7619-471E-85C3-240831514741}.Release|Any CPU.Build.0 = Release|Any CPU
+		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
