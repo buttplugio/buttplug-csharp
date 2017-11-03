@@ -21,10 +21,10 @@ namespace Buttplug.Core
         [NotNull]
         private readonly JsonSchema4 _schema;
 
-        public ButtplugJsonMessageParser([NotNull] IButtplugLogManager aLogManager)
+        public ButtplugJsonMessageParser(IButtplugLogManager aLogManager = null)
         {
             _bpLogger = aLogManager.GetLogger(GetType());
-            _bpLogger.Info($"Setting up {GetType().Name}");
+            _bpLogger?.Info($"Setting up {GetType().Name}");
             IEnumerable<Type> allTypes;
 
             // Some classes in the library may not load on certain platforms due to missing symbols.
@@ -51,11 +51,11 @@ namespace Buttplug.Core
                                          .Where(t => t != null && t.Namespace == "Buttplug.Core.Messages" && typeof(ButtplugMessage).IsAssignableFrom(t));
 
             var enumerable = messageClasses as Type[] ?? messageClasses.ToArray();
-            _bpLogger.Debug($"Message type count: {enumerable.Length}");
+            _bpLogger?.Debug($"Message type count: {enumerable.Length}");
             _messageTypes = new Dictionary<string, Type>();
             enumerable.ToList().ForEach(aMessageType =>
             {
-                _bpLogger.Debug($"- {aMessageType.Name}");
+                _bpLogger?.Debug($"- {aMessageType.Name}");
                 _messageTypes.Add(aMessageType.Name, aMessageType);
             });
 
@@ -86,7 +86,7 @@ namespace Buttplug.Core
         [NotNull]
         public ButtplugMessage[] Deserialize(string aJsonMsg)
         {
-            _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
+            _bpLogger?.Trace($"Got JSON Message: {aJsonMsg}");
 
             var res = new List<ButtplugMessage>();
             JArray msgArray;
@@ -96,20 +96,26 @@ namespace Buttplug.Core
             }
             catch (JsonReaderException e)
             {
-                res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, $"Not valid JSON: {aJsonMsg} - {e.Message}"));
+                var err = new Error($"Not valid JSON: {aJsonMsg} - {e.Message}", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                _bpLogger?.LogErrorMsg(err);
+                res.Add(err);
                 return res.ToArray();
             }
 
             var errors = _schema.Validate(msgArray);
             if (errors.Any())
             {
-                res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, "Message does not conform to schema: " + string.Join(", ", errors.Select(aErr => aErr.ToString()).ToArray())));
+                var err = new Error("Message does not conform to schema: " + string.Join(", ", errors.Select(aErr => aErr.ToString()).ToArray()), ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                _bpLogger?.LogErrorMsg(err);
+                res.Add(err);
                 return res.ToArray();
             }
 
             if (!msgArray.Any())
             {
-                res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, "No messages in array"));
+                var err = new Error("No messages in array", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                _bpLogger?.LogErrorMsg(err);
+                res.Add(err);
                 return res.ToArray();
             }
 
@@ -119,14 +125,18 @@ namespace Buttplug.Core
             {
                 if (!o.Properties().Any())
                 {
-                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, "No message name available"));
+                    var err = new Error("No message name available", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                    _bpLogger.LogErrorMsg(err);
+                    res.Add(err);
                     continue;
                 }
 
                 var msgName = o.Properties().First().Name;
                 if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
                 {
-                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, $"{msgName} is not a valid message class"));
+                    var err = new Error($"{msgName} is not a valid message class", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                    _bpLogger?.LogErrorMsg(err);
+                    res.Add(err);
                     continue;
                 }
 
@@ -137,15 +147,19 @@ namespace Buttplug.Core
                 {
                     var r = o[msgName].Value<JObject>();
                     res.Add((ButtplugMessage)r.ToObject(_messageTypes[msgName], s));
-                    _bpLogger.Trace($"Message successfully parsed as {msgName} type");
+                    _bpLogger?.Trace($"Message successfully parsed as {msgName} type");
                 }
                 catch (InvalidCastException e)
                 {
-                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
+                    var err = new Error($"Could not create message for JSON {aJsonMsg}: {e.Message}", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                    _bpLogger?.LogErrorMsg(err);
+                    res.Add(err);
                 }
                 catch (JsonSerializationException e)
                 {
-                    res.Add(_bpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, ErrorClass.ERROR_MSG, $"Could not create message for JSON {aJsonMsg}: {e.Message}"));
+                    var err = new Error($"Could not create message for JSON {aJsonMsg}: {e.Message}", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                    _bpLogger?.LogErrorMsg(err);
+                    res.Add(err);
                 }
             }
 
@@ -157,7 +171,7 @@ namespace Buttplug.Core
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
             var a = new JArray(o);
-            _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);
+            _bpLogger?.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);
             return a.ToString(Formatting.None);
         }
 
@@ -171,7 +185,7 @@ namespace Buttplug.Core
                 a.Add(o);
             }
 
-            _bpLogger.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);
+            _bpLogger?.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);
             return a.ToString(Formatting.None);
         }
     }

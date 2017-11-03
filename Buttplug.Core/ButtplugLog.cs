@@ -72,18 +72,6 @@ namespace Buttplug.Core
             }
         }
 
-        public Error LogErrorMsg(uint aId, ErrorClass aCode, string aMsg)
-        {
-            Error(aMsg, false);
-            return new Error(aMsg, aCode, aId);
-        }
-
-        public Error LogWarnMsg(uint aId, ErrorClass aCode, string aMsg)
-        {
-            Warn(aMsg, false);
-            return new Error(aMsg, aCode, aId);
-        }
-
         public event EventHandler<LogExceptionEventArgs> OnLogException;
 
         public void LogException(Exception aEx, bool aLocalOnly = true, string aMsg = null)
