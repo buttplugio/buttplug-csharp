@@ -25,11 +25,5 @@ namespace Buttplug.Core
 
         [CanBeNull]
         event EventHandler<LogExceptionEventArgs> OnLogException;
-
-        [NotNull]
-        Error LogErrorMsg(uint aId, ErrorClass aCode, string aMsg);
-
-        [NotNull]
-        Error LogWarnMsg(uint aId, ErrorClass aCode, string aMsg);
     }
 }
