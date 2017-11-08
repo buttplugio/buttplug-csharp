@@ -54,10 +54,13 @@ namespace Buttplug.Server.Managers.ETSerialManager
         private double fade;
         private double updateInterval;
         private Timer updateTimer;
+        Object movementLock;
 
         public ET312Device(SerialPort port, IButtplugLogManager aLogManager, string name, string id)
             : base(aLogManager, name, id)
         {
+
+            movementLock = new object();
 
             // Handshake with the box
             serialPort = port;
@@ -65,29 +68,29 @@ namespace Buttplug.Server.Managers.ETSerialManager
             Synch();
 
             // Setup box for remote control
-            Execute(0x00);                // load default routine
-            Poke(0x409c, 0xff);           // stop volume ramp
-            Poke(0x4083, 0x00);           // disable front panel switches
-            Poke(0x040b5, 0x08);          // Channel A: MA knob sets frequency
-            Poke(0x041b5, 0x08);          // Channel B: MA knob sets frequency
-            Poke(0x040be, 0x04);          // Channel A: Set width from advanced menu
-            Poke(0x041be, 0x04);          // Channel B: Set width from advanced menu
-            Poke(0x040ac, 0x00);          // Channel A: Set intensity to static
-            Poke(0x041ac, 0x00);          // Channel B: Set intensity to static
-            Poke(0x0409a, 0x00);          // Channel A: Gate Off
-            Poke(0x0419a, 0x00);          // Channel B: Gate Off
-            Poke(0x040a5, 0x00);          // Channel A: Set intensity value
-            Poke(0x041a5, 0x00);          // Channel B: Set intensity value
+            Execute(0x00);               // load default routine
+            Poke(0x4083, 0x00);          // disable front panel switches
+            Poke(0x409a, 0x00);          // Channel A: Gate Off
+            Poke(0x419a, 0x00);          // Channel B: Gate Off
+            Poke(0x40ac, 0x00);          // Channel A: Set intensity to static
+            Poke(0x41ac, 0x00);          // Channel B: Set intensity to static
+            Poke(0x40a5, 0x00);          // Channel A: Set intensity value
+            Poke(0x41a5, 0x00);          // Channel B: Set intensity value
+            Poke(0x409c, 0xff);          // stop volume ramp
+            Poke(0x40b5, 0x08);          // Channel A: MA knob sets frequency
+            Poke(0x41b5, 0x08);          // Channel B: MA knob sets frequency
+            Poke(0x40be, 0x04);          // Channel A: Set width from advanced menu
+            Poke(0x41be, 0x04);          // Channel B: Set width from advanced menu
 
             // Let the user know we're in control now
             WriteLCD("Buttplug", 8);
             WriteLCD("----------------", 64);
 
-            // We're not ready to receive events
+            // We're now ready to receive events
             MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), HandleFleshlightLaunchFW12Cmd);
 
             // Start update timer
-            updateInterval = 20;
+            updateInterval = 20;                        // <- Change this value to adjust box update frequency in ms
             updateTimer = new System.Timers.Timer();
             updateTimer.Interval = updateInterval;
             updateTimer.Elapsed += OnUpdate;
@@ -100,70 +103,125 @@ namespace Buttplug.Server.Managers.ETSerialManager
             throw new NotImplementedException();
         }
 
+        // Timer event fired every (updateInterval) milliseconds
         private void OnUpdate(object source, System.Timers.ElapsedEventArgs e)
         {
-            if (currentPosition < position)
+            lock (movementLock)
             {
-                FadeUp();
-                currentPosition += increment;
-                currentPosition = (currentPosition > position) ? position : currentPosition;
-            }
-            else if (currentPosition > position)
-            {
-                FadeUp();
-                currentPosition -= increment;
-                currentPosition = (currentPosition < position) ? position : currentPosition;
-            }
-            else if (currentPosition == position)
-            {
-                FadeDown();
-            }
+                try
+                {
+                    if (currentPosition < position)
+                    {
+                        FadeUp();
+                        currentPosition += increment;
+                        currentPosition = (currentPosition > position) ? position : currentPosition;
+                    }
+                    else if (currentPosition > position)
+                    {
+                        FadeUp();
+                        currentPosition -= increment;
+                        currentPosition = (currentPosition < position) ? position : currentPosition;
+                    }
+                    else if (currentPosition == position)
+                    {
+                        FadeDown();
+                    }
 
-            double valueA = 192 + (currentPosition * 64 / 100);
-            double valueB = 192 + ((100 - currentPosition) * 64 / 100);
+                    // This is a very experimental algorithm to convert the linear "stroke"
+                    // position into the very nonlinear value the ET312 needs in order
+                    // to create a pleasant sensation
 
-            Poke(0x040a5, (byte)(valueA * fade));          // Channel A: Set intensity value
-            Poke(0x041a5, (byte)(valueB * fade));          // Channel B: Set intensity value
+                    double valueA = 115 + (80 * fade) + (currentPosition * 64 / 100);
+                    double valueB = 115 + (80 * fade) + ((100 - currentPosition) * 64 / 100);
+
+                    double gamma = 1.5;
+
+                    double correctedA = 255 * Math.Pow(valueA / 255, 1 / gamma);
+                    double correctedB = 255 * Math.Pow(valueB / 255, 1 / gamma);
+
+                    if (fade == 0)
+                    {
+                        correctedA = correctedB = 0;
+                    }
+
+                    Poke(0x040a5, (byte)correctedA);          // Channel A: Set intensity value
+                    Poke(0x041a5, (byte)correctedB);          // Channel B: Set intensity value
+                }
+                catch
+                {
+                    AbandonShip();
+                }
+            }
         }
 
+        private void AbandonShip()
+        {
+            lock (serialPort)
+            {
+                updateTimer.Enabled = false;
+                serialPort.Close();
+                InvokeDeviceRemoved();
+            }
+        }
+
+        // Fade stim in as soon as there is movement
         private void FadeUp()
         {
             fade += updateInterval / 2000;
             fade = (fade > 1) ? 1 : fade;
         }
 
+        // Fade stim signal out as soon as movement stops
         private void FadeDown()
         {
-            fade -= updateInterval / 4000;
+            fade -= updateInterval / 3000;
             fade = (fade < 0) ? 0 : fade;
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
-            Poke(0x040a5, 0x00);          // Channel A: Set intensity value
-            Poke(0x041a5, 0x00);          // Channel B: Set intensity value
-            position = 0;
-            speed = 0;
-            increment = 0;
-            return new Ok(aMsg.Id);
+            lock (movementLock)
+            {
+                try
+                {
+                    Poke(0x040a5, 0x00);          // Channel A: Set intensity value
+                    Poke(0x041a5, 0x00);          // Channel B: Set intensity value
+                    position = 0;
+                    speed = 0;
+                    increment = 0;
+                    return new Ok(aMsg.Id);
+                }
+                catch
+                {
+                    AbandonShip();
+                    return new Ok(aMsg.Id);
+                }
+            }
         }
 
         private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg)
         {
-            speed = (aMsg as FleshlightLaunchFW12Cmd).Speed;
-            position = (aMsg as FleshlightLaunchFW12Cmd).Position;
+            lock (movementLock)
+            {
+                speed = (aMsg as FleshlightLaunchFW12Cmd).Speed;
+                position = (aMsg as FleshlightLaunchFW12Cmd).Position;
 
-            position = position < 0 ? 0 : position;
-            position = position > 100 ? 100 : position;
-            speed = speed < 20 ? 20 : speed;
-            speed = speed > 100 ? 100 : speed;
+                position = position < 0 ? 0 : position;
+                position = position > 100 ? 100 : position;
+                speed = speed < 20 ? 20 : speed;
+                speed = speed > 100 ? 100 : speed;
 
-            double distance = Math.Abs(position - currentPosition);
-            double mil = Math.Pow(speed / 25000, -0.95);
-            double duration = mil / (90 / distance);
+                // This is @funjack's algorithm for converting Fleshlight Launch
+                // commands into absolute distance (percent) / duration (millisecond) values
+                double distance = Math.Abs(position - currentPosition);
+                double mil = Math.Pow(speed / 25000, -0.95);
+                double duration = mil / (90 / distance);
 
-            increment = distance * updateInterval / duration;
-            return new Ok(aMsg.Id);
+                // We convert those into "position" increments for our OnUpdate() timer event.
+                increment = 1.5 * (distance / (duration / updateInterval));
+
+                return new Ok(aMsg.Id);
+            }
         }
 
         // Calculates a box command checksum
@@ -249,7 +307,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
             }
         }
 
-        // Execute one or two box commands
+        // Execute box command
         private void Execute(byte command)
         {
             Poke(0x4070, command);
@@ -316,7 +374,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         }
 
                         // Override the random box key with our own (0x10) so we can reconnect to
-                        // an already synched box without having to guess the boy key
+                        // an already synched box without having to guess the box key
                         boxkey = (byte)(recBuffer[1] ^ 0x55);
                         Poke(0x4213, 0x10);
                         boxkey = 0x10;
@@ -326,17 +384,34 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     else
                     {
                         // Since the previous command looked like complete garbage to the box
-                        // send this string of 0s to get the command parses in the box back
+                        // send a string of 0s to get the command parser back
                         // in sync
-                        serialPort.Write("\0\0\0\0\0\0\0\0\0\0\0");
-                        serialPort.ReadByte();
+
+                        serialPort.DiscardInBuffer();
+                        for (int i = 0; i < 11; i++)
+                        {
+                            serialPort.Write(new byte[] { 0x00 }, 0, 1);
+
+                            try
+                            {
+                                if (serialPort.ReadByte() == 0x07)
+                                {
+                                    break;
+                                }
+                            }
+                            catch (TimeoutException)
+                            {
+                                // No response? Keep trying.
+                                continue;
+                            }
+                        }
 
                         // Try reading from RAM with our pre-set box key of 0x10 - if this fails, the device
                         // is in an unknown state, throw exception.
                         boxkey = 0x10;
                         Peek(0x4231);
 
-                        // If we get this far we're back in busines!
+                        // If we got this far we're back in busines!
                         BpLogger.Info("Encryption already set up. No handshake required.");
                     }
                 }
