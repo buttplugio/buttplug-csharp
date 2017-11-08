@@ -61,8 +61,8 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                     SerialPort serialPort = new SerialPort(port);
 
-                    serialPort.ReadTimeout = 200;
-                    serialPort.WriteTimeout = 200;
+                    serialPort.ReadTimeout = 50;
+                    serialPort.WriteTimeout = 50;
                     serialPort.BaudRate = 19200;
                     serialPort.Parity = Parity.None;
                     serialPort.StopBits = StopBits.One;
@@ -131,8 +131,10 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     serialPort.Close();
                     serialPort.Dispose();
                 }
-                System.Threading.Thread.Sleep(5000);
-                _isScanning = false;
+
+                System.Threading.Thread.Sleep(3000);
+
+                // _isScanning = false; // Uncomment to disable continuuous serial port scanning
             }
 
             InvokeScanningFinished();
