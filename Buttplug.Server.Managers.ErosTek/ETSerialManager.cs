@@ -86,7 +86,15 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                     for (int i = 0; i < 11; i++)
                     {
-                        serialPort.Write(new byte[] { 0x00 }, 0, 1);
+                        try
+                        {
+                            serialPort.Write(new byte[] { 0x00 }, 0, 1);
+                        }
+                        catch
+                        {
+                            // Can't write to this port? Skip to the next one.
+                            break;
+                        }
 
                         try
                         {
