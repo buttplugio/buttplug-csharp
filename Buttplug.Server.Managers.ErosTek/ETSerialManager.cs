@@ -61,8 +61,8 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                     SerialPort serialPort = new SerialPort(port);
 
-                    serialPort.ReadTimeout = 50;
-                    serialPort.WriteTimeout = 50;
+                    serialPort.ReadTimeout = 200;
+                    serialPort.WriteTimeout = 200;
                     serialPort.BaudRate = 19200;
                     serialPort.Parity = Parity.None;
                     serialPort.StopBits = StopBits.One;
