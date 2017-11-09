@@ -57,7 +57,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 // try to detect devices on all port
                 foreach (string port in comPortsToScan)
                 {
-                    BpLogger.Info("Scanning "+port);
+                    BpLogger.Info("Scanning " + port);
 
                     SerialPort serialPort = new SerialPort(port);
 

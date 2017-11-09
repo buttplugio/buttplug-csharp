@@ -8,41 +8,6 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Managers.ETSerialManager
 {
-
-    public class ET312HandshakeException : Exception
-    {
-        public ET312HandshakeException()
-        {
-        }
-
-        public ET312HandshakeException(string message)
-            : base(message)
-        {
-        }
-
-        public ET312HandshakeException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
-    }
-
-    public class ET312CommunicationException : Exception
-    {
-        public ET312CommunicationException()
-        {
-        }
-
-        public ET312CommunicationException(string message)
-            : base(message)
-        {
-        }
-
-        public ET312CommunicationException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
-    }
-
     public class ET312Device : ButtplugDevice
     {
         private SerialPort serialPort;
@@ -54,12 +19,11 @@ namespace Buttplug.Server.Managers.ETSerialManager
         private double fade;
         private double updateInterval;
         private Timer updateTimer;
-        Object movementLock;
+        private object movementLock;
 
         public ET312Device(SerialPort port, IButtplugLogManager aLogManager, string name, string id)
             : base(aLogManager, name, id)
         {
-
             movementLock = new object();
 
             // Handshake with the box
@@ -101,7 +65,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
             // Start update timer
             updateInterval = 20;                        // <- Change this value to adjust box update frequency in ms
-            updateTimer = new System.Timers.Timer();
+            updateTimer = new Timer();
             updateTimer.Interval = updateInterval;
             updateTimer.Elapsed += OnUpdate;
             updateTimer.AutoReset = true;
@@ -140,7 +104,6 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     // This is a very experimental algorithm to convert the linear "stroke"
                     // position into the very nonlinear value the ET312 needs in order
                     // to create a pleasant sensation
-
                     double valueA = 115 + (80 * fade) + (currentPosition * 64 / 100);
                     double valueB = 115 + (80 * fade) + ((100 - currentPosition) * 64 / 100);
 
@@ -396,7 +359,6 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         // Since the previous command looked like complete garbage to the box
                         // send a string of 0s to get the command parser back
                         // in sync
-
                         serialPort.DiscardInBuffer();
                         for (int i = 0; i < 11; i++)
                         {
