@@ -67,24 +67,33 @@ namespace Buttplug.Server.Managers.ETSerialManager
             boxkey = 0;
             Synch();
 
-            // Setup box for remote control
-            Execute(0x00);               // load default routine
-            Poke(0x4083, 0x00);          // disable front panel switches
-            Poke(0x409a, 0x00);          // Channel A: Gate Off
-            Poke(0x419a, 0x00);          // Channel B: Gate Off
-            Poke(0x40ac, 0x00);          // Channel A: Set intensity to static
-            Poke(0x41ac, 0x00);          // Channel B: Set intensity to static
-            Poke(0x40a5, 0x00);          // Channel A: Set intensity value
-            Poke(0x41a5, 0x00);          // Channel B: Set intensity value
-            Poke(0x409c, 0xff);          // stop volume ramp
-            Poke(0x40b5, 0x08);          // Channel A: MA knob sets frequency
-            Poke(0x41b5, 0x08);          // Channel B: MA knob sets frequency
-            Poke(0x40be, 0x04);          // Channel A: Set width from advanced menu
-            Poke(0x41be, 0x04);          // Channel B: Set width from advanced menu
+            try
+            {
+                // Setup box for remote control
+                Execute(0x00);               // load default routine
+                Poke(0x4083, 0x00);          // disable front panel switches
+                Poke(0x409a, 0x00);          // Channel A: Gate Off
+                Poke(0x419a, 0x00);          // Channel B: Gate Off
+                Poke(0x40ac, 0x00);          // Channel A: Set intensity to static
+                Poke(0x41ac, 0x00);          // Channel B: Set intensity to static
+                Poke(0x40a5, 0x00);          // Channel A: Set intensity value
+                Poke(0x41a5, 0x00);          // Channel B: Set intensity value
+                Poke(0x409c, 0xff);          // stop volume ramp
+                Poke(0x40b5, 0x08);          // Channel A: MA knob sets frequency
+                Poke(0x41b5, 0x08);          // Channel B: MA knob sets frequency
+                Poke(0x40be, 0x04);          // Channel A: Set width from advanced menu
+                Poke(0x41be, 0x04);          // Channel B: Set width from advanced menu
 
-            // Let the user know we're in control now
-            WriteLCD("Buttplug", 8);
-            WriteLCD("----------------", 64);
+                // Let the user know we're in control now
+                WriteLCD("Buttplug", 8);
+                WriteLCD("----------------", 64);
+            }
+            catch
+            {
+                // If anything goes wrong during the setup
+                // consider the entire handshake failed
+                throw new ET312HandshakeException();
+            }
 
             // We're now ready to receive events
             MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), HandleFleshlightLaunchFW12Cmd);
