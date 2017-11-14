@@ -65,11 +65,13 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
             // Start update timer
             _updateInterval = 20;                        // <- Change this value to adjust box update frequency in ms
-            _updateTimer = new Timer();
-            _updateTimer.Interval = _updateInterval;
+            _updateTimer = new Timer()
+            {
+                Interval = _updateInterval,
+                AutoReset = true,
+                Enabled = true,
+            };
             _updateTimer.Elapsed += OnUpdate;
-            _updateTimer.AutoReset = true;
-            _updateTimer.Enabled = true;
         }
 
         public override void Disconnect()
