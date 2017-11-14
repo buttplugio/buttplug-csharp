@@ -10,25 +10,25 @@ namespace Buttplug.Server.Managers.ETSerialManager
 {
     public class ET312Device : ButtplugDevice
     {
-        private SerialPort serialPort;
-        private byte boxkey;
-        private double speed;
-        private double position;
-        private double currentPosition;
-        private double increment;
-        private double fade;
-        private double updateInterval;
-        private Timer updateTimer;
-        private object movementLock;
+        private SerialPort _serialPort;
+        private byte _boxkey;
+        private double _speed;
+        private double _position;
+        private double _currentPosition;
+        private double _increment;
+        private double _fade;
+        private double _updateInterval;
+        private Timer _updateTimer;
+        private object _movementLock;
 
         public ET312Device(SerialPort port, IButtplugLogManager aLogManager, string name, string id)
             : base(aLogManager, name, id)
         {
-            movementLock = new object();
+            _movementLock = new object();
 
             // Handshake with the box
-            serialPort = port;
-            boxkey = 0;
+            _serialPort = port;
+            _boxkey = 0;
             Synch();
 
             try
@@ -64,12 +64,12 @@ namespace Buttplug.Server.Managers.ETSerialManager
             MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
 
             // Start update timer
-            updateInterval = 20;                        // <- Change this value to adjust box update frequency in ms
-            updateTimer = new Timer();
-            updateTimer.Interval = updateInterval;
-            updateTimer.Elapsed += OnUpdate;
-            updateTimer.AutoReset = true;
-            updateTimer.Enabled = true;
+            _updateInterval = 20;                        // <- Change this value to adjust box update frequency in ms
+            _updateTimer = new Timer();
+            _updateTimer.Interval = _updateInterval;
+            _updateTimer.Elapsed += OnUpdate;
+            _updateTimer.AutoReset = true;
+            _updateTimer.Enabled = true;
         }
 
         public override void Disconnect()
@@ -80,23 +80,23 @@ namespace Buttplug.Server.Managers.ETSerialManager
         // Timer event fired every (updateInterval) milliseconds
         private void OnUpdate(object source, System.Timers.ElapsedEventArgs e)
         {
-            lock (movementLock)
+            lock (_movementLock)
             {
                 try
                 {
-                    if (currentPosition < position)
+                    if (_currentPosition < _position)
                     {
                         FadeUp();
-                        currentPosition += increment;
-                        currentPosition = (currentPosition > position) ? position : currentPosition;
+                        _currentPosition += _increment;
+                        _currentPosition = (_currentPosition > _position) ? _position : _currentPosition;
                     }
-                    else if (currentPosition > position)
+                    else if (_currentPosition > _position)
                     {
                         FadeUp();
-                        currentPosition -= increment;
-                        currentPosition = (currentPosition < position) ? position : currentPosition;
+                        _currentPosition -= _increment;
+                        _currentPosition = (_currentPosition < _position) ? _position : _currentPosition;
                     }
-                    else if (currentPosition == position)
+                    else if (_currentPosition == _position)
                     {
                         FadeDown();
                     }
@@ -104,15 +104,15 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     // This is a very experimental algorithm to convert the linear "stroke"
                     // position into the very nonlinear value the ET312 needs in order
                     // to create a pleasant sensation
-                    double valueA = 115 + (80 * fade) + (currentPosition * 64 / 100);
-                    double valueB = 115 + (80 * fade) + ((100 - currentPosition) * 64 / 100);
+                    double valueA = 115 + (80 * _fade) + (_currentPosition * 64 / 100);
+                    double valueB = 115 + (80 * _fade) + ((100 - _currentPosition) * 64 / 100);
 
                     double gamma = 1.5;
 
                     double correctedA = 255 * Math.Pow(valueA / 255, 1 / gamma);
                     double correctedB = 255 * Math.Pow(valueB / 255, 1 / gamma);
 
-                    if (fade == 0)
+                    if (_fade == 0)
                     {
                         correctedA = correctedB = 0;
                     }
@@ -129,10 +129,10 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
         private void AbandonShip()
         {
-            lock (serialPort)
+            lock (_serialPort)
             {
-                updateTimer.Enabled = false;
-                serialPort.Close();
+                _updateTimer.Enabled = false;
+                _serialPort.Close();
                 InvokeDeviceRemoved();
             }
         }
@@ -140,28 +140,28 @@ namespace Buttplug.Server.Managers.ETSerialManager
         // Fade stim in as soon as there is movement
         private void FadeUp()
         {
-            fade += updateInterval / 2000;
-            fade = (fade > 1) ? 1 : fade;
+            _fade += _updateInterval / 2000;
+            _fade = (_fade > 1) ? 1 : _fade;
         }
 
         // Fade stim signal out as soon as movement stops
         private void FadeDown()
         {
-            fade -= updateInterval / 3000;
-            fade = (fade < 0) ? 0 : fade;
+            _fade -= _updateInterval / 3000;
+            _fade = (_fade < 0) ? 0 : _fade;
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
-            lock (movementLock)
+            lock (_movementLock)
             {
                 try
                 {
                     Poke(0x040a5, 0x00);          // Channel A: Set intensity value
                     Poke(0x041a5, 0x00);          // Channel B: Set intensity value
-                    position = 0;
-                    speed = 0;
-                    increment = 0;
+                    _position = 0;
+                    _speed = 0;
+                    _increment = 0;
                     return new Ok(aMsg.Id);
                 }
                 catch
@@ -174,24 +174,24 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
         private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg)
         {
-            lock (movementLock)
+            lock (_movementLock)
             {
-                speed = (aMsg as FleshlightLaunchFW12Cmd).Speed;
-                position = (aMsg as FleshlightLaunchFW12Cmd).Position;
+                _speed = (aMsg as FleshlightLaunchFW12Cmd).Speed;
+                _position = (aMsg as FleshlightLaunchFW12Cmd).Position;
 
-                position = position < 0 ? 0 : position;
-                position = position > 100 ? 100 : position;
-                speed = speed < 20 ? 20 : speed;
-                speed = speed > 100 ? 100 : speed;
+                _position = _position < 0 ? 0 : _position;
+                _position = _position > 100 ? 100 : _position;
+                _speed = _speed < 20 ? 20 : _speed;
+                _speed = _speed > 100 ? 100 : _speed;
 
                 // This is @funjack's algorithm for converting Fleshlight Launch
                 // commands into absolute distance (percent) / duration (millisecond) values
-                double distance = Math.Abs(position - currentPosition);
-                double mil = Math.Pow(speed / 25000, -0.95);
+                double distance = Math.Abs(_position - _currentPosition);
+                double mil = Math.Pow(_speed / 25000, -0.95);
                 double duration = mil / (90 / distance);
 
                 // We convert those into "position" increments for our OnUpdate() timer event.
-                increment = 1.5 * (distance / (duration / updateInterval));
+                _increment = 1.5 * (distance / (duration / _updateInterval));
 
                 return new Ok(aMsg.Id);
             }
@@ -220,14 +220,14 @@ namespace Buttplug.Server.Managers.ETSerialManager
         {
             for (int c = 0; c < buffer.Length; c++)
             {
-                buffer[c] = (byte)(buffer[c] ^ boxkey);
+                buffer[c] = (byte)(buffer[c] ^ _boxkey);
             }
         }
 
         // Read one byte from the device
         private byte Peek(uint address)
         {
-            lock (serialPort)
+            lock (_serialPort)
             {
                 byte[] sendBuffer = new byte[4];
                 sendBuffer[0] = 0x3c;                               // read byte command
@@ -236,12 +236,12 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 sendBuffer[3] = Checksum(sendBuffer);               // checksum
                 SillyXOR(sendBuffer);                               // encryption
 
-                serialPort.Write(sendBuffer, 0, 4);
+                _serialPort.Write(sendBuffer, 0, 4);
 
                 byte[] recBuffer = new byte[3];
-                recBuffer[0] = (byte)serialPort.ReadByte();              // return code
-                recBuffer[1] = (byte)serialPort.ReadByte();              // content of requested address
-                recBuffer[2] = (byte)serialPort.ReadByte();              // checksum
+                recBuffer[0] = (byte)_serialPort.ReadByte();              // return code
+                recBuffer[1] = (byte)_serialPort.ReadByte();              // content of requested address
+                recBuffer[2] = (byte)_serialPort.ReadByte();              // checksum
 
                 // If the response is not of the expected type or Checksum doesn't match
                 // consider ourselves de-synchronized. Calling Code should treat the device
@@ -259,7 +259,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
         //       the response from the box doesn't hold up the entire event loop
         private void Poke(uint address, byte value)
         {
-            lock (serialPort)
+            lock (_serialPort)
             {
                 byte[] sendBuffer = new byte[5];
                 sendBuffer[0] = 0x4d;                               // write byte command
@@ -269,11 +269,11 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 sendBuffer[4] = Checksum(sendBuffer);               // checksum
                 SillyXOR(sendBuffer);                               // encryption
 
-                serialPort.Write(sendBuffer, 0, 5);
+                _serialPort.Write(sendBuffer, 0, 5);
 
                 // If the response is not ACK, consider ourselves de-synchronized.
                 // Calling Code should treat the device as disconnected
-                if (serialPort.ReadByte() != 0x06)
+                if (_serialPort.ReadByte() != 0x06)
                 {
                     throw new ET312CommunicationException();
                 }
@@ -302,7 +302,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
         // Set up serial XOR encryption - mandatory for write accesss
         private void Synch()
         {
-            lock (serialPort)
+            lock (_serialPort)
             {
                 BpLogger.Info("Attempting Synch");
 
@@ -315,15 +315,15 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     sendBuffer[1] = 0x42;                               // address high byte
                     sendBuffer[2] = 0x31;                               // address low byte
                     sendBuffer[3] = Checksum(sendBuffer);               // checksum
-                    serialPort.Write(sendBuffer, 0, 4);
+                    _serialPort.Write(sendBuffer, 0, 4);
 
-                    byte result = (byte)serialPort.ReadByte();
+                    byte result = (byte)_serialPort.ReadByte();
 
                     if (result == 0x22)
                     {
                         // It worked! Discard the rest of the response
-                        serialPort.ReadByte();
-                        serialPort.ReadByte();
+                        _serialPort.ReadByte();
+                        _serialPort.ReadByte();
 
                         // Commence handshake
                         BpLogger.Info("Encryption is not yet set up. Send Handshake.");
@@ -332,13 +332,13 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         sendBuffer[0] = 0x2f;                               // synch command
                         sendBuffer[1] = 0x00;                               // our key
                         sendBuffer[2] = Checksum(sendBuffer);               // checksum
-                        serialPort.Write(sendBuffer, 0, 3);
+                        _serialPort.Write(sendBuffer, 0, 3);
 
                         // Receive box key
                         byte[] recBuffer = new byte[3];
-                        recBuffer[0] = (byte)serialPort.ReadByte();                      // return code
-                        recBuffer[1] = (byte)serialPort.ReadByte();                      // box key
-                        recBuffer[2] = (byte)serialPort.ReadByte();                      // checksum
+                        recBuffer[0] = (byte)_serialPort.ReadByte();                      // return code
+                        recBuffer[1] = (byte)_serialPort.ReadByte();                      // box key
+                        recBuffer[2] = (byte)_serialPort.ReadByte();                      // checksum
 
                         // Response valid?
                         if (recBuffer[0] != 0x21 || recBuffer[2] != Checksum(recBuffer))
@@ -348,9 +348,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                         // Override the random box key with our own (0x10) so we can reconnect to
                         // an already synched box without having to guess the box key
-                        boxkey = (byte)(recBuffer[1] ^ 0x55);
+                        _boxkey = (byte)(recBuffer[1] ^ 0x55);
                         Poke(0x4213, 0x10);
-                        boxkey = 0x10;
+                        _boxkey = 0x10;
 
                         BpLogger.Info("Handshake with ET312 successful.");
                     }
@@ -359,14 +359,14 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         // Since the previous command looked like complete garbage to the box
                         // send a string of 0s to get the command parser back
                         // in sync
-                        serialPort.DiscardInBuffer();
+                        _serialPort.DiscardInBuffer();
                         for (int i = 0; i < 11; i++)
                         {
-                            serialPort.Write(new byte[] { 0x00 }, 0, 1);
+                            _serialPort.Write(new byte[] { 0x00 }, 0, 1);
 
                             try
                             {
-                                if (serialPort.ReadByte() == 0x07)
+                                if (_serialPort.ReadByte() == 0x07)
                                 {
                                     break;
                                 }
@@ -380,7 +380,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                         // Try reading from RAM with our pre-set box key of 0x10 - if this fails, the device
                         // is in an unknown state, throw exception.
-                        boxkey = 0x10;
+                        _boxkey = 0x10;
                         Peek(0x4231);
 
                         // If we got this far we're back in busines!
