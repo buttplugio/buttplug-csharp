@@ -53,7 +53,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 }
 
                 // try to detect devices on all port
-                foreach (string port in comPortsToScan)
+                foreach (var port in comPortsToScan)
                 {
                     BpLogger.Info("Scanning " + port);
 
