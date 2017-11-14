@@ -74,11 +74,19 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     {
                         serialPort.Open();
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // This port is inaccessible.
-                        // Possibly because a device detected earlier is already using it.
-                        continue;
+                        if (ex is UnauthorizedAccessException
+                            || ex is ArgumentOutOfRangeException
+                            || ex is System.IO.IOException)
+                        {
+                            // This port is inaccessible.
+                            // Possibly because a device detected earlier is already using it,
+                            // or because our required parameters are not supported
+                            continue;
+                        }
+
+                        throw ex;
                     }
 
                     // We send 0x00 up to 11 times until we get 0x07 back.
@@ -91,7 +99,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         {
                             serialPort.Write(new byte[] { 0x00 }, 0, 1);
                         }
-                        catch
+                        catch (TimeoutException)
                         {
                             // Can't write to this port? Skip to the next one.
                             break;
@@ -109,11 +117,6 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         {
                             // No response? Keep trying.
                             continue;
-                        }
-                        catch
-                        {
-                            // Can't read from this port? Stop trying.
-                            break;
                         }
                     }
 

@@ -52,11 +52,20 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 WriteLCD("Buttplug", 8);
                 WriteLCD("----------------", 64);
             }
-            catch
+            catch (Exception ex)
             {
-                // If anything goes wrong during the setup
-                // consider the entire handshake failed
-                throw new ET312HandshakeException();
+                AbandonShip();
+
+                if (ex is ET312CommunicationException
+                    || ex is InvalidOperationException
+                    || ex is TimeoutException)
+                {
+                    // If anything goes wrong during the setup
+                    // consider the entire handshake failed
+                    throw new ET312HandshakeException();
+                }
+
+                throw ex;
             }
 
             // We're now ready to receive events
@@ -126,9 +135,18 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     Poke(0x040a5, (byte)correctedA);          // Channel A: Set intensity value
                     Poke(0x041a5, (byte)correctedB);          // Channel B: Set intensity value
                 }
-                catch
+                catch (Exception ex)
                 {
                     AbandonShip();
+
+                    if (ex is ET312CommunicationException
+                        || ex is InvalidOperationException
+                        || ex is TimeoutException)
+                    {
+                        return;
+                    }
+
+                    throw ex;
                 }
             }
         }
@@ -138,7 +156,11 @@ namespace Buttplug.Server.Managers.ETSerialManager
         {
             lock (_serialPort)
             {
-                _updateTimer.Enabled = false;
+                if (_updateTimer != null)
+                {
+                    _updateTimer.Enabled = false;
+                }
+
                 _serialPort.Close();
                 InvokeDeviceRemoved();
             }
@@ -171,10 +193,18 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     _increment = 0;
                     return new Ok(aMsg.Id);
                 }
-                catch
+                catch (Exception ex)
                 {
                     AbandonShip();
-                    return new Ok(aMsg.Id);
+
+                    if (ex is ET312CommunicationException
+                        || ex is InvalidOperationException
+                        || ex is TimeoutException)
+                    {
+                        return new Ok(aMsg.Id);
+                    }
+
+                    throw ex;
                 }
             }
         }
@@ -411,10 +441,19 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         BpLogger.Info("Encryption already set up. No handshake required.");
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     BpLogger.Info("Synch with ET312 Failed");
-                    throw new ET312HandshakeException();
+                    AbandonShip();
+
+                    if (ex is ET312CommunicationException
+                        || ex is InvalidOperationException
+                        || ex is TimeoutException)
+                    {
+                            throw new ET312HandshakeException();
+                    }
+
+                    throw ex;
                 }
             }
         }
