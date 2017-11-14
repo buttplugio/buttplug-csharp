@@ -62,7 +62,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 {
                     // If anything goes wrong during the setup
                     // consider the entire handshake failed
-                    throw new ET312HandshakeException();
+                    throw new ET312HandshakeException("Failed to set up initial device parameters.");
                 }
 
                 throw ex;
@@ -240,7 +240,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
         {
             if (buffer.Length < 2)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Buffer must be at least two bytes long.");
             }
 
             byte sum = 0;
@@ -285,7 +285,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 // as disconnected
                 if (recBuffer[0] != 0x22 || recBuffer[2] != Checksum(recBuffer))
                 {
-                    throw new ET312CommunicationException();
+                    throw new ET312CommunicationException("Unexpected return code from device.");
                 }
 
                 return recBuffer[1];
@@ -312,7 +312,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 // Calling Code should treat the device as disconnected
                 if (_serialPort.ReadByte() != 0x06)
                 {
-                    throw new ET312CommunicationException();
+                    throw new ET312CommunicationException("Unexpected return code from device.");
                 }
             }
         }
@@ -397,7 +397,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         // Response valid?
                         if (recBuffer[0] != 0x21 || recBuffer[2] != Checksum(recBuffer))
                         {
-                            throw new ET312CommunicationException();
+                            throw new ET312CommunicationException("Unexpected return code from device.");
                         }
 
                         // Override the random box key with our own (0x10) so we can reconnect to
@@ -450,7 +450,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         || ex is InvalidOperationException
                         || ex is TimeoutException)
                     {
-                            throw new ET312HandshakeException();
+                            throw new ET312HandshakeException("Failed to set up communications with device.");
                     }
 
                     throw ex;
