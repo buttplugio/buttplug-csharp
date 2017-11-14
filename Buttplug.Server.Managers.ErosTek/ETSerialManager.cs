@@ -59,15 +59,16 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 {
                     BpLogger.Info("Scanning " + port);
 
-                    SerialPort serialPort = new SerialPort(port);
-
-                    serialPort.ReadTimeout = 200;
-                    serialPort.WriteTimeout = 200;
-                    serialPort.BaudRate = 19200;
-                    serialPort.Parity = Parity.None;
-                    serialPort.StopBits = StopBits.One;
-                    serialPort.DataBits = 8;
-                    serialPort.Handshake = Handshake.None;
+                    SerialPort serialPort = new SerialPort(port)
+                    {
+                        ReadTimeout = 200,
+                        WriteTimeout = 200,
+                        BaudRate = 19200,
+                        Parity = Parity.None,
+                        StopBits = StopBits.One,
+                        DataBits = 8,
+                        Handshake = Handshake.None,
+                    };
 
                     try
                     {
