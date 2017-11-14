@@ -74,9 +74,13 @@ namespace Buttplug.Server.Managers.ETSerialManager
             _updateTimer.Elapsed += OnUpdate;
         }
 
+        /// Reset the box to defaults when application closes
         public override void Disconnect()
         {
-            throw new NotImplementedException();
+            _updateTimer.Enabled = false;
+            ResetBox();
+            _serialPort.Close();
+            InvokeDeviceRemoved();
         }
 
         // Timer event fired every (updateInterval) milliseconds
@@ -129,6 +133,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
             }
         }
 
+        // Stop communicating with the device and mark it removed
         private void AbandonShip()
         {
             lock (_serialPort)
@@ -298,6 +303,23 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 Poke(0x4180, buffer[c]);              // ASCII Value
                 Poke(0x4181, (byte)(offset + c));     // Offset (+64 = second line)
                 Execute(0x13);                        // Write Character
+            }
+        }
+
+        // Warm Start the Box
+        private byte ResetBox()
+        {
+            lock (_serialPort)
+            {
+                byte[] sendBuffer = new byte[3];
+                sendBuffer[0] = 0x28;                               // reset command
+                sendBuffer[1] = 0x55;                               // reset command
+                sendBuffer[3] = Checksum(sendBuffer);               // checksum
+                SillyXOR(sendBuffer);                               // encryption
+
+                _serialPort.Write(sendBuffer, 0, 4);
+
+                return (byte)_serialPort.ReadByte();
             }
         }
 
