@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Ports;
 using System.Threading;
 using Buttplug.Core;
-using JetBrains.Annotations;
 
 namespace Buttplug.Server.Managers.ETSerialManager
 {
