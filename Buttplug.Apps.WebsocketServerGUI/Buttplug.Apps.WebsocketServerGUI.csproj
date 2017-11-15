@@ -55,9 +55,15 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml" />
-    <Reference Include="Windows.Data" />
-    <Reference Include="Windows.Foundation" />
-    <Reference Include="Windows.UI" />
+    <Reference Include="Windows.Data">
+      <HintPath>$(SystemRoot)\System32\WinMetadata\Windows.Data.winmd</HintPath>
+    </Reference>
+    <Reference Include="Windows.Foundation">
+      <HintPath>$(SystemRoot)\System32\WinMetadata\Windows.Foundation.winmd</HintPath>
+    </Reference>
+    <Reference Include="Windows.UI">
+      <HintPath>$(SystemRoot)\System32\WinMetadata\Windows.UI.winmd</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
