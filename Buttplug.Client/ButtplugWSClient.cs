@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using static Buttplug.Client.DeviceEventArgs;
+using WebSocket4Net;
 
 namespace Buttplug.Client
 {
@@ -39,13 +39,10 @@ namespace Buttplug.Client
         private ConcurrentDictionary<uint, ButtplugClientDevice> _devices = new ConcurrentDictionary<uint, ButtplugClientDevice>();
 
         [CanBeNull]
-        private ClientWebSocket _ws;
+        private WebSocket _ws;
 
         [CanBeNull]
         private Timer _pingTimer;
-
-        [CanBeNull]
-        private Task _readThread;
 
         private CancellationTokenSource _tokenSource;
 
@@ -110,19 +107,23 @@ namespace Buttplug.Client
                 throw new AccessViolationException("Already connected!");
             }
 
-            _ws = new ClientWebSocket();
+            _ws = new WebSocket(aURL.ToString());
             _waitingMsgs.Clear();
             _devices.Clear();
             _counter = 1;
-            await _ws.ConnectAsync(aURL, CancellationToken.None);
+            _ws.Open();
+
+            while (_ws.State == WebSocketState.Connecting)
+            {
+                Thread.Sleep(10);
+            }
 
             if (_ws.State != WebSocketState.Open)
             {
                 throw new Exception("Connection failed!");
             }
 
-            _readThread = new Task(() => { wsReader(_tokenSource.Token); }, _tokenSource.Token, TaskCreationOptions.LongRunning);
-            _readThread.Start();
+            _ws.MessageReceived += MessageReceivedHandler;
 
             var res = await SendMessage(new RequestServerInfo(_clientName));
             switch (res)
@@ -153,11 +154,12 @@ namespace Buttplug.Client
 
             try
             {
-                while (_ws != null && _ws.State != WebSocketState.Closed && _ws.State != WebSocketState.Aborted)
+                while (_ws != null && _ws.State != WebSocketState.Closed)
                 {
-                    if (_ws.State != WebSocketState.CloseSent && _ws.State != WebSocketState.Closed)
+                    if (_ws.State != WebSocketState.Closing && _ws.State != WebSocketState.Closed)
                     {
-                        await _ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Client shutdown", _tokenSource.Token);
+                        _ws.Close("Client shutdown");
+                        Thread.Sleep(10);
                     }
                 }
             }
@@ -170,7 +172,6 @@ namespace Buttplug.Client
             try
             {
                 _tokenSource.Cancel();
-                _readThread.Wait();
             }
             catch
             {
@@ -195,91 +196,59 @@ namespace Buttplug.Client
             _counter = 1;
         }
 
-        private async void wsReader(CancellationToken aToken)
+        private void MessageReceivedHandler(object aSender, WebSocket4Net.MessageReceivedEventArgs aArgs)
         {
-            var sb = new StringBuilder();
-            while (_ws != null && _ws.State == WebSocketState.Open && !aToken.IsCancellationRequested)
+            var msgs = Deserialize(aArgs.Message);
+            foreach (var msg in msgs)
             {
-                try
+                if (msg.Id > 0 && _waitingMsgs.TryRemove(msg.Id, out TaskCompletionSource<ButtplugMessage> queued))
                 {
-                    var buffer = new byte[5];
-                    var segment = new ArraySegment<byte>(buffer);
-                    WebSocketReceiveResult result;
-                    try
-                    {
-                        result = await _ws.ReceiveAsync(segment, aToken);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // If the operation is cancelled, just continue so we fall out of the loop
-                        continue;
-                    }
+                    queued.TrySetResult(msg);
+                    continue;
+                }
 
-                    var input = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
-                    sb.Append(input);
-                    if (result.EndOfMessage)
-                    {
-                        var msgs = Deserialize(sb.ToString());
-                        foreach (var msg in msgs)
+                switch (msg)
+                {
+                    case Log l:
+                        _owningDispatcher.Invoke(() =>
                         {
-                            if (msg.Id > 0 && _waitingMsgs.TryRemove(msg.Id, out TaskCompletionSource<ButtplugMessage> queued))
+                            Log?.Invoke(this, new LogEventArgs(l));
+                        });
+                        break;
+
+                    case DeviceAdded d:
+                        var dev = new ButtplugClientDevice(d);
+                        _devices.AddOrUpdate(d.DeviceIndex, dev, (idx, old) => dev);
+                        _owningDispatcher.Invoke(() =>
+                        {
+                            DeviceAdded?.Invoke(this, new DeviceEventArgs(dev, DeviceAction.ADDED));
+                        });
+                        break;
+
+                    case DeviceRemoved d:
+                        if (_devices.TryRemove(d.DeviceIndex, out ButtplugClientDevice oldDev))
+                        {
+                            _owningDispatcher.Invoke(() =>
                             {
-                                queued.TrySetResult(msg);
-                                continue;
-                            }
-
-                            switch (msg)
-                            {
-                                case Log l:
-                                    _owningDispatcher.Invoke(() =>
-                                    {
-                                        Log?.Invoke(this, new LogEventArgs(l));
-                                    });
-                                    break;
-
-                                case DeviceAdded d:
-                                    var dev = new ButtplugClientDevice(d);
-                                    _devices.AddOrUpdate(d.DeviceIndex, dev, (idx, old) => dev);
-                                    _owningDispatcher.Invoke(() =>
-                                    {
-                                        DeviceAdded?.Invoke(this, new DeviceEventArgs(dev, DeviceAction.ADDED));
-                                    });
-                                    break;
-
-                                case DeviceRemoved d:
-                                    if (_devices.TryRemove(d.DeviceIndex, out ButtplugClientDevice oldDev))
-                                    {
-                                        _owningDispatcher.Invoke(() =>
-                                        {
-                                            DeviceRemoved?.Invoke(this, new DeviceEventArgs(oldDev, DeviceAction.REMOVED));
-                                        });
-                                    }
-
-                                    break;
-
-                                case ScanningFinished sf:
-                                    _owningDispatcher.Invoke(() =>
-                                    {
-                                        ScanningFinished?.Invoke(this, new ScanningFinishedEventArgs(sf));
-                                    });
-                                    break;
-
-                                case Error e:
-                                    _owningDispatcher.Invoke(() =>
-                                    {
-                                        ErrorReceived?.Invoke(this, new ErrorEventArgs(e));
-                                    });
-                                    break;
-                            }
+                                DeviceRemoved?.Invoke(this, new DeviceEventArgs(oldDev, DeviceAction.REMOVED));
+                            });
                         }
 
-                        sb.Clear();
-                    }
-                }
-                catch (WebSocketException)
-                {
-                    // Noop - WS probably closed on us during read
+                        break;
+
+                    case ScanningFinished sf:
+                        _owningDispatcher.Invoke(() =>
+                        {
+                            ScanningFinished?.Invoke(this, new ScanningFinishedEventArgs(sf));
+                        });
+                        break;
+
+                    case Error e:
+                        _owningDispatcher.Invoke(() =>
+                        {
+                            ErrorReceived?.Invoke(this, new ErrorEventArgs(e));
+                        });
+                        break;
                 }
             }
         }
@@ -390,7 +359,6 @@ namespace Buttplug.Client
             _waitingMsgs.TryAdd(aMsg.Id, promise);
 
             var output = Serialize(aMsg);
-            var segment1 = new ArraySegment<byte>(Encoding.UTF8.GetBytes(output));
 
             try
             {
@@ -398,7 +366,7 @@ namespace Buttplug.Client
                 {
                     if (_ws != null && _ws.State == WebSocketState.Open)
                     {
-                        _ws.SendAsync(segment1, WebSocketMessageType.Text, true, _tokenSource.Token).Wait();
+                        _ws.Send(output);
                     }
                     else
                     {
@@ -408,7 +376,7 @@ namespace Buttplug.Client
 
                 return await promise.Task;
             }
-            catch (WebSocketException e)
+            catch (Exception e)
             {
                 // Noop - WS probably closed on us during read
                 return new Error(e.Message, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
