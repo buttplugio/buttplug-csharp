@@ -36,7 +36,6 @@ namespace Buttplug.Server.Managers.ETSerialManager
             {
                 // Setup box for remote control
                 Execute((byte)BoxCommand.FavouriteMode);
-                Poke((uint)RAM.OutputFlags, (byte)OutputFlags.DisableControls);
                 Poke((uint)RAM.ChannelAGateSelect, (byte)Gate.Off);
                 Poke((uint)RAM.ChannelBGateSelect, (byte)Gate.Off);
                 Poke((uint)RAM.ChannelAIntensitySelect, (byte)Select.Static);
