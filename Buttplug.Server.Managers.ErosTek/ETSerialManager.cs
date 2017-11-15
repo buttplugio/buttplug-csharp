@@ -2,6 +2,7 @@
 using System.IO.Ports;
 using System.Threading;
 using Buttplug.Core;
+using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;
 
 namespace Buttplug.Server.Managers.ETSerialManager
 {
@@ -95,7 +96,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     {
                         try
                         {
-                            serialPort.Write(new byte[] { 0x00 }, 0, 1);
+                            serialPort.Write(new byte[] { (byte)SerialCommand.Sync }, 0, 1);
                         }
                         catch (TimeoutException)
                         {
@@ -105,7 +106,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                         try
                         {
-                            if (serialPort.ReadByte() == 0x07)
+                            if (serialPort.ReadByte() == (byte)SerialResponse.Error)
                             {
                                 detected = true;
                                 break;

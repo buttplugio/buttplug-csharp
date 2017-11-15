@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;
 
 namespace Buttplug.Server.Managers.ETSerialManager
 {
@@ -34,19 +35,19 @@ namespace Buttplug.Server.Managers.ETSerialManager
             try
             {
                 // Setup box for remote control
-                Execute(0x00);               // load default routine
-                Poke(0x4083, 0x00);          // disable front panel switches
-                Poke(0x409a, 0x00);          // Channel A: Gate Off
-                Poke(0x419a, 0x00);          // Channel B: Gate Off
-                Poke(0x40ac, 0x00);          // Channel A: Set intensity to static
-                Poke(0x41ac, 0x00);          // Channel B: Set intensity to static
-                Poke(0x40a5, 0x00);          // Channel A: Set intensity value
-                Poke(0x41a5, 0x00);          // Channel B: Set intensity value
-                Poke(0x409c, 0xff);          // stop volume ramp
-                Poke(0x40b5, 0x08);          // Channel A: MA knob sets frequency
-                Poke(0x41b5, 0x08);          // Channel B: MA knob sets frequency
-                Poke(0x40be, 0x04);          // Channel A: Set width from advanced menu
-                Poke(0x41be, 0x04);          // Channel B: Set width from advanced menu
+                Execute((byte)BoxCommand.FavouriteMode);
+                Poke((uint)RAM.OutputFlags, (byte)OutputFlags.DisableControls);
+                Poke((uint)RAM.ChannelAGateSelect, (byte)Gate.Off);
+                Poke((uint)RAM.ChannelBGateSelect, (byte)Gate.Off);
+                Poke((uint)RAM.ChannelAIntensitySelect, (byte)Select.Static);
+                Poke((uint)RAM.ChannelBIntensitySelect, (byte)Select.Static);
+                Poke((uint)RAM.ChannelAIntensity, 0);
+                Poke((uint)RAM.ChannelBIntensity, 0);
+                Poke((uint)RAM.ChannelARampValue, 255);
+                Poke((uint)RAM.ChannelAFrequencySelect, (byte)Select.MA);
+                Poke((uint)RAM.ChannelBFrequencySelect, (byte)Select.MA);
+                Poke((uint)RAM.ChannelAWidthSelect, (byte)Select.Advanced);
+                Poke((uint)RAM.ChannelBWidthSelect, (byte)Select.Advanced);
 
                 // Let the user know we're in control now
                 WriteLCD("Buttplug", 8);
@@ -132,8 +133,8 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         correctedA = correctedB = 0;
                     }
 
-                    Poke(0x040a5, (byte)correctedA);          // Channel A: Set intensity value
-                    Poke(0x041a5, (byte)correctedB);          // Channel B: Set intensity value
+                    Poke((uint)RAM.ChannelAIntensity, (byte)correctedA);          // Channel A: Set intensity value
+                    Poke((uint)RAM.ChannelBIntensity, (byte)correctedB);          // Channel B: Set intensity value
                 }
                 catch (Exception ex)
                 {
@@ -186,8 +187,8 @@ namespace Buttplug.Server.Managers.ETSerialManager
             {
                 try
                 {
-                    Poke(0x040a5, 0x00);          // Channel A: Set intensity value
-                    Poke(0x041a5, 0x00);          // Channel B: Set intensity value
+                    Poke((uint)RAM.ChannelAIntensity, 0x00);          // Channel A: Set intensity value
+                    Poke((uint)RAM.ChannelBIntensity, 0x00);          // Channel B: Set intensity value
                     _position = 0;
                     _speed = 0;
                     _increment = 0;
@@ -234,7 +235,37 @@ namespace Buttplug.Server.Managers.ETSerialManager
             }
         }
 
-        // Calculates a box command checksum
+        // Calculates a box command checksum, sets command length and encrypts the message
+        private void SendCommand(byte[] buffer)
+        {
+            var length = buffer.Length;
+
+            if (length > 16)
+            {
+                throw new ArgumentException("Maximum command size of 16 bytes exceeded.");
+            }
+
+            // Only commands 2 bytes or longer get a checksum
+            if (length > 1)
+            {
+                buffer[0] |= (byte)((length - 1) << 4);                     // Command length sans checksum goes into upper 4 command bits
+                buffer[length - 1] = Checksum(buffer);                      // Checksum goes into last byte
+            }
+
+            // Encrypt message if key is set
+            if (_boxkey != 0)
+            {
+                for (int c = 0; c < length; c++)
+                {
+                    buffer[c] = (byte)(buffer[c] ^ _boxkey);
+                }
+            }
+
+            // Send message to box
+            _serialPort.Write(buffer, 0, length);
+        }
+
+        // Calculates a box command checksum, sets command length and encrypts the message
         // We assume the buffer has one byte reserved at the end for the checksum
         private byte Checksum(byte[] buffer)
         {
@@ -252,28 +283,16 @@ namespace Buttplug.Server.Managers.ETSerialManager
             return sum;
         }
 
-        // Encrypt a box command with the device's box key
-        private void SillyXOR(byte[] buffer)
-        {
-            for (int c = 0; c < buffer.Length; c++)
-            {
-                buffer[c] = (byte)(buffer[c] ^ _boxkey);
-            }
-        }
-
         // Read one byte from the device
         private byte Peek(uint address)
         {
             lock (_serialPort)
             {
                 byte[] sendBuffer = new byte[4];
-                sendBuffer[0] = 0x3c;                               // read byte command
+                sendBuffer[0] = (byte)SerialCommand.Read;                               // read byte command
                 sendBuffer[1] = (byte)((address & 0xff00) >> 8);    // address high byte
                 sendBuffer[2] = (byte)(address & 0x00ff);           // address low byte
-                sendBuffer[3] = Checksum(sendBuffer);               // checksum
-                SillyXOR(sendBuffer);                               // encryption
-
-                _serialPort.Write(sendBuffer, 0, 4);
+                SendCommand(sendBuffer);                                // encryption
 
                 byte[] recBuffer = new byte[3];
                 recBuffer[0] = (byte)_serialPort.ReadByte();              // return code
@@ -283,9 +302,14 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 // If the response is not of the expected type or Checksum doesn't match
                 // consider ourselves de-synchronized. Calling Code should treat the device
                 // as disconnected
-                if (recBuffer[0] != 0x22 || recBuffer[2] != Checksum(recBuffer))
+                if (recBuffer[0] != ((byte)SerialResponse.Read | 0x20))
                 {
                     throw new ET312CommunicationException("Unexpected return code from device.");
+                }
+
+                if (recBuffer[2] != Checksum(recBuffer))
+                {
+                    throw new ET312CommunicationException("Checksum error in reply from device.");
                 }
 
                 return recBuffer[1];
@@ -299,18 +323,15 @@ namespace Buttplug.Server.Managers.ETSerialManager
             lock (_serialPort)
             {
                 byte[] sendBuffer = new byte[5];
-                sendBuffer[0] = 0x4d;                               // write byte command
+                sendBuffer[0] = (byte)SerialCommand.Write;          // write byte command
                 sendBuffer[1] = (byte)((address & 0xff00) >> 8);    // address high byte
                 sendBuffer[2] = (byte)(address & 0x00ff);           // address low byte
                 sendBuffer[3] = value;                              // value
-                sendBuffer[4] = Checksum(sendBuffer);               // checksum
-                SillyXOR(sendBuffer);                               // encryption
-
-                _serialPort.Write(sendBuffer, 0, 5);
+                SendCommand(sendBuffer);                                // encryption
 
                 // If the response is not ACK, consider ourselves de-synchronized.
                 // Calling Code should treat the device as disconnected
-                if (_serialPort.ReadByte() != 0x06)
+                if (_serialPort.ReadByte() != (byte)SerialResponse.OK)
                 {
                     throw new ET312CommunicationException("Unexpected return code from device.");
                 }
@@ -320,7 +341,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
         // Execute box command
         private void Execute(byte command)
         {
-            Poke(0x4070, command);
+            Poke((uint)RAM.BoxCommand1, command);
             System.Threading.Thread.Sleep(18);
         }
 
@@ -330,9 +351,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             byte[] buffer = Encoding.ASCII.GetBytes(message);
             for (int c = 0; c < buffer.Length; c++)
             {
-                Poke(0x4180, buffer[c]);              // ASCII Value
-                Poke(0x4181, (byte)(offset + c));     // Offset (+64 = second line)
-                Execute(0x13);                        // Write Character
+                Poke((uint)RAM.WriteLCDParameter, buffer[c]);
+                Poke((uint)RAM.WriteLCDPosition, (byte)(offset + c));
+                Execute((byte)BoxCommand.LCDWriteCharacter);
             }
         }
 
@@ -342,12 +363,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             lock (_serialPort)
             {
                 byte[] sendBuffer = new byte[3];
-                sendBuffer[0] = 0x28;                               // reset command
-                sendBuffer[1] = 0x55;                               // reset command
-                sendBuffer[3] = Checksum(sendBuffer);               // checksum
-                SillyXOR(sendBuffer);                               // encryption
-
-                _serialPort.Write(sendBuffer, 0, 4);
+                sendBuffer[0] = (byte)SerialCommand.Reset;          // reset command
+                sendBuffer[1] = 0x55;                               // parameter for reset is always 0x55
+                SendCommand(sendBuffer);                            // encryption
 
                 return (byte)_serialPort.ReadByte();
             }
@@ -359,21 +377,21 @@ namespace Buttplug.Server.Managers.ETSerialManager
             lock (_serialPort)
             {
                 BpLogger.Info("Attempting Synch");
+                _boxkey = 0;
 
                 try
                 {
                     // Try to read a byte from RAM using an unencrypted command
                     // If this works, we are not synched yet
                     byte[] sendBuffer = new byte[4];
-                    sendBuffer[0] = 0x3c;                               // read byte command
-                    sendBuffer[1] = 0x42;                               // address high byte
-                    sendBuffer[2] = 0x31;                               // address low byte
-                    sendBuffer[3] = Checksum(sendBuffer);               // checksum
-                    _serialPort.Write(sendBuffer, 0, 4);
+                    sendBuffer[0] = (byte)SerialCommand.Read;           // read byte command
+                    sendBuffer[1] = 0;                                  // address high byte
+                    sendBuffer[2] = 0;                                  // address low byte
+                    SendCommand(sendBuffer);
 
                     byte result = (byte)_serialPort.ReadByte();
 
-                    if (result == 0x22)
+                    if (result == ((byte)SerialResponse.Read | 0x20))
                     {
                         // It worked! Discard the rest of the response
                         _serialPort.ReadByte();
@@ -383,10 +401,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         BpLogger.Info("Encryption is not yet set up. Send Handshake.");
 
                         sendBuffer = new byte[3];
-                        sendBuffer[0] = 0x2f;                               // synch command
-                        sendBuffer[1] = 0x00;                               // our key
-                        sendBuffer[2] = Checksum(sendBuffer);               // checksum
-                        _serialPort.Write(sendBuffer, 0, 3);
+                        sendBuffer[0] = (byte)SerialCommand.KeyExchange;    // synch command
+                        sendBuffer[1] = 0;                                  // our key
+                        SendCommand(sendBuffer);
 
                         // Receive box key
                         byte[] recBuffer = new byte[3];
@@ -395,15 +412,21 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         recBuffer[2] = (byte)_serialPort.ReadByte();                      // checksum
 
                         // Response valid?
-                        if (recBuffer[0] != 0x21 || recBuffer[2] != Checksum(recBuffer))
+                        if (recBuffer[0] != ((byte)SerialResponse.KeyExchange | 0x20))
                         {
                             throw new ET312CommunicationException("Unexpected return code from device.");
                         }
 
+                        if (recBuffer[2] != Checksum(recBuffer))
+                        {
+                            throw new ET312CommunicationException("Checksum error in reply from device.");
+                        }
+
+                        _boxkey = (byte)(recBuffer[1] ^ 0x55);
+
                         // Override the random box key with our own (0x10) so we can reconnect to
                         // an already synched box without having to guess the box key
-                        _boxkey = (byte)(recBuffer[1] ^ 0x55);
-                        Poke(0x4213, 0x10);
+                        Poke((uint)RAM.BoxKey, 0x10);
                         _boxkey = 0x10;
 
                         BpLogger.Info("Handshake with ET312 successful.");
@@ -416,11 +439,11 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         _serialPort.DiscardInBuffer();
                         for (int i = 0; i < 11; i++)
                         {
-                            _serialPort.Write(new byte[] { 0x00 }, 0, 1);
+                            _serialPort.Write(new byte[] { (byte)SerialCommand.Sync }, 0, 1);
 
                             try
                             {
-                                if (_serialPort.ReadByte() == 0x07)
+                                if (_serialPort.ReadByte() == (byte)SerialResponse.Error)
                                 {
                                     break;
                                 }
@@ -435,7 +458,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         // Try reading from RAM with our pre-set box key of 0x10 - if this fails, the device
                         // is in an unknown state, throw exception.
                         _boxkey = 0x10;
-                        Peek(0x4231);
+                        Peek((uint)Flash.BoxModel);
 
                         // If we got this far we're back in busines!
                         BpLogger.Info("Encryption already set up. No handshake required.");
