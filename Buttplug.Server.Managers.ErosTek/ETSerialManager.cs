@@ -85,7 +85,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                             continue;
                         }
 
-                        throw ex;
+                        throw;
                     }
 
                     // We send 0x00 up to 11 times until we get 0x07 back.
