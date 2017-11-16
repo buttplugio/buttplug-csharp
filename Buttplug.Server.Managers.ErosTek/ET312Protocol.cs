@@ -19,6 +19,10 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
         /// <summary>
         ///  Range 0x4000 - 0x43ff - Complete MAP of Microcontroller RAM (read/write)
+        ///
+        ///  Please note that these definitions only include locations
+        ///  obviously useful in controlling the device. Please refer to
+        ///  buttshock-protocol-docs for a more complete list of
         /// </summary>
         public enum RAM : uint
         {
@@ -132,16 +136,10 @@ namespace Buttplug.Server.Managers.ETSerialManager
             OutputCalibrationA = 0x406B,        // Channel A calibration (DAC power offset)
             OutputCalibrationB = 0x406C,        // Channel B calibration (DAC power offset)
             MenuState = 0x406D,                 // Menu State
-            Adr406e = 0x406E,                   // unused
-            Adr406f = 0x406F,                   // unused
             BoxCommand1 = 0x4070,               // Execute Command (1)
             BoxCommand2 = 0x4071,               // Execute Command (2)
             RNGOut = 0x4072,                    // Last random number picked
             MasterTimerLSB = 0x4073,            // Master timer (LSB) runs at 488Hz (8MHz/64(scaler)/256)
-            Adr4074 = 0x4074,                   // Random 1 mode, 1 (start) or current random mode number
-            Adr4075 = 0x4075,                   // Random 1 mode, stores counter time when to change mode
-            Adr4076 = 0x4076,                   // unused
-            Adr4077 = 0x4077,                   // unused
             MenuItemDisplayed = 0x4078,         // Current displayed Menu Item/Mode (not yet selected)
             MenuItemLowBoundary = 0x4079,       // Lowest Selectable Menu Item/Mode
             MenuItemHighBoundary = 0x407A,      // Highest Selectable Menu Item/Mode
@@ -150,30 +148,14 @@ namespace Buttplug.Server.Managers.ETSerialManager
             ChannelAOscillatorHigh = 0x407d,    // Oscillator Ch A (updated but unused)
             ChannelBOscillatorLow = 0x407e,     // Oscillator Ch B (updated but unused)
             ChannelBOscillatorHigh = 0x407F,    // Oscillator Ch B (updated but unused)
-            Adr4080 = 0x4080,                   // unused (0x00)
-            Adr4081 = 0x4081,                   // unused (0x00)
-            Adr4082 = 0x4082,                   // retry counter when communicating with slave (0x02)
             OutputFlags = 0x4083,               // Output Control Flags - COMM_CONTROL_FLAG (0x00)
-            Adr4084 = 0x4084,                   // module to load if condition met
-            Adr4085 = 0x4085,                   // when module loading determines which channels to set (0x03)
             MultiAdjustRangeMin = 0x4086,       // Multi Adjust Range Min (0x0f)
             MultiAdjustRangeMax = 0x4087,       // Multi Adjust Range Max (0xff)
             ModuleTimerLow = 0x4088,            // Module timer (3 bytes) low - 244Hz (409uS)
             ModuleTimerMid = 0x4089,            // Module timer (3 bytes) mid - 0.953Hz (1.048S)
             ModuleTimerHigh = 0x408a,           // Module timer (3 bytes) high - (268.43S)
             ModuleTimerAlternative = 0x408b,    // Module timer (slower) - 30.5Hz
-            Adr408c = 0x408c,                   // Module temporary byte store
-            Adr408D = 0x408d,                   // Random Number Min
-            Adr408e = 0x408e,                   // Random Number Max
-            Adr408f = 0x408f,                   // Module to load if audio triggered
             ChannelAGateValue = 0x4090,         // Channel A: Current Gate Value (0x06)
-            Adr4091 = 0x4091,                   // module wants to change channel A gates
-            Adr4092 = 0x4092,                   // module wants to change channel B gates
-            Adr4093 = 0x4093,                   // unused
-            Adr4094 = 0x4094,                   // Next module timer current (0x00)
-            Adr4095 = 0x4095,                   // Next module timer max (0xff)
-            Adr4096 = 0x4096,                   // Next module flag (0x00)
-            Adr4097 = 0x4097,                   // Next module number (0x00)
             ChannelAGateOnTime = 0x4098,        // Channel A: Current Gate OnTime (0x3e)
             ChannelAGateOffTime = 0x4099,       // Channel A: Current Gate OffTime (0x3e)
             ChannelAGateSelect = 0x409a,        // Channel A: Current Gate Select (0x00)
@@ -219,26 +201,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
             WriteLCDPosition = 0x4181,          // Write LCD Position
             BoxCommandParameter1 = 0x4182,      // Parameter r26 for box command
             BoxCommandParameter2 = 0x4183,      // Parameter r27 for box command
-            Adr4184 = 0x4184,                   // set to random number during Random 1 Program
-            Adr4185 = 0x4185,                   // unused
-            Adr4186 = 0x4186,                   // unused
-            Adr4187 = 0x4187,                   // unused
-            Adr4188 = 0x4188,                   // unused
-            Adr4189 = 0x4189,                   // unused
-            Adr418A = 0x418A,                   // unused
-            Adr418B = 0x418B,                   // unused
-            Adr418C = 0x418C,                   // unused
-            Adr418D = 0x418D,                   // unused
-            Adr418E = 0x418E,                   // unused
-            Adr418F = 0x418F,                   // unused
             ChanneBGateValue = 0x4190,          // Channel B: Current Gate Value (0 when no output)
-            Adr4191 = 0x4191,                   // unused
-            Adr4192 = 0x4192,                   // unused
-            Adr4193 = 0x4193,                   // unused
-            Adr4194 = 0x4194,                   // Next module timer current (0x00)
-            Adr4195 = 0x4195,                   // Next module timer max (0xff)
-            Adr4196 = 0x4196,                   // Next module flag (0x00)
-            Adr4197 = 0x4197,                   // Next module number (0x00)
             ChannelBGateOnTime = 0x4198,        // Channel B: Current Gate OnTime (0x3e)
             ChannelBGateOffTime = 0x4199,       // Channel B: Current Gate OffTime (0x3e)
             ChannelBGateSelect = 0x419a,        // Channel B: Current Gate Select (0x00)
@@ -281,9 +244,6 @@ namespace Buttplug.Server.Managers.ETSerialManager
             ChanneBAWidthTimer = 0x41bf,        // Channel B: Current Width Modulation Timer (0x00)
             AverageMASamples = 0x41c0,          // last 16 MA knob readings used for averaging
             ScratchPadPointers = 0x41d0,        // User Module Scratchpad Pointers
-            Adr41f0 = 0x41f0,                   // pointer (counter) for MA knob averaging (0xc0)
-            Adr41f1 = 0x41f1,                   // pointer (counter) for serial output buffer (0x2c)
-            Adr41f2 = 0x41f2,                   // pointer (counter) for serial input buffer (0x20)
             TopMode = 0x41f3,                   // CurrentTopMode (written during routine write) (0x87)
             PowerLevel = 0x41f4,                // PowerLevel - COMM_POWER_LEVEL / COMM_LMODE (0x02)
             SplitModeA = 0x41f5,                // Split Mode Number A (0x77)
@@ -297,30 +257,10 @@ namespace Buttplug.Server.Managers.ETSerialManager
             AdvancedEffect = 0x41fd,            // Advanced Parameter: Effect (0x05)
             AdvancedWidth = 0x41fe,             // Advanced Parameter: Width (0x82)
             AdvancedPace = 0x41ff,              // Advanced Parameter: Pace (0x05)
-            Adr4200 = 0x4200,                   // value of advanced parameter being edited
-            Adr4201 = 0x4201,                   // min value of advanced parameter being edited
-            Adr4202 = 0x4202,                   // max value of advanced parameter being edited
-            Adr4203 = 0x4203,                   // battery level as a percentage (0-99)
-            Adr4204 = 0x4204,                   // calculated pwm frequency
-            Adr4205 = 0x4205,                   // channel a dac level
-            Adr4206 = 0x4206,                   // channel b dac level
             DebugEnable = 0x4207,               // debug mode: displays current module number if not 0
-            Adr4208 = 0x4208,                   // used for DAC SPI transfer
-            Adr4209 = 0x4209,                   // channel a pwm mark
-            Adr420a = 0x420a,                   // channel a pwm mark
-            Adr420b = 0x420b,                   // channel a pwm space
-            Adr420c = 0x420c,                   // channel a pwm space
             SenseMultiAdjust = 0x420d,          // Current Multi Adjust Value / COMM_MULTI_AVG
-            Adr420e = 0x420e,                   // channel b pwm mark
-            Adr420f = 0x420f,                   // channel b pwm mark
-            Adr4210 = 0x4210,                   // channel b pwm space
-            Adr4211 = 0x4211,                   // channel b pwm space
-            Adr4212 = 0x4212,                   // com instruction expected instruction length
             BoxKey = 0x4213,                    // com cipher key
-            Adr4214 = 0x4214,                   // com buffer incrementer
             PowerSupply = 0x4215,               // power status bits
-            Adr4216 = 0x4216,                   // unused
-            Adr4217 = 0x4217,                   // unused
             ModuleParsed = 0x4218,              // decoded module instruction to parse
             ComBufferRX = 0x4220,               // serial comms input buffer
             ComBufferTX = 0x422c,               // serial comms output buffer
@@ -336,8 +276,6 @@ namespace Buttplug.Server.Managers.ETSerialManager
             IsProvisioned = 0x8001,             // Magic (0x55 means we’re provisioned)
             BoxSerialLow = 0x8002,              // Box Serial 1
             BoxSerialHigh = 0x8003,             // Box Serial 2
-            Adr8004 = 0x8004,                   // unused, set to 0x00
-            Adr8005 = 0x8005,                   // unused, set to 0x00
             ELinkSig1 = 0x8006,                 // ELinkSig1 - ELINK_SIG1_ADDR (default 0x01)
             ELinkSig2 = 0x8007,                 // ELinkSig2 - ELINK_SIG2_ADDR (default 0x01)
             TopModeNV = 0x8008,                 // TopMode NonVolatile (written during routine write)
@@ -353,9 +291,6 @@ namespace Buttplug.Server.Managers.ETSerialManager
             AdvancedEffectNV = 0x8012,          // Advanced Parameter: Effect
             AdvancedWidthNV = 0x8013,           // Advanced Parameter: Width
             AdvancedPaceNV = 0x8014,            // Advanced Parameter: Pace
-            Adr8015 = 0x8015,                   // set to 0x00"
-            Adr8016 = 0x8016,                   // set to 0x00"
-            Adr8017 = 0x8017,                   // set to 0x00"
             UserRoutineVector1 = 0x8018,        // Start Vector User 1 - COMM_USER_BASE
             UserRoutineVector2 = 0x8019,        // Start Vector User 2
             UserRoutineVector3 = 0x801A,        // Start Vector User 3
@@ -370,7 +305,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             UserSpaceB = 0x8120,                // Space for User Modules
         }
 
-        // Possible bit field values for SystemFlags
+        /// <summary>
+        /// Possible bit field values for SystemFlags
+        /// </summary>
         [Flags]
         public enum SystemFlags : byte
         {
@@ -380,7 +317,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             DisableMultiAdjust = 0x08,  // Disable Multi Adjust(SYSTEM_FLAG_MULTIA_POT_DISABLE_MASK)
         }
 
-        // Possible bit field values for SlaveFlags
+        /// <summary>
+        /// Possible bit field values for SlaveFlags
+        /// </summary>
         [Flags]
         public enum SlaveFlags : byte
         {
@@ -388,7 +327,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             Select = 0x40,              // in slave mode determines which registers to send(toggles)
         }
 
-        // Possible bit field values for RuntimeFlags
+        /// <summary>
+        /// Possible bit field values for RuntimeFlags
+        /// </summary>
         [Flags]
         public enum RuntimeFlags : byte
         {
@@ -401,14 +342,18 @@ namespace Buttplug.Server.Managers.ETSerialManager
             MasterMode = 0x80,          // set if we are a linked master
         }
 
-        // Possible values for MenuState
+        /// <summary>
+        /// Possible values for MenuState
+        /// </summary>
         public enum MenuState : byte
         {
             Active = 0x01,              // In startup screen or in a menu
             InActive = 0x02,            // No menu, proram is running and displaying"
         }
 
-        // Commands to be executed via BoxCommand1 and BoxCommand2
+        /// <summary>
+        /// Commands to be executed via BoxCommand1 and BoxCommand2
+        /// </summary>
         public enum BoxCommand : byte
         {
             NOP = 0x01,                 // do nothing
@@ -448,7 +393,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             None = 0xff,                // No command
         }
 
-        // Possible values for all Mode Selection settings
+        /// <summary>
+        /// Possible values for all Mode Selection settings
+        /// </summary>
         public enum Mode : byte
         {
             PowerOm = 0x00,         // MODE_NUM_POWER_ON
@@ -480,7 +427,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             User7 = 0x8e,           // MODE_NUM_USER7 / MODE_NUM_UPPER
         }
 
-        // Possible bit field values for OutputFlags
+        /// <summary>
+        /// Possible bit field values for OutputFlags
+        /// </summary>
         [Flags]
         public enum OutputFlags : byte
         {
@@ -492,7 +441,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             Mono = 0x40,            // Mono Mode (off=Stereo)
         }
 
-        // Possible bit field values for all "Gate Select" settings
+        /// <summary>
+        /// Possible bit field values for all "Gate Select" settings
+        /// </summary>
         [Flags]
         public enum Gate : byte
         {
@@ -506,7 +457,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             OnFromMA = 0x40,        // On time follows the value of the MA knob
         }
 
-        // Possible bit field values for Frequency/Width/Intensity Ramp "AtMin" and "AtMax" settings
+        /// <summary>
+        /// Possible bit field values for Frequency/Width/Intensity Ramp "AtMin" and "AtMax" settings
+        /// </summary>
         [Flags]
         public enum Ramp : byte
         {
@@ -516,7 +469,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             Reverse = 0xff,         // Reverse Direction ramp min/max is reached
         }
 
-        // Possible bit field values for Frequency/Width/Intensity Select settings
+        /// <summary>
+        /// Possible bit field values for Frequency/Width/Intensity Select settings
+        /// </summary>
         [Flags]
         public enum Select : byte
         {
@@ -539,7 +494,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             RateOtherInverted = 0xf0, // Rate is inverse of rate from other channel
         }
 
-        // Possible bit field values for PowerLevel and PowerLevelNV
+        /// <summary>
+        /// Possible bit field values for PowerLevel and PowerLevelNV
+        /// </summary>
         public enum PowerLevel : byte
         {
             Low = 0x00,             // LOW
@@ -547,7 +504,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             High = 0x02,            // HIGH
         }
 
-        // Possible bit field values for PowerSupply
+        /// <summary>
+        /// Possible bit field values for PowerSupply
+        /// </summary>
         [Flags]
         public enum PowerSupply : byte
         {
@@ -555,7 +514,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             PSU = 0x02,             // Set if we have a PSU connected
         }
 
-        // Serial Port Commands (Client -> Box)
+        /// <summary>
+        /// Serial Port Commands (Client -> Box)
+        /// </summary>
         public enum SerialCommand : byte
         {
             Sync = 0x00,            // Dummy Command (always fails)
@@ -566,7 +527,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             KeyExchange = 0x0f,     // Request key exchange
         }
 
-        // Serial Port Responses (Box -> Client)
+        /// <summary>
+        /// Serial Port Responses (Box -> Client)
+        /// </summary>
         public enum SerialResponse : byte
         {
             KeyExchange = 0x01,     // Key exchange acknowledged
