@@ -65,7 +65,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     throw new ET312HandshakeException("Failed to set up initial device parameters.");
                 }
 
-                throw ex;
+                throw;
             }
 
             // We're now ready to receive events
@@ -146,7 +146,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
             }
         }
@@ -204,7 +204,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         return new Ok(aMsg.Id);
                     }
 
-                    throw ex;
+                    throw;
                 }
             }
         }
@@ -455,7 +455,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         }
 
                         // Try reading from RAM with our pre-set box key of 0x10 - if this fails, the device
-                        // is in an unknown state, throw exception.
+                        // is in an unknown state, throwception.
                         _boxkey = 0x10;
                         Peek((uint)Flash.BoxModel);
 
@@ -475,7 +475,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                             throw new ET312HandshakeException("Failed to set up communications with device.");
                     }
 
-                    throw ex;
+                    throw;
                 }
             }
         }
