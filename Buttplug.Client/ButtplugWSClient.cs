@@ -10,6 +10,7 @@ using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using static Buttplug.Client.DeviceEventArgs;
 using WebSocket4Net;
+using SuperSocket.ClientEngine;
 
 namespace Buttplug.Client
 {
@@ -28,9 +29,6 @@ namespace Buttplug.Client
 
         [NotNull]
         private readonly string _clientName;
-
-        [NotNull]
-        private readonly uint _messageSchemaVersion;
 
         [NotNull]
         private ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs = new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
@@ -65,6 +63,12 @@ namespace Buttplug.Client
 
         [CanBeNull]
         public event EventHandler<LogEventArgs> Log;
+
+        private TaskCompletionSource<bool> _connectedOrFailed;
+
+        private TaskCompletionSource<bool> _disconnected;
+
+        private bool _connecting;
 
         public uint nextMsgId
         {
@@ -111,12 +115,19 @@ namespace Buttplug.Client
             _waitingMsgs.Clear();
             _devices.Clear();
             _counter = 1;
+
+            _connectedOrFailed = new TaskCompletionSource<bool>();
+            _disconnected = new TaskCompletionSource<bool>();
+
+            _ws.Opened += OpenedHandler;
+            _ws.Closed += ClosedHandler;
+            _ws.Error += ErrorHandler;
+
             _ws.Open();
 
-            while (_ws.State == WebSocketState.Connecting)
-            {
-                Thread.Sleep(10);
-            }
+            _connecting = true;
+            await _connectedOrFailed.Task;
+            _connecting = false;
 
             if (_ws.State != WebSocketState.Open)
             {
@@ -144,6 +155,38 @@ namespace Buttplug.Client
             }
         }
 
+        private void ErrorHandler(object sender, SuperSocket.ClientEngine.ErrorEventArgs e)
+        {
+            if (_connecting)
+            {
+                _connectedOrFailed.TrySetResult(false);
+            }
+
+            _owningDispatcher?.Invoke(() =>
+            {
+                ErrorReceived?.Invoke(this, new ErrorEventArgs(e.Exception));
+
+                if (_ws?.State != WebSocketState.Open)
+                {
+                    Disconnect().Wait();
+                }
+            });
+        }
+
+        private void ClosedHandler(object sender, EventArgs e)
+        {
+            _disconnected.TrySetResult(true);
+            _owningDispatcher?.Invoke(() =>
+            {
+                Disconnect().Wait();
+            });
+        }
+
+        private void OpenedHandler(object sender, EventArgs e)
+        {
+            _connectedOrFailed.TrySetResult(true);
+        }
+
         public async Task Disconnect()
         {
             if (_pingTimer != null)
@@ -159,7 +202,7 @@ namespace Buttplug.Client
                     if (_ws.State != WebSocketState.Closing && _ws.State != WebSocketState.Closed)
                     {
                         _ws.Close("Client shutdown");
-                        Thread.Sleep(10);
+                        await _disconnected.Task;
                     }
                 }
             }
