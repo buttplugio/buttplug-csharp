@@ -5,9 +5,8 @@
     <PackageVersion>1.0.0-dev</PackageVersion>
     <RootNamespace>Buttplug.Server</RootNamespace>
     <AssemblyName>Buttplug.Server</AssemblyName>
-    <TargetFrameworks>net452;netstandard1.4</TargetFrameworks>
+    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
     <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>Buttplug Server Library</Product>
     <Authors>qdot</Authors>
@@ -30,11 +29,17 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <!-- StyleCop doesn't like .Net Standard 2.0 for some reason... -->
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" version="11.0.0" />
     <PackageReference Include="NLog" version="5.0.0-beta11" />
     <PackageReference Include="StyleCop.Analyzers" version="1.1.0-beta004" PrivateAssets="All" />
     <PackageReference Include="System.Threading.Timer" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">

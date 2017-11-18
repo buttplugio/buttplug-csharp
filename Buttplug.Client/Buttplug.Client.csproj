@@ -5,9 +5,8 @@
     <PackageVersion>1.0.0-dev</PackageVersion>
     <RootNamespace>Buttplug.Client</RootNamespace>
     <AssemblyName>Buttplug.Client</AssemblyName>
-    <TargetFrameworks>net452;netstandard1.4</TargetFrameworks>
+    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
     <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>Buttplug Client Library</Product>
     <Authors>qdot</Authors>
@@ -29,6 +28,11 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <!-- StyleCop doesn't like .Net Standard 2.0 for some reason... -->
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" version="11.0.0" />
     <PackageReference Include="Microsoft.CSharp" version="4.4.0" />
@@ -38,7 +42,7 @@
     <PackageReference Include="WebSocket4Net" Version="0.15.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Net.WebSockets.Client" version="4.3.1" />
   </ItemGroup>
 
