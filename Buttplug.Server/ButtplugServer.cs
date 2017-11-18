@@ -42,11 +42,7 @@ namespace Buttplug.Server
 
         public static string GetLicense()
         {
-#if NETSTANDARD1_4
-            var assembly = typeof(ButtplugServer).GetTypeInfo().Assembly;
-#else
             var assembly = Assembly.GetExecutingAssembly();
-#endif
             var resourceName = "Buttplug.Server.LICENSE";
             Stream stream = null;
             try
