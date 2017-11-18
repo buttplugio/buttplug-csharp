@@ -38,9 +38,7 @@ namespace Buttplug.Core
                 allTypes = e.Types;
             }
 
-            var messageClasses = allTypes
-                                         .Where(t => t.IsClass)
-                                         .Where(t => t != null && t.Namespace == "Buttplug.Core.Messages" && typeof(ButtplugMessage).IsAssignableFrom(t));
+            var messageClasses = allTypes.Where(t => t != null && t.IsClass && t.Namespace == "Buttplug.Core.Messages" && typeof(ButtplugMessage).IsAssignableFrom(t));
 
             var enumerable = messageClasses as Type[] ?? messageClasses.ToArray();
             _bpLogger?.Debug($"Message type count: {enumerable.Length}");

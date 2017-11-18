@@ -67,7 +67,7 @@ namespace Buttplug.Server
             _pingTimedOut = false;
             if (aMaxPingTime != 0)
             {
-                // Create a new timer that wont fire any events jsut yet
+                // Create a new timer that wont fire any events just yet
                 _pingTimer = new Timer(PingTimeoutHandler, null, Timeout.Infinite, Timeout.Infinite);
             }
 
