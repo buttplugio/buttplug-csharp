@@ -114,7 +114,7 @@ namespace Buttplug.Core
                 if (!o.Properties().Any())
                 {
                     var err = new Error("No message name available", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
-                    _bpLogger.LogErrorMsg(err);
+                    _bpLogger?.LogErrorMsg(err);
                     res.Add(err);
                     continue;
                 }
