@@ -24,6 +24,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Pivot",
             "Wish",
             "Verge",
+            "Cougar",
         };
 
         public Guid[] Characteristics { get; } =
