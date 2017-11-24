@@ -66,7 +66,7 @@ namespace Buttplug.Apps.ExampleClientGUI
             {
                 if (_client != null)
                 {
-                    await _client.Connect(new Uri(AdressTextBox.Text));
+                    await _client.Connect(new Uri(AdressTextBox.Text), true);
                     await _client.RequestDeviceList();
 
                     foreach (var dev in _client.getDevices())

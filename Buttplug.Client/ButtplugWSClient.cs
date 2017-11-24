@@ -103,7 +103,7 @@ namespace Buttplug.Client
             Disconnect().Wait();
         }
 
-        public async Task Connect(Uri aURL)
+        public async Task Connect(Uri aURL, bool aIgnoreSSLErrors = false)
         {
             if (_ws != null && (_ws.State == WebSocketState.Connecting || _ws.State == WebSocketState.Open))
             {
@@ -121,6 +121,12 @@ namespace Buttplug.Client
             _ws.Opened += OpenedHandler;
             _ws.Closed += ClosedHandler;
             _ws.Error += ErrorHandler;
+
+            if (aIgnoreSSLErrors)
+            {
+                _ws.Security.AllowNameMismatchCertificate = true;
+                _ws.Security.AllowUnstrustedCertificate = true;
+            }
 
             _ws.Open();
 

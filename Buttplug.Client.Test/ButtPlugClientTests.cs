@@ -62,5 +62,40 @@ namespace Buttplug.Client.Test
             await client.Disconnect();
             server.StopServer();
         }
+
+        [Fact]
+        public async void TestSSLConnection()
+        {
+            var server = new ButtplugWebsocketServer();
+            server.StartServer(this, 12346, true, true);
+
+            var client = new ButtplugTestClient("Test client");
+            await client.Connect(new Uri("wss://localhost:12346/buttplug"), true);
+
+            var msgId = client.nextMsgId;
+            var res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
+            Assert.True(res != null);
+            Assert.True(res is Core.Messages.Test);
+            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
+            Assert.True(((Core.Messages.Test)res).Id == msgId);
+
+            // Check ping is working
+            Thread.Sleep(400);
+
+            msgId = client.nextMsgId;
+            res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
+            Assert.True(res != null);
+            Assert.True(res is Core.Messages.Test);
+            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
+            Assert.True(((Core.Messages.Test)res).Id == msgId);
+
+            Assert.True(client.nextMsgId > 4);
+
+            await client.RequestDeviceList();
+
+            // Shut it down
+            await client.Disconnect();
+            server.StopServer();
+        }
     }
 }
