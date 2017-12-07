@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using static Buttplug.Client.DeviceEventArgs;
-using WebSocket4Net;
 using SuperSocket.ClientEngine;
+using WebSocket4Net;
+using static Buttplug.Client.DeviceEventArgs;
 
 namespace Buttplug.Client
 {
@@ -305,7 +305,7 @@ namespace Buttplug.Client
         {
             try
             {
-                var msg = await SendMessage(new Ping(nextMsgId));
+                var msg = await SendMessage(new Ping());
                 if (msg is Error)
                 {
                     _owningDispatcher.Send(_ =>
@@ -326,7 +326,7 @@ namespace Buttplug.Client
 
         public async Task RequestDeviceList()
         {
-            var resp = await SendMessage(new RequestDeviceList(nextMsgId));
+            var resp = await SendMessage(new RequestDeviceList());
             if (!(resp is DeviceList) || (resp as DeviceList).Devices == null)
             {
                 if (resp is Error)
@@ -365,17 +365,17 @@ namespace Buttplug.Client
 
         public async Task<bool> StartScanning()
         {
-            return await SendMessageExpectOk(new StartScanning(nextMsgId));
+            return await SendMessageExpectOk(new StartScanning());
         }
 
         public async Task<bool> StopScanning()
         {
-            return await SendMessageExpectOk(new StopScanning(nextMsgId));
+            return await SendMessageExpectOk(new StopScanning());
         }
 
         public async Task<bool> RequestLog(string aLogLevel)
         {
-            return await this.SendMessageExpectOk(new RequestLog(aLogLevel, nextMsgId));
+            return await this.SendMessageExpectOk(new RequestLog(aLogLevel));
         }
 
         public async Task<ButtplugMessage> SendDeviceMessage(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg)
@@ -403,6 +403,9 @@ namespace Buttplug.Client
 
         protected async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
         {
+            // The client always increments the IDs on outgoing messages
+            aMsg.Id = nextMsgId;
+
             var promise = new TaskCompletionSource<ButtplugMessage>();
             _waitingMsgs.TryAdd(aMsg.Id, promise);
 

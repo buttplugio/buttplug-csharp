@@ -42,7 +42,7 @@ namespace Buttplug.Client.Test
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
             Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id == msgId);
+            Assert.True(((Core.Messages.Test)res).Id > msgId);
 
             // Check ping is working
             Thread.Sleep(400);
@@ -52,9 +52,15 @@ namespace Buttplug.Client.Test
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
             Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id == msgId);
+            Assert.True(((Core.Messages.Test)res).Id > msgId);
 
-            Assert.True(client.nextMsgId > 4);
+            res = await client.SendMsg(new Core.Messages.Test("Test string"));
+            Assert.True(res != null);
+            Assert.True(res is Core.Messages.Test);
+            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
+            Assert.True(((Core.Messages.Test)res).Id > msgId);
+
+            Assert.True(client.nextMsgId > 5);
 
             await client.RequestDeviceList();
 
@@ -77,7 +83,7 @@ namespace Buttplug.Client.Test
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
             Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id == msgId);
+            Assert.True(((Core.Messages.Test)res).Id > msgId);
 
             // Check ping is working
             Thread.Sleep(400);
@@ -87,7 +93,7 @@ namespace Buttplug.Client.Test
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
             Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id == msgId);
+            Assert.True(((Core.Messages.Test)res).Id > msgId);
 
             Assert.True(client.nextMsgId > 4);
 
