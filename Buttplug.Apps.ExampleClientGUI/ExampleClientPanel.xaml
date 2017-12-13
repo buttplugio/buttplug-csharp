@@ -11,13 +11,14 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Label Content="Address:"  Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"/>
 		<TextBox Name="AdressTextBox"  Grid.Row="0" HorizontalAlignment="Left" Height="23" Margin="80,0,0,0" TextWrapping="Wrap" Text="ws://localhost:12345" VerticalAlignment="Center" Width="120"/>
 		<Button Name="ConnToggleButton"  Grid.Row="0" Content="Connect" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" Width="75" Click="ConnToggleButton_Click"/>
 
-		<GroupBox Grid.Row="1" Header="Linerar">
+		<GroupBox Grid.Row="1" Header="Linear (Fleshlight Launch)">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -35,7 +36,27 @@
 				<Button Name="SendLinear" Content="Send" Grid.Row="1" Grid.Column="2" Click="SendLinear_Click"/>
 			</Grid>
 		</GroupBox>
-		<GroupBox Grid.Row="2" Header="Vibrate">
+
+		<GroupBox Grid.Row="2" Header="Linear (generic)">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<Label Content="Position:" Grid.Row="0" Grid.Column="0"/>
+				<Slider Name="Linear2Position" Grid.Row="0" Grid.Column="1" Maximum="1" SmallChange="0.01" LargeChange="0.1"/>
+				<Label Content="Duration:" Grid.Row="1" Grid.Column="0"/>
+				<TextBox Name="LinearDuration" Grid.Row="1" Grid.Column="1" Text="500"/>
+				<Button Name="SendLinear2" Content="Send" Grid.Row="1" Grid.Column="2" Click="SendLinear2_Click"/>
+			</Grid>
+		</GroupBox>
+
+		<GroupBox Grid.Row="3" Header="Vibrate">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -50,7 +71,8 @@
 				<Button Name="SendVibrate" Content="Send" Grid.Row="0" Grid.Column="2" Click="SendVibrate_Click"/>
 			</Grid>
 		</GroupBox>
-		<GroupBox Grid.Row="3" Header="Rotate">
+		
+		<GroupBox Grid.Row="4" Header="Rotate">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -61,7 +83,7 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 				<Label Content="Speed:" Grid.Row="0" Grid.Column="0"/>
-				<Slider Name="RotateSpeed" Grid.Row="0" Grid.Column="1" SmallChange="2" LargeChange="20" Maximum="99" Minimum="-99"/>
+				<Slider Name="RotateSpeed" Grid.Row="0" Grid.Column="1" Maximum="1" LargeChange="0.1" SmallChange="0.01" Minimum="-1"/>
 				<Button Name="SendRotate" Content="Send" Grid.Row="0" Grid.Column="2" Height="26" Click="SendRotate_Click"/>
 			</Grid>
 		</GroupBox>

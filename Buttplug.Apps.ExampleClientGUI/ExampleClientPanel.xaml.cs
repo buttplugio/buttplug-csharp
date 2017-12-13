@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Windows;
 using Buttplug.Client;
 using Buttplug.Components.Controls;
@@ -71,7 +72,7 @@ namespace Buttplug.Apps.ExampleClientGUI
 
                     foreach (var dev in _client.getDevices())
                     {
-                        devControl.DeviceAdded(new ButtplugDeviceInfo(dev.Index, dev.Name, dev.AllowedMessages.ToArray()));
+                        devControl.DeviceAdded(new ButtplugDeviceInfo(dev.Index, dev.Name, dev.AllowedMessages));
                     }
                 }
             }
@@ -86,7 +87,7 @@ namespace Buttplug.Apps.ExampleClientGUI
             switch (e.Action)
             {
                 case DeviceAction.ADDED:
-                    devControl.DeviceAdded(new ButtplugDeviceInfo(e.Device.Index, e.Device.Name, e.Device.AllowedMessages.ToArray()));
+                    devControl.DeviceAdded(new ButtplugDeviceInfo(e.Device.Index, e.Device.Name, e.Device.AllowedMessages));
                     break;
 
                 case DeviceAction.REMOVED:
@@ -135,7 +136,7 @@ namespace Buttplug.Apps.ExampleClientGUI
 
             foreach (var dev in Devices.Values)
             {
-                if (dev.AllowedMessages.Contains("FleshlightLaunchFW12Cmd"))
+                if (dev.AllowedMessages.ContainsKey("FleshlightLaunchFW12Cmd"))
                 {
                     _client.SendDeviceMessage(dev,
                         new FleshlightLaunchFW12Cmd(dev.Index,
@@ -155,12 +156,24 @@ namespace Buttplug.Apps.ExampleClientGUI
 
             foreach (var dev in Devices.Values)
             {
-                if (dev.AllowedMessages.Contains("SingleMotorVibrateCmd"))
+                if (dev.AllowedMessages.TryGetValue("VibrateCmd", out var attrs))
                 {
-                    _client.SendDeviceMessage(dev,
-                        new SingleMotorVibrateCmd(dev.Index,
-                            Convert.ToDouble(VibrateSpeed.Value),
-                            _client.nextMsgId));
+                    try
+                    {
+                        uint vibratorCount = attrs.FeatureCount ?? 0;
+
+                        for (uint i = 0; i < vibratorCount; i++)
+                        {
+                            _client.SendDeviceMessage(dev,
+                                new VibrateCmd(dev.Index,
+                                    new List<VibrateCmd.VibrateIndex>
+                                    { new VibrateCmd.VibrateIndex(i, VibrateSpeed.Value) },
+                                    _client.nextMsgId));
+                        }
+                    }
+                    catch
+                    {
+                    }
                 }
             }
         }
@@ -174,14 +187,45 @@ namespace Buttplug.Apps.ExampleClientGUI
 
             foreach (var dev in Devices.Values)
             {
-                if (dev.AllowedMessages.Contains("VorzeA10CycloneCmd"))
+                if (dev.AllowedMessages.TryGetValue("RotateCmd", out var attrs))
                 {
-                    bool clockwise = RotateSpeed.Value > 0;
+                    try
+                    {
+                        uint rotatorCount = attrs.FeatureCount ?? 0;
+
+                        for (uint i = 0; i < rotatorCount; i++)
+                        {
+                            bool clockwise = RotateSpeed.Value > 0;
+                            _client.SendDeviceMessage(dev,
+                                new RotateCmd(dev.Index,
+                                    new List<RotateCmd.RotateIndex>
+                                            { new RotateCmd.RotateIndex(i, RotateSpeed.Value * (clockwise ? 1 : -1), clockwise) },
+                                    _client.nextMsgId));
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+        }
+
+        private void SendLinear2_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_client.IsConnected)
+            {
+                return;
+            }
+
+            foreach (var dev in Devices.Values)
+            {
+                if (dev.AllowedMessages.ContainsKey("FleshlightLaunchFW12Cmd"))
+                {
                     _client.SendDeviceMessage(dev,
-                        new VorzeA10CycloneCmd(dev.Index,
-                            Convert.ToUInt32(RotateSpeed.Value * (clockwise ? 1 : -1)),
-                            clockwise,
-                            _client.nextMsgId));
+                        new LinearCmd(dev.Index, new List<LinearCmd.VectorIndex>()
+                        {
+                            new LinearCmd.VectorIndex(0, Convert.ToUInt32(LinearDuration.Text), Linear2Position.Value),
+                        }, _client.nextMsgId));
                 }
             }
         }

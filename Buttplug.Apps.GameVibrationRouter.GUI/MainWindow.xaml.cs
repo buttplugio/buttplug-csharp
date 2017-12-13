@@ -107,7 +107,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
                 foreach (var device in _devices)
                 {
                     // For now, we only handle devices that can take vibration messages.
-                    if (!device.Messages.Contains(typeof(SingleMotorVibrateCmd).Name))
+                    if (!device.Messages.Keys.Contains(typeof(SingleMotorVibrateCmd).Name))
                     {
                         continue;
                     }

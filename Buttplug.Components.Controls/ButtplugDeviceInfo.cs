@@ -1,4 +1,7 @@
-﻿namespace Buttplug.Components.Controls
+﻿using System.Collections.Generic;
+using Buttplug.Core.Messages;
+
+namespace Buttplug.Components.Controls
 {
     public class ButtplugDeviceInfo
     {
@@ -6,9 +9,10 @@
 
         public uint Index { get; }
 
-        public string[] Messages { get; }
+        public Dictionary<string, MessageAttributes> Messages { get; }
 
-        public ButtplugDeviceInfo(uint aIndex, string aName, string[] aMessages)
+        public ButtplugDeviceInfo(uint aIndex, string aName,
+            Dictionary<string, MessageAttributes> aMessages)
         {
             Index = aIndex;
             Name = aName;
