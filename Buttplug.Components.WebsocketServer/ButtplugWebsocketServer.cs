@@ -96,7 +96,7 @@ namespace Buttplug.Components.WebsocketServer
                 try
                 {
                     ws.WriteString(new ButtplugJsonMessageParser(_logManager).Serialize(_logger.LogErrorMsg(
-                        ButtplugConsts.SystemMsgId, ErrorClass.ERROR_INIT, "WebSocketServer already in use!")));
+                        ButtplugConsts.SystemMsgId, ErrorClass.ERROR_INIT, "WebSocketServer already in use!"), 0));
                     ws.Close();
                 }
                 catch
@@ -120,6 +120,11 @@ namespace Buttplug.Components.WebsocketServer
             EventHandler<MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
             {
                 var msg = buttplug.Serialize(aEvent.Message);
+                if (msg == null)
+                {
+                    return;
+                }
+
                 try
                 {
                     if (ws != null && ws.IsConnected)
@@ -159,6 +164,11 @@ namespace Buttplug.Components.WebsocketServer
                     {
                         var respMsgs = await buttplug.SendMessage(msg);
                         var respMsg = buttplug.Serialize(respMsgs);
+                        if (respMsg == null)
+                        {
+                            continue;
+                        }
+
                         await ws.WriteStringAsync(respMsg, cancellation);
 
                         foreach (var m in respMsgs)

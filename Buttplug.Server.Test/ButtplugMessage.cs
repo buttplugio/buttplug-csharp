@@ -91,7 +91,7 @@ namespace Buttplug.Server.Test
         public async void SerializeUnhandledMessage()
         {
             var logger = new ButtplugLogManager();
-            var r = new ButtplugJsonMessageParser(logger).Serialize(new FakeMessage(1));
+            var r = new ButtplugJsonMessageParser(logger).Serialize(new FakeMessage(1), 0);
 
             // Even though the message is defined outside the core library, it should at least serialize
             Assert.True(r.Length > 0);

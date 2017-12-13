@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Buttplug.Core.Messages;
 
 namespace Buttplug.Core
 {
@@ -14,10 +15,16 @@ namespace Buttplug.Core
         string Identifier { get; }
 
         [NotNull]
+        uint Index { get; set; }
+
+        [NotNull]
         bool IsConnected { get; }
 
         [CanBeNull]
         event EventHandler DeviceRemoved;
+
+        [CanBeNull]
+        event EventHandler<MessageReceivedEventArgs> MessageEmitted;
 
         [NotNull]
         IEnumerable<Type> GetAllowedMessageTypes();
@@ -29,5 +36,8 @@ namespace Buttplug.Core
         Task<ButtplugMessage> Initialize();
 
         void Disconnect();
+
+        [NotNull]
+        MessageAttributes GetMessageAttrs(Type aMsg);
     }
 }

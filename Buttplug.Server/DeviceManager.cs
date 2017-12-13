@@ -38,9 +38,16 @@ namespace Buttplug.Server
             _managers = new List<IDeviceSubtypeManager>();
         }
 
-        private static IEnumerable<string> GetAllowedMessageTypesAsStrings([NotNull] IButtplugDevice aDevice)
+        private static Dictionary<string, MessageAttributes>
+            GetAllowedMessageTypesAsDictionary([NotNull] IButtplugDevice aDevice)
         {
-            return from x in aDevice.GetAllowedMessageTypes() select x.Name;
+            Dictionary<string, MessageAttributes> msgs = new Dictionary<string, MessageAttributes>();
+            foreach (var msg in from x in aDevice.GetAllowedMessageTypes() select x)
+            {
+                msgs.Add(msg.Name, aDevice.GetMessageAttrs(msg));
+            }
+
+            return msgs;
         }
 
         private void DeviceAddedHandler(object aObj, DeviceAddedEventArgs aEvent)
@@ -65,10 +72,20 @@ namespace Buttplug.Server
             _bpLogger.Info((duplicates.Any() ? "Re-" : string.Empty) + $"Adding Device {aEvent.Device.Name} at index {deviceIndex}");
 
             _devices[deviceIndex] = aEvent.Device;
+            _devices[deviceIndex].Index = deviceIndex;
             aEvent.Device.DeviceRemoved += DeviceRemovedHandler;
-            var msg = new DeviceAdded(deviceIndex, aEvent.Device.Name, GetAllowedMessageTypesAsStrings(aEvent.Device).ToArray());
+            aEvent.Device.MessageEmitted += MessageEmittedHandler;
+            var msg = new DeviceAdded(
+                deviceIndex,
+                aEvent.Device.Name,
+                GetAllowedMessageTypesAsDictionary(aEvent.Device));
 
             DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
+        }
+
+        private void MessageEmittedHandler(object sender, MessageReceivedEventArgs e)
+        {
+            DeviceMessageReceived?.Invoke(this, e);
         }
 
         private void DeviceRemovedHandler(object aObj, EventArgs aEvent)
@@ -164,8 +181,10 @@ namespace Buttplug.Server
                 case RequestDeviceList _:
                     _bpLogger.Debug("Got RequestDeviceList Message");
                     var msgDevices = _devices.Where(aDevice => aDevice.Value.IsConnected)
-                        .Select(aDevice => new DeviceMessageInfo(aDevice.Key, aDevice.Value.Name,
-                                GetAllowedMessageTypesAsStrings(aDevice.Value).ToArray())).ToList();
+                        .Select(aDevice => new DeviceMessageInfo(
+                            aDevice.Key,
+                            aDevice.Value.Name,
+                            GetAllowedMessageTypesAsDictionary(aDevice.Value))).ToList();
                     return new DeviceList(msgDevices.ToArray(), id);
 
                 // If it's a device message, it's most likely not ours.

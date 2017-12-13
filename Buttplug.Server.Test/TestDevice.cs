@@ -10,7 +10,7 @@ namespace Buttplug.Server.Test
         public TestDevice(ButtplugLogManager aLogManager, string aName)
             : base(aLogManager, aName, "Test")
         {
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
         }
 
         private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)

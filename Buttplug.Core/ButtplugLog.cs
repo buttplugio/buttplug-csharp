@@ -76,7 +76,7 @@ namespace Buttplug.Core
 
         public void LogException(Exception aEx, bool aLocalOnly = true, string aMsg = null)
         {
-            Error((aEx?.GetType().ToString() ?? "Unknown Exception") + ": " + aMsg ?? (aEx.Message + "\n" + aEx.StackTrace), aLocalOnly);
+            Error((aEx?.GetType().ToString() ?? "Unknown Exception") + ": " + (aMsg ?? (aEx.Message + "\n" + aEx.StackTrace)), aLocalOnly);
             OnLogException?.Invoke(this, new LogExceptionEventArgs(aEx, aLocalOnly, aMsg));
         }
     }
