@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Buttplug.DeviceSimulator.PipeMessages;
+using Buttplug.Server.Util;
 
 namespace Buttplug.Apps.DeviceSimulatorGUI
 {
@@ -113,6 +114,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                     }
                 }
 
+                Console.Out.WriteLine(msg);
                 var parsed = _parser.Deserialize(msg);
                 if (parsed == null)
                 {
@@ -128,7 +130,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                             devAdded.Name = dev.Name;
                             devAdded.Id = dev.Id;
                             devAdded.HasLinear = dev.HasLinear;
-                            devAdded.HasVibrator = dev.HasVibrator;
+                            devAdded.VibratorCount = dev.VibratorCount;
                             devAdded.HasRotator = dev.HasRotator;
 
                             _msgQueue.Enqueue(devAdded);
@@ -148,21 +150,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                                 return;
                             }
 
-                            Dispatcher.Invoke(() =>
-                            {
-                                if (dev.DeviceHasVibrator.IsChecked.GetValueOrDefault(false))
-                                {
-                                    dev.VibratorSpeed.Value = 0;
-                                }
-                                if (dev.DeviceHasRotator.IsChecked.GetValueOrDefault(false))
-                                {
-                                    dev.RotatorSpeed.Value = 0;
-                                }
-                                if (dev.DeviceHasLinear.IsChecked.GetValueOrDefault(false))
-                                {
-                                    // Complicated stuff: position stays the same
-                                }
-                            });
+                            dev.StopDevice();
                         }
 
                         break;
@@ -175,13 +163,7 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
                                 return;
                             }
 
-                            if (dev.HasVibrator)
-                            {
-                                Dispatcher.Invoke(() =>
-                                {
-                                    dev.VibratorSpeed.Value = Math.Min(v.Speed, 1) * dev.VibratorSpeed.Maximum;
-                                });
-                            }
+                            dev.Vibrate(v.VibratorId, v.Speed);
                         }
 
                         break;
@@ -196,8 +178,26 @@ namespace Buttplug.Apps.DeviceSimulatorGUI
 
                             if (dev.HasLinear)
                             {
-                                dev.LinearTargetPosition = Math.Min(l.Position, 99);
-                                dev.LinearSpeed = Math.Min(l.Speed, 99);
+                                dev.LinearTargetPosition = l.Position;
+                                dev.LinearSpeed = l.Speed;
+                            }
+                        }
+
+                        break;
+
+                    case Linear2 l:
+                        foreach (DeviceSimulator dev in tabs.Values)
+                        {
+                            if (dev == null || dev.Id != l.Id)
+                            {
+                                return;
+                            }
+
+                            if (dev.HasLinear)
+                            {
+                                double dist = Math.Abs(dev.LinearTargetPosition - l.Position);
+                                dev.LinearSpeed = FleshlightHelper.GetSpeed(dist, l.Duration);
+                                dev.LinearTargetPosition = l.Position;
                             }
                         }
 
