@@ -30,6 +30,9 @@ namespace Buttplug.Client
         private readonly string _clientName;
 
         [NotNull]
+        private uint _messageSchemaVersion;
+
+        [NotNull]
         private ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs = new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
 
         [NotNull]
@@ -148,6 +151,14 @@ namespace Buttplug.Client
                     if (si.MaxPingTime > 0)
                     {
                         _pingTimer = new Timer(onPingTimer, null, 0, Convert.ToInt32(Math.Round(((double)si.MaxPingTime) / 2, 0)));
+                    }
+
+                    _messageSchemaVersion = si.MessageVersion;
+                    if (_messageSchemaVersion < ButtplugMessage.CurrentMessageVersion)
+                    {
+                        throw new Exception("Buttplug Server's schema version (" + _messageSchemaVersion +
+                            ") is less than the client's (" + ButtplugMessage.CurrentMessageVersion +
+                            "). A newer server is required!");
                     }
 
                     break;
@@ -382,7 +393,7 @@ namespace Buttplug.Client
         {
             if (_devices.TryGetValue(aDevice.Index, out ButtplugClientDevice dev))
             {
-                if (!dev.AllowedMessages.Contains(aDeviceMsg.GetType().Name))
+                if (!dev.AllowedMessages.ContainsKey(aDeviceMsg.GetType().Name))
                 {
                     return new Error("Device does not accept message type: " + aDeviceMsg.GetType().Name, Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId);
                 }
@@ -436,12 +447,12 @@ namespace Buttplug.Client
 
         protected string Serialize(ButtplugMessage aMsg)
         {
-            return _parser.Serialize(aMsg);
+            return _parser.Serialize(aMsg, ButtplugMessage.CurrentMessageVersion);
         }
 
         protected string Serialize(ButtplugMessage[] aMsgs)
         {
-            return _parser.Serialize(aMsgs);
+            return _parser.Serialize(aMsgs, ButtplugMessage.CurrentMessageVersion);
         }
 
         protected ButtplugMessage[] Deserialize(string aMsg)
