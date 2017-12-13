@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO.Ports;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using Buttplug.Server.Util;
 using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;
 
 namespace Buttplug.Server.Managers.ETSerialManager
@@ -69,8 +71,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             }
 
             // We're now ready to receive events
-            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), HandleFleshlightLaunchFW12Cmd);
-            MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
+            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchFW12Cmd));
+            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
 
             // Start update timer
             _updateInterval = 20;                        // <- Change this value to adjust box update frequency in ms
@@ -209,12 +212,41 @@ namespace Buttplug.Server.Managers.ETSerialManager
             }
         }
 
+        private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg)
+        {
+            var cmdMsg = aMsg as LinearCmd;
+            if (cmdMsg is null)
+            {
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+            }
+
+            foreach (var v in cmdMsg.Vectors)
+            {
+                if (v.Index != 0)
+                {
+                    continue;
+                }
+
+                return await HandleFleshlightLaunchFW12Cmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
+                    Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs((_position / 100) - v.Position), v.Duration) * 99),
+                    Convert.ToUInt32(v.Position * 99), cmdMsg.Id));
+            }
+
+            return new Ok(aMsg.Id);
+        }
+
         private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg)
         {
+            var cmdMsg = aMsg as FleshlightLaunchFW12Cmd;
+            if (cmdMsg is null)
+            {
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+            }
+
             lock (_movementLock)
             {
-                _speed = (aMsg as FleshlightLaunchFW12Cmd).Speed;
-                _position = (aMsg as FleshlightLaunchFW12Cmd).Position;
+                _speed = (Convert.ToDouble(cmdMsg.Speed) / 99) * 100;
+                _position = (Convert.ToDouble(cmdMsg.Position) / 99) * 100;
 
                 _position = _position < 0 ? 0 : _position;
                 _position = _position > 100 ? 100 : _position;
@@ -223,9 +255,8 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                 // This is @funjack's algorithm for converting Fleshlight Launch
                 // commands into absolute distance (percent) / duration (millisecond) values
-                double distance = Math.Abs(_position - _currentPosition);
-                double mil = Math.Pow(_speed / 25000, -0.95);
-                double duration = mil / (90 / distance);
+                var distance = Math.Abs(_position - _currentPosition);
+                var duration = FleshlightHelper.GetDuration(distance / 100, _speed / 100);
 
                 // We convert those into "position" increments for our OnUpdate() timer event.
                 _increment = 1.5 * (distance / (duration / _updateInterval));

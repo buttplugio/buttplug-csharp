@@ -32,11 +32,10 @@ namespace Buttplug.Server.Bluetooth.Devices
         public Guid[] Characteristics { get; } =
         {
             // tx characteristic
-            new Guid("0000fff2-0000-1000-8000-00805f9b34fb"), // ,
+            new Guid("0000fff2-0000-1000-8000-00805f9b34fb"),
 
             // rx characteristic
-            // Comment out until issue #108 is fixed. Characteristic isn't really needed until Issue #9 is implemented also.
-            // new Guid("0000fff1-0000-1000-8000-00805f9b34fb")
+            new Guid("0000fff1-0000-1000-8000-00805f9b34fb"),
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
@@ -196,6 +195,10 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "LVS-Domi37", "Domi" },
         };
 
+        private bool _clockwise = true;
+        private double _rotateSpeed = 0;
+        private double _vibratorSpeed = 0;
+
         public Lovense(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
@@ -204,13 +207,27 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
-            MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
+
+            if (friendlyNames[aInterface.Name] == "Nora")
+            {
+                MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
+            }
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
             BpLogger.Debug("Stopping Device " + Name);
+
+            if (friendlyNames[Interface.Name] == "Nora")
+            {
+                await Interface.WriteValue(aMsg.Id,
+                    Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
+                    Encoding.ASCII.GetBytes($"Rotate:0;"));
+            }
+
             return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id));
         }
 
@@ -222,10 +239,74 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
+            return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex,
+                new List<VibrateCmd.VibrateIndex>() { new VibrateCmd.VibrateIndex(0, cmdMsg.Speed) },
+                cmdMsg.Id));
+        }
+
+        private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
+        {
+            var cmdMsg = aMsg as VibrateCmd;
+            if (cmdMsg is null)
+            {
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+            }
+
+            foreach (var vi in cmdMsg.Speeds)
+            {
+                if (vi.Index == 0)
+                {
+                    if (vi.Speed == _vibratorSpeed)
+                    {
+                        return new Ok(cmdMsg.Id);
+                    }
+
+                    _vibratorSpeed = vi.Speed;
+                }
+            }
+
             // While there are 3 lovense revs right now, all of the characteristic arrays are the same.
             return await Interface.WriteValue(aMsg.Id,
                 Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
-                Encoding.ASCII.GetBytes($"Vibrate:{(int)(cmdMsg.Speed * 20)};"));
+                Encoding.ASCII.GetBytes($"Vibrate:{(int)(_vibratorSpeed * 20)};"));
+        }
+
+        private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg)
+        {
+            var cmdMsg = aMsg as RotateCmd;
+            if (cmdMsg is null)
+            {
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+            }
+
+            var dirChange = false;
+            var speedChange = false;
+            foreach (var vi in cmdMsg.Speeds)
+            {
+                if (vi.Index == 0)
+                {
+                    speedChange = _rotateSpeed != vi.Speed;
+                    _rotateSpeed = vi.Speed;
+                    dirChange = _clockwise != vi.Clockwise;
+                }
+            }
+
+            if (dirChange)
+            {
+                _clockwise = !_clockwise;
+                await Interface.WriteValue(aMsg.Id,
+                   Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
+                   Encoding.ASCII.GetBytes($"RotateChange;"));
+            }
+
+            if (!speedChange)
+            {
+                return new Ok(cmdMsg.Id);
+            }
+
+            return await Interface.WriteValue(aMsg.Id,
+                Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
+                Encoding.ASCII.GetBytes($"Rotate:{(int)(_rotateSpeed * 20)};"));
         }
     }
 }

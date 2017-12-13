@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -31,6 +32,9 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class VorzeA10Cyclone : ButtplugBluetoothDevice
     {
+        private bool _clockwise = true;
+        private uint _speed = 0;
+
         public VorzeA10Cyclone(IButtplugLogManager aLogManager,
                                IBluetoothDeviceInterface aInterface,
                                IBluetoothDeviceInfo aInfo)
@@ -39,14 +43,37 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
-            MsgFuncs.Add(typeof(VorzeA10CycloneCmd), HandleVorzeA10CycloneCmd);
-            MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
+            MsgFuncs.Add(typeof(VorzeA10CycloneCmd), new ButtplugDeviceWrapper(HandleVorzeA10CycloneCmd));
+            MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
             BpLogger.Debug("Stopping Device " + Name);
             return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, false, aMsg.Id));
+        }
+
+        private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg)
+        {
+            var cmdMsg = aMsg as RotateCmd;
+            if (cmdMsg is null)
+            {
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+            }
+
+            foreach (var i in cmdMsg.Speeds)
+            {
+                if (i.Index != 0)
+                {
+                    continue;
+                }
+
+                return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(cmdMsg.DeviceIndex,
+                    Convert.ToUInt32(i.Speed * 99), i.Clockwise, cmdMsg.Id));
+            }
+
+            return new Ok(cmdMsg.Id);
         }
 
         private async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg)
@@ -57,7 +84,15 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            var rawSpeed = (byte)(((byte)(cmdMsg.Clockwise ? 1 : 0)) << 7 | (byte)cmdMsg.Speed);
+            if (_clockwise == cmdMsg.Clockwise && _speed == cmdMsg.Speed)
+            {
+                return new Ok(cmdMsg.Id);
+            }
+
+            _clockwise = cmdMsg.Clockwise;
+            _speed = cmdMsg.Speed;
+
+            var rawSpeed = (byte)(((byte)(_clockwise ? 1 : 0)) << 7 | (byte)_speed);
             return await Interface.WriteValue(aMsg.Id,
                 Info.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
                 new byte[] { 0x01, 0x01, rawSpeed });

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
+using Buttplug.Server.Util;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
@@ -42,6 +44,8 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class FleshlightLaunch : ButtplugBluetoothDevice
     {
+        private double _lastPosition = 0;
+
         public FleshlightLaunch([NotNull] IButtplugLogManager aLogManager,
                                 [NotNull] IBluetoothDeviceInterface aInterface,
                                 [NotNull] IBluetoothDeviceInfo aInfo)
@@ -51,8 +55,9 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInfo)
         {
             // Setup message function array
-            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), HandleFleshlightLaunchRawCmd);
-            MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
+            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchRawCmd));
+            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
         }
 
         public override async Task<ButtplugMessage> Initialize()
@@ -75,6 +80,29 @@ namespace Buttplug.Server.Bluetooth.Devices
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
+        private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg)
+        {
+            var cmdMsg = aMsg as LinearCmd;
+            if (cmdMsg is null)
+            {
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+            }
+
+            foreach (var v in cmdMsg.Vectors)
+            {
+                if (v.Index != 0)
+                {
+                    continue;
+                }
+
+                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
+                    Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs(_lastPosition - v.Position), v.Duration) * 99),
+                    Convert.ToUInt32(v.Position * 99), cmdMsg.Id));
+            }
+
+            return new Ok(aMsg.Id);
+        }
+
         private async Task<ButtplugMessage> HandleFleshlightLaunchRawCmd(ButtplugDeviceMessage aMsg)
         {
             // TODO: Split into Command message and Control message? (Issue #17)
@@ -83,6 +111,8 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
+
+            _lastPosition = cmdMsg.Position / 99;
 
             return await Interface.WriteValue(aMsg.Id,
                 Info.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],

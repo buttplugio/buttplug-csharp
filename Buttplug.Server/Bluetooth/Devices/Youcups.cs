@@ -45,6 +45,8 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "Youcups", "Warrior II" },
         };
 
+        private double _vibratorSpeed = 0;
+
         public Youcups(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
@@ -53,8 +55,9 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), HandleSingleMotorVibrateCmd);
-            MsgFuncs.Add(typeof(StopDeviceCmd), HandleStopDeviceCmd);
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
@@ -71,9 +74,35 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
+            return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex,
+                new List<VibrateCmd.VibrateIndex>() { new VibrateCmd.VibrateIndex(0, cmdMsg.Speed) },
+                cmdMsg.Id));
+        }
+
+        private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
+        {
+            var cmdMsg = aMsg as VibrateCmd;
+            if (cmdMsg is null)
+            {
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+            }
+
+            foreach (var vi in cmdMsg.Speeds)
+            {
+                if (vi.Index == 0)
+                {
+                    if (vi.Speed == _vibratorSpeed)
+                    {
+                        return new Ok(cmdMsg.Id);
+                    }
+
+                    _vibratorSpeed = vi.Speed;
+                }
+            }
+
             return await Interface.WriteValue(aMsg.Id,
                 Info.Characteristics[(uint)YoucupsBluetoothInfo.Chrs.Tx],
-                Encoding.ASCII.GetBytes($"$SYS,{(int)(cmdMsg.Speed * 8), 1}?"));
+                Encoding.ASCII.GetBytes($"$SYS,{(int)(_vibratorSpeed * 8), 1}?"));
         }
     }
 }
