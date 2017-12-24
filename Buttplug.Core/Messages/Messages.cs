@@ -105,7 +105,7 @@ namespace Buttplug.Core.Messages
         }
     }
 
-    public class DeviceMessageInfo0
+    public class DeviceMessageInfoVersion0
     {
         [JsonProperty(Required = Required.Always)]
         public string DeviceName;
@@ -116,7 +116,7 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
         public string[] DeviceMessages = new string[0];
 
-        public DeviceMessageInfo0(uint aIndex, string aName, string[] aMessages)
+        public DeviceMessageInfoVersion0(uint aIndex, string aName, string[] aMessages)
         {
             DeviceName = aName;
             DeviceIndex = aIndex;
@@ -130,35 +130,32 @@ namespace Buttplug.Core.Messages
         public readonly DeviceMessageInfo[] Devices = new DeviceMessageInfo[0];
 
         public DeviceList(DeviceMessageInfo[] aDeviceList, uint aId)
-             : base(aId)
+             : base(aId, 1, typeof(DeviceListVersion0))
         {
             Devices = aDeviceList;
-
-            MessageVersioningVersion = 1;
-            MessageVersioningPrevious = typeof(DeviceList0);
         }
     }
 
-    public class DeviceList0 : ButtplugMessage, IButtplugMessageOutgoingOnly
+    public class DeviceListVersion0 : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public readonly DeviceMessageInfo0[] Devices = new DeviceMessageInfo0[0];
+        public readonly DeviceMessageInfoVersion0[] Devices = new DeviceMessageInfoVersion0[0];
 
-        public DeviceList0(DeviceMessageInfo0[] aDeviceList, uint aId)
+        public DeviceListVersion0(DeviceMessageInfoVersion0[] aDeviceList, uint aId)
              : base(aId)
         {
             Devices = aDeviceList;
         }
 
-        public DeviceList0()
+        public DeviceListVersion0()
             : base(0)
         {
         }
 
-        public DeviceList0(DeviceList aMsg)
+        public DeviceListVersion0(DeviceList aMsg)
              : base(aMsg.Id)
         {
-            var tmp = new List<DeviceMessageInfo0>();
+            var tmp = new List<DeviceMessageInfoVersion0>();
             foreach (var dev in aMsg.Devices)
             {
                 var tmp2 = new List<string>();
@@ -167,7 +164,7 @@ namespace Buttplug.Core.Messages
                     tmp2.Add(k);
                 }
 
-                tmp.Add(new DeviceMessageInfo0(dev.DeviceIndex, dev.DeviceName, tmp2.ToArray()));
+                tmp.Add(new DeviceMessageInfoVersion0(dev.DeviceIndex, dev.DeviceName, tmp2.ToArray()));
             }
 
             Devices = tmp.ToArray();
@@ -185,17 +182,14 @@ namespace Buttplug.Core.Messages
 
         public DeviceAdded(uint aIndex, string aName,
             Dictionary<string, MessageAttributes> aMessages)
-            : base(ButtplugConsts.SystemMsgId, aIndex)
+            : base(ButtplugConsts.SystemMsgId, aIndex, 1, typeof(DeviceAddedVersion0))
         {
             DeviceName = aName;
             DeviceMessages = aMessages;
-
-            MessageVersioningVersion = 1;
-            MessageVersioningPrevious = typeof(DeviceAdded0);
         }
     }
 
-    public class DeviceAdded0 : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
+    public class DeviceAddedVersion0 : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
     {
         [JsonProperty(Required = Required.Always)]
         public string DeviceName;
@@ -203,19 +197,19 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
         public string[] DeviceMessages = new string[0];
 
-        public DeviceAdded0(uint aIndex, string aName, string[] aMessages)
+        public DeviceAddedVersion0(uint aIndex, string aName, string[] aMessages)
             : base(ButtplugConsts.SystemMsgId, aIndex)
         {
             DeviceName = aName;
             DeviceMessages = aMessages;
         }
 
-        public DeviceAdded0()
+        public DeviceAddedVersion0()
             : base(0, 0)
         {
         }
 
-        public DeviceAdded0(DeviceAdded aMsg)
+        public DeviceAddedVersion0(DeviceAdded aMsg)
             : base(aMsg.Id, aMsg.DeviceIndex)
         {
             DeviceName = aMsg.DeviceName;
@@ -324,11 +318,11 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public uint MessageVersion = 0;
 
-        public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId, uint aMessageVersion = CurrentMessageVersion)
+        public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId, uint aSchemaVersion = CurrentSchemaVersion)
             : base(aId)
         {
             ClientName = aClientName;
-            MessageVersion = aMessageVersion;
+            MessageVersion = aSchemaVersion;
         }
     }
 
@@ -525,7 +519,7 @@ namespace Buttplug.Core.Messages
 
     public class VibrateCmd : ButtplugDeviceMessage
     {
-        public class VibrateIndex
+        public class VibrateSubcommand
         {
             private double _speedImpl = 0;
 
@@ -552,7 +546,7 @@ namespace Buttplug.Core.Messages
                 }
             }
 
-            public VibrateIndex(uint aIndex, double aSpeed)
+            public VibrateSubcommand(uint aIndex, double aSpeed)
             {
                 Index = aIndex;
                 Speed = aSpeed;
@@ -560,19 +554,18 @@ namespace Buttplug.Core.Messages
         }
 
         [JsonProperty(Required = Required.Always)]
-        public List<VibrateIndex> Speeds;
+        public List<VibrateSubcommand> Speeds;
 
-        public VibrateCmd(uint aDeviceIndex, List<VibrateIndex> aSpeeds, uint aId = ButtplugConsts.DefaultMsgId)
-            : base(aId, aDeviceIndex)
+        public VibrateCmd(uint aDeviceIndex, List<VibrateSubcommand> aSpeeds, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex, 1)
         {
             Speeds = aSpeeds;
-            MessageVersioningVersion = 1;
         }
     }
 
     public class RotateCmd : ButtplugDeviceMessage
     {
-        public class RotateIndex
+        public class RotateSubcommand
         {
             private double _speedImpl = 0;
 
@@ -602,7 +595,7 @@ namespace Buttplug.Core.Messages
             [JsonProperty(Required = Required.Always)]
             public bool Clockwise = true;
 
-            public RotateIndex(uint aIndex, double aSpeed, bool aClockwise)
+            public RotateSubcommand(uint aIndex, double aSpeed, bool aClockwise)
             {
                 Index = aIndex;
                 Speed = aSpeed;
@@ -611,19 +604,18 @@ namespace Buttplug.Core.Messages
         }
 
         [JsonProperty(Required = Required.Always)]
-        public List<RotateIndex> Speeds;
+        public List<RotateSubcommand> Rotations;
 
-        public RotateCmd(uint aDeviceIndex, List<RotateIndex> aSpeeds, uint aId = ButtplugConsts.DefaultMsgId)
-            : base(aId, aDeviceIndex)
+        public RotateCmd(uint aDeviceIndex, List<RotateSubcommand> aRotations, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex, 1)
         {
-            Speeds = aSpeeds;
-            MessageVersioningVersion = 1;
+            Rotations = aRotations;
         }
     }
 
     public class LinearCmd : ButtplugDeviceMessage
     {
-        public class VectorIndex
+        public class VectorSubcommands
         {
             private double _speedImpl = 0;
 
@@ -655,7 +647,7 @@ namespace Buttplug.Core.Messages
                 }
             }
 
-            public VectorIndex(uint aIndex, uint aDuration, double aPosition)
+            public VectorSubcommands(uint aIndex, uint aDuration, double aPosition)
             {
                 Index = aIndex;
                 Duration = aDuration;
@@ -664,13 +656,12 @@ namespace Buttplug.Core.Messages
         }
 
         [JsonProperty(Required = Required.Always)]
-        public List<VectorIndex> Vectors;
+        public List<VectorSubcommands> Vectors;
 
-        public LinearCmd(uint aDeviceIndex, List<VectorIndex> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
-            : base(aId, aDeviceIndex)
+        public LinearCmd(uint aDeviceIndex, List<VectorSubcommands> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex, 1)
         {
             Vectors = aVectors;
-            MessageVersioningVersion = 1;
         }
     }
 

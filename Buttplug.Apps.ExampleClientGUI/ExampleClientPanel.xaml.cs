@@ -166,8 +166,8 @@ namespace Buttplug.Apps.ExampleClientGUI
                         {
                             _client.SendDeviceMessage(dev,
                                 new VibrateCmd(dev.Index,
-                                    new List<VibrateCmd.VibrateIndex>
-                                    { new VibrateCmd.VibrateIndex(i, VibrateSpeed.Value) },
+                                    new List<VibrateCmd.VibrateSubcommand>
+                                    { new VibrateCmd.VibrateSubcommand(i, VibrateSpeed.Value) },
                                     _client.nextMsgId));
                         }
                     }
@@ -198,8 +198,8 @@ namespace Buttplug.Apps.ExampleClientGUI
                             bool clockwise = RotateSpeed.Value > 0;
                             _client.SendDeviceMessage(dev,
                                 new RotateCmd(dev.Index,
-                                    new List<RotateCmd.RotateIndex>
-                                            { new RotateCmd.RotateIndex(i, RotateSpeed.Value * (clockwise ? 1 : -1), clockwise) },
+                                    new List<RotateCmd.RotateSubcommand>
+                                            { new RotateCmd.RotateSubcommand(i, RotateSpeed.Value * (clockwise ? 1 : -1), clockwise) },
                                     _client.nextMsgId));
                         }
                     }
@@ -222,9 +222,11 @@ namespace Buttplug.Apps.ExampleClientGUI
                 if (dev.AllowedMessages.ContainsKey("FleshlightLaunchFW12Cmd"))
                 {
                     _client.SendDeviceMessage(dev,
-                        new LinearCmd(dev.Index, new List<LinearCmd.VectorIndex>()
+                        new LinearCmd(dev.Index, new List<LinearCmd.VectorSubcommands>()
                         {
-                            new LinearCmd.VectorIndex(0, Convert.ToUInt32(LinearDuration.Text), Linear2Position.Value),
+                            new LinearCmd.VectorSubcommands(0,
+                                Convert.ToUInt32(LinearDuration.Text),
+                                Linear2Position.Value),
                         }, _client.nextMsgId));
                 }
             }

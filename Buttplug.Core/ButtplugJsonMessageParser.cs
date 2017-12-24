@@ -123,7 +123,7 @@ namespace Buttplug.Core
                 }
 
                 var msgName = o.Properties().First().Name;
-                if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
+                if (!_messageTypes.Any() || !_messageTypes.ContainsKey(msgName))
                 {
                     var err = new Error($"{msgName} is not a valid message class", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
                     _bpLogger?.LogErrorMsg(err);
@@ -163,9 +163,9 @@ namespace Buttplug.Core
 
             // Support downgrading messages
             var tmp = aMsg;
-            while (tmp.MessageVersioningVersion > clientSchemaVersion)
+            while (tmp.SchemaVersion > clientSchemaVersion)
             {
-                if (tmp.MessageVersioningPrevious == null)
+                if (tmp.PreviousType == null)
                 {
                     if (tmp.Id == ButtplugConsts.SystemMsgId)
                     {
@@ -179,7 +179,7 @@ namespace Buttplug.Core
                     continue;
                 }
 
-                tmp = (ButtplugMessage)aMsg.MessageVersioningPrevious.GetConstructor(
+                tmp = (ButtplugMessage)aMsg.PreviousType.GetConstructor(
                     new Type[] { tmp.GetType() }).Invoke(new object[] { tmp });
             }
 
@@ -197,9 +197,9 @@ namespace Buttplug.Core
             {
                 // Support downgrading messages
                 var tmp = msg;
-                while (tmp.MessageVersioningVersion > clientSchemaVersion)
+                while (tmp.SchemaVersion > clientSchemaVersion)
                 {
-                    if (tmp.MessageVersioningPrevious == null)
+                    if (tmp.PreviousType == null)
                     {
                         if (tmp.Id == ButtplugConsts.SystemMsgId)
                         {
@@ -212,7 +212,7 @@ namespace Buttplug.Core
                         continue;
                     }
 
-                    tmp = (ButtplugMessage)tmp.MessageVersioningPrevious.GetConstructor(
+                    tmp = (ButtplugMessage)tmp.PreviousType.GetConstructor(
                         new Type[] { tmp.GetType() }).Invoke(new object[] { tmp });
                 }
 

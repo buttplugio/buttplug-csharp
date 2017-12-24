@@ -63,7 +63,7 @@ namespace Buttplug.Server.Test
                     Assert.True(da.DeviceName == "TestDevice");
                     Assert.True(da.DeviceIndex == 1);
                     Assert.True(da.DeviceMessages.Count() == 1);
-                    Assert.True(da.DeviceMessages.Keys.Contains("SingleMotorVibrateCmd"));
+                    Assert.True(da.DeviceMessages.ContainsKey("SingleMotorVibrateCmd"));
                     break;
                 case DeviceList dl:
                     Assert.True(dl.Devices.Length == 1);
@@ -71,7 +71,7 @@ namespace Buttplug.Server.Test
                     Assert.True(di.DeviceName == "TestDevice");
                     Assert.True(di.DeviceIndex == 1);
                     Assert.True(di.DeviceMessages.Count() == 1);
-                    Assert.True(di.DeviceMessages.Keys.Contains("SingleMotorVibrateCmd"));
+                    Assert.True(di.DeviceMessages.ContainsKey("SingleMotorVibrateCmd"));
                     break;
                 case DeviceRemoved dr:
                     Assert.True(dr.DeviceIndex == 1);

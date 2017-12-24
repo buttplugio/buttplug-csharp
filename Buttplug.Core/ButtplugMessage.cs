@@ -6,7 +6,7 @@ namespace Buttplug.Core
     public class ButtplugMessage
     {
         /*
-         * Message versions
+         * Message schema versions
          *
          * These are here for backwards compatibility support, but
          * this also serves as a changelog of sorts.
@@ -19,50 +19,52 @@ namespace Buttplug.Core
          *   Addition of message attributes
          */
         [JsonIgnore]
-        public const uint CurrentMessageVersion = 1;
+        public const uint CurrentSchemaVersion = 1;
 
         [JsonProperty(Required = Required.Always)]
         public uint Id { get; set; }
 
         [JsonIgnore]
-        public uint MessageVersioningVersion
+        public uint SchemaVersion
         {
             get
             {
-                return _messageVersioningVersion;
+                return _schemaVersion;
             }
 
             protected set
             {
-                _messageVersioningVersion = value;
+                _schemaVersion = value;
             }
         }
 
         [JsonIgnore]
-        public Type MessageVersioningPrevious
+        public Type PreviousType
         {
             get
             {
-                return _messageVersioningPrevious;
+                return _previousType;
             }
 
             protected set
             {
-                _messageVersioningPrevious = value;
+                _previousType = value;
             }
         }
 
         // Base class starts at version 0
         [JsonIgnore]
-        private uint _messageVersioningVersion = 0;
+        private uint _schemaVersion = 0;
 
         // No previous version for base classes
         [JsonIgnore]
-        private Type _messageVersioningPrevious = null;
+        private Type _previousType = null;
 
-        public ButtplugMessage(uint aId)
+        public ButtplugMessage(uint aId, uint aSchemaVersion = 0, Type aPreviousType = null)
         {
             Id = aId;
+            SchemaVersion = aSchemaVersion;
+            PreviousType = aPreviousType;
         }
     }
 

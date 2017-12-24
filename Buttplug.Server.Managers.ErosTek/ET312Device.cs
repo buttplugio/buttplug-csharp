@@ -220,11 +220,22 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
+            if (cmdMsg.Vectors.Count != 1)
+            {
+                return new Error(
+                    "LinearCmd requires 1 vector for this device.",
+                    Error.ErrorClass.ERROR_DEVICE,
+                    cmdMsg.Id);
+            }
+
             foreach (var v in cmdMsg.Vectors)
             {
                 if (v.Index != 0)
                 {
-                    continue;
+                    return new Error(
+                        $"Index {v.Index} is out of bounds for LinearCmd for this device.",
+                        Error.ErrorClass.ERROR_DEVICE,
+                        cmdMsg.Id);
                 }
 
                 return await HandleFleshlightLaunchFW12Cmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,

@@ -154,11 +154,11 @@ namespace Buttplug.Client
                     }
 
                     _messageSchemaVersion = si.MessageVersion;
-                    if (_messageSchemaVersion < ButtplugMessage.CurrentMessageVersion)
+                    if (_messageSchemaVersion < ButtplugMessage.CurrentSchemaVersion)
                     {
                         throw new Exception("Buttplug Server's schema version (" + _messageSchemaVersion +
-                            ") is less than the client's (" + ButtplugMessage.CurrentMessageVersion +
-                            "). A newer server is required!");
+                            ") is less than the client's (" + ButtplugMessage.CurrentSchemaVersion +
+                            "). A newer server is required.");
                     }
 
                     break;
@@ -447,12 +447,12 @@ namespace Buttplug.Client
 
         protected string Serialize(ButtplugMessage aMsg)
         {
-            return _parser.Serialize(aMsg, ButtplugMessage.CurrentMessageVersion);
+            return _parser.Serialize(aMsg, ButtplugMessage.CurrentSchemaVersion);
         }
 
         protected string Serialize(ButtplugMessage[] aMsgs)
         {
-            return _parser.Serialize(aMsgs, ButtplugMessage.CurrentMessageVersion);
+            return _parser.Serialize(aMsgs, ButtplugMessage.CurrentSchemaVersion);
         }
 
         protected ButtplugMessage[] Deserialize(string aMsg)

@@ -240,7 +240,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex,
-                new List<VibrateCmd.VibrateIndex>() { new VibrateCmd.VibrateIndex(0, cmdMsg.Speed) },
+                new List<VibrateCmd.VibrateSubcommand>() { new VibrateCmd.VibrateSubcommand(0, cmdMsg.Speed) },
                 cmdMsg.Id));
         }
 
@@ -252,17 +252,30 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            foreach (var vi in cmdMsg.Speeds)
+            if (cmdMsg.Speeds.Count != 1)
             {
-                if (vi.Index == 0)
-                {
-                    if (vi.Speed == _vibratorSpeed)
-                    {
-                        return new Ok(cmdMsg.Id);
-                    }
+                return new Error(
+                    "VibrateCmd requires 1 vector for this device.",
+                    Error.ErrorClass.ERROR_DEVICE,
+                    cmdMsg.Id);
+            }
 
-                    _vibratorSpeed = vi.Speed;
+            foreach (var v in cmdMsg.Speeds)
+            {
+                if (v.Index != 0)
+                {
+                    return new Error(
+                        $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
+                        Error.ErrorClass.ERROR_DEVICE,
+                        cmdMsg.Id);
                 }
+
+                if (v.Speed == _vibratorSpeed)
+                {
+                    return new Ok(cmdMsg.Id);
+                }
+
+                _vibratorSpeed = v.Speed;
             }
 
             // While there are 3 lovense revs right now, all of the characteristic arrays are the same.
@@ -281,14 +294,28 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var dirChange = false;
             var speedChange = false;
-            foreach (var vi in cmdMsg.Speeds)
+
+            if (cmdMsg.Rotations.Count != 1)
             {
-                if (vi.Index == 0)
+                return new Error(
+                    "RotateCmd requires 1 vector for this device.",
+                    Error.ErrorClass.ERROR_DEVICE,
+                    cmdMsg.Id);
+            }
+
+            foreach (var vi in cmdMsg.Rotations)
+            {
+                if (vi.Index != 0)
                 {
-                    speedChange = _rotateSpeed != vi.Speed;
-                    _rotateSpeed = vi.Speed;
-                    dirChange = _clockwise != vi.Clockwise;
+                    return new Error(
+                        $"Index {vi.Index} is out of bounds for RotateCmd for this device.",
+                        Error.ErrorClass.ERROR_DEVICE,
+                        cmdMsg.Id);
                 }
+
+                speedChange = _rotateSpeed != vi.Speed;
+                _rotateSpeed = vi.Speed;
+                dirChange = _clockwise != vi.Clockwise;
             }
 
             if (dirChange)

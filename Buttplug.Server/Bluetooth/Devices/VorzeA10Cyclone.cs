@@ -62,11 +62,22 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            foreach (var i in cmdMsg.Speeds)
+            if (cmdMsg.Rotations.Count != 1)
+            {
+                return new Error(
+                    "RotateCmd requires 1 vector for this device.",
+                    Error.ErrorClass.ERROR_DEVICE,
+                    cmdMsg.Id);
+            }
+
+            foreach (var i in cmdMsg.Rotations)
             {
                 if (i.Index != 0)
                 {
-                    continue;
+                    return new Error(
+                        $"Index {i.Index} is out of bounds for RotateCmd for this device.",
+                        Error.ErrorClass.ERROR_DEVICE,
+                        cmdMsg.Id);
                 }
 
                 return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(cmdMsg.DeviceIndex,

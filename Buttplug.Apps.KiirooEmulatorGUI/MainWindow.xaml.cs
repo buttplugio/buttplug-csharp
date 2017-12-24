@@ -80,7 +80,7 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
         private void SelectionChangedHandler(object aObj, List<ButtplugDeviceInfo> aDevices)
         {
             _devices = aDevices;
-            if (_devices.Any(aDevice => aDevice.Messages.Keys.Contains("SingleMotorVibrateCmd")))
+            if (_devices.Any(aDevice => aDevice.SupportsMessage(typeof(SingleMotorVibrateCmd))))
             {
                 _translator.StartVibrateTimer();
                 return;
@@ -133,7 +133,7 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
             {
                 foreach (var device in _devices)
                 {
-                    if (device.Messages.Keys.Contains("SingleMotorVibrateCmd"))
+                    if (device.SupportsMessage(typeof(SingleMotorVibrateCmd)))
                     {
                         await _bpServer.SendMessage(new SingleMotorVibrateCmd(device.Index, aEvent.VibrateValue));
                     }
@@ -150,19 +150,19 @@ namespace Buttplug.Apps.KiirooEmulatorGUI
                 FleshlightLaunchFW12Cmd currentTranslatedCommand = null;
                 foreach (var device in _devices)
                 {
-                    if (device.Messages.Keys.Contains(typeof(KiirooCmd).Name))
+                    if (device.SupportsMessage(typeof(KiirooCmd)))
                     {
                         await _bpServer.SendMessage(new KiirooCmd(device.Index, aEvent.Position));
                     }
-                    else if (device.Messages.Keys.Contains("FleshlightLaunchFW12Cmd") ||
-                             device.Messages.Keys.Contains("SingleMotorVibrateCmd"))
+                    else if (device.SupportsMessage(typeof(FleshlightLaunchFW12Cmd)) ||
+                             device.SupportsMessage(typeof(SingleMotorVibrateCmd)))
                     {
                         if (currentTranslatedCommand == null)
                         {
                             currentTranslatedCommand = _translator.Translate(new KiirooCmd(device.Index, aEvent.Position));
                         }
                         currentTranslatedCommand.DeviceIndex = device.Index;
-                        if (device.Messages.Keys.Contains("FleshlightLaunchFW12Cmd"))
+                        if (device.SupportsMessage(typeof(FleshlightLaunchFW12Cmd)))
                         {
                             await _bpServer.SendMessage(currentTranslatedCommand);
                         }

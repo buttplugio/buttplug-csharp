@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Buttplug.Core.Messages;
+using System;
 
 namespace Buttplug.Components.Controls
 {
@@ -22,6 +23,11 @@ namespace Buttplug.Components.Controls
         public override string ToString()
         {
             return $"{Index}: {Name}";
+        }
+
+        public bool SupportsMessage(Type aMsg)
+        {
+            return Messages.ContainsKey(aMsg.Name);
         }
     }
 }

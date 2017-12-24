@@ -36,10 +36,10 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
                 return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
             }
 
-            var speeds = new List<VibrateCmd.VibrateIndex>();
+            var speeds = new List<VibrateCmd.VibrateSubcommand>();
             for (uint i = 0; i < 2; i++)
             {
-                speeds.Add(new VibrateCmd.VibrateIndex(i, cmdMsg.Speed));
+                speeds.Add(new VibrateCmd.VibrateSubcommand(i, cmdMsg.Speed));
             }
 
             return HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex, speeds, cmdMsg.Id));
@@ -53,11 +53,22 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
                 return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
             }
 
+            if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > 2)
+            {
+                Task.FromResult<ButtplugMessage>(new Error(
+                    "VibrateCmd requires between 1 and 2 vectors for this device.",
+                    Error.ErrorClass.ERROR_DEVICE,
+                    cmdMsg.Id));
+            }
+
             foreach (var vi in cmdMsg.Speeds)
             {
                 if (vi.Index < 0 || vi.Index >= 2)
                 {
-                    continue;
+                    Task.FromResult<ButtplugMessage>(new Error(
+                        $"Index {vi.Index} is out of bounds for VibrateCmd for this device.",
+                        Error.ErrorClass.ERROR_DEVICE,
+                        cmdMsg.Id));
                 }
 
                 _vibratorSpeeds[vi.Index] = _vibratorSpeeds[vi.Index] < 0 ? 0

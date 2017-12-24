@@ -185,7 +185,7 @@ namespace Buttplug.DeviceSimulator.PipeMessages
                 }
 
                 var msgName = o.Properties().First().Name;
-                if (!_messageTypes.Keys.Any() || !_messageTypes.Keys.Contains(msgName))
+                if (!_messageTypes.Any() || !_messageTypes.ContainsKey(msgName))
                 {
                     return new ErrorMsg($"{msgName} is not a valid message class");
                 }

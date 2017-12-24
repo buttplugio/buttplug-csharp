@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace Buttplug.Core
 {
@@ -7,8 +8,8 @@ namespace Buttplug.Core
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; set; }
 
-        public ButtplugDeviceMessage(uint aId, uint aDeviceIndex)
-            : base(aId)
+        public ButtplugDeviceMessage(uint aId, uint aDeviceIndex, uint aSchemaVersion = 0, Type aPreviousType = null)
+            : base(aId, aSchemaVersion, aPreviousType)
         {
             DeviceIndex = aDeviceIndex;
         }
