@@ -63,6 +63,11 @@ namespace Buttplug.Core
                     _schema = JsonSchema4.FromJsonAsync(result).GetAwaiter().GetResult();
                 }
             }
+            catch (Exception e)
+            {
+                _bpLogger.LogException(e);
+                throw e;
+            }
             finally
             {
                 stream?.Dispose();
@@ -152,23 +157,73 @@ namespace Buttplug.Core
             return res.ToArray();
         }
 
-        public string Serialize([NotNull] ButtplugMessage aMsg)
+        public string Serialize([NotNull] ButtplugMessage aMsg, uint clientSchemaVersion)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
-            var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(aMsg)));
+
+            // Support downgrading messages
+            var tmp = aMsg;
+            while (tmp.MessageVersioningVersion > clientSchemaVersion)
+            {
+                if (tmp.MessageVersioningPrevious == null)
+                {
+                    if (tmp.Id == ButtplugConsts.SystemMsgId)
+                    {
+                        // There's no previous version of this system message
+                        _bpLogger?.Warn($"No messages serialized!");
+                        return null;
+                    }
+
+                    tmp = new Error($"No backwards compatible version for message #{tmp.GetType().Name}!",
+                                    ErrorClass.ERROR_MSG, tmp.Id);
+                    continue;
+                }
+
+                tmp = (ButtplugMessage)aMsg.MessageVersioningPrevious.GetConstructor(
+                    new Type[] { tmp.GetType() }).Invoke(new object[] { tmp });
+            }
+
+            var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(tmp)));
             var a = new JArray(o);
             _bpLogger?.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);
             return a.ToString(Formatting.None);
         }
 
-        public string Serialize([NotNull] IEnumerable<ButtplugMessage> aMsgs)
+        public string Serialize([NotNull] IEnumerable<ButtplugMessage> aMsgs, uint clientSchemaVersion)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             var a = new JArray();
             foreach (var msg in aMsgs)
             {
-                var o = new JObject(new JProperty(msg.GetType().Name, JObject.FromObject(msg)));
+                // Support downgrading messages
+                var tmp = msg;
+                while (tmp.MessageVersioningVersion > clientSchemaVersion)
+                {
+                    if (tmp.MessageVersioningPrevious == null)
+                    {
+                        if (tmp.Id == ButtplugConsts.SystemMsgId)
+                        {
+                            // There's no previous version of this system message
+                            continue;
+                        }
+
+                        tmp = new Error($"No backwards compatible version for message #{tmp.GetType().Name}!",
+                                        ErrorClass.ERROR_MSG, tmp.Id);
+                        continue;
+                    }
+
+                    tmp = (ButtplugMessage)tmp.MessageVersioningPrevious.GetConstructor(
+                        new Type[] { tmp.GetType() }).Invoke(new object[] { tmp });
+                }
+
+                var o = new JObject(new JProperty(msg.GetType().Name, JObject.FromObject(tmp)));
                 a.Add(o);
+            }
+
+            if (!a.Any())
+            {
+                _bpLogger?.Warn($"No messages serialized!");
+                return null;
             }
 
             _bpLogger?.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);

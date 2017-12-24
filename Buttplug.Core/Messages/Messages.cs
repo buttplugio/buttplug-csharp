@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
 
@@ -74,7 +75,37 @@ namespace Buttplug.Core.Messages
         }
     }
 
+    public class MessageAttributes
+    {
+        /// <summary>
+        /// Number of actuators/sensors/channels/etc this message is addressing
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public uint? FeatureCount = null;
+    }
+
     public class DeviceMessageInfo
+    {
+        [JsonProperty(Required = Required.Always)]
+        public string DeviceName;
+
+        [JsonProperty(Required = Required.Always)]
+        public uint DeviceIndex;
+
+        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, MessageAttributes> DeviceMessages =
+            new Dictionary<string, MessageAttributes>();
+
+        public DeviceMessageInfo(uint aIndex, string aName,
+            Dictionary<string, MessageAttributes> aMessages)
+        {
+            DeviceName = aName;
+            DeviceIndex = aIndex;
+            DeviceMessages = aMessages;
+        }
+    }
+
+    public class DeviceMessageInfo0
     {
         [JsonProperty(Required = Required.Always)]
         public string DeviceName;
@@ -85,7 +116,7 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
         public string[] DeviceMessages = new string[0];
 
-        public DeviceMessageInfo(uint aIndex, string aName, string[] aMessages)
+        public DeviceMessageInfo0(uint aIndex, string aName, string[] aMessages)
         {
             DeviceName = aName;
             DeviceIndex = aIndex;
@@ -102,6 +133,44 @@ namespace Buttplug.Core.Messages
              : base(aId)
         {
             Devices = aDeviceList;
+
+            MessageVersioningVersion = 1;
+            MessageVersioningPrevious = typeof(DeviceList0);
+        }
+    }
+
+    public class DeviceList0 : ButtplugMessage, IButtplugMessageOutgoingOnly
+    {
+        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
+        public readonly DeviceMessageInfo0[] Devices = new DeviceMessageInfo0[0];
+
+        public DeviceList0(DeviceMessageInfo0[] aDeviceList, uint aId)
+             : base(aId)
+        {
+            Devices = aDeviceList;
+        }
+
+        public DeviceList0()
+            : base(0)
+        {
+        }
+
+        public DeviceList0(DeviceList aMsg)
+             : base(aMsg.Id)
+        {
+            var tmp = new List<DeviceMessageInfo0>();
+            foreach (var dev in aMsg.Devices)
+            {
+                var tmp2 = new List<string>();
+                foreach (var k in dev.DeviceMessages.Keys)
+                {
+                    tmp2.Add(k);
+                }
+
+                tmp.Add(new DeviceMessageInfo0(dev.DeviceIndex, dev.DeviceName, tmp2.ToArray()));
+            }
+
+            Devices = tmp.ToArray();
         }
     }
 
@@ -111,13 +180,52 @@ namespace Buttplug.Core.Messages
         public string DeviceName;
 
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public string[] DeviceMessages = new string[0];
+        public Dictionary<string, MessageAttributes> DeviceMessages =
+            new Dictionary<string, MessageAttributes>();
 
-        public DeviceAdded(uint aIndex, string aName, string[] aMessages)
+        public DeviceAdded(uint aIndex, string aName,
+            Dictionary<string, MessageAttributes> aMessages)
             : base(ButtplugConsts.SystemMsgId, aIndex)
         {
             DeviceName = aName;
             DeviceMessages = aMessages;
+
+            MessageVersioningVersion = 1;
+            MessageVersioningPrevious = typeof(DeviceAdded0);
+        }
+    }
+
+    public class DeviceAdded0 : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
+    {
+        [JsonProperty(Required = Required.Always)]
+        public string DeviceName;
+
+        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
+        public string[] DeviceMessages = new string[0];
+
+        public DeviceAdded0(uint aIndex, string aName, string[] aMessages)
+            : base(ButtplugConsts.SystemMsgId, aIndex)
+        {
+            DeviceName = aName;
+            DeviceMessages = aMessages;
+        }
+
+        public DeviceAdded0()
+            : base(0, 0)
+        {
+        }
+
+        public DeviceAdded0(DeviceAdded aMsg)
+            : base(aMsg.Id, aMsg.DeviceIndex)
+        {
+            DeviceName = aMsg.DeviceName;
+            var tmp = new List<string>();
+            foreach (var k in aMsg.DeviceMessages.Keys)
+            {
+                tmp.Add(k);
+            }
+
+            DeviceMessages = tmp.ToArray();
         }
     }
 
@@ -213,10 +321,14 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always)]
         public string ClientName;
 
-        public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId)
+        [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
+        public uint MessageVersion = 0;
+
+        public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId, uint aMessageVersion = CurrentMessageVersion)
             : base(aId)
         {
             ClientName = aClientName;
+            MessageVersion = aMessageVersion;
         }
     }
 
@@ -408,6 +520,157 @@ namespace Buttplug.Core.Messages
             : base(aId, aDeviceIndex)
         {
             Speed = aSpeed;
+        }
+    }
+
+    public class VibrateCmd : ButtplugDeviceMessage
+    {
+        public class VibrateIndex
+        {
+            private double _speedImpl = 0;
+
+            [JsonProperty(Required = Required.Always)]
+            public uint Index = 0;
+
+            [JsonProperty(Required = Required.Always)]
+            public double Speed
+            {
+                get => _speedImpl;
+                set
+                {
+                    if (value < 0)
+                    {
+                        throw new ArgumentException("VibrateCmd Speed cannot be less than 0!");
+                    }
+
+                    if (value > 1)
+                    {
+                        throw new ArgumentException("VibrateCmd Speed cannot be greater than 1!");
+                    }
+
+                    _speedImpl = value;
+                }
+            }
+
+            public VibrateIndex(uint aIndex, double aSpeed)
+            {
+                Index = aIndex;
+                Speed = aSpeed;
+            }
+        }
+
+        [JsonProperty(Required = Required.Always)]
+        public List<VibrateIndex> Speeds;
+
+        public VibrateCmd(uint aDeviceIndex, List<VibrateIndex> aSpeeds, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+            Speeds = aSpeeds;
+            MessageVersioningVersion = 1;
+        }
+    }
+
+    public class RotateCmd : ButtplugDeviceMessage
+    {
+        public class RotateIndex
+        {
+            private double _speedImpl = 0;
+
+            [JsonProperty(Required = Required.Always)]
+            public uint Index = 0;
+
+            [JsonProperty(Required = Required.Always)]
+            public double Speed
+            {
+                get => _speedImpl;
+                set
+                {
+                    if (value < 0)
+                    {
+                        throw new ArgumentException("VibrateCmd Speed cannot be less than 0!");
+                    }
+
+                    if (value > 1)
+                    {
+                        throw new ArgumentException("VibrateCmd Speed cannot be greater than 1!");
+                    }
+
+                    _speedImpl = value;
+                }
+            }
+
+            [JsonProperty(Required = Required.Always)]
+            public bool Clockwise = true;
+
+            public RotateIndex(uint aIndex, double aSpeed, bool aClockwise)
+            {
+                Index = aIndex;
+                Speed = aSpeed;
+                Clockwise = aClockwise;
+            }
+        }
+
+        [JsonProperty(Required = Required.Always)]
+        public List<RotateIndex> Speeds;
+
+        public RotateCmd(uint aDeviceIndex, List<RotateIndex> aSpeeds, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+            Speeds = aSpeeds;
+            MessageVersioningVersion = 1;
+        }
+    }
+
+    public class LinearCmd : ButtplugDeviceMessage
+    {
+        public class VectorIndex
+        {
+            private double _speedImpl = 0;
+
+            private double _positionImpl = 0;
+
+            [JsonProperty(Required = Required.Always)]
+            public uint Index = 0;
+
+            [JsonProperty(Required = Required.Always)]
+            public uint Duration;
+
+            [JsonProperty(Required = Required.Always)]
+            public double Position
+            {
+                get => _positionImpl;
+                set
+                {
+                    if (value < 0)
+                    {
+                        throw new ArgumentException("VibrateCmd Speed cannot be less than 0!");
+                    }
+
+                    if (value > 1)
+                    {
+                        throw new ArgumentException("VibrateCmd Speed cannot be greater than 1!");
+                    }
+
+                    _positionImpl = value;
+                }
+            }
+
+            public VectorIndex(uint aIndex, uint aDuration, double aPosition)
+            {
+                Index = aIndex;
+                Duration = aDuration;
+                Position = aPosition;
+            }
+        }
+
+        [JsonProperty(Required = Required.Always)]
+        public List<VectorIndex> Vectors;
+
+        public LinearCmd(uint aDeviceIndex, List<VectorIndex> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+            Vectors = aVectors;
+            MessageVersioningVersion = 1;
         }
     }
 
