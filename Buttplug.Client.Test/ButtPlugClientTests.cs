@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Components.WebsocketServer;
 using Buttplug.Core;
+using Buttplug.Core.Messages;
 using Buttplug.Server;
-using Xunit;
+using NUnit.Framework;
+using Buttplug.Server.Test;
 
 namespace Buttplug.Client.Test
 {
+    [TestFixture]
     public class ButtplugClientTests : IButtplugServerFactory
     {
-        public ButtplugServer GetServer()
-        {
-            return new ButtplugServer("Test server", 200);
-        }
-
         private class ButtplugTestClient : ButtplugWSClient
         {
             public ButtplugTestClient(string aClientName)
@@ -28,58 +27,48 @@ namespace Buttplug.Client.Test
             }
         }
 
-        [Fact]
-        public async void TestConnection()
+        private ButtplugTestClient _client;
+        private ButtplugWebsocketServer _server;
+        private TestDeviceSubtypeManager _subtypeMgr;
+        private DeviceManager _devMgr;
+        private ButtplugLogManager _logMgr;
+
+        public ButtplugServer GetServer()
         {
-            var server = new ButtplugWebsocketServer();
-            server.StartServer(this);
-
-            var client = new ButtplugTestClient("Test client");
-            await client.Connect(new Uri("ws://localhost:12345/buttplug"));
-
-            var msgId = client.nextMsgId;
-            var res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
-            Assert.True(res != null);
-            Assert.True(res is Core.Messages.Test);
-            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id > msgId);
-
-            // Check ping is working
-            Thread.Sleep(400);
-
-            msgId = client.nextMsgId;
-            res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
-            Assert.True(res != null);
-            Assert.True(res is Core.Messages.Test);
-            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id > msgId);
-
-            res = await client.SendMsg(new Core.Messages.Test("Test string"));
-            Assert.True(res != null);
-            Assert.True(res is Core.Messages.Test);
-            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id > msgId);
-
-            Assert.True(client.nextMsgId > 5);
-
-            await client.RequestDeviceList();
-
-            // Shut it down
-            await client.Disconnect();
-            server.StopServer();
+            return new TestServer(200, _devMgr, false);
         }
 
-        [Fact]
-        public async void TestSSLConnection()
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
-            var server = new ButtplugWebsocketServer();
-            server.StartServer(this, 12346, true, true);
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            _logMgr = new ButtplugLogManager();
+            _devMgr = new DeviceManager(new ButtplugLogManager());
+            _subtypeMgr = new TestDeviceSubtypeManager();
+            _devMgr.AddDeviceSubtypeManager(_subtypeMgr);
+        }
 
-            var client = new ButtplugTestClient("Test client");
-            await client.Connect(new Uri("wss://localhost:12346/buttplug"), true);
+        [TearDown]
+        public void CleanUp()
+        {
+            _client?.Disconnect();
+            _server?.Disconnect();
+        }
 
-            var msgId = client.nextMsgId;
-            var res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
+        [Test]
+        public void TestConnection()
+        {
+            AutoResetEvent eEvent = new AutoResetEvent(false);
+
+            _subtypeMgr.AddDevice(new TestDevice(_logMgr, "A", "1"));
+            _server = new ButtplugWebsocketServer();
+            _server.StartServer(this);
+
+            _client = new ButtplugTestClient("Test client");
+            _client.Connect(new Uri("ws://localhost:12345/buttplug")).Wait();
+
+            var msgId = _client.nextMsgId;
+            var res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
             Assert.True(((Core.Messages.Test)res).TestString == "Test string");
@@ -88,20 +77,118 @@ namespace Buttplug.Client.Test
             // Check ping is working
             Thread.Sleep(400);
 
-            msgId = client.nextMsgId;
-            res = await client.SendMsg(new Core.Messages.Test("Test string", msgId));
+            msgId = _client.nextMsgId;
+            res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
             Assert.True(((Core.Messages.Test)res).TestString == "Test string");
             Assert.True(((Core.Messages.Test)res).Id > msgId);
 
-            Assert.True(client.nextMsgId > 4);
+            res = _client.SendMsg(new Core.Messages.Test("Test string")).GetAwaiter().GetResult();
+            Assert.True(res != null);
+            Assert.True(res is Core.Messages.Test);
+            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
+            Assert.True(((Core.Messages.Test)res).Id > msgId);
 
-            await client.RequestDeviceList();
+            Assert.True(_client.nextMsgId > 5);
+
+            // Test that events are raised
+            bool scanningFinished = false;
+            ButtplugClientDevice lastAdded = null;
+            ButtplugClientDevice lastRemoved = null;
+            _client.ScanningFinished += (aSender, aArg) =>
+            {
+                scanningFinished = true;
+                eEvent.Set();
+            };
+
+            _client.DeviceAdded += (aSender, aArg) =>
+            {
+                lastAdded = aArg.Device;
+                eEvent.Set();
+            };
+
+            _client.DeviceRemoved += (aSender, aArg) =>
+            {
+                lastRemoved = aArg.Device;
+                eEvent.Set();
+            };
+            _client.StartScanning().Wait();
+            Assert.Null(lastAdded);
+            _subtypeMgr.AddDevice(new TestDevice(_logMgr, "B", "2"));
+            eEvent.WaitOne(10000);
+            eEvent.Reset();
+            Assert.NotNull(lastAdded);
+            Assert.AreEqual("B", lastAdded.Name);
+
+            Assert.True(!scanningFinished);
+            _client.StopScanning().Wait();
+            eEvent.WaitOne(10000);
+            eEvent.Reset();
+            Assert.True(scanningFinished);
+
+            Assert.AreEqual(1, _client.getDevices().Length);
+            Assert.AreEqual("B", _client.getDevices()[0].Name);
+            _client.RequestDeviceList().Wait();
+            Assert.AreEqual(2, _client.getDevices().Length);
+            Assert.AreEqual("A", _client.getDevices()[0].Name);
+            Assert.AreEqual("B", _client.getDevices()[1].Name);
+
+            eEvent.Reset();
+            Assert.Null(lastRemoved);
+            foreach (var dev in _devMgr._devices.Values)
+            {
+                if ((dev as TestDevice)?.Identifier == "2")
+                {
+                    (dev as TestDevice).RemoveDevice();
+                }
+            }
+
+            eEvent.WaitOne(10000);
+            eEvent.Reset();
+            Assert.NotNull(lastRemoved);
+            Assert.AreEqual("B", lastRemoved.Name);
+            Assert.AreEqual(1, _client.getDevices().Length);
+            Assert.AreEqual("A", _client.getDevices()[0].Name);
 
             // Shut it down
-            await client.Disconnect();
-            server.StopServer();
+            _client.Disconnect().Wait();
+            _server.StopServer();
+        }
+
+        [Test]
+        public void TestSSLConnection()
+        {
+            _server = new ButtplugWebsocketServer();
+            _server.StartServer(this, 12346, true, true);
+
+            _client = new ButtplugTestClient("Test client");
+            _client.Connect(new Uri("wss://localhost:12346/buttplug"), true).Wait();
+
+            var msgId = _client.nextMsgId;
+            var res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
+            Assert.True(res != null);
+            Assert.True(res is Core.Messages.Test);
+            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
+            Assert.True(((Core.Messages.Test)res).Id > msgId);
+
+            // Check ping is working
+            Thread.Sleep(400);
+
+            msgId = _client.nextMsgId;
+            res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
+            Assert.True(res != null);
+            Assert.True(res is Core.Messages.Test);
+            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
+            Assert.True(((Core.Messages.Test)res).Id > msgId);
+
+            Assert.True(_client.nextMsgId > 4);
+
+            _client.RequestDeviceList().Wait();
+
+            // Shut it down
+            _client.Disconnect().Wait();
+            _server.StopServer();
         }
     }
 }

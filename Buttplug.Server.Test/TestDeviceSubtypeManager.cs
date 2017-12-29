@@ -13,13 +13,13 @@ namespace Buttplug.Server.Test
 
         public bool StopScanningCalled { get; private set; }
 
-        public TestDeviceSubtypeManager([NotNull] IButtplugLogManager aLogManager)
-            : base(aLogManager)
+        public TestDeviceSubtypeManager()
+            : base(new ButtplugLogManager())
         {
         }
 
-        public TestDeviceSubtypeManager([NotNull] IButtplugLogManager aLogManager, [NotNull] TestDevice aDevice)
-            : base(aLogManager)
+        public TestDeviceSubtypeManager([NotNull] TestDevice aDevice)
+            : base(new ButtplugLogManager())
         {
             _device = aDevice;
         }
@@ -44,6 +44,11 @@ namespace Buttplug.Server.Test
         public override bool IsScanning()
         {
             return StartScanningCalled && !StopScanningCalled;
+        }
+
+        public void AddDevice(TestDevice dev)
+        {
+            InvokeDeviceAdded(new DeviceAddedEventArgs(dev));
         }
     }
 }

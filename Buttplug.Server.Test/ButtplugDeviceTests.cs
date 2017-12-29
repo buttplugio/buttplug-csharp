@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Buttplug.Core;
 using Buttplug.Server.Bluetooth;
-using Xunit;
+using NUnit.Framework;
+using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Test
 {
+    [TestFixture]
     public class ButtplugDeviceTests
     {
-        [Fact]
+        [Test]
         public void TestBuiltinDeviceLoading()
         {
             var buttplugAssembly = AppDomain.CurrentDomain
@@ -25,6 +28,33 @@ namespace Buttplug.Server.Test
             {
                 Assert.True(d.Any(aInfoObj => aInfoObj.GetType() == t), $"Default types contains type: {t.Name}");
             }
+        }
+
+        [Test]
+        public void TestBaseDevice()
+        {
+            var log = new ButtplugLogManager();
+            var dev = new TestDevice(log, "testDev")
+            {
+                Index = 2,
+            };
+
+            Assert.AreEqual(2, dev.Index);
+
+            Assert.True(dev.Initialize().GetAwaiter().GetResult() is Ok);
+
+            Assert.True(dev.ParseMessage(new StopDeviceCmd(2)).GetAwaiter().GetResult() is Ok);
+
+            var outMsg = dev.ParseMessage(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>())).GetAwaiter().GetResult();
+            Assert.True(outMsg is Error);
+            Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
+            Assert.True((outMsg as Error).ErrorMessage.Contains("cannot handle message of type"));
+
+            dev.Disconnect();
+            outMsg = dev.ParseMessage(new StopDeviceCmd(2)).GetAwaiter().GetResult();
+            Assert.True(outMsg is Error);
+            Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
+            Assert.True((outMsg as Error).ErrorMessage.Contains("has disconnected"));
         }
     }
 }

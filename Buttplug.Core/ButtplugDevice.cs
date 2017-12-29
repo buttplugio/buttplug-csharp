@@ -15,13 +15,7 @@ namespace Buttplug.Core
 
         public uint Index { get; set; }
 
-        public bool IsConnected
-        {
-            get
-            {
-                return !_isDisconnected;
-            }
-        }
+        public bool IsConnected => !_isDisconnected;
 
         [CanBeNull]
         public event EventHandler DeviceRemoved;
@@ -102,7 +96,6 @@ namespace Buttplug.Core
 
         public virtual Task<ButtplugMessage> Initialize()
         {
-            // ReSharper disable once AssignNullToNotNullAttribute
             return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SystemMsgId));
         }
 

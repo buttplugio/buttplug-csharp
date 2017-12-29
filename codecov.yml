@@ -1,2 +1,3 @@
 ignore:
     dependencies
+    Buttplug.Core/App_Packages/LibLog.4.2/LibLog.cs

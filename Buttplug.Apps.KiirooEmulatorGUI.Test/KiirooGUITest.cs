@@ -1,9 +1,10 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Threading;
-using Xunit;
 
 namespace Buttplug.Apps.KiirooEmulatorGUI.Test
 {
+    [TestFixture]
     public class KiirooGUITest
     {
         private Exception didStart;
@@ -21,7 +22,7 @@ namespace Buttplug.Apps.KiirooEmulatorGUI.Test
             }
         }
 
-        [Fact]
+        [Test]
         public void TestGUIBringup()
         {
             var t = new Thread(StartGUI);
