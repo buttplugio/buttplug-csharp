@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Buttplug.Core;
 
@@ -36,3 +37,6 @@ using Buttplug.Core;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0.0.0-dev")]
 [assembly: AssemblyGitVersion("")]
+
+// Let test project see internals
+[assembly: InternalsVisibleTo("Buttplug.Client.Test")]

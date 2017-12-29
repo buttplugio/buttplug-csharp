@@ -29,12 +29,8 @@ namespace Buttplug.Server.Util
 
             var mil = Math.Pow(aSpeed / 250, -0.95);
             var diff = mil - Convert.ToDouble(aDuration);
-            if (diff == 0)
-            {
-                return 0;
-            }
-
-            return Math.Max(Math.Min(Convert.ToDouble(90 - (diff / mil * 90)) / 100, 1), 0);
+            return Math.Abs(diff) < 0.001 ? 0 :
+                Math.Max(Math.Min(Convert.ToDouble(90 - (diff / mil * 90)) / 100, 1), 0);
         }
 
         /// <summary>

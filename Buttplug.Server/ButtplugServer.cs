@@ -22,7 +22,11 @@ namespace Buttplug.Server
         public event EventHandler<MessageReceivedEventArgs> ClientConnected;
 
         [NotNull]
+        protected readonly IButtplugLogManager _bpLogManager;
+
+        [NotNull]
         private readonly IButtplugLog _bpLogger;
+
         [NotNull]
         private DeviceManager _deviceManager;
 
@@ -31,8 +35,6 @@ namespace Buttplug.Server
             get => _deviceManager;
         }
 
-        [NotNull]
-        private readonly IButtplugLogManager _bpLogManager;
         private readonly Timer _pingTimer;
 
         private readonly string _serverName;

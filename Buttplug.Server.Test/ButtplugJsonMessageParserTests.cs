@@ -1,50 +1,56 @@
 ﻿using Buttplug.Core;
 using Buttplug.Core.Messages;
-using Xunit;
+using NUnit.Framework;
 
 namespace Buttplug.Server.Test
 {
+    [TestFixture]
     public class ButtplugJsonMessageParserTests
     {
         private readonly TestServer _server = new TestServer();
 
-        [Fact]
+        [Test]
         public void JsonConversionTest()
         {
             var m1 = new Core.Messages.Test("ThisIsATest", ButtplugConsts.SystemMsgId);
             var m2 = new Core.Messages.Test("ThisIsAnotherTest", ButtplugConsts.SystemMsgId);
             var msg = _server.Serialize(m1);
             Assert.True(msg.Length > 0);
-            Assert.Equal("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}]", msg);
+            Assert.AreEqual("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}]", msg);
             ButtplugMessage[] msgs = { m1, m2 };
             msg = _server.Serialize(msgs);
             Assert.True(msg.Length > 0);
-            Assert.Equal("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}},{\"Test\":{\"TestString\":\"ThisIsAnotherTest\",\"Id\":0}}]", msg);
+            Assert.AreEqual("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}},{\"Test\":{\"TestString\":\"ThisIsAnotherTest\",\"Id\":0}}]", msg);
         }
 
-        // Not valid JSON
-        [InlineData("not a json message")]
+        [Datapoints]
+        public string[] TestData =
+        {
+            // Not valid JSON
+            "not a json message",
 
-        // Valid json object but no contents
-        [InlineData("{}")]
+            // Valid json object but no contents
+            "{}",
 
-        // Valid json but not an object
-        [InlineData("[]")]
+            // Valid json but not an object
+            "[]",
 
-        // Not a message type
-        [InlineData("[{\"NotAMessage\":{}}]")]
+            // Not a message type
+            "[{\"NotAMessage\":{}}]",
 
-        // Valid json and message type but not in correct format
-        [InlineData("[{\"Test\":[]}]")]
+            // Valid json and message type but not in correct format
+            "[{\"Test\":[]}]",
 
-        // Valid json and message type but not in correct format
-        [InlineData("[{\"Test\":{}}]")]
+            // Valid json and message type but not in correct format
+            "[{\"Test\":{}}]",
 
-        // Valid json and message type but with erroneous content
-        [InlineData("[{\"Test\":{\"TestString\":\"Error\",\"Id\":0}}]")]
+            // Valid json and message type but with erroneous content
+            "[{\"Test\":{\"TestString\":\"Error\",\"Id\":0}}]",
 
-        // Valid json and message type but with extra content
-        [InlineData("[{\"Test\":{\"TestString\":\"Yup\",\"NotAField\":\"NotAValue\",\"Id\":0}}]")]
+            // Valid json and message type but with extra content
+            "[{\"Test\":{\"TestString\":\"Yup\",\"NotAField\":\"NotAValue\",\"Id\":0}}]",
+        };
+
         [Theory]
         public void DeserializeIncorrectMessages(string aMsgStr)
         {
@@ -53,7 +59,7 @@ namespace Buttplug.Server.Test
             Assert.True(res[0] is Error);
         }
 
-        [Fact]
+        [Test]
         public void DeserializeCorrectMessage()
         {
             var m = _server.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}]");

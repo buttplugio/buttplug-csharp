@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Threading;
-using Xunit;
+using NUnit.Framework;
 
 namespace Buttplug.Apps.WebsocketServerGUI.Test
 {
+    [TestFixture]
     public class ButtplugWebsocketServerGUITest
     {
         private Exception didStart;
 
-        [Fact]
+        [Test]
         public void TestGUIBringup()
         {
             var t = new Thread(StartGUI);

@@ -1,12 +1,13 @@
 ﻿using System;
 using Buttplug.Server.Util;
-using Xunit;
+using NUnit.Framework;
 
 namespace Buttplug.Server.Test
 {
+    [TestFixture]
     public class FleshlightHelperTests
     {
-        [Fact]
+        [Test]
         public void TestRoundTrip()
         {
             var delta = FleshlightHelper.GetDistance(100, 0.5);
@@ -26,6 +27,20 @@ namespace Buttplug.Server.Test
             var delta3 = FleshlightHelper.GetDistance(time3, 0.5);
             Assert.True(Math.Abs(0.5 - delta3) < 0.01);
             Assert.True(Math.Abs(0.5 - speed3) < 0.01);
+        }
+
+        [Test]
+        public void TestOutOfBounds()
+        {
+            Assert.True(Math.Abs(FleshlightHelper.GetSpeed(0, 500) - FleshlightHelper.GetSpeed(-1, 500)) < 0.0001);
+            Assert.True(Math.Abs(FleshlightHelper.GetSpeed(1, 500) - FleshlightHelper.GetSpeed(2, 500)) < 0.0001);
+            Assert.True(Math.Abs(FleshlightHelper.GetDistance(100, 0) - FleshlightHelper.GetDistance(100, -1)) < 0.0001);
+            Assert.True(Math.Abs(FleshlightHelper.GetDistance(100, 1) - FleshlightHelper.GetDistance(100, 2)) < 0.0001);
+            Assert.True(Math.Abs(FleshlightHelper.GetDistance(1000, 0.17379819904439015016403395523936)) < 0.0001);
+            Assert.True(Math.Abs(FleshlightHelper.GetDuration(0.5, 0) - FleshlightHelper.GetDuration(0.5, -1)) < 0.0001);
+            Assert.True(Math.Abs(FleshlightHelper.GetDuration(0.5, 1) - FleshlightHelper.GetDuration(0.5, 2)) < 0.0001);
+            Assert.True(Math.Abs(FleshlightHelper.GetDuration(0, 0.5) - FleshlightHelper.GetDuration(-1, 0.5)) < 0.0001);
+            Assert.True(Math.Abs(FleshlightHelper.GetDuration(1, 0.5) - FleshlightHelper.GetDuration(2, 0.5)) < 0.0001);
         }
     }
 }
