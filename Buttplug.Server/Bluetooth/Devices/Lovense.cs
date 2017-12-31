@@ -179,6 +179,38 @@ namespace Buttplug.Server.Bluetooth.Devices
         }
     }
 
+    internal class LovenseRev6BluetoothInfo : IBluetoothDeviceInfo
+    {
+        public enum Chrs : uint
+        {
+            Tx = 0,
+            Rx,
+        }
+
+        public Guid[] Services { get; } = { new Guid("50300001-0023-4bd4-bbd5-a6920e4c5653") };
+
+        public string[] Names { get; } =
+        {
+            // Hush. Again.
+            "LVS-Edge37",
+        };
+
+        public Guid[] Characteristics { get; } =
+        {
+            // tx characteristic
+            new Guid("50300002-0023-4bd4-bbd5-a6920e4c5653"),
+
+            // rx characteristic
+            new Guid("50300003-0023-4bd4-bbd5-a6920e4c5653"),
+        };
+
+        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
+            IBluetoothDeviceInterface aInterface)
+        {
+            return new Lovense(aLogManager, aInterface, this);
+        }
+    }
+
     internal class Lovense : ButtplugBluetoothDevice
     {
         private static Dictionary<string, string> friendlyNames = new Dictionary<string, string>()
@@ -193,6 +225,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "LVS-P36", "Edge" },
             { "LVS-Z36", "Hush" },
             { "LVS-Domi37", "Domi" },
+            { "LVS-Edge37", "Edge" },
         };
 
         private bool _clockwise = true;
