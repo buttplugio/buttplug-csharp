@@ -29,9 +29,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
 
         private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as SingleMotorVibrateCmd;
-
-            if (cmdMsg is null)
+            if (!(aMsg is SingleMotorVibrateCmd cmdMsg))
             {
                 return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
             }
@@ -47,15 +45,14 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
 
         private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as VibrateCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is VibrateCmd cmdMsg))
             {
                 return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
             }
 
             if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > 2)
             {
-                Task.FromResult<ButtplugMessage>(new Error(
+                return Task.FromResult<ButtplugMessage>(new Error(
                     "VibrateCmd requires between 1 and 2 vectors for this device.",
                     Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id));
@@ -65,7 +62,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             {
                 if (vi.Index < 0 || vi.Index >= 2)
                 {
-                    Task.FromResult<ButtplugMessage>(new Error(
+                    return Task.FromResult<ButtplugMessage>(new Error(
                         $"Index {vi.Index} is out of bounds for VibrateCmd for this device.",
                         Error.ErrorClass.ERROR_DEVICE,
                         cmdMsg.Id));
