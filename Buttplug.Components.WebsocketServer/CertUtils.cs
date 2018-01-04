@@ -22,86 +22,6 @@ namespace Buttplug.Components.WebsocketServer
     internal static class CertUtils
     {
         // Note: Much of this code comes from https://stackoverflow.com/a/22247129
-        private static X509Certificate2 GenerateSelfSignedCertificate(string subject, X509Certificate2 issuer, AsymmetricCipherKeyPair issuerKeyPair)
-        {
-            const int keyStrength = 2048;
-
-            // Generating Random Numbers
-            var randomGenerator = new CryptoApiRandomGenerator();
-            var random = new SecureRandom(randomGenerator);
-
-            // The Certificate Generator
-            var certificateGenerator = new X509V3CertificateGenerator();
-
-            // Serial Number
-            certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), random));
-
-            // Issuer
-            certificateGenerator.SetIssuerDN(new X509Name(issuer.Subject));
-            certificateGenerator.AddExtension(X509Extensions.AuthorityKeyIdentifier, false, new AuthorityKeyIdentifier(SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(issuerKeyPair.Public)));
-
-            // Subject DN
-            certificateGenerator.SetSubjectDN(new X509Name("CN=" + subject));
-
-            // Subject Alternative Name
-            var subjectAlternativeNames = new List<Asn1Encodable>()
-            {
-                new GeneralName(GeneralName.DnsName, Environment.MachineName),
-                new GeneralName(GeneralName.DnsName, "localhost"),
-                new GeneralName(GeneralName.IPAddress, "127.0.0.1"),
-            };
-
-            if (subject != "localhost" && subject != Environment.MachineName)
-            {
-                subjectAlternativeNames.Add(new GeneralName(GeneralName.DnsName, subject));
-            }
-
-            certificateGenerator.AddExtension(X509Extensions.SubjectAlternativeName.Id, false, new DerSequence(subjectAlternativeNames.ToArray()));
-
-            // Valid For
-            var notBefore = DateTime.UtcNow.Date;
-            var notAfter = notBefore.AddYears(2);
-            certificateGenerator.SetNotBefore(notBefore);
-            certificateGenerator.SetNotAfter(notAfter);
-
-            // Subject Public Key
-            var keyPairGenerator = new RsaKeyPairGenerator();
-            var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
-            keyPairGenerator.Init(keyGenerationParameters);
-            var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
-            certificateGenerator.SetPublicKey(subjectKeyPair.Public);
-            certificateGenerator.AddExtension(X509Extensions.SubjectKeyIdentifier.Id, false, new SubjectKeyIdentifier(SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(subjectKeyPair.Public)));
-
-            // Add basic constraint
-            certificateGenerator.AddExtension(X509Extensions.BasicConstraints.Id, true, new BasicConstraints(false));
-
-            certificateGenerator.AddExtension(X509Extensions.ExtendedKeyUsage.Id, false, new ExtendedKeyUsage(new[] { KeyPurposeID.IdKPServerAuth }));
-
-            // Signature Algorithm
-            const string signatureAlgorithm = "SHA256WithRSA";
-            var signatureFactory = new Asn1SignatureFactory(signatureAlgorithm, issuerKeyPair.Private);
-
-            // selfsign certificate
-            var certificate = certificateGenerator.Generate(signatureFactory);
-
-            // correcponding private key
-            var info = PrivateKeyInfoFactory.CreatePrivateKeyInfo(subjectKeyPair.Private);
-
-            // merge into X509Certificate2
-            var x509 = new X509Certificate2(certificate.GetEncoded());
-            var seq = (Asn1Sequence)Asn1Object.FromByteArray(info.ParsePrivateKey().GetDerEncoded());
-            if (seq.Count != 9)
-            {
-                // throw new PemException("malformed sequence in RSA private key");
-            }
-
-            var rsa = RsaPrivateKeyStructure.GetInstance(seq);
-            var rsaparams = new RsaPrivateCrtKeyParameters(
-                rsa.Modulus, rsa.PublicExponent, rsa.PrivateExponent, rsa.Prime1, rsa.Prime2, rsa.Exponent1, rsa.Exponent2, rsa.Coefficient);
-            x509.PrivateKey = ToDotNetKey(rsaparams); // x509.PrivateKey = DotNetUtilities.ToRSA(rsaparams);
-            return x509;
-        }
-
         private static X509Certificate2 GenerateSelfSignedCertificate(string subject)
         {
             const int keyStrength = 2048;
@@ -154,7 +74,7 @@ namespace Buttplug.Components.WebsocketServer
             // Add basic constraint
             certificateGenerator.AddExtension(X509Extensions.BasicConstraints.Id, true, new BasicConstraints(false));
 
-            certificateGenerator.AddExtension(X509Extensions.ExtendedKeyUsage.Id, false, new ExtendedKeyUsage(new[] { KeyPurposeID.IdKPServerAuth }));
+            certificateGenerator.AddExtension(X509Extensions.ExtendedKeyUsage.Id, false, new ExtendedKeyUsage(KeyPurposeID.IdKPServerAuth));
 
             // Signature Algorithm
             const string signatureAlgorithm = "SHA256WithRSA";
@@ -177,7 +97,15 @@ namespace Buttplug.Components.WebsocketServer
             var rsa = RsaPrivateKeyStructure.GetInstance(seq);
             var rsaparams = new RsaPrivateCrtKeyParameters(
                 rsa.Modulus, rsa.PublicExponent, rsa.PrivateExponent, rsa.Prime1, rsa.Prime2, rsa.Exponent1, rsa.Exponent2, rsa.Coefficient);
-            x509.PrivateKey = ToDotNetKey(rsaparams); // x509.PrivateKey = DotNetUtilities.ToRSA(rsaparams);
+            try
+            {
+                x509.PrivateKey = ToDotNetKey(rsaparams); // x509.PrivateKey = DotNetUtilities.ToRSA(rsaparams);
+            }
+            catch (CryptographicException e)
+            {
+                throw new Exception($"Exception on cert generation!\nSubject {subject}\nHostname {Environment.MachineName}\nSequenceCount {seq.Count} (should be 9?)", e);
+            }
+
             return x509;
         }
 
@@ -205,61 +133,6 @@ namespace Buttplug.Components.WebsocketServer
             return rsaProvider;
         }
 
-        // ReSharper disable once RedundantAssignment
-        private static X509Certificate2 GenerateCACertificate(string subjectName, ref AsymmetricCipherKeyPair caKeyPair)
-        {
-            const int keyStrength = 2048;
-
-            // Generating Random Numbers
-            var randomGenerator = new CryptoApiRandomGenerator();
-            var random = new SecureRandom(randomGenerator);
-
-            // The Certificate Generator
-            var certificateGenerator = new X509V3CertificateGenerator();
-
-            // Subject Public Key
-            var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
-            var keyPairGenerator = new RsaKeyPairGenerator();
-            keyPairGenerator.Init(keyGenerationParameters);
-            caKeyPair = keyPairGenerator.GenerateKeyPair();
-
-            // Serial Number
-            var serialNumber = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), random);
-            certificateGenerator.SetSerialNumber(serialNumber);
-
-            // Signature Algorithm
-            const string signatureAlgorithm = "SHA256WithRSA";
-
-            // Set the public key
-            certificateGenerator.SetPublicKey(caKeyPair.Public);
-            certificateGenerator.AddExtension(X509Extensions.SubjectKeyIdentifier.Id, false, new SubjectKeyIdentifier(SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(caKeyPair.Public)));
-
-            // Issuer and Subject Name
-            var subjectDN = new X509Name(subjectName);
-            certificateGenerator.SetSubjectDN(subjectDN);
-
-            // Issuer
-            certificateGenerator.SetIssuerDN(subjectDN);
-            certificateGenerator.AddExtension(X509Extensions.AuthorityKeyIdentifier, false, new AuthorityKeyIdentifier(SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(caKeyPair.Public)));
-
-            // Valid For
-            var notBefore = DateTime.UtcNow.Date;
-            var notAfter = notBefore.AddYears(2);
-            certificateGenerator.SetNotBefore(notBefore);
-            certificateGenerator.SetNotAfter(notAfter);
-
-            // Make this a CA
-            certificateGenerator.AddExtension(X509Extensions.BasicConstraints.Id, true, new BasicConstraints(true));
-
-            // selfsign certificate
-            var signatureFactory = new Asn1SignatureFactory(signatureAlgorithm, caKeyPair.Private);
-            var certificate = certificateGenerator.Generate(signatureFactory);
-            var x509 = new X509Certificate2(certificate.GetEncoded());
-            return x509;
-
-            // return issuerKeyPair.Private;
-        }
-
         public static X509Certificate2 GetCert(string app, string hostname = "localhost")
         {
             var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), app);
@@ -276,17 +149,21 @@ namespace Buttplug.Components.WebsocketServer
                 }
             }
 
-            if (!File.Exists(certPfx))
+            if (File.Exists(certPfx))
             {
-                var clientCert = GenerateSelfSignedCertificate(hostname);
-                var p12cert = clientCert.Export(X509ContentType.Pfx);
-                Directory.CreateDirectory(appPath);
-                var w = File.OpenWrite(certPfx);
-                w.Write(p12cert, 0, p12cert.Length);
-                w.Close();
+                return new X509Certificate2(File.ReadAllBytes(certPfx), (string)null,
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
             }
 
-            return new X509Certificate2(File.ReadAllBytes(certPfx), (string)null, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+            var clientCert = GenerateSelfSignedCertificate(hostname);
+            var p12Cert = clientCert.Export(X509ContentType.Pfx);
+            Directory.CreateDirectory(appPath);
+            var w = File.OpenWrite(certPfx);
+            w.Write(p12Cert, 0, p12Cert.Length);
+            w.Close();
+
+            return new X509Certificate2(File.ReadAllBytes(certPfx), (string)null,
+                X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
         }
     }
 }
