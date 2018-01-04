@@ -84,9 +84,12 @@ after_build:
 test_script:
   - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"Buttplug.Server.Test\bin\$env:CONFIGURATION\Buttplug.Server.Test.dll Buttplug.Client.Test\bin\$env:CONFIGURATION\Buttplug.Client.Test.dll Buttplug.Apps.WebsocketServerGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.WebsocketServerGUI.Test.dll Buttplug.Apps.KiirooEmulatorGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.KiirooEmulatorGUI.Test.dll -noshadow" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
 after_test:
-  - ps: If (($env:CONFIGURATION -imatch "Debug")) { "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%" }
-  - ps: If (($env:CONFIGURATION -imatch "Debug")) { pip install codecov }
-  - ps: If (($env:CONFIGURATION -imatch "Debug")) { codecov -f "coverage.xml" -X gcov }
+  - ps: |
+      If (($env:CONFIGURATION -imatch "Debug")) {
+        $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
+        Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+        bash codecov.sh -f "coverage.xml" -X gcov
+      }
   - ps: set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
   - ps: iscc buttplug-installer.iss   
   - ps: installer\buttplug-installer.exe /VERYSILENT
