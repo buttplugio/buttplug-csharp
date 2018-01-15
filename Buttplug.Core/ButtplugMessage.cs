@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Buttplug.Core
 {
-    public class ButtplugMessage
+    public abstract class ButtplugMessage
     {
         /*
          * Message schema versions
@@ -27,29 +27,17 @@ namespace Buttplug.Core
         [JsonIgnore]
         public uint SchemaVersion
         {
-            get
-            {
-                return _schemaVersion;
-            }
+            get => _schemaVersion;
 
-            protected set
-            {
-                _schemaVersion = value;
-            }
+            protected set => _schemaVersion = value;
         }
 
         [JsonIgnore]
         public Type PreviousType
         {
-            get
-            {
-                return _previousType;
-            }
+            get => _previousType;
 
-            protected set
-            {
-                _previousType = value;
-            }
+            protected set => _previousType = value;
         }
 
         // Base class starts at version 0
@@ -60,7 +48,7 @@ namespace Buttplug.Core
         [JsonIgnore]
         private Type _previousType = null;
 
-        public ButtplugMessage(uint aId, uint aSchemaVersion = 0, Type aPreviousType = null)
+        protected ButtplugMessage(uint aId, uint aSchemaVersion = 0, Type aPreviousType = null)
         {
             Id = aId;
             SchemaVersion = aSchemaVersion;
