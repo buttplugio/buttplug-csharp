@@ -16,15 +16,18 @@ namespace Buttplug.Core
     {
         [NotNull]
         private readonly Dictionary<string, Type> _messageTypes;
-        [NotNull]
         private readonly IButtplugLog _bpLogger;
         [NotNull]
         private readonly JsonSchema4 _schema;
+
+        [NotNull]
+        private JsonSerializer _serializer;
 
         public ButtplugJsonMessageParser(IButtplugLogManager aLogManager = null)
         {
             _bpLogger = aLogManager.GetLogger(GetType());
             _bpLogger?.Info($"Setting up {GetType().Name}");
+            _serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
             IEnumerable<Type> allTypes;
 
             // Some classes in the library may not load on certain platforms due to missing symbols.
@@ -131,30 +134,47 @@ namespace Buttplug.Core
                     continue;
                 }
 
-                var s = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
-
                 // This specifically could fail due to object conversion.
-                try
-                {
-                    var r = o[msgName].Value<JObject>();
-                    res.Add((ButtplugMessage)r.ToObject(_messageTypes[msgName], s));
-                    _bpLogger?.Trace($"Message successfully parsed as {msgName} type");
-                }
-                catch (InvalidCastException e)
-                {
-                    var err = new Error($"Could not create message for JSON {aJsonMsg}: {e.Message}", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
-                    _bpLogger?.LogErrorMsg(err);
-                    res.Add(err);
-                }
-                catch (JsonSerializationException e)
-                {
-                    var err = new Error($"Could not create message for JSON {aJsonMsg}: {e.Message}", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
-                    _bpLogger?.LogErrorMsg(err);
-                    res.Add(err);
-                }
+                res.Add(DeserializeAs(o, _messageTypes[msgName], msgName, aJsonMsg));
             }
 
             return res.ToArray();
+        }
+
+        private ButtplugMessage DeserializeAs(JObject aObject, Type aMsgType, string aMsgName, string aJsonMsg)
+        {
+            try
+            {
+                var r = aObject[aMsgName].Value<JObject>();
+                var msg = (ButtplugMessage)r.ToObject(aMsgType, _serializer);
+                _bpLogger?.Trace($"Message successfully parsed as {aMsgName} type");
+                return msg;
+            }
+            catch (InvalidCastException e)
+            {
+                var err = new Error($"Could not create message for JSON {aJsonMsg}: {e.Message}", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                _bpLogger?.LogErrorMsg(err);
+                return err;
+            }
+            catch (JsonSerializationException e)
+            {
+                // Object didn't fit. Downgrade?
+                var tmp = (ButtplugMessage)aMsgType.GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null, Type.EmptyTypes, null)?.Invoke(null);
+                if (tmp?.PreviousType != null)
+                {
+                    var msg = DeserializeAs(aObject, tmp.PreviousType, aMsgName, aJsonMsg);
+                    if (!(msg is Error))
+                    {
+                        return msg;
+                    }
+                }
+
+                var err = new Error($"Could not create message for JSON {aJsonMsg}: {e.Message}", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                _bpLogger?.LogErrorMsg(err);
+                return err;
+            }
         }
 
         public string Serialize([NotNull] ButtplugMessage aMsg, uint clientSchemaVersion)
@@ -163,24 +183,28 @@ namespace Buttplug.Core
 
             // Support downgrading messages
             var tmp = aMsg;
-            while (tmp.SchemaVersion > clientSchemaVersion)
+            while (tmp == null || tmp.SchemaVersion > clientSchemaVersion)
             {
-                if (tmp.PreviousType == null)
+                if (tmp?.PreviousType == null)
                 {
-                    if (tmp.Id == ButtplugConsts.SystemMsgId)
+                    if (aMsg.Id == ButtplugConsts.SystemMsgId)
                     {
                         // There's no previous version of this system message
                         _bpLogger?.Warn($"No messages serialized!");
                         return null;
                     }
 
-                    tmp = new Error($"No backwards compatible version for message #{tmp.GetType().Name}!",
-                                    ErrorClass.ERROR_MSG, tmp.Id);
-                    continue;
+                    var err = new Error($"No backwards compatible version for message #{aMsg.GetType().Name}!",
+                                    ErrorClass.ERROR_MSG, aMsg.Id);
+                    var eo = new JObject(new JProperty(err.GetType().Name, JObject.FromObject(err)));
+                    var ea = new JArray(eo);
+                    _bpLogger?.Error(err.ErrorMessage, true);
+                    _bpLogger?.Trace($"Message serialized to: {ea.ToString(Formatting.None)}", true);
+                    return ea.ToString(Formatting.None);
                 }
 
                 tmp = (ButtplugMessage)aMsg.PreviousType.GetConstructor(
-                    new Type[] { tmp.GetType() }).Invoke(new object[] { tmp });
+                    new Type[] { tmp.GetType() })?.Invoke(new object[] { tmp });
             }
 
             var o = new JObject(new JProperty(aMsg.GetType().Name, JObject.FromObject(tmp)));

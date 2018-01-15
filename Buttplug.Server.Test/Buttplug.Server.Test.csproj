@@ -61,6 +61,7 @@
     <Compile Include="AssemblyGitVersionTests.cs" />
     <Compile Include="ButtplugDeviceTests.cs" />
     <Compile Include="ButtplugJsonMessageParserTests.cs" />
+    <Compile Include="ButtplugMessagesTests.cs" />
     <Compile Include="ButtplugMessageTests.cs" />
     <Compile Include="ButtplugServerTests.cs" />
     <Compile Include="FleshlightHelperTests.cs" />

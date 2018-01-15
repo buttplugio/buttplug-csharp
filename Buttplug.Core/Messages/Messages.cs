@@ -130,9 +130,14 @@ namespace Buttplug.Core.Messages
         public readonly DeviceMessageInfo[] Devices = new DeviceMessageInfo[0];
 
         public DeviceList(DeviceMessageInfo[] aDeviceList, uint aId)
-             : base(aId, 1, typeof(DeviceListVersion0))
+            : base(aId, 1, typeof(DeviceListVersion0))
         {
             Devices = aDeviceList;
+        }
+
+        internal DeviceList()
+            : base(0, 1, typeof(DeviceListVersion0))
+        {
         }
     }
 
@@ -186,6 +191,11 @@ namespace Buttplug.Core.Messages
         {
             DeviceName = aName;
             DeviceMessages = aMessages;
+        }
+
+        internal DeviceAdded()
+            : base(0, 0, 1, typeof(DeviceAddedVersion0))
+        {
         }
     }
 
@@ -414,9 +424,13 @@ namespace Buttplug.Core.Messages
     // ReSharper disable once UnusedMember.Global
     public class LovenseCmd : ButtplugDeviceMessage
     {
+        [JsonProperty(Required = Required.Always)]
+        public string Command;
+
         public LovenseCmd(uint aDeviceIndex, string aDeviceCmd, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
+            Command = aDeviceCmd;
         }
     }
 

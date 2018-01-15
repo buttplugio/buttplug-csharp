@@ -43,6 +43,7 @@
 #define LIBLOG_PUBLIC
 
 using System.Diagnostics.CodeAnalysis;
+// ReSharper disable All
 
 [assembly: SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "Buttplug.Logging")]
 [assembly: SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Scope = "member", Target = "Buttplug.Logging.Logger.#Invoke(Buttplug.Logging.LogLevel,System.Func`1<System.String>,System.Exception,System.Object[])")]

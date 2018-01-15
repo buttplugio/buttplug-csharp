@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Buttplug.Server.Managers.ETSerialManager
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Based on 3rd party documentation.")]
     public static class ET312Protocol
     {
         /// <summary>
