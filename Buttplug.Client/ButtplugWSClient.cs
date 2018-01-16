@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using SuperSocket.ClientEngine;
 using WebSocket4Net;
 using static Buttplug.Client.DeviceEventArgs;
 
@@ -97,7 +95,7 @@ namespace Buttplug.Client
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _parser = new ButtplugJsonMessageParser(_bpLogManager);
             _bpLogger.Info("Finished setting up ButtplugClient");
-            _owningDispatcher = SynchronizationContext.Current;
+            _owningDispatcher = SynchronizationContext.Current ?? new SynchronizationContext();
             _tokenSource = new CancellationTokenSource();
         }
 

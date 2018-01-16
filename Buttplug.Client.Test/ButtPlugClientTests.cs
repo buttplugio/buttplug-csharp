@@ -41,7 +41,6 @@ namespace Buttplug.Client.Test
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
             _logMgr = new ButtplugLogManager();
             _devMgr = new DeviceManager(new ButtplugLogManager());
             _subtypeMgr = new TestDeviceSubtypeManager();
