@@ -68,9 +68,8 @@ namespace Buttplug.Apps.ExampleClientGUI
                 if (_client != null)
                 {
                     await _client.Connect(new Uri(AdressTextBox.Text), true);
-                    await _client.RequestDeviceList();
 
-                    foreach (var dev in _client.getDevices())
+                    foreach (var dev in _client.Devices)
                     {
                         devControl.DeviceAdded(new ButtplugDeviceInfo(dev.Index, dev.Name, dev.AllowedMessages));
                     }
@@ -142,7 +141,7 @@ namespace Buttplug.Apps.ExampleClientGUI
                         new FleshlightLaunchFW12Cmd(dev.Index,
                             Convert.ToUInt32(LinearSpeed.Value),
                             Convert.ToUInt32(LinearPosition.Value),
-                            _client.nextMsgId));
+                            _client.NextMsgId));
                 }
             }
         }
@@ -168,7 +167,7 @@ namespace Buttplug.Apps.ExampleClientGUI
                                 new VibrateCmd(dev.Index,
                                     new List<VibrateCmd.VibrateSubcommand>
                                     { new VibrateCmd.VibrateSubcommand(i, VibrateSpeed.Value) },
-                                    _client.nextMsgId));
+                                    _client.NextMsgId));
                         }
                     }
                     catch
@@ -200,7 +199,7 @@ namespace Buttplug.Apps.ExampleClientGUI
                                 new RotateCmd(dev.Index,
                                     new List<RotateCmd.RotateSubcommand>
                                             { new RotateCmd.RotateSubcommand(i, RotateSpeed.Value * (clockwise ? 1 : -1), clockwise) },
-                                    _client.nextMsgId));
+                                    _client.NextMsgId));
                         }
                     }
                     catch
@@ -227,7 +226,7 @@ namespace Buttplug.Apps.ExampleClientGUI
                             new LinearCmd.VectorSubcommands(0,
                                 Convert.ToUInt32(LinearDuration.Text),
                                 Linear2Position.Value),
-                        }, _client.nextMsgId));
+                        }, _client.NextMsgId));
                 }
             }
         }

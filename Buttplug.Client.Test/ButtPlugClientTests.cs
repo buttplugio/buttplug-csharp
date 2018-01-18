@@ -57,7 +57,7 @@ namespace Buttplug.Client.Test
         [Test]
         public void TestConnection()
         {
-            AutoResetEvent eEvent = new AutoResetEvent(false);
+            var eEvent = new AutoResetEvent(false);
 
             _subtypeMgr.AddDevice(new TestDevice(_logMgr, "A", "1"));
             _server = new ButtplugWebsocketServer();
@@ -66,7 +66,7 @@ namespace Buttplug.Client.Test
             _client = new ButtplugTestClient("Test client");
             _client.Connect(new Uri("ws://localhost:12345/buttplug")).Wait();
 
-            var msgId = _client.nextMsgId;
+            var msgId = _client.NextMsgId;
             var res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
@@ -76,7 +76,7 @@ namespace Buttplug.Client.Test
             // Check ping is working
             Thread.Sleep(400);
 
-            msgId = _client.nextMsgId;
+            msgId = _client.NextMsgId;
             res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
@@ -89,10 +89,10 @@ namespace Buttplug.Client.Test
             Assert.True(((Core.Messages.Test)res).TestString == "Test string");
             Assert.True(((Core.Messages.Test)res).Id > msgId);
 
-            Assert.True(_client.nextMsgId > 5);
+            Assert.True(_client.NextMsgId > 5);
 
             // Test that events are raised
-            bool scanningFinished = false;
+            var scanningFinished = false;
             ButtplugClientDevice lastAdded = null;
             ButtplugClientDevice lastRemoved = null;
             _client.ScanningFinished += (aSender, aArg) =>
@@ -126,12 +126,9 @@ namespace Buttplug.Client.Test
             eEvent.Reset();
             Assert.True(scanningFinished);
 
-            Assert.AreEqual(1, _client.getDevices().Length);
-            Assert.AreEqual("B", _client.getDevices()[0].Name);
-            _client.RequestDeviceList().Wait();
-            Assert.AreEqual(2, _client.getDevices().Length);
-            Assert.AreEqual("A", _client.getDevices()[0].Name);
-            Assert.AreEqual("B", _client.getDevices()[1].Name);
+            Assert.AreEqual(2, _client.Devices.Length);
+            Assert.AreEqual("A", _client.Devices[0].Name);
+            Assert.AreEqual("B", _client.Devices[1].Name);
 
             eEvent.Reset();
             Assert.Null(lastRemoved);
@@ -147,8 +144,8 @@ namespace Buttplug.Client.Test
             eEvent.Reset();
             Assert.NotNull(lastRemoved);
             Assert.AreEqual("B", lastRemoved.Name);
-            Assert.AreEqual(1, _client.getDevices().Length);
-            Assert.AreEqual("A", _client.getDevices()[0].Name);
+            Assert.AreEqual(1, _client.Devices.Length);
+            Assert.AreEqual("A", _client.Devices[0].Name);
 
             // Shut it down
             _client.Disconnect().Wait();
@@ -164,7 +161,7 @@ namespace Buttplug.Client.Test
             _client = new ButtplugTestClient("Test client");
             _client.Connect(new Uri("wss://localhost:12346/buttplug"), true).Wait();
 
-            var msgId = _client.nextMsgId;
+            var msgId = _client.NextMsgId;
             var res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
@@ -174,16 +171,14 @@ namespace Buttplug.Client.Test
             // Check ping is working
             Thread.Sleep(400);
 
-            msgId = _client.nextMsgId;
+            msgId = _client.NextMsgId;
             res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
             Assert.True(res != null);
             Assert.True(res is Core.Messages.Test);
             Assert.True(((Core.Messages.Test)res).TestString == "Test string");
             Assert.True(((Core.Messages.Test)res).Id > msgId);
 
-            Assert.True(_client.nextMsgId > 4);
-
-            _client.RequestDeviceList().Wait();
+            Assert.True(_client.NextMsgId > 4);
 
             // Shut it down
             _client.Disconnect().Wait();
