@@ -40,8 +40,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
         {
             string[] comPortsToScan;
             _isScanning = true;
+            var count = 5;
 
-            while (_isScanning)
+            while (_isScanning && count-- > 0)
             {
                 // Enumerate Ports
                 if (selectedComPorts == null || selectedComPorts.Length == 0)
@@ -148,6 +149,12 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 // _isScanning = false; // Uncomment to disable continuuous serial port scanning
             }
 
+            if (count < 0)
+            {
+                BpLogger.Info("Automatically Stopping Scanning Serial Ports for ErosTek Devices");
+            }
+
+            _isScanning = false;
             InvokeScanningFinished();
         }
     }
