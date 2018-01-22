@@ -21,6 +21,43 @@ namespace Buttplug.Components.WebsocketServer
 {
     internal static class CertUtils
     {
+        public static X509Certificate2 GetCert(string app, string hostname = "localhost")
+        {
+            var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), app);
+            var caPfx = Path.Combine(appPath, "ca.pfx");
+            var certPfx = Path.Combine(appPath, "cert.pfx");
+
+            // Patch release rework of cert handling: our websocket server doesn't acept a chain!
+            if (File.Exists(caPfx))
+            {
+                File.Delete(caPfx);
+                if (File.Exists(certPfx))
+                {
+                    File.Delete(certPfx);
+                }
+            }
+
+            if (File.Exists(certPfx))
+            {
+                return new X509Certificate2(
+                    File.ReadAllBytes(certPfx),
+                    (string)null,
+                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+            }
+
+            var clientCert = GenerateSelfSignedCertificate(hostname);
+            var p12Cert = clientCert.Export(X509ContentType.Pfx);
+            Directory.CreateDirectory(appPath);
+            var w = File.OpenWrite(certPfx);
+            w.Write(p12Cert, 0, p12Cert.Length);
+            w.Close();
+
+            return new X509Certificate2(
+                File.ReadAllBytes(certPfx),
+                (string)null,
+                X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+        }
+
         // Note: Much of this code comes from https://stackoverflow.com/a/22247129
         private static X509Certificate2 GenerateSelfSignedCertificate(string subject)
         {
@@ -118,52 +155,46 @@ namespace Buttplug.Components.WebsocketServer
                 Flags = CspProviderFlags.UseMachineKeyStore,
             };
             var rsaProvider = new RSACryptoServiceProvider(cspParams);
-            var parameters = new RSAParameters
-            {
-                Modulus = privateKey.Modulus.ToByteArrayUnsigned(),
-                P = privateKey.P.ToByteArrayUnsigned(),
-                Q = privateKey.Q.ToByteArrayUnsigned(),
-                DP = privateKey.DP.ToByteArrayUnsigned(),
-                DQ = privateKey.DQ.ToByteArrayUnsigned(),
-                InverseQ = privateKey.QInv.ToByteArrayUnsigned(),
-                D = privateKey.Exponent.ToByteArrayUnsigned(),
-                Exponent = privateKey.PublicExponent.ToByteArrayUnsigned(),
-            };
+            var parameters = ToRSAParameters(privateKey);
             rsaProvider.ImportParameters(parameters);
             return rsaProvider;
         }
 
-        public static X509Certificate2 GetCert(string app, string hostname = "localhost")
+        // Extra padding solution from: https://stackoverflow.com/questions/28370414/import-rsa-key-from-bouncycastle-sometimes-throws-bad-data/28387580#28387580
+        // ReSharper disable once InconsistentNaming
+        private static RSAParameters ToRSAParameters(RsaPrivateCrtKeyParameters privKey)
         {
-            var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), app);
-            var caPfx = Path.Combine(appPath, "ca.pfx");
-            var certPfx = Path.Combine(appPath, "cert.pfx");
-
-            // Patch release rework of cert handling: our websocket server doesn't acept a chain!
-            if (File.Exists(caPfx))
+            var rp = new RSAParameters
             {
-                File.Delete(caPfx);
-                if (File.Exists(certPfx))
-                {
-                    File.Delete(certPfx);
-                }
+                Modulus = privKey.Modulus.ToByteArrayUnsigned(),
+                Exponent = privKey.PublicExponent.ToByteArrayUnsigned(),
+                P = privKey.P.ToByteArrayUnsigned(),
+                Q = privKey.Q.ToByteArrayUnsigned(),
+            };
+            rp.D = ConvertRSAParametersField(privKey.Exponent, rp.Modulus.Length);
+            rp.DP = ConvertRSAParametersField(privKey.DP, rp.P.Length);
+            rp.DQ = ConvertRSAParametersField(privKey.DQ, rp.Q.Length);
+            rp.InverseQ = ConvertRSAParametersField(privKey.QInv, rp.Q.Length);
+            return rp;
+        }
+
+        // ReSharper disable once InconsistentNaming
+        private static byte[] ConvertRSAParametersField(BigInteger n, int size)
+        {
+            var bs = n.ToByteArrayUnsigned();
+            if (bs.Length == size)
+            {
+                return bs;
             }
 
-            if (File.Exists(certPfx))
+            if (bs.Length > size)
             {
-                return new X509Certificate2(File.ReadAllBytes(certPfx), (string)null,
-                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+                throw new ArgumentException("Specified size too small", nameof(size));
             }
 
-            var clientCert = GenerateSelfSignedCertificate(hostname);
-            var p12Cert = clientCert.Export(X509ContentType.Pfx);
-            Directory.CreateDirectory(appPath);
-            var w = File.OpenWrite(certPfx);
-            w.Write(p12Cert, 0, p12Cert.Length);
-            w.Close();
-
-            return new X509Certificate2(File.ReadAllBytes(certPfx), (string)null,
-                X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+            var padded = new byte[size];
+            Array.Copy(bs, 0, padded, size - bs.Length, bs.Length);
+            return padded;
         }
     }
 }
