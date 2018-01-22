@@ -22,18 +22,15 @@ namespace Buttplug.Server
         public event EventHandler<MessageReceivedEventArgs> ClientConnected;
 
         [NotNull]
-        protected readonly IButtplugLogManager _bpLogManager;
+        protected readonly IButtplugLogManager BpLogManager;
 
         [NotNull]
         private readonly IButtplugLog _bpLogger;
 
         [NotNull]
-        private DeviceManager _deviceManager;
+        private readonly DeviceManager _deviceManager;
 
-        public DeviceManager DeviceManager
-        {
-            get => _deviceManager;
-        }
+        public DeviceManager DeviceManager => _deviceManager;
 
         private readonly Timer _pingTimer;
 
@@ -41,18 +38,17 @@ namespace Buttplug.Server
         private readonly uint _maxPingTime;
         private bool _pingTimedOut;
         private bool _receivedRequestServerInfo;
-        private string _clientName;
         private uint _clientMessageVersion;
 
         public static string GetLicense()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "Buttplug.Server.LICENSE";
+            const string resourceName = "Buttplug.Server.LICENSE";
             Stream stream = null;
             try
             {
                 stream = assembly.GetManifestResourceStream(resourceName);
-                using (var reader = new StreamReader(stream))
+                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
                 {
                     stream = null;
                     return reader.ReadToEnd();
@@ -75,23 +71,16 @@ namespace Buttplug.Server
                 _pingTimer = new Timer(PingTimeoutHandler, null, Timeout.Infinite, Timeout.Infinite);
             }
 
-            _bpLogManager = new ButtplugLogManager();
-            _bpLogger = _bpLogManager.GetLogger(GetType());
+            BpLogManager = new ButtplugLogManager();
+            _bpLogger = BpLogManager.GetLogger(GetType());
             _bpLogger.Debug("Setting up ButtplugServer");
-            _parser = new ButtplugJsonMessageParser(_bpLogManager);
-            if (aDeviceManager != null)
-            {
-                _deviceManager = aDeviceManager;
-            }
-            else
-            {
-                _deviceManager = new DeviceManager(_bpLogManager);
-            }
+            _parser = new ButtplugJsonMessageParser(BpLogManager);
+            _deviceManager = aDeviceManager ?? new DeviceManager(BpLogManager);
 
             _bpLogger.Info("Finished setting up ButtplugServer");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished += ScanningFinishedHandler;
-            _bpLogManager.LogMessageReceived += LogMessageReceivedHandler;
+            BpLogManager.LogMessageReceived += LogMessageReceivedHandler;
         }
 
         private void DeviceMessageReceivedHandler([NotNull] object aObj, [NotNull] MessageReceivedEventArgs aMsg)
@@ -152,22 +141,19 @@ namespace Buttplug.Server
             {
                 case RequestLog m:
                     _bpLogger.Debug("Got RequestLog Message");
-                    _bpLogManager.Level = m.LogLevel;
+                    BpLogManager.Level = m.LogLevel;
                     return new Ok(id);
 
                 case Ping _:
-                    if (_pingTimer != null)
-                    {
-                        // Start the timer
-                        _pingTimer.Change((int)_maxPingTime, (int)_maxPingTime);
-                    }
+                    // Start the timer
+                    _pingTimer?.Change((int)_maxPingTime, (int)_maxPingTime);
 
                     return new Ok(id);
 
                 case RequestServerInfo rsi:
                     _bpLogger.Debug("Got RequestServerInfo Message");
                     _receivedRequestServerInfo = true;
-                    _clientMessageVersion = rsi?.MessageVersion ?? 0;
+                    _clientMessageVersion = rsi.MessageVersion;
 
                     // Start the timer
                     _pingTimer?.Change((int)_maxPingTime, (int)_maxPingTime);
@@ -196,7 +182,7 @@ namespace Buttplug.Server
             _deviceManager.StopScanning();
             _deviceManager.DeviceMessageReceived -= DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished -= ScanningFinishedHandler;
-            _bpLogManager.LogMessageReceived -= LogMessageReceivedHandler;
+            BpLogManager.LogMessageReceived -= LogMessageReceivedHandler;
         }
 
         [ItemNotNull]

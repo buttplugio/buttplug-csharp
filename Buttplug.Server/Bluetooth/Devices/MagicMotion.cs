@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Text;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using System.Collections.Generic;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
@@ -12,7 +11,6 @@ namespace Buttplug.Server.Bluetooth.Devices
         public enum Chrs : uint
         {
             Tx = 0,
-            Rx,
         }
 
         /*
@@ -48,7 +46,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class MagicMotion : ButtplugBluetoothDevice
     {
-        private double _vibratorSpeed = 0;
+        private double _vibratorSpeed;
 
         public MagicMotion(IButtplugLogManager aLogManager,
                            IBluetoothDeviceInterface aInterface,
@@ -70,8 +68,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as SingleMotorVibrateCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is SingleMotorVibrateCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
@@ -83,8 +80,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as VibrateCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is VibrateCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
@@ -107,7 +103,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         cmdMsg.Id);
                 }
 
-                if (v.Speed == _vibratorSpeed)
+                if (Math.Abs(v.Speed - _vibratorSpeed) < 0.001)
                 {
                     return new Ok(cmdMsg.Id);
                 }
