@@ -216,7 +216,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class Lovense : ButtplugBluetoothDevice
     {
-        private static readonly Dictionary<string, string> FriendlyNames = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> FriendlyNames = new Dictionary<string, string>
         {
             { "LVS-A011", "Nora" },
             { "LVS-C011", "Nora" },

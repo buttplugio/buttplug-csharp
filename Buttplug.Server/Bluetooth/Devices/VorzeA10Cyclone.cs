@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -33,7 +32,7 @@ namespace Buttplug.Server.Bluetooth.Devices
     internal class VorzeA10Cyclone : ButtplugBluetoothDevice
     {
         private bool _clockwise = true;
-        private uint _speed = 0;
+        private uint _speed;
 
         public VorzeA10Cyclone(IButtplugLogManager aLogManager,
                                IBluetoothDeviceInterface aInterface,
@@ -51,13 +50,12 @@ namespace Buttplug.Server.Bluetooth.Devices
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
             BpLogger.Debug("Stopping Device " + Name);
-            return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, false, aMsg.Id));
+            return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, _clockwise, aMsg.Id));
         }
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as RotateCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is RotateCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
@@ -89,8 +87,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as VorzeA10CycloneCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is VorzeA10CycloneCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
@@ -103,7 +100,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             _clockwise = cmdMsg.Clockwise;
             _speed = cmdMsg.Speed;
 
-            var rawSpeed = (byte)(((byte)(_clockwise ? 1 : 0)) << 7 | (byte)_speed);
+            var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
             return await Interface.WriteValue(aMsg.Id,
                 Info.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
                 new byte[] { 0x01, 0x01, rawSpeed });

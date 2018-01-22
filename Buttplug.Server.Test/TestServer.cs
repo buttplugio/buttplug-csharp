@@ -37,7 +37,7 @@ namespace Buttplug.Server.Test
 
         public IButtplugLogManager GetLogManager()
         {
-            return _bpLogManager;
+            return BpLogManager;
         }
     }
 }

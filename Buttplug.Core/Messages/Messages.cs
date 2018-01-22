@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Newtonsoft.Json;
 
@@ -52,6 +53,7 @@ namespace Buttplug.Core.Messages
 
     public class Error : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
+        [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Defined in external spec")]
         public enum ErrorClass
         {
             ERROR_UNKNOWN,
@@ -81,7 +83,7 @@ namespace Buttplug.Core.Messages
         /// Number of actuators/sensors/channels/etc this message is addressing
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public uint? FeatureCount = null;
+        public uint? FeatureCount;
     }
 
     public class DeviceMessageInfo
@@ -92,9 +94,9 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex;
 
+        // ReSharper disable once MemberInitializerValueIgnored
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, MessageAttributes> DeviceMessages =
-            new Dictionary<string, MessageAttributes>();
+        public Dictionary<string, MessageAttributes> DeviceMessages = new Dictionary<string, MessageAttributes>();
 
         public DeviceMessageInfo(uint aIndex, string aName,
             Dictionary<string, MessageAttributes> aMessages)
@@ -113,6 +115,7 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex;
 
+        // ReSharper disable once MemberInitializerValueIgnored
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
         public string[] DeviceMessages = new string[0];
 
@@ -294,8 +297,7 @@ namespace Buttplug.Core.Messages
         public RequestLog(string aLogLevel, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
-            ButtplugLogLevel level;
-            if (!Enum.TryParse(aLogLevel, out level))
+            if (!Enum.TryParse(aLogLevel, out ButtplugLogLevel level))
             {
                 throw new ArgumentException("Invalid log level");
             }
@@ -326,7 +328,7 @@ namespace Buttplug.Core.Messages
         public string ClientName;
 
         [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
-        public uint MessageVersion = 0;
+        public uint MessageVersion;
 
         public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId, uint aSchemaVersion = CurrentSchemaVersion)
             : base(aId)
@@ -377,6 +379,7 @@ namespace Buttplug.Core.Messages
         }
     }
 
+    // ReSharper disable once InconsistentNaming
     public class FleshlightLaunchFW12Cmd : ButtplugDeviceMessage
     {
         private uint _speedImpl;
@@ -535,10 +538,10 @@ namespace Buttplug.Core.Messages
     {
         public class VibrateSubcommand
         {
-            private double _speedImpl = 0;
+            private double _speedImpl;
 
             [JsonProperty(Required = Required.Always)]
-            public uint Index = 0;
+            public uint Index;
 
             [JsonProperty(Required = Required.Always)]
             public double Speed
@@ -581,10 +584,10 @@ namespace Buttplug.Core.Messages
     {
         public class RotateSubcommand
         {
-            private double _speedImpl = 0;
+            private double _speedImpl;
 
             [JsonProperty(Required = Required.Always)]
-            public uint Index = 0;
+            public uint Index;
 
             [JsonProperty(Required = Required.Always)]
             public double Speed
@@ -607,7 +610,7 @@ namespace Buttplug.Core.Messages
             }
 
             [JsonProperty(Required = Required.Always)]
-            public bool Clockwise = true;
+            public bool Clockwise;
 
             public RotateSubcommand(uint aIndex, double aSpeed, bool aClockwise)
             {
@@ -631,12 +634,10 @@ namespace Buttplug.Core.Messages
     {
         public class VectorSubcommands
         {
-            private double _speedImpl = 0;
-
-            private double _positionImpl = 0;
+            private double _positionImpl;
 
             [JsonProperty(Required = Required.Always)]
-            public uint Index = 0;
+            public uint Index;
 
             [JsonProperty(Required = Required.Always)]
             public uint Duration;

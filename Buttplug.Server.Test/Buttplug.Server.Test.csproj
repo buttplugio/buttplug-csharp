@@ -58,21 +58,27 @@
   <ItemGroup>
     <Compile Include="ArgsTests.cs" />
     <Compile Include="AssemblyGitVersionTests.cs" />
+    <Compile Include="Bluetooth\Devices\FleshlightLaunchTests.cs" />
+    <Compile Include="Bluetooth\Devices\KiirooTests.cs" />
+    <Compile Include="Bluetooth\Devices\VorzeA10CycloneTests.cs" />
     <Compile Include="ButtplugDeviceTests.cs" />
     <Compile Include="ButtplugJsonMessageParserTests.cs" />
     <Compile Include="ButtplugMessagesTests.cs" />
     <Compile Include="ButtplugMessageTests.cs" />
     <Compile Include="ButtplugServerTests.cs" />
-    <Compile Include="FleshlightHelperTests.cs" />
-    <Compile Include="LovenseTests.cs" />
+    <Compile Include="Util\FleshlightHelperTests.cs" />
+    <Compile Include="Bluetooth\Devices\LovenseTests.cs" />
+    <Compile Include="Bluetooth\Devices\MagicMotionTests.cs" />
+    <Compile Include="Bluetooth\Devices\OhMiBodFuseTests.cs" />
     <Compile Include="TestBluetoothDeviceInterface.cs" />
     <Compile Include="TestBluetoothSubtypeManager.cs" />
     <Compile Include="TestDevice.cs" />
     <Compile Include="TestDeviceSubtypeManager.cs" />
     <Compile Include="TestServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VibratissimoTests.cs" />
-    <Compile Include="WeVibeTests.cs" />
+    <Compile Include="Bluetooth\Devices\VibratissimoTests.cs" />
+    <Compile Include="Bluetooth\Devices\WeVibeTests.cs" />
+    <Compile Include="Bluetooth\Devices\YoucupsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

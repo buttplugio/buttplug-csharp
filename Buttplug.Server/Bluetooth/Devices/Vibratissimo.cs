@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using System.Collections.Generic;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {

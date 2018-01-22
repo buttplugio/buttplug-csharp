@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using System.Collections.Generic;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
@@ -38,7 +38,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class Kiiroo : ButtplugBluetoothDevice
     {
-        private double _vibratorSpeed = 0;
+        private double _vibratorSpeed;
 
         public Kiiroo([NotNull] IButtplugLogManager aLogManager,
                       [NotNull] IBluetoothDeviceInterface aInterface,
@@ -58,19 +58,24 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
         }
 
-        private Task<ButtplugMessage> HandleStopDeviceCmd([NotNull] ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleStopDeviceCmd([NotNull] ButtplugDeviceMessage aMsg)
         {
             // Right now, this is a nop. The Onyx doesn't have any sort of permanent movement state,
             // and its longest movement is like 150ms or so. The Pearl is supposed to vibrate but I've
             // never gotten that to work. So for now, we just return ok.
             BpLogger.Debug("Stopping Device " + Name);
-            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
+
+            if (Interface.Name == "PEARL" && _vibratorSpeed > 0)
+            {
+                return await HandleKiirooRawCmd(new KiirooCmd(aMsg.DeviceIndex, 0, aMsg.Id));
+            }
+
+            return new Ok(aMsg.Id);
         }
 
         private async Task<ButtplugMessage> HandleKiirooRawCmd([NotNull] ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as KiirooCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is KiirooCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
@@ -82,13 +87,12 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd([NotNull] ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as SingleMotorVibrateCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is SingleMotorVibrateCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            if (_vibratorSpeed == cmdMsg.Speed)
+            if (Math.Abs(_vibratorSpeed - cmdMsg.Speed) < 0.001)
             {
                 return new Ok(cmdMsg.Id);
             }
@@ -102,11 +106,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleVibrateCmd([NotNull] ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as VibrateCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is VibrateCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
+
             if (cmdMsg.Speeds.Count != 1)
             {
                 return new Error(
@@ -128,7 +132,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 _vibratorSpeed = v.Speed;
             }
 
-            return await HandleKiirooRawCmd(new KiirooCmd(aMsg.DeviceIndex, Convert.ToUInt16(_vibratorSpeed * 3), aMsg.Id));
+            return await HandleKiirooRawCmd(new KiirooCmd(aMsg.DeviceIndex, Convert.ToUInt16(_vibratorSpeed * 4), aMsg.Id));
         }
     }
 }

@@ -6,7 +6,7 @@ using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test
+namespace Buttplug.Server.Test.Bluetooth.Devices
 {
     [TestFixture]
     public class LovenseTests
