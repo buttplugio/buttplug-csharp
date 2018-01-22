@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using Buttplug.Server.Bluetooth;
 using Buttplug.Server.Bluetooth.Devices;
 using NUnit.Framework;
 
@@ -14,53 +11,6 @@ namespace Buttplug.Server.Test
     [TestFixture]
     public class LovenseTests
     {
-        public class TestBluetoothDeviceInterface : IBluetoothDeviceInterface
-        {
-            public string Name { get; }
-
-            private readonly ulong _address;
-
-            public class WriteData
-            {
-                public uint MsgId;
-                public Guid Characteristic;
-                public byte[] Value;
-                public bool WriteWithResponse;
-            }
-
-            public List<WriteData> LastWriten = new List<WriteData>();
-
-            public TestBluetoothDeviceInterface(string aName, ulong aAddress)
-            {
-                Name = aName;
-                _address = aAddress;
-            }
-
-            public Task<ButtplugMessage> WriteValue(uint aMsgId, Guid aCharacteristic, byte[] aValue, bool aWriteWithResponse = false)
-            {
-                LastWriten.Add(new WriteData()
-                {
-                    MsgId = aMsgId,
-                    Characteristic = aCharacteristic,
-                    Value = aValue,
-                    WriteWithResponse = aWriteWithResponse,
-                });
-                return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
-            }
-
-            public ulong GetAddress()
-            {
-                return _address;
-            }
-
-            public event EventHandler DeviceRemoved;
-
-            public void Disconnect()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         [Test]
         public void LovenseV1Test()
         {

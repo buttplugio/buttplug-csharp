@@ -43,7 +43,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class Vibratissimo : ButtplugBluetoothDevice
     {
-        private double _vibratorSpeed = 0;
+        private double _vibratorSpeed;
 
         public Vibratissimo(IButtplugLogManager aLogManager,
                             IBluetoothDeviceInterface aInterface,
@@ -66,8 +66,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as SingleMotorVibrateCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is SingleMotorVibrateCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
@@ -79,8 +78,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as VibrateCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is VibrateCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
@@ -103,7 +101,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         cmdMsg.Id);
                 }
 
-                if (v.Speed == _vibratorSpeed)
+                if (Math.Abs(v.Speed - _vibratorSpeed) < 0.001)
                 {
                     return new Ok(cmdMsg.Id);
                 }
@@ -111,9 +109,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 _vibratorSpeed = v.Speed;
             }
 
-            var data = new byte[2];
-            data[0] = 0x03;
-            data[1] = 0xFF;
+            var data = new byte[] { 0x03, 0xff };
             await Interface.WriteValue(aMsg.Id,
                 Info.Characteristics[(uint)VibratissimoBluetoothInfo.Chrs.TxMode],
                 data);
