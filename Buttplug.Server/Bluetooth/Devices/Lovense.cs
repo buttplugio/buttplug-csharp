@@ -194,7 +194,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public string[] Names { get; } =
         {
-            // Hush. Again.
+            // Edge. Again.
             "LVS-Edge37",
         };
 
@@ -232,10 +232,10 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "LVS-Edge37", "Edge" },
         };
 
+        private readonly uint _vibratorCount = 1;
+        private readonly double[] _vibratorSpeeds = { 0, 0 };
         private bool _clockwise = true;
         private double _rotateSpeed;
-        private uint _vibratorCount = 1;
-        private double[] _vibratorSpeeds = { 0, 0 };
 
         public Lovense(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface,
@@ -266,9 +266,9 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             if (FriendlyNames[Interface.Name] == "Nora")
             {
-                await Interface.WriteValue(aMsg.Id,
-                    Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
-                    Encoding.ASCII.GetBytes($"Rotate:0;"));
+                await HandleRotateCmd(new RotateCmd(aMsg.DeviceIndex,
+                    new List<RotateCmd.RotateSubcommand> { new RotateCmd.RotateSubcommand(0, 0, _clockwise) },
+                    aMsg.Id));
             }
 
             return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id));
@@ -327,7 +327,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                     Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
                     Encoding.ASCII.GetBytes($"Vibrate{vId}:{(int)(_vibratorSpeeds[v.Index] * 20)};"));
 
-                if ((res as Ok) == null)
+                if (!(res is Ok))
                 {
                     return res;
                 }

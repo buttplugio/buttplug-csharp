@@ -64,6 +64,7 @@
     <Compile Include="ButtplugMessageTests.cs" />
     <Compile Include="ButtplugServerTests.cs" />
     <Compile Include="FleshlightHelperTests.cs" />
+    <Compile Include="LovenseTests.cs" />
     <Compile Include="TestBluetoothSubtypeManager.cs" />
     <Compile Include="TestDevice.cs" />
     <Compile Include="TestDeviceSubtypeManager.cs" />

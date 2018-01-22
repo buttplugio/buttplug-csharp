@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using NUnit.Framework;
-using System;
 
 namespace Buttplug.Server.Test
 {

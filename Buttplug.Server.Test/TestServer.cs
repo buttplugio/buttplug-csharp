@@ -26,7 +26,7 @@ namespace Buttplug.Server.Test
             if (aInitClient)
             {
                 // Send RequestServerInfo message now, to save us having to do it in every test.
-                Assert.True(SendMessage(new RequestServerInfo("TestClient")).GetAwaiter().GetResult() is ServerInfo); ;
+                Assert.True(SendMessage(new RequestServerInfo("TestClient")).GetAwaiter().GetResult() is ServerInfo);
             }
         }
 
