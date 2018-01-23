@@ -1,3 +1,32 @@
+# 0.2.0 (2018-01-22)
+
+## Features
+
+- Added Hardware Support
+  - Youcups Warrior II Masturbator
+  - Erostek ET312B
+  - Wevibe 4
+  - OhMiBod/Kiiroo Fuse
+  - Lovense Edge/Hush/Domi (new firmware versions)
+  - Individual Vibrator support for Lovense Edge
+- Now uses v1 of the Buttplug Protocol spec, adds new generic messages, as well as feature counts for device messages
+- Supports message downgrading, meaning older clients can connect to newer servers
+  - Newer clients cannot connect to older servers, though
+- Moved code to .Net Standard 2.0 compatibility
+- Moved testing to NUnit
+
+## Bugfixes
+
+- Game Router process select button disabled until process selected
+- Fix SynchronizationContext crash in client
+
+# 0.1.3 (2017-12-07)
+
+## Features
+
+- Add ignore cert errors for client library
+- Handle message ID iteration in client library
+
 # 0.1.2 (2017-09-15)
 
 ## Bugfixes

@@ -7,44 +7,68 @@ hardware usually means sex toys, but could honestly be just about
 anything. It's basically a userland HID manager for things that may
 not specifically be HID.
 
-In more concrete terms, think of Buttplug as something like
-[osculator](http://www.osculator.net/) or [VRPN](http://vrpn.org), but
-for sex toys. Instead of wiimotes and control surfaces, we interface
-with vibrators, electrostim equipment, fucking machines, and other
-hardware that can communicate with computers.
+If you're looking for the installer for the Websocket Server, Game
+Vibration Router, or Kiiroo Emulator, [visit our releases page.](https://github.com/metafetish/buttplug-csharp/releases/)
 
-The core of buttplug works as a router. It is an application that
-connects to driver libraries, to register and communicate with
-different hardware. Clients can then connect over different means
-(network, websockets, etc...), to interact with the hardware.
+## Table Of Contents
 
-## Other Buttplug Implementations
+- [Support The Project](#support-the-project)
+- [Buttplug Spec and Documentation](#buttplug-spec-and-documentation)
+- [Hardware Support](#hardware-support)
+- [Installation](#installation)
+- [Development](#development)
+  - [Special Installation Steps When Building Buttplug Applications](#special-installation-steps-when-building-buttplug-applications)
+- [Applications Using Buttplug-C#](#applications-using-buttplug-c)
+- [License]()
+
+## Support The Project
+
+If you find this project helpful, you
+can
+[support Metafetish projects via Patreon](http://patreon.com/qdot)!
+Every donation helps us afford more hardware to reverse, document, and
+write code for!
+
+## Buttplug Spec and Documentation
 
 Buttplug implementations are available in multiple languages (rust,
 javascript, etc)/frameworks/platforms. For a full
-list,
+list of documentation, libraries, and applications,
 [see the README in the main buttplug repo](http://github.com/metafetish/buttplug).
 
-## Platform Support
+## Hardware Support
 
 Buttplug C# Supports the following platforms:
 
 - Windows 10 - Creators Update (15063)
-  - BLE Devices: Fleshlight Launch, Lovense Toys, Vorze Interactive,
-    Vibratissimo, Magic Motion
+  - BLE Devices: Fleshlight Launch, Lovense Toys, Vorze Interactive
+    A10 Cyclone SA, Vibratissimo Toys, Magic Motion Toys, WeVibe Toys,
+    Youcups Warrior II
+  - Serial Devices: ErosTek ET312B
   - Other devices: Xbox Gamepads (XInput)
   
 - Windows 7/8 and 10 pre 15063
+  - Serial Devices: ErosTek ET312B
   - Other devices: Xbox Gamepads (XInput)
+
+## Installation
+
+The Buttplug C# Repo hosts the Buttplug C# Development Libraries, as
+well as the following applications:
+
+- Websocket Server
+- Game Vibration Router
+- Kiiroo Desktop Platform Emulator
+
+To download the installer for these applications, [visit our releases page.](https://github.com/metafetish/buttplug-csharp/releases/)
 
 ## Development
 
-Packages and libraries from the buttplug-csharp repo are available
-via [nuget](http://nuget.org). Simply run a search for "buttplug",
-or
+Packages and libraries from the buttplug-csharp repo are available via
+[nuget](http://nuget.org). Simply run a search for "buttplug", or
 [follow this link to the nuget "buttplug" search](https://www.nuget.org/packages?q=buttplug).
 
-## Special Installation Steps
+### Special Installation Steps When Building Buttplug Applications
 
 Due to a bug in the Windows 15063 SDK, applications using the BLE APIs
 need to have an AppId in the registry with a special SDDL access
@@ -58,13 +82,9 @@ then choose File > Import, and select the app.reg file in this repo.
 This will set permissions for all executables named Buttplug.exe,
 ButtplugCLI.exe, and ButtplugGUI.exe
 
-## Support The Project
+## Applications Using Buttplug C#
 
-If you find this project helpful, you
-can
-[support Metafetish projects via Patreon](http://patreon.com/qdot)!
-Every donation helps us afford more hardware to reverse, document, and
-write code for!
+- [ScriptPlayer](https://github.com/FredTungsten/ScriptPlayer) - Native hardware synced movie player for Windows.
 
 ## License
 
