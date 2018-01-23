@@ -8,11 +8,6 @@ configuration:
 
 image: Visual Studio 2017
 
-skip_commits:
-  files:
-    - README.md
-    - CHANGELOG.md
-
 skip_branch_with_pr: true
   
 # Taken from https://boblokerse.github.io/2015/11/03/GitVersion-versioning-made-easy-and-dry/
