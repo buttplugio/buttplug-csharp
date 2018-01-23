@@ -18,7 +18,7 @@ Vibration Router, or Kiiroo Emulator, [visit our releases page.](https://github.
 - [Installation](#installation)
 - [Development](#development)
   - [Special Installation Steps When Building Buttplug Applications](#special-installation-steps-when-building-buttplug-applications)
-- [Applications Using Buttplug-C#](#applications-using-buttplug-c)
+- [Third Party Applications Using Buttplug-C#](#third-party-applications-using-buttplug-c)
 - [License]()
 
 ## Support The Project
@@ -41,15 +41,24 @@ list of documentation, libraries, and applications,
 Buttplug C# Supports the following platforms:
 
 - Windows 10 - Creators Update (15063)
-  - BLE Devices: Fleshlight Launch, Lovense Toys, Vorze Interactive
-    A10 Cyclone SA, Vibratissimo Toys, Magic Motion Toys, WeVibe Toys,
-    Youcups Warrior II
-  - Serial Devices: ErosTek ET312B
-  - Other devices: Xbox Gamepads (XInput)
+  - BLE Devices
+    - Fleshlight Launch
+    - Lovense Toys
+    - Vorze Interactive A10 Cyclone SA
+    - Vibratissimo Toys
+    - Magic Motion Toys
+    - WeVibe Toys
+    - Youcups Warrior II
+  - Serial Devices
+    - ErosTek ET312B
+  - Other devices
+    - Xbox Compatible Gamepads (XInput, Vibration Control Only)
   
 - Windows 7/8 and 10 pre 15063
-  - Serial Devices: ErosTek ET312B
-  - Other devices: Xbox Gamepads (XInput)
+  - Serial Devices
+    - ErosTek ET312B
+  - Other devices
+    - Xbox Compatible Gamepads (XInput, Vibration Control Only)
 
 ## Installation
 
@@ -82,9 +91,10 @@ then choose File > Import, and select the app.reg file in this repo.
 This will set permissions for all executables named Buttplug.exe,
 ButtplugCLI.exe, and ButtplugGUI.exe
 
-## Applications Using Buttplug C#
+## Third Party Applications Using Buttplug C#
 
 - [ScriptPlayer](https://github.com/FredTungsten/ScriptPlayer) - Native hardware synced movie player for Windows.
+- [Caveman BIOS Teaches Typing](https://curiousjp.itch.io/caveman-bios-teaches-erotic-typing) - Typing Training Game
 
 ## License
 
