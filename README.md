@@ -40,7 +40,7 @@ list of documentation, libraries, and applications,
 
 Buttplug C# Supports the following platforms:
 
-- Windows 10 - Creators Update (15063)
+- Windows 10 - Creators Update (15063, April 2017) or later
   - BLE Devices
     - Fleshlight Launch
     - Lovense Toys
