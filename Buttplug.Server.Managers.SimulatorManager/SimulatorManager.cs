@@ -140,8 +140,9 @@ namespace Buttplug.Server.Managers.SimulatorManager
                 switch (_parser.Deserialize(msg))
                 {
                     case FinishedScanning fs:
-                        InvokeScanningFinished();
+                        BpLogger.Info("SimulatorManager recieved stop scanning");
                         _scanning = false;
+                        InvokeScanningFinished();
                         break;
 
                     case DeviceAdded da:
@@ -185,15 +186,21 @@ namespace Buttplug.Server.Managers.SimulatorManager
 
         public override void StartScanning()
         {
-            BpLogger.Info("SimulatorManager start scanning");
+            if (!_pipeServer.IsConnected)
+            {
+                BpLogger.Info("SimulatorManager can't start scanning until connected");
+                return;
+            }
+
             _scanning = true;
+            BpLogger.Info("SimulatorManager start scanning");
             _msgQueue.Enqueue(new StartScanning());
         }
 
         public override void StopScanning()
         {
-            BpLogger.Info("SimulatorManager stop scanning");
             _scanning = false;
+            BpLogger.Info("SimulatorManager stop scanning");
             _msgQueue.Enqueue(new StopScanning());
         }
 

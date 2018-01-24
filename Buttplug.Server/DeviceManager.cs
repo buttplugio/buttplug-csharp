@@ -21,6 +21,7 @@ namespace Buttplug.Server
         private readonly IButtplugLogManager _bpLogManager;
         private long _deviceIndexCounter;
         private bool _sentFinished;
+        private object _scanLock;
 
         public event EventHandler<MessageReceivedEventArgs> DeviceMessageReceived;
 
@@ -34,6 +35,7 @@ namespace Buttplug.Server
             _sentFinished = true;
             _devices = new Dictionary<uint, IButtplugDevice>();
             _deviceIndexCounter = 0;
+            _scanLock = new object();
 
             _managers = new List<IDeviceSubtypeManager>();
         }
@@ -120,20 +122,26 @@ namespace Buttplug.Server
 
         private void ScanningFinishedHandler(object aObj, EventArgs aEvent)
         {
-            if (_sentFinished)
+            Task.Run(() =>
             {
-                return;
-            }
+                lock (_scanLock)
+                {
+                    if (_sentFinished)
+                    {
+                        return;
+                    }
 
-            var done = true;
-            _managers.ForEach(aMgr => done &= !aMgr.IsScanning());
-            if (!done)
-            {
-                return;
-            }
+                    var done = true;
+                    _managers.ForEach(aMgr => done &= !aMgr.IsScanning());
+                    if (!done)
+                    {
+                        return;
+                    }
 
-            _sentFinished = true;
-            ScanningFinished?.Invoke(this, new EventArgs());
+                    _sentFinished = true;
+                    ScanningFinished?.Invoke(this, new EventArgs());
+                }
+            });
         }
 
         public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
@@ -215,8 +223,11 @@ namespace Buttplug.Server
 
         private void StartScanning()
         {
-            _sentFinished = false;
-            _managers.ForEach(aMgr => aMgr.StartScanning());
+            lock (_scanLock)
+            {
+                _sentFinished = false;
+                _managers.ForEach(aMgr => aMgr.StartScanning());
+            }
         }
 
         internal void StopScanning()
