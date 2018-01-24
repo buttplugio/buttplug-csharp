@@ -21,6 +21,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
         public override void StartScanning()
         {
             BpLogger.Info("Starting Scanning Serial Ports for ErosTek Devices");
+            _isScanning = true;
             _scanThread = new Thread(() => ScanSerialPorts(_searchComPorts));
             _scanThread.Start();
         }
