@@ -16,7 +16,6 @@ install:
   - set
   - ps: get-childitem c:\tools\nunit3 -rec | where {!$_.PSIsContainer} | select-object FullName
   - ps: choco install -y -r --no-progress resharper-clt.portable
-  - ps: choco install -y -r --no-progress fxcop
   - ps: choco install -y -r --no-progress InnoSetup
   - ps: |
       function gitVersion() {
