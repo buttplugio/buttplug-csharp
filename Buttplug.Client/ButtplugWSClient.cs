@@ -108,6 +108,7 @@ namespace Buttplug.Client
             {
                 _ws.Security.AllowNameMismatchCertificate = true;
                 _ws.Security.AllowUnstrustedCertificate = true;
+                _ws.Security.AllowCertificateChainErrors = true;
             }
 
             _ws.Open();
