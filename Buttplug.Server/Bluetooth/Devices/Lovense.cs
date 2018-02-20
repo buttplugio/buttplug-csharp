@@ -197,8 +197,8 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public string[] Names { get; } =
         {
-            // Edge. Again.
             "LVS-Edge37",
+            "LVS-Edge38",
         };
 
         public Guid[] Characteristics { get; } =
@@ -267,6 +267,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "LVS-Domi39", "Domi" },
             { "LVS-P36", "Edge" },
             { "LVS-Edge37", "Edge" },
+            { "LVS-Edge38", "Edge" },
         };
 
         private readonly uint _vibratorCount = 1;
