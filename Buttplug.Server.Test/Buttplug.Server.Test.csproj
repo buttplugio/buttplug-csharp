@@ -59,6 +59,7 @@
     <Compile Include="ArgsTests.cs" />
     <Compile Include="AssemblyGitVersionTests.cs" />
     <Compile Include="Bluetooth\Devices\FleshlightLaunchTests.cs" />
+    <Compile Include="Bluetooth\Devices\KiirooGen2VibeTests.cs" />
     <Compile Include="Bluetooth\Devices\KiirooTests.cs" />
     <Compile Include="Bluetooth\Devices\VorzeA10CycloneTests.cs" />
     <Compile Include="ButtplugDeviceTests.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="Util\FleshlightHelperTests.cs" />
     <Compile Include="Bluetooth\Devices\LovenseTests.cs" />
     <Compile Include="Bluetooth\Devices\MagicMotionTests.cs" />
-    <Compile Include="Bluetooth\Devices\OhMiBodFuseTests.cs" />
     <Compile Include="TestBluetoothDeviceInterface.cs" />
     <Compile Include="TestBluetoothSubtypeManager.cs" />
     <Compile Include="TestDevice.cs" />

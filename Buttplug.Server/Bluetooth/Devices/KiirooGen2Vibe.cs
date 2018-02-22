@@ -7,7 +7,8 @@ using JetBrains.Annotations;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class OhMiBodFuseBluetoothInfo : IBluetoothDeviceInfo
+    // ReSharper disable once InconsistentNaming
+    internal class KiirooGen2VibeBluetoothInfo : IBluetoothDeviceInfo
     {
         public enum Chrs : uint
         {
@@ -16,7 +17,12 @@ namespace Buttplug.Server.Bluetooth.Devices
             RxAccel = 2,
         }
 
-        public string[] Names { get; } = { "Fuse" };
+        public string[] Names { get; } =
+        {
+            "Pearl2",
+            "Fuse",
+            "Virtual Blowbot",
+        };
 
         public Guid[] Services { get; } = { new Guid("88f82580-0000-01e6-aace-0002a5d5c51b") };
 
@@ -25,7 +31,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             // tx
             new Guid("88f82581-0000-01e6-aace-0002a5d5c51b"),
 
-            // rx (touch)
+            // rx (touch: 3 zone bitmask)
             new Guid("88f82582-0000-01e6-aace-0002a5d5c51b"),
 
             // rx (accellorometer?)
@@ -35,37 +41,80 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new OhMiBodFuse(aLogManager, aInterface, this);
+            return new KiirooGen2Vibe(aLogManager, aInterface, this);
         }
     }
 
-    internal class OhMiBodFuse : ButtplugBluetoothDevice
+    // ReSharper disable once InconsistentNaming
+    internal class KiirooGen2Vibe : ButtplugBluetoothDevice
     {
-        private readonly double[] _vibratorSpeeds = { 0, 0 };
+        private readonly double[] _vibratorSpeeds = { 0, 0, 0 };
 
-        public OhMiBodFuse([NotNull] IButtplugLogManager aLogManager,
+        // ReSharper disable once InconsistentNaming
+        private struct KiirooGen2VibeType
+        {
+            public string Brand;
+            public uint VibeCount;
+            public uint[] VibeOrder;
+        }
+
+        private static readonly Dictionary<string, KiirooGen2VibeType> DevInfos = new Dictionary<string, KiirooGen2VibeType>()
+        {
+            {
+                "Pearl2",
+                new KiirooGen2VibeType
+                {
+                    Brand = "Kiiroo",
+                    VibeCount = 1,
+                    VibeOrder = new[] { 0u, 1u, 2u },
+                }
+            },
+            {
+                "Fuse",
+                new KiirooGen2VibeType
+                {
+                    Brand = "OhMiBod",
+                    VibeCount = 2,
+                    VibeOrder = new[] { 1u, 0u, 2u },
+                }
+            },
+            {
+                "Virtual Blowbot",
+                new KiirooGen2VibeType
+                {
+                    Brand = "PornHub",
+                    VibeCount = 3,
+                    VibeOrder = new[] { 0u, 1u, 2u },
+                }
+            },
+        };
+
+        private KiirooGen2VibeType _devInfo;
+
+        public KiirooGen2Vibe([NotNull] IButtplugLogManager aLogManager,
                       [NotNull] IBluetoothDeviceInterface aInterface,
                       [NotNull] IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"OhMiBod {aInterface.Name}",
+                   $"{DevInfos[aInterface.Name].Brand} {aInterface.Name}",
                    aInterface,
                    aInfo)
         {
+            _devInfo = DevInfos[aInterface.Name];
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 2 }));
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes { FeatureCount = _devInfo.VibeCount }));
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd([NotNull] ButtplugDeviceMessage aMsg)
         {
             BpLogger.Debug("Stopping Device " + Name);
-            return await HandleVibrateCmd(new VibrateCmd(aMsg.DeviceIndex,
-                new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0, 0),
-                    new VibrateCmd.VibrateSubcommand(1, 0),
-                },
-                aMsg.Id));
+            var vCmds = new List<VibrateCmd.VibrateSubcommand>();
+            for (uint i = 0; i < _devInfo.VibeCount; i++)
+            {
+                vCmds.Add(new VibrateCmd.VibrateSubcommand(i, 0));
+            }
+
+            return await HandleVibrateCmd(new VibrateCmd(aMsg.DeviceIndex, vCmds, aMsg.Id));
         }
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd([NotNull] ButtplugDeviceMessage aMsg)
@@ -80,13 +129,13 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return new Ok(cmdMsg.Id);
             }
 
-            return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex,
-                new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0, cmdMsg.Speed),
-                    new VibrateCmd.VibrateSubcommand(1, cmdMsg.Speed),
-                },
-                cmdMsg.Id));
+            var vCmds = new List<VibrateCmd.VibrateSubcommand>();
+            for (uint i = 0; i < _devInfo.VibeCount; i++)
+            {
+                vCmds.Add(new VibrateCmd.VibrateSubcommand(i, cmdMsg.Speed));
+            }
+
+            return await HandleVibrateCmd(new VibrateCmd(aMsg.DeviceIndex, vCmds, aMsg.Id));
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd([NotNull] ButtplugDeviceMessage aMsg)
@@ -96,7 +145,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > 2)
+            if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > _devInfo.VibeCount)
             {
                 return new Error(
                     "VibrateCmd requires between 1 and 2 vectors for this device.",
@@ -107,7 +156,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             var changed = false;
             foreach (var vi in cmdMsg.Speeds)
             {
-                if (vi.Index >= 2)
+                if (vi.Index >= _devInfo.VibeCount)
                 {
                     return new Error(
                         $"Index {vi.Index} is out of bounds for VibrateCmd for this device.",
@@ -131,9 +180,9 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var data = new[]
             {
-                (byte)Convert.ToUInt16(_vibratorSpeeds[1] * 100),
-                (byte)Convert.ToUInt16(_vibratorSpeeds[0] * 100),
-                (byte)0x00,
+                (byte)Convert.ToUInt16(_vibratorSpeeds[_devInfo.VibeOrder[0]] * 100),
+                (byte)Convert.ToUInt16(_vibratorSpeeds[_devInfo.VibeOrder[1]] * 100),
+                (byte)Convert.ToUInt16(_vibratorSpeeds[_devInfo.VibeOrder[2]] * 100),
             };
 
             return await Interface.WriteValue(aMsg.Id,
