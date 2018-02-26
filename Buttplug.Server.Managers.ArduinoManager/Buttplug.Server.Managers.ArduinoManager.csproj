@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArduinoDevice.cs" />
-    <Compile Include="ArduinoDeviceException.cs" />
     <Compile Include="ArduinoSerialManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ArduinoDeviceProtocol.cs" />
