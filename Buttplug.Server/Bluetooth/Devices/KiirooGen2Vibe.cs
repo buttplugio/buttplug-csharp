@@ -148,7 +148,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > _devInfo.VibeCount)
             {
                 return new Error(
-                    "VibrateCmd requires between 1 and 2 vectors for this device.",
+                    $"VibrateCmd requires between 1 and {_devInfo.VibeCount} vectors for this device.",
                     Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id);
             }
