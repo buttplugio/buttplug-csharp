@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -53,7 +54,20 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class WeVibe : ButtplugBluetoothDevice
     {
-        private double _vibratorSpeed;
+        private static readonly string[] DualVibes =
+        {
+            "Cougar",
+            "4 Plus",
+            "4plus",
+            "classic",
+            "Gala",
+            "Nova",
+            "NOVAV2",
+            "Sync",
+        };
+
+        private readonly uint _vibratorCount = 1;
+        private readonly double[] _vibratorSpeed = { 0, 0 };
 
         public WeVibe(IButtplugLogManager aLogManager,
                       IBluetoothDeviceInterface aInterface,
@@ -63,8 +77,13 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
+            if (DualVibes.Contains(aInterface.Name))
+            {
+                _vibratorCount = 2;
+            }
+
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
         }
 
@@ -80,9 +99,13 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex,
-                new List<VibrateCmd.VibrateSubcommand>() { new VibrateCmd.VibrateSubcommand(0, cmdMsg.Speed) },
-                cmdMsg.Id));
+            var subCmds = new List<VibrateCmd.VibrateSubcommand>();
+            for (var i = 0u; i < _vibratorCount; i++)
+            {
+                subCmds.Add(new VibrateCmd.VibrateSubcommand(i, cmdMsg.Speed));
+            }
+
+            return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex, subCmds, cmdMsg.Id));
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
@@ -92,17 +115,18 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            if (cmdMsg.Speeds.Count != 1)
+            if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > _vibratorCount)
             {
                 return new Error(
-                    "VibrateCmd requires 1 vector for this device.",
+                    $"VibrateCmd requires between 1 and {_vibratorCount} vectors for this device.",
                     Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id);
             }
 
+            var changed = false;
             foreach (var v in cmdMsg.Speeds)
             {
-                if (v.Index != 0)
+                if (v.Index >= _vibratorCount)
                 {
                     return new Error(
                         $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
@@ -110,23 +134,30 @@ namespace Buttplug.Server.Bluetooth.Devices
                         cmdMsg.Id);
                 }
 
-                if (Math.Abs(v.Speed - _vibratorSpeed) < 0.001)
+                if (!(Math.Abs(v.Speed - _vibratorSpeed[v.Index]) > 0.001))
                 {
-                    return new Ok(cmdMsg.Id);
+                    continue;
                 }
 
-                _vibratorSpeed = v.Speed;
+                changed = true;
+                _vibratorSpeed[v.Index] = v.Speed;
             }
 
-            var rSpeed = Convert.ToUInt16(_vibratorSpeed * 15);
+            if (!changed)
+            {
+                return new Ok(cmdMsg.Id);
+            }
+
+            var rSpeedInt = Convert.ToUInt16(_vibratorSpeed[0] * 15);
+            var rSpeedExt = Convert.ToUInt16(_vibratorSpeed[_vibratorCount - 1] * 15);
 
             // 0f 03 00 bc 00 00 00 00
             var data = new byte[] { 0x0f, 0x03, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00 };
-            data[3] = Convert.ToByte(rSpeed); // External
-            data[3] |= Convert.ToByte(rSpeed << 4); // Internal
+            data[3] = Convert.ToByte(rSpeedExt); // External
+            data[3] |= Convert.ToByte(rSpeedInt << 4); // Internal
 
             // ReSharper disable once InvertIf
-            if (rSpeed == 0)
+            if (rSpeedInt == 0 && rSpeedExt == 0)
             {
                 data[1] = 0x00;
                 data[5] = 0x00;
