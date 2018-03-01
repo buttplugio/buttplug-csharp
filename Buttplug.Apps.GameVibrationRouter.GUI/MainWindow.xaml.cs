@@ -9,9 +9,11 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 
 namespace Buttplug.Apps.GameVibrationRouter.GUI
@@ -30,10 +32,15 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
         [NotNull]
         private readonly ProcessTab _processTab;
 
+        [NotNull]
+        private readonly VibeGraphTab _graphTab;
+
         private IpcServerChannel _xinputHookServer;
         private string _channelName;
         private List<ButtplugDeviceInfo> _devices = new List<ButtplugDeviceInfo>();
-
+        private Vibration _lastVibration = new Vibration();
+        private Timer runTimer;
+        private double counter = 0;
 
         public MainWindow()
         {
@@ -52,6 +59,8 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             ButtplugGameVibrationRouterInterface.VibrationExceptionReceived += OnVibrationException;
             ButtplugGameVibrationRouterInterface.VibrationExitReceived += OnVibrationExit;
             Task.FromResult(_bpServer.SendMessage(new RequestServerInfo("Buttplug Game Vibration Router")));
+            _graphTab = new VibeGraphTab();
+            ButtplugTab.SetOtherTab("Vibes", _graphTab);
             _processTab = new ProcessTab();
             _processTab.ProcessAttachRequested += OnAttachRequested;
             _processTab.ProcessDetachRequested += OnDetachRequested;
@@ -61,6 +70,17 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
 
             var config = new ButtplugConfig("Buttplug");
             ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");
+
+            runTimer = new Timer();
+            runTimer.Interval = 100;
+            runTimer.Elapsed += AddPoint;
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12;
+        }
+
+        public void AddPoint(object o, ElapsedEventArgs e)
+        {
+            _graphTab.AddVibrationValue(_lastVibration.LeftMotorSpeed, _lastVibration.RightMotorSpeed);
         }
 
         private void OnSelectedDevicesChanged(object aObj, List<ButtplugDeviceInfo> aDevices)
@@ -98,10 +118,12 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             _processTab.Attached = false;
             _channelName = null;
             _xinputHookServer = null;
+            runTimer.Enabled = false;
         }
 
         private async void OnVibrationCommand(object aObj, Vibration aVibration)
         {
+            _lastVibration = aVibration;
             await Dispatcher.Invoke(async () =>
             {
                 foreach (var device in _devices)
@@ -139,6 +161,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
                 _log.Info($"Finished process injection on {aProcessId}...");
                 _processTab.Attached = true;
                 _processTab.ProcessError = "Attached to process";
+                runTimer.Enabled = true;
             }
             catch (Exception ex)
             {

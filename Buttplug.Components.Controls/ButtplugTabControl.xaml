@@ -7,15 +7,17 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<Grid>
-		<TabControl Margin="0,0,-0.333,-0.333">
+		<TabControl Name="ButtplugTabs"  Margin="0,0,-0.333,-0.333">
 			<TabItem Header="Application" Name="ApplicationTab"/>
 			<TabItem Header="Devices" Name="DevicesTab">
 				<local:ButtplugDeviceControl x:Name="DeviceControl" />
 			</TabItem>
-			<TabItem Header="Logs">
-				<local:ButtplugLogControl x:Name="LogControl" />
-			</TabItem>
-			<TabItem Header="About"  Name="AboutTab">
+		    <TabItem Name="OtherTab" Visibility="Collapsed">
+		    </TabItem>
+            <TabItem Header="Logs">
+                <local:ButtplugLogControl x:Name="LogControl" />
+            </TabItem>
+            <TabItem Header="About"  Name="AboutTab">
 				<local:ButtplugAboutControl x:Name="AboutControl" ScrollViewer.CanContentScroll="True" />
 			</TabItem>
 			<TabItem Name="DeveloperTab" Header="Developer" Visibility="Collapsed">

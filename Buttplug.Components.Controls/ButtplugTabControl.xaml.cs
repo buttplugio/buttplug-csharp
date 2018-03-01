@@ -141,7 +141,7 @@ namespace Buttplug.Components.Controls
             bpServer.AddDeviceSubtypeManager(aLogger => new ETSerialManager(aLogger));
 
 #if DEBUG
-            bpServer.AddDeviceSubtypeManager(aLogger => new SimulatorManager(aLogger));
+            //bpServer.AddDeviceSubtypeManager(aLogger => new SimulatorManager(aLogger));
 #endif
 
             return bpServer;
@@ -230,6 +230,13 @@ namespace Buttplug.Components.Controls
         {
             ApplicationTab.Header = aTabName;
             ApplicationTab.Content = aTabControl;
+        }
+
+        public void SetOtherTab(string aTabName, UserControl aTabControl)
+        {
+            OtherTab.Header = aTabName;
+            OtherTab.Content = aTabControl;
+            OtherTab.Visibility = Visibility.Visible;
         }
 
         public ButtplugLogControl GetLogControl()

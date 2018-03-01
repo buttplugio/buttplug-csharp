@@ -63,7 +63,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             InitializeComponent();
             ProcessListBox.ItemsSource = _processList;
             ProcessListBox.SelectionChanged += OnSelectionChanged;
-            EnumProcesses();
+            //EnumProcesses();
         }
 
         private void EnumProcesses()
