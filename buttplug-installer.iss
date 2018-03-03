@@ -36,8 +36,11 @@ Source: "Buttplug.Apps.WebsocketServerGUI\bin\{#Configuration}\*.config"; DestDi
 Source: "Buttplug.Apps.GameVibrationRouter.GUI\bin\{#Configuration}\*.exe"; DestDir: "{app}"
 Source: "Buttplug.Apps.GameVibrationRouter.GUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
 Source: "Buttplug.Apps.GameVibrationRouter.GUI\bin\{#Configuration}\*.config"; DestDir: "{app}"
-Source: "Readme.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme
+Source: "Readme.md"; DestDir: "{app}"; DestName: "Readme.txt"
 Source: "LICENSE"; DestDir: "{app}"; DestName: "License.txt"
+
+[Run]
+Filename: "{app}\Readme.txt"; Description: "View the README file"; Flags: postinstall shellexec unchecked
 
 [Icons]
 Name: "{commonprograms}\Buttplug Websocket Server"; Filename: "{app}\ButtplugWebsocketServerGUI.exe"
