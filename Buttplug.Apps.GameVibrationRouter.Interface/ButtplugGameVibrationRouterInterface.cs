@@ -9,6 +9,16 @@ namespace Buttplug.Apps.GameVibrationRouter.Interface
     {
         public ushort LeftMotorSpeed;
         public ushort RightMotorSpeed;
+
+        public static bool operator ==(Vibration c1, Vibration c2)
+        {
+            return c1.Equals(c2);
+        }
+
+        public static bool operator !=(Vibration c1, Vibration c2)
+        {
+            return !c1.Equals(c2);
+        }
     }
 
 

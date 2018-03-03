@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Runtime.Remoting;
@@ -39,8 +40,10 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
         private string _channelName;
         private List<ButtplugDeviceInfo> _devices = new List<ButtplugDeviceInfo>();
         private Vibration _lastVibration = new Vibration();
+        private Vibration _lastSentVibration = new Vibration();
         private Timer runTimer;
         private double counter = 0;
+        private Timer commandTimer;
 
         public MainWindow()
         {
@@ -71,9 +74,11 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             var config = new ButtplugConfig("Buttplug");
             ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");
 
-            runTimer = new Timer();
-            runTimer.Interval = 100;
+            runTimer = new Timer {Interval = 100, AutoReset = true};
             runTimer.Elapsed += AddPoint;
+
+            commandTimer = new Timer { Interval = 50, AutoReset = true };
+            commandTimer.Elapsed += OnVibrationTimer;
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12;
         }
@@ -119,11 +124,16 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             _channelName = null;
             _xinputHookServer = null;
             runTimer.Enabled = false;
+            commandTimer.Enabled = false;
         }
 
-        private async void OnVibrationCommand(object aObj, Vibration aVibration)
+        private async void OnVibrationTimer(object aObj, ElapsedEventArgs e)
         {
-            _lastVibration = aVibration;
+            if (_lastVibration == _lastSentVibration)
+            {
+                return;
+            }
+            _lastSentVibration = _lastVibration;
             await Dispatcher.Invoke(async () =>
             {
                 foreach (var device in _devices)
@@ -134,9 +144,14 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
                         continue;
                     }
                     await _bpServer.SendMessage(new SingleMotorVibrateCmd(device.Index,
-                        (aVibration.LeftMotorSpeed + aVibration.RightMotorSpeed) / (2.0 * 65535.0)));
+                        (_lastVibration.LeftMotorSpeed + _lastVibration.RightMotorSpeed) / (2.0 * 65535.0)));
                 }
             });
+        }
+
+        private async void OnVibrationCommand(object aObj, Vibration aVibration)
+        {
+            _lastVibration = aVibration;
         }
 
         private void OnAttachRequested(object aObject, int aProcessId)
@@ -162,6 +177,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
                 _processTab.Attached = true;
                 _processTab.ProcessError = "Attached to process";
                 runTimer.Enabled = true;
+                commandTimer.Enabled = true;
             }
             catch (Exception ex)
             {
