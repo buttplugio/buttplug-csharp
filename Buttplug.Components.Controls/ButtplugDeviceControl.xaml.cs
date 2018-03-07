@@ -19,7 +19,7 @@ namespace Buttplug.Components.Controls
     /// </summary>
     public partial class ButtplugDeviceControl : UserControl
     {
-        public class DeviceListItem
+        private class DeviceListItem
         {
             public ButtplugDeviceInfo Info;
 
@@ -30,8 +30,6 @@ namespace Buttplug.Components.Controls
                 Info = aInfo;
                 Connected = true;
             }
-
-            public event PropertyChangedEventHandler PropertyChanged;
 
             public override string ToString()
             {

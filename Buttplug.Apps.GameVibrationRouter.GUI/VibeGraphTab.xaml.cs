@@ -75,7 +75,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
                     HighPowerChart.Update(false, true);
                 });
             }
-            catch (TaskCanceledException e)
+            catch (TaskCanceledException)
             {
                 // Usually means we're shutting down. noop.
             }

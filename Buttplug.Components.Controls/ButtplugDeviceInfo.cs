@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Buttplug.Core.Messages;
-using System;
 
 namespace Buttplug.Components.Controls
 {

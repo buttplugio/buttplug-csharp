@@ -42,7 +42,6 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
         private Vibration _lastVibration = new Vibration();
         private Vibration _lastSentVibration = new Vibration();
         private Timer runTimer;
-        private double counter = 0;
         private Timer commandTimer;
 
         public MainWindow()
@@ -149,7 +148,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             });
         }
 
-        private async void OnVibrationCommand(object aObj, Vibration aVibration)
+        private void OnVibrationCommand(object aObj, Vibration aVibration)
         {
             _lastVibration = aVibration;
         }

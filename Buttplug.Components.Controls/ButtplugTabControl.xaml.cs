@@ -141,7 +141,7 @@ namespace Buttplug.Components.Controls
             bpServer.AddDeviceSubtypeManager(aLogger => new ETSerialManager(aLogger));
 
 #if DEBUG
-            //bpServer.AddDeviceSubtypeManager(aLogger => new SimulatorManager(aLogger));
+            bpServer.AddDeviceSubtypeManager(aLogger => new SimulatorManager(aLogger));
 #endif
 
             return bpServer;
