@@ -1,3 +1,24 @@
+# 0.2.1 (2018-03-08)
+
+## Features
+
+- Added Hardware Support
+  - Lovense Lush/Domi/Edge (new firmware versions)
+  - WeVibe Sync
+  - Kiiroo Pearl 2
+  - Pornhub Blowbot
+  - Rez Trancevibrator (Win 7 only)
+- Game Vibration Router now have "Vibes" tab to show incoming vibration commands
+- Added individual vibrator control for WeVibes
+
+## Bugfixes
+
+- Fixed XInput DLL missing crash
+- Fixed BAD DATA error/crash on accepting certs
+- Moved all Non .Net Standard projects to .Net 4.7
+- Far more test coverage
+- Game Vibration Router only updates toys at 20hz max
+
 # 0.2.0 (2018-01-22)
 
 ## Features
