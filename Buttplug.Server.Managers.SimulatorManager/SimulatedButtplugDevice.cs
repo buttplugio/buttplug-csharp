@@ -9,8 +9,9 @@ namespace Buttplug.Server.Managers.SimulatorManager
 {
     internal class SimulatedButtplugDevice : ButtplugDevice
     {
-        private SimulatorManager _manager;
-        private uint _vibratorCount = 0;
+        private readonly SimulatorManager _manager;
+
+        private readonly uint _vibratorCount;
 
         public SimulatedButtplugDevice(
             SimulatorManager aManager,
@@ -44,28 +45,28 @@ namespace Buttplug.Server.Managers.SimulatorManager
         {
         }
 
-        private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
             _manager.StopDevice(this);
-            return new Ok(aMsg.Id);
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
-        private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
         {
             for (uint i = 0; i < _vibratorCount; i++)
             {
-                _manager.Vibrate(this, (aMsg as SingleMotorVibrateCmd).Speed, i);
+                _manager.Vibrate(this, (aMsg as SingleMotorVibrateCmd)?.Speed ?? 0, i);
             }
 
-            return new Ok(aMsg.Id);
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
-        private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
         {
-            var vis = from x in (aMsg as VibrateCmd).Speeds where x.Index >= 0 && x.Index < _vibratorCount select x;
-            if (!vis.Any())
+            var vis = (aMsg as VibrateCmd)?.Speeds.Where(x => x.Index < _vibratorCount).ToList();
+            if (!vis?.Any() ?? true)
             {
-                return new Error("Invalid vibrator index!", Error.ErrorClass.ERROR_DEVICE, aMsg.Id);
+                return Task.FromResult<ButtplugMessage>(new Error("Invalid vibrator index!", Error.ErrorClass.ERROR_DEVICE, aMsg.Id));
             }
 
             foreach (var vi in vis)
@@ -73,29 +74,30 @@ namespace Buttplug.Server.Managers.SimulatorManager
                 _manager.Vibrate(this, vi.Speed, vi.Index);
             }
 
-            return new Ok(aMsg.Id);
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
-        private async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg)
         {
-            _manager.Rotate(this, (aMsg as VorzeA10CycloneCmd).Speed, (aMsg as VorzeA10CycloneCmd).Clockwise);
-            return new Ok(aMsg.Id);
+            _manager.Rotate(this, (aMsg as VorzeA10CycloneCmd)?.Speed ?? 0, (aMsg as VorzeA10CycloneCmd)?.Clockwise ?? true);
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
-        private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg)
+        // ReSharper disable once InconsistentNaming
+        private Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg)
         {
             _manager.Linear(this,
-                Convert.ToDouble((aMsg as FleshlightLaunchFW12Cmd).Speed) / 99,
-                Convert.ToDouble((aMsg as FleshlightLaunchFW12Cmd).Position) / 99);
-            return new Ok(aMsg.Id);
+                Convert.ToDouble((aMsg as FleshlightLaunchFW12Cmd)?.Speed ?? 0) / 99,
+                Convert.ToDouble((aMsg as FleshlightLaunchFW12Cmd)?.Position ?? 0) / 99);
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
-        private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg)
         {
-            var vis = from x in (aMsg as LinearCmd).Vectors where x.Index == 0 select x;
-            if (!vis.Any())
+            var vis = (aMsg as LinearCmd)?.Vectors?.Where(x => x.Index == 0).ToList();
+            if (!vis?.Any() ?? true)
             {
-                return new Error("Invalid vibrator index!", Error.ErrorClass.ERROR_DEVICE, aMsg.Id);
+                return Task.FromResult<ButtplugMessage>(new Error("Invalid vibrator index!", Error.ErrorClass.ERROR_DEVICE, aMsg.Id));
             }
 
             foreach (var vi in vis)
@@ -103,7 +105,7 @@ namespace Buttplug.Server.Managers.SimulatorManager
                 _manager.Linear2(this, vi.Duration, vi.Position);
             }
 
-            return new Ok(aMsg.Id);
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
     }
 }

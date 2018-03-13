@@ -150,7 +150,7 @@ namespace Buttplug.Server.Managers.SimulatorManager
                         break;
 
                     case DeviceRemoved dr:
-                        //InvokeDevice (new DeviceAddedEventArgs(new SimulatedButtplugDevice(_logManager, "Test", "1234")));
+                        // InvokeDevice (new DeviceAddedEventArgs(new SimulatedButtplugDevice(_logManager, "Test", "1234")));
                         break;
 
                     default:

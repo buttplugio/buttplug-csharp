@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Ports;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,18 +10,19 @@ using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;
 
 namespace Buttplug.Server.Managers.ETSerialManager
 {
+    // ReSharper disable once InconsistentNaming
     public class ET312Device : ButtplugDevice
     {
-        private SerialPort _serialPort;
+        private readonly SerialPort _serialPort;
+        private readonly double _updateInterval;
+        private readonly Timer _updateTimer;
+        private readonly object _movementLock;
         private byte _boxkey;
         private double _speed;
         private double _position;
         private double _currentPosition;
         private double _increment;
         private double _fade;
-        private double _updateInterval;
-        private Timer _updateTimer;
-        private object _movementLock;
 
         public ET312Device(SerialPort port, IButtplugLogManager aLogManager, string name, string id)
             : base(aLogManager, name, id)
@@ -71,7 +71,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
             }
 
             // We're now ready to receive events
-            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchFW12Cmd));
+            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchCmd));
             MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
 
@@ -96,7 +96,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
         }
 
         // Timer event fired every (updateInterval) milliseconds
-        private void OnUpdate(object source, System.Timers.ElapsedEventArgs e)
+        private void OnUpdate(object source, ElapsedEventArgs e)
         {
             lock (_movementLock)
             {
@@ -114,7 +114,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         _currentPosition -= _increment;
                         _currentPosition = (_currentPosition < _position) ? _position : _currentPosition;
                     }
-                    else if (_currentPosition == _position)
+                    else
                     {
                         FadeDown();
                     }
@@ -122,15 +122,15 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     // This is a very experimental algorithm to convert the linear "stroke"
                     // position into the very nonlinear value the ET312 needs in order
                     // to create a pleasant sensation
-                    double valueA = 115 + (80 * _fade) + (_currentPosition * 64 / 100);
-                    double valueB = 115 + (80 * _fade) + ((100 - _currentPosition) * 64 / 100);
+                    var valueA = 115 + (80 * _fade) + (_currentPosition * 64 / 100);
+                    var valueB = 115 + (80 * _fade) + ((100 - _currentPosition) * 64 / 100);
 
-                    double gamma = 1.5;
+                    var gamma = 1.5;
 
-                    double correctedA = 255 * Math.Pow(valueA / 255, 1 / gamma);
-                    double correctedB = 255 * Math.Pow(valueB / 255, 1 / gamma);
+                    var correctedA = 255 * Math.Pow(valueA / 255, 1 / gamma);
+                    var correctedB = 255 * Math.Pow(valueB / 255, 1 / gamma);
 
-                    if (_fade == 0)
+                    if (Math.Abs(_fade) < 0.0001)
                     {
                         correctedA = correctedB = 0;
                     }
@@ -183,7 +183,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
             _fade = (_fade < 0) ? 0 : _fade;
         }
 
-        private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
             lock (_movementLock)
             {
@@ -194,7 +194,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     _position = 0;
                     _speed = 0;
                     _increment = 0;
-                    return new Ok(aMsg.Id);
+                    return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
                 }
                 catch (Exception ex)
                 {
@@ -204,7 +204,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         || ex is InvalidOperationException
                         || ex is TimeoutException)
                     {
-                        return new Ok(aMsg.Id);
+                        return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
                     }
 
                     throw;
@@ -214,8 +214,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
         private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as LinearCmd;
-            if (cmdMsg is null)
+            if (!(aMsg is LinearCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
@@ -238,7 +237,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         cmdMsg.Id);
                 }
 
-                return await HandleFleshlightLaunchFW12Cmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
+                return await HandleFleshlightLaunchCmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
                     Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs((_position / 100) - v.Position), v.Duration) * 99),
                     Convert.ToUInt32(v.Position * 99), cmdMsg.Id));
             }
@@ -246,12 +245,11 @@ namespace Buttplug.Server.Managers.ETSerialManager
             return new Ok(aMsg.Id);
         }
 
-        private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleFleshlightLaunchCmd(ButtplugDeviceMessage aMsg)
         {
-            var cmdMsg = aMsg as FleshlightLaunchFW12Cmd;
-            if (cmdMsg is null)
+            if (!(aMsg is FleshlightLaunchFW12Cmd cmdMsg))
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
             }
 
             lock (_movementLock)
@@ -272,7 +270,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 // We convert those into "position" increments for our OnUpdate() timer event.
                 _increment = 1.5 * (distance / (duration / _updateInterval));
 
-                return new Ok(aMsg.Id);
+                return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
             }
         }
 
@@ -296,7 +294,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
             // Encrypt message if key is set
             if (_boxkey != 0)
             {
-                for (int c = 0; c < length; c++)
+                for (var c = 0; c < length; c++)
                 {
                     buffer[c] = (byte)(buffer[c] ^ _boxkey);
                 }
@@ -316,7 +314,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
             }
 
             byte sum = 0;
-            for (int c = 0; c < buffer.Length - 1; c++)
+            for (var c = 0; c < buffer.Length - 1; c++)
             {
                 sum += buffer[c];
             }
@@ -325,20 +323,21 @@ namespace Buttplug.Server.Managers.ETSerialManager
         }
 
         // Read one byte from the device
+        // ReSharper disable once UnusedMethodReturnValue.Local
         private byte Peek(uint address)
         {
             lock (_serialPort)
             {
-                byte[] sendBuffer = new byte[4];
-                sendBuffer[0] = (byte)SerialCommand.Read;                               // read byte command
+                var sendBuffer = new byte[4];
+                sendBuffer[0] = (byte)SerialCommand.Read;           // read byte command
                 sendBuffer[1] = (byte)((address & 0xff00) >> 8);    // address high byte
                 sendBuffer[2] = (byte)(address & 0x00ff);           // address low byte
-                SendCommand(sendBuffer);                                // encryption
+                SendCommand(sendBuffer);                            // encryption
 
-                byte[] recBuffer = new byte[3];
-                recBuffer[0] = (byte)_serialPort.ReadByte();              // return code
-                recBuffer[1] = (byte)_serialPort.ReadByte();              // content of requested address
-                recBuffer[2] = (byte)_serialPort.ReadByte();              // checksum
+                var recBuffer = new byte[3];
+                recBuffer[0] = (byte)_serialPort.ReadByte();        // return code
+                recBuffer[1] = (byte)_serialPort.ReadByte();        // content of requested address
+                recBuffer[2] = (byte)_serialPort.ReadByte();        // checksum
 
                 // If the response is not of the expected type or Checksum doesn't match
                 // consider ourselves de-synchronized. Calling Code should treat the device
@@ -363,7 +362,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
         {
             lock (_serialPort)
             {
-                byte[] sendBuffer = new byte[5];
+                var sendBuffer = new byte[5];
                 sendBuffer[0] = (byte)SerialCommand.Write;          // write byte command
                 sendBuffer[1] = (byte)((address & 0xff00) >> 8);    // address high byte
                 sendBuffer[2] = (byte)(address & 0x00ff);           // address low byte
@@ -387,10 +386,11 @@ namespace Buttplug.Server.Managers.ETSerialManager
         }
 
         // Write Message to the LCD display
+        // ReSharper disable once InconsistentNaming
         private void WriteLCD(string message, int offset)
         {
-            byte[] buffer = Encoding.ASCII.GetBytes(message);
-            for (int c = 0; c < buffer.Length; c++)
+            var buffer = Encoding.ASCII.GetBytes(message);
+            for (var c = 0; c < buffer.Length; c++)
             {
                 Poke((uint)RAM.WriteLCDParameter, buffer[c]);
                 Poke((uint)RAM.WriteLCDPosition, (byte)(offset + c));
@@ -399,11 +399,12 @@ namespace Buttplug.Server.Managers.ETSerialManager
         }
 
         // Warm Start the Box
+        // ReSharper disable once UnusedMethodReturnValue.Local
         private byte ResetBox()
         {
             lock (_serialPort)
             {
-                byte[] sendBuffer = new byte[3];
+                var sendBuffer = new byte[3];
                 sendBuffer[0] = (byte)SerialCommand.Reset;          // reset command
                 sendBuffer[1] = 0x55;                               // parameter for reset is always 0x55
                 SendCommand(sendBuffer);                            // encryption
@@ -424,13 +425,13 @@ namespace Buttplug.Server.Managers.ETSerialManager
                 {
                     // Try to read a byte from RAM using an unencrypted command
                     // If this works, we are not synched yet
-                    byte[] sendBuffer = new byte[4];
+                    var sendBuffer = new byte[4];
                     sendBuffer[0] = (byte)SerialCommand.Read;           // read byte command
                     sendBuffer[1] = 0;                                  // address high byte
                     sendBuffer[2] = 0;                                  // address low byte
                     SendCommand(sendBuffer);
 
-                    byte result = (byte)_serialPort.ReadByte();
+                    var result = (byte)_serialPort.ReadByte();
 
                     if (result == ((byte)SerialResponse.Read | 0x20))
                     {
@@ -478,9 +479,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
                         // send a string of 0s to get the command parser back
                         // in sync
                         _serialPort.DiscardInBuffer();
-                        for (int i = 0; i < 11; i++)
+                        for (var i = 0; i < 11; i++)
                         {
-                            _serialPort.Write(new byte[] { (byte)SerialCommand.Sync }, 0, 1);
+                            _serialPort.Write(new[] { (byte)SerialCommand.Sync }, 0, 1);
 
                             try
                             {
@@ -492,7 +493,6 @@ namespace Buttplug.Server.Managers.ETSerialManager
                             catch (TimeoutException)
                             {
                                 // No response? Keep trying.
-                                continue;
                             }
                         }
 

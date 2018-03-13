@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.DeviceSimulat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.SimulatorManager", "Buttplug.Server.Managers.SimulatorManager\Buttplug.Server.Managers.SimulatorManager.csproj", "{334D5731-7619-471E-85C3-240831514741}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.ETSerialManager", "Buttplug.Server.Managers.ErosTek\Buttplug.Server.Managers.ETSerialManager.csproj", "{436CF4FF-AE10-45DA-8909-9AACF1ED6425}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.ETSerialManager", "Buttplug.Server.Managers.ETSerialManager\Buttplug.Server.Managers.ETSerialManager.csproj", "{436CF4FF-AE10-45DA-8909-9AACF1ED6425}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.WinUSBManager", "Buttplug.Server.Managers.WinUSBManager\Buttplug.Server.Managers.WinUSBManager.csproj", "{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}"
 EndProject

@@ -156,7 +156,7 @@
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
       <Name>Buttplug.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Server.Managers.ErosTek\Buttplug.Server.Managers.ETSerialManager.csproj">
+    <ProjectReference Include="..\Buttplug.Server.Managers.ETSerialManager\Buttplug.Server.Managers.ETSerialManager.csproj">
       <Project>{436cf4ff-ae10-45da-8909-9aacf1ed6425}</Project>
       <Name>Buttplug.Server.Managers.ETSerialManager</Name>
     </ProjectReference>
