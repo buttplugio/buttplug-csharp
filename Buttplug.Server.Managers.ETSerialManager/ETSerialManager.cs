@@ -1,16 +1,18 @@
 ﻿using System;
+using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using Buttplug.Core;
 using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;
 
+// ReSharper disable once CheckNamespace
 namespace Buttplug.Server.Managers.ETSerialManager
 {
+    // ReSharper disable once InconsistentNaming
     public class ETSerialManager : DeviceSubtypeManager
     {
-        private bool _isScanning = false;
+        private bool _isScanning;
         private Thread _scanThread;
-        private string[] _searchComPorts;
 
         public ETSerialManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
@@ -22,7 +24,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
         {
             BpLogger.Info("Starting Scanning Serial Ports for ErosTek Devices");
             _isScanning = true;
-            _scanThread = new Thread(() => ScanSerialPorts(_searchComPorts));
+            _scanThread = new Thread(() => ScanSerialPorts(null));
             _scanThread.Start();
         }
 
@@ -39,13 +41,13 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
         private void ScanSerialPorts(string[] selectedComPorts)
         {
-            string[] comPortsToScan;
             _isScanning = true;
             var count = 5;
 
             while (_isScanning && count-- > 0)
             {
                 // Enumerate Ports
+                string[] comPortsToScan;
                 if (selectedComPorts == null || selectedComPorts.Length == 0)
                 {
                     comPortsToScan = SerialPort.GetPortNames();
@@ -79,7 +81,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     {
                         if (ex is UnauthorizedAccessException
                             || ex is ArgumentOutOfRangeException
-                            || ex is System.IO.IOException)
+                            || ex is IOException)
                         {
                             // This port is inaccessible.
                             // Possibly because a device detected earlier is already using it,
@@ -94,30 +96,46 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     // Why 11? See et312-protocol.org
                     var detected = false;
 
-                    for (int i = 0; i < 11; i++)
+                    for (var i = 0; i < 11; i++)
                     {
                         try
                         {
-                            serialPort.Write(new byte[] { (byte)SerialCommand.Sync }, 0, 1);
+                            serialPort.Write(new[] { (byte)SerialCommand.Sync }, 0, 1);
                         }
-                        catch (TimeoutException)
+                        catch (Exception ex)
                         {
-                            // Can't write to this port? Skip to the next one.
-                            break;
+                            if (ex is TimeoutException
+                                || ex is UnauthorizedAccessException
+                                || ex is IOException)
+                            {
+                                // Can't write to this port? Skip to the next one.
+                                break;
+                            }
+
+                            throw;
                         }
 
                         try
                         {
-                            if (serialPort.ReadByte() == (byte)SerialResponse.Error)
+                            if (serialPort.ReadByte() != (byte)SerialResponse.Error)
                             {
-                                detected = true;
-                                break;
+                                continue;
                             }
+
+                            detected = true;
+                            break;
                         }
-                        catch (TimeoutException)
+                        catch (Exception ex)
                         {
-                            // No response? Keep trying.
-                            continue;
+                            if (ex is TimeoutException
+                                || ex is UnauthorizedAccessException
+                                || ex is IOException)
+                            {
+                                // Can't write to this port? Skip to the next one.
+                                continue;
+                            }
+
+                            throw;
                         }
                     }
 
@@ -145,7 +163,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
                     serialPort.Dispose();
                 }
 
-                System.Threading.Thread.Sleep(3000);
+                Thread.Sleep(3000);
 
                 // _isScanning = false; // Uncomment to disable continuuous serial port scanning
             }

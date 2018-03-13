@@ -15,42 +15,57 @@ namespace Buttplug.Client
     // ReSharper disable once InconsistentNaming
     public class ButtplugWSClient
     {
-        [NotNull] private readonly ButtplugJsonMessageParser _parser;
+        [NotNull]
+        private readonly ButtplugJsonMessageParser _parser;
 
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-        [NotNull] private readonly IButtplugLog _bpLogger;
+        [NotNull]
+        private readonly IButtplugLog _bpLogger;
 
-        [NotNull] private readonly object _sendLock = new object();
+        [NotNull]
+        private readonly object _sendLock = new object();
 
-        [NotNull] private readonly string _clientName;
+        [NotNull]
+        private readonly string _clientName;
 
-        [NotNull] private readonly CancellationTokenSource _tokenSource;
+        [NotNull]
+        private readonly CancellationTokenSource _tokenSource;
 
-        [NotNull] private readonly SynchronizationContext _owningDispatcher;
+        [NotNull]
+        private readonly SynchronizationContext _owningDispatcher;
 
-        [NotNull] private readonly ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs =
+        [NotNull]
+        private readonly ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs =
             new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
 
-        [NotNull] private readonly ConcurrentDictionary<uint, ButtplugClientDevice> _devices =
+        [NotNull]
+        private readonly ConcurrentDictionary<uint, ButtplugClientDevice> _devices =
             new ConcurrentDictionary<uint, ButtplugClientDevice>();
 
-        [CanBeNull] private WebSocket _ws;
+        [CanBeNull]
+        private WebSocket _ws;
 
-        [CanBeNull] private Timer _pingTimer;
+        [CanBeNull]
+        private Timer _pingTimer;
 
         private uint _messageSchemaVersion;
 
         private int _counter;
 
-        [CanBeNull] public event EventHandler<DeviceEventArgs> DeviceAdded;
+        [CanBeNull]
+        public event EventHandler<DeviceEventArgs> DeviceAdded;
 
-        [CanBeNull] public event EventHandler<DeviceEventArgs> DeviceRemoved;
+        [CanBeNull]
+        public event EventHandler<DeviceEventArgs> DeviceRemoved;
 
-        [CanBeNull] public event EventHandler<ScanningFinishedEventArgs> ScanningFinished;
+        [CanBeNull]
+        public event EventHandler<ScanningFinishedEventArgs> ScanningFinished;
 
-        [CanBeNull] public event EventHandler<ErrorEventArgs> ErrorReceived;
+        [CanBeNull]
+        public event EventHandler<ErrorEventArgs> ErrorReceived;
 
-        [CanBeNull] public event EventHandler<LogEventArgs> Log;
+        [CanBeNull]
+        public event EventHandler<LogEventArgs> Log;
 
         private TaskCompletionSource<bool> _connectedOrFailed;
 
@@ -62,6 +77,9 @@ namespace Buttplug.Client
 
         public ButtplugClientDevice[] Devices => _devices.Values.ToArray();
 
+        /// <summary>
+        /// Is the client connected?
+        /// </summary>
         public bool IsConnected => _ws != null &&
                                    (_ws.State == WebSocketState.Connecting ||
                                     _ws.State == WebSocketState.Open);

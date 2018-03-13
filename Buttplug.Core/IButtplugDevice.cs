@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Buttplug.Core.Messages;
+using JetBrains.Annotations;
 
 namespace Buttplug.Core
 {
@@ -14,10 +14,8 @@ namespace Buttplug.Core
         [NotNull]
         string Identifier { get; }
 
-        [NotNull]
         uint Index { get; set; }
 
-        [NotNull]
         bool IsConnected { get; }
 
         [CanBeNull]

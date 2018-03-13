@@ -7,8 +7,8 @@
     <ProjectGuid>{436CF4FF-AE10-45DA-8909-9AACF1ED6425}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Buttplug.Server.Managers.ErosTek</RootNamespace>
-    <AssemblyName>Buttplug.Server.Managers.ErosTek</AssemblyName>
+    <RootNamespace>Buttplug.Server.Managers.ETSerialManager</RootNamespace>
+    <AssemblyName>Buttplug.Server.Managers.ETSerialManager</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
