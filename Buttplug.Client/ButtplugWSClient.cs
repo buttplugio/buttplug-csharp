@@ -12,6 +12,12 @@ using static Buttplug.Client.DeviceEventArgs;
 
 namespace Buttplug.Client
 {
+    /// <summary>
+    /// This is the Buttplug C# WebSocket Client implementation.
+    /// It's intended to abstract away the process of comunicating with
+    /// a Buttplug Server over WebSockets, so you don't have to worry
+    /// about the lower level protocol.
+    /// </summary>
     // ReSharper disable once InconsistentNaming
     public class ButtplugWSClient
     {
@@ -52,18 +58,37 @@ namespace Buttplug.Client
 
         private int _counter;
 
+        /// <summary>
+        /// Event fired on Buttplug device added
+        /// Should fire only immediatly after connect or whilst scanning for devices
+        /// </summary>
         [CanBeNull]
         public event EventHandler<DeviceEventArgs> DeviceAdded;
 
+        /// <summary>
+        /// Event fired on Buttplug device removed
+        /// Can fire are any time
+        /// </summary>
         [CanBeNull]
         public event EventHandler<DeviceEventArgs> DeviceRemoved;
 
+        /// <summary>
+        /// Event fired when the server has stopped scanning for devices
+        /// </summary>
         [CanBeNull]
         public event EventHandler<ScanningFinishedEventArgs> ScanningFinished;
 
+        /// <summary>
+        /// Event fired when an error has been encountered
+        /// This may be internal client exceptions or Error messages from the server
+        /// </summary>
         [CanBeNull]
         public event EventHandler<ErrorEventArgs> ErrorReceived;
 
+        /// <summary>
+        /// Event fired when the client recieves a Log message
+        /// Should only fire if the client requests logs
+        /// </summary>
         [CanBeNull]
         public event EventHandler<LogEventArgs> Log;
 
@@ -73,8 +98,15 @@ namespace Buttplug.Client
 
         private bool _connecting;
 
+        /// <summary>
+        /// Gets the next available message ID
+        /// In most cases setting the message ID is done automatically
+        /// </summary>
         public uint NextMsgId => Convert.ToUInt32(Interlocked.Increment(ref _counter));
 
+        /// <summary>
+        /// Gets the connected Buttplug devices
+        /// </summary>
         public ButtplugClientDevice[] Devices => _devices.Values.ToArray();
 
         /// <summary>
@@ -84,6 +116,10 @@ namespace Buttplug.Client
                                    (_ws.State == WebSocketState.Connecting ||
                                     _ws.State == WebSocketState.Open);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ButtplugWSClient"/> class.
+        /// </summary>
+        /// <param name="aClientName">The name of the client to present to the server</param>
         public ButtplugWSClient(string aClientName)
         {
             _clientName = aClientName;
@@ -97,11 +133,28 @@ namespace Buttplug.Client
             _messageSchemaVersion = ButtplugMessage.CurrentSchemaVersion;
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ButtplugWSClient"/> class.
+        /// The destrctor will close the connection, if it's still open.
+        /// </summary>
         ~ButtplugWSClient()
         {
             Disconnect().Wait();
         }
 
+        /// <summary>
+        /// Creates the connection to the Buttplug Server and performs the protocol hanshake.
+        /// Once the WebSocket connetion is open, the RequestServerInfo message is sent;
+        /// the response is used to set up the ping timer loop. The RequestDeviceList
+        /// message is also sent here so that any devices the server is already connected to
+        /// are made known to the client.
+        ///
+        /// <b>Important:</b> Ensure that <see cref="DeviceAdded"/>, <see cref="DeviceRemoved"/>
+        /// and <see cref="ErrorReceived"/> handlers are set before Connect is called.
+        /// </summary>
+        /// <param name="aURL">The URL for the Buttplug WebSocket Server. This will likely be in the form wss://localhost:12345 (wss:// is to ws:// as https:// is to http://)</param>
+        /// <param name="aIgnoreSSLErrors">When using SSL (wss://), this option prevents bad certificates from causing connection failures</param>
+        /// <returns>An untyped Task; the await/async equivelent of void</returns>
         [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Embedded acronyms")]
         public async Task Connect(Uri aURL, bool aIgnoreSSLErrors = false)
         {
@@ -233,6 +286,10 @@ namespace Buttplug.Client
             _connectedOrFailed.TrySetResult(true);
         }
 
+        /// <summary>
+        /// Closes the WebSocket Connection.
+        /// </summary>
+        /// <returns>An untyped Task; the await/async equivelent of void</returns>
         public async Task Disconnect()
         {
             if (_pingTimer != null)
@@ -367,21 +424,44 @@ namespace Buttplug.Client
             }
         }
 
+        /// <summary>
+        /// Instructs the server to start scanning for devices.
+        /// New devices will be rasied as events to <see cref="DeviceAdded"/>.
+        /// When scanning complets, an event will be sent to <see cref="ScanningFinished"/>.
+        /// </summary>
+        /// <returns>True if successful.</returns>
         public async Task<bool> StartScanning()
         {
             return await SendMessageExpectOk(new StartScanning());
         }
 
+        /// <summary>
+        /// Instructs the server to stop scanning for devices.
+        /// If scanning was in progress, an event will be sent to <see cref="ScanningFinished"/> when the device managers have all stopped scanning.
+        /// </summary>
+        /// <returns>True if the server successful recieved the command. If there are errors when stoppong the device managers, events may be sent to <see cref="ErrorReceived"/></returns>
         public async Task<bool> StopScanning()
         {
             return await SendMessageExpectOk(new StopScanning());
         }
 
+        /// <summary>
+        /// Instructs the server to start forwarding log entries to the cleintf.
+        /// Log entries will be rasied as events to <see cref="Log"/>.
+        /// </summary>
+        /// <param name="aLogLevel">The level of most detailed logs to send.</param>
+        /// <returns>True if successful.</returns>
         public async Task<bool> RequestLog(string aLogLevel)
         {
             return await SendMessageExpectOk(new RequestLog(aLogLevel));
         }
 
+        /// <summary>
+        /// Sends a DeviceMessage (e.g. <see cref="VibrateCmd"/> or <see cref="LinearCmd"/>)
+        /// </summary>
+        /// <param name="aDevice">The device to be controlled by the message</param>
+        /// <param name="aDeviceMsg">The device message (Id and DeviceIndex will be overriden)</param>
+        /// <returns>True if successful.</returns>
         public async Task<ButtplugMessage> SendDeviceMessage(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg)
         {
             if (_devices.TryGetValue(aDevice.Index, out ButtplugClientDevice dev))
@@ -400,11 +480,21 @@ namespace Buttplug.Client
             }
         }
 
+        /// <summary>
+        /// Sends a message that we expect to respond with <see cref="Ok"/>
+        /// </summary>
+        /// <param name="aMsg">Message to send.</param>
+        /// <returns>True if successful.</returns>
         protected async Task<bool> SendMessageExpectOk(ButtplugMessage aMsg)
         {
             return await SendMessage(aMsg) is Ok;
         }
 
+        /// <summary>
+        /// Sends a message and returns the resulting message
+        /// </summary>
+        /// <param name="aMsg">Message to send.</param>
+        /// <returns>The response <see cref="ButtplugMessage"/></returns>
         protected async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
         {
             // The client always increments the IDs on outgoing messages
@@ -438,16 +528,31 @@ namespace Buttplug.Client
             }
         }
 
+        /// <summary>
+        /// Converts a single <see cref="ButtplugMessage"/> into a JSON string.
+        /// </summary>
+        /// <param name="aMsg">Message to convert</param>
+        /// <returns>The JSON string representation of the message</returns>
         protected string Serialize(ButtplugMessage aMsg)
         {
             return _parser.Serialize(aMsg, ButtplugMessage.CurrentSchemaVersion);
         }
 
+        /// <summary>
+        /// Converts an array of <see cref="ButtplugMessage"/> into a JSON string.
+        /// </summary>
+        /// <param name="aMsgs">An array of messages to convert</param>
+        /// <returns>The JSON string representation of the messages</returns>
         protected string Serialize(ButtplugMessage[] aMsgs)
         {
             return _parser.Serialize(aMsgs, ButtplugMessage.CurrentSchemaVersion);
         }
 
+        /// <summary>
+        /// Converts a JSON string into an array of <see cref="ButtplugMessage"/>.
+        /// </summary>
+        /// <param name="aMsg">A JSON string representing one or more messages</param>
+        /// <returns>An array of messages</returns>
         protected ButtplugMessage[] Deserialize(string aMsg)
         {
             return _parser.Deserialize(aMsg);

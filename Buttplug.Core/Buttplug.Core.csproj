@@ -65,4 +65,7 @@
     <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
   </ItemGroup>
   
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
 </Project>
