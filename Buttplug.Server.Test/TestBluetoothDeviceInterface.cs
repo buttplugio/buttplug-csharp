@@ -29,10 +29,16 @@ namespace Buttplug.Server.Test
 
         public List<WriteData> LastWriten = new List<WriteData>();
 
+        public event EventHandler DeviceRemoved;
+
+        public bool Removed;
+
         public TestBluetoothDeviceInterface(string aName, ulong aAddress)
         {
             Name = aName;
             _address = aAddress;
+            Removed = false;
+            DeviceRemoved += (obj, args) => { Removed = true; };
         }
 
         public Task<ButtplugMessage> WriteValue(uint aMsgId, Guid aCharacteristic, byte[] aValue, bool aWriteWithResponse = false)
@@ -51,11 +57,9 @@ namespace Buttplug.Server.Test
             return _address;
         }
 
-        public event EventHandler DeviceRemoved;
-
         public void Disconnect()
         {
-            throw new NotImplementedException();
+            DeviceRemoved?.Invoke(this, new EventArgs());
         }
     }
 }

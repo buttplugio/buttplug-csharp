@@ -1,8 +1,6 @@
 ﻿using System;
-using Buttplug.Core.Messages;
 using Buttplug.Logging;
 using JetBrains.Annotations;
-using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core
 {
@@ -76,7 +74,8 @@ namespace Buttplug.Core
 
         public void LogException(Exception aEx, bool aLocalOnly = true, string aMsg = null)
         {
-            Error((aEx?.GetType().ToString() ?? "Unknown Exception") + ": " + (aMsg ?? (aEx.Message + "\n" + aEx.StackTrace)), aLocalOnly);
+            Error((aEx?.GetType().ToString() ?? "Unknown Exception") + ": " +
+                  (aMsg ?? (aEx != null ? (aEx.Message + "\n" + aEx.StackTrace) : "Unknown Exception")), aLocalOnly);
             OnLogException?.Invoke(this, new LogExceptionEventArgs(aEx, aLocalOnly, aMsg));
         }
     }

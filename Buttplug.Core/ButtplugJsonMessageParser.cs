@@ -12,17 +12,27 @@ using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core
 {
+    /// <summary>
+    /// This class handles the seralisation, deserialisation and
+    /// validation of Buttplug JSON messages into objects.
+    /// </summary>
     public class ButtplugJsonMessageParser
     {
         [NotNull]
         private readonly Dictionary<string, Type> _messageTypes;
+
         private readonly IButtplugLog _bpLogger;
+
         [NotNull]
         private readonly JsonSchema4 _schema;
 
         [NotNull]
-        private JsonSerializer _serializer;
+        private readonly JsonSerializer _serializer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ButtplugJsonMessageParser"/> class.
+        /// </summary>
+        /// <param name="aLogManager">The log manager</param>
         public ButtplugJsonMessageParser(IButtplugLogManager aLogManager = null)
         {
             _bpLogger = aLogManager.GetLogger(GetType());
@@ -77,6 +87,11 @@ namespace Buttplug.Core
             }
         }
 
+        /// <summary>
+        /// Deserialises Buttplug messages from JSON into an array of ButtpluMessage objects
+        /// </summary>
+        /// <param name="aJsonMsg">A string containing one or more Buttplug messages in JSON format</param>
+        /// <returns>An array of ButtplugMessage objects</returns>
         [NotNull]
         public ButtplugMessage[] Deserialize(string aJsonMsg)
         {
@@ -177,6 +192,12 @@ namespace Buttplug.Core
             }
         }
 
+        /// <summary>
+        /// Serialises a single ButtplugMessage object into a JSON string for a specified version of the schema
+        /// </summary>
+        /// <param name="aMsg">A ButtplugMessage object</param>
+        /// <param name="clientSchemaVersion">The target schema version</param>
+        /// <returns>A JSON string representing a Buttplug message</returns>
         public string Serialize([NotNull] ButtplugMessage aMsg, uint clientSchemaVersion)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
@@ -213,6 +234,12 @@ namespace Buttplug.Core
             return a.ToString(Formatting.None);
         }
 
+        /// <summary>
+        /// Serialises a collection of ButtplugMessage objects into a JSON string for a specified version of the schema
+        /// </summary>
+        /// <param name="aMsgs">A collection of ButtplugMessage objects</param>
+        /// <param name="clientSchemaVersion">The target schema version</param>
+        /// <returns>A JSON string representing one or more Buttplug messages</returns>
         public string Serialize([NotNull] IEnumerable<ButtplugMessage> aMsgs, uint clientSchemaVersion)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
@@ -237,7 +264,9 @@ namespace Buttplug.Core
                     }
 
                     tmp = (ButtplugMessage)tmp.PreviousType.GetConstructor(
-                        new Type[] { tmp.GetType() }).Invoke(new object[] { tmp });
+                              new[] { tmp.GetType() })?.Invoke(new object[] { tmp }) ??
+                          new Error($"No default constructor for message #{tmp.GetType().Name}!",
+                              ErrorClass.ERROR_MSG, msg.Id);
                 }
 
                 var o = new JObject(new JProperty(msg.GetType().Name, JObject.FromObject(tmp)));

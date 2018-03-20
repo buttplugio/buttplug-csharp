@@ -6,8 +6,8 @@ using Buttplug.Components.WebsocketServer;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
-using NUnit.Framework;
 using Buttplug.Server.Test;
+using NUnit.Framework;
 
 namespace Buttplug.Client.Test
 {

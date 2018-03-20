@@ -56,4 +56,8 @@
     <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj" />
   </ItemGroup>
   
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  
 </Project>
