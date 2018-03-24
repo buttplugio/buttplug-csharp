@@ -1,0 +1,8 @@
+- name: Readme
+  href: README.md
+- name: Changelog
+  href: CHANGELOG.md
+- name: Code of Conduct
+  href: CODE_OF_CONDUCT.md
+- name: Contributing
+  href: CONTRIBUTING.md

@@ -1,0 +1,9 @@
+- name: Buttplug.Core
+  href: Buttplug.Core/toc.yml
+  topicHref: Buttplug.Core/Buttplug.Core.yml
+- name: Buttplug.Client
+  href: Buttplug.Client/toc.yml
+  topicHref: Buttplug.Client/Buttplug.Client.yml
+- name: Buttplug.Server
+  href: Buttplug.Server/toc.yml
+  topicHref: Buttplug.Server/Buttplug.Server.yml

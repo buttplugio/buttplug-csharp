@@ -10,6 +10,14 @@ image: Visual Studio 2017
 
 skip_branch_with_pr: true
   
+environment:
+  sentry_api_url:
+    secure: grqYfjT9kMwONAdl/iwYcI7NOEd8ounzFFehZIWX3I3y1oiIa7F4GrZJKNqWcucEhyyn9SpAnXiheKAJU/kl0nFT7QUlnXplEE9c/krbWDEy0mSMy5DaFv1+MijZ5hjm
+  git_access_token:
+    secure: 6qJWs+pzFgvmZ5HObwXRJxZohaR0g21OEaV5LyomY455l6Qu2PX9zRkx8B4PHDrc
+  git_email: build@appveyor.com
+  git_user: Appveyor Build
+  
 # Taken from https://boblokerse.github.io/2015/11/03/GitVersion-versioning-made-easy-and-dry/
 install:
   - ver
@@ -73,6 +81,7 @@ build:
   parallel: true
   project: Buttplug.sln
   publish_nuget: true
+
 after_build:
   - cmd: InspectCode.exe -o=resharper-clt-output.xml --project=Buttplug* Buttplug.sln
   - ps: $result = [xml](Get-Content .\resharper-clt-output.xml)
@@ -92,14 +101,16 @@ after_test:
   # Test currently doesn't work, possibly because installer is blocked by access control dialog?
   #- ps: test\check-registry.ps1
   - ps: Push-AppveyorArtifact installer\buttplug-installer.exe -FileName Buttplug-$env:CONFIGURATION-$env:APPVEYOR_BUILD_VERSION-installer.exe
+  - ps: |
+      Push-Location ./docs
+      ./build.ps1
+      Pop-Location
 cache:
   - packages -> **\packages.config
   # Cache chocolatey packages
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
-environment:
-  sentry_api_url:
-    secure: grqYfjT9kMwONAdl/iwYcI7NOEd8ounzFFehZIWX3I3y1oiIa7F4GrZJKNqWcucEhyyn9SpAnXiheKAJU/kl0nFT7QUlnXplEE9c/krbWDEy0mSMy5DaFv1+MijZ5hjm
+
 deploy:
   - provider: NuGet
     api_key:

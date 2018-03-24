@@ -1,0 +1,126 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../Buttplug.Core",
+          "files": [
+            "**.csproj"
+          ],
+          "exclude": [
+            "**/obj/**",
+            "**/bin/**",
+	    "gh-pages/**"
+	  ]
+        }
+      ],
+      "dest": "api/Buttplug.Core",
+      "disableGitFeatures": false,
+      "properties": {
+        "TargetFramework": "netstandard2.0"
+      }
+    },
+    {
+      "src": [
+        {
+          "src": "../Buttplug.Client",
+          "files": [
+            "**.csproj"
+          ],
+          "exclude": [
+            "**/obj/**",
+            "**/bin/**",
+	    "gh-pages/**"
+	  ]
+        }
+      ],
+      "dest": "api/Buttplug.Client",
+      "disableGitFeatures": false,
+      "properties": {
+        "TargetFramework": "netstandard2.0"
+      }
+    },
+    {
+      "src": [
+        {
+          "src": "../Buttplug.Server",
+          "files": [
+            "**.csproj"
+          ],
+          "exclude": [
+            "**/obj/**",
+            "**/bin/**",
+	    "gh-pages/**"
+	  ]
+        }
+      ],
+      "dest": "api/Buttplug.Server",
+      "disableGitFeatures": true,
+      "properties": {
+        "TargetFramework": "netstandard2.0"
+      }
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/index.md"
+        ]
+      },
+      {
+        "files": "*.md",
+        "src": ".."
+      },
+      {
+        "files": [
+          "articles/**.md",
+          "articles/**/toc.yml",
+          "toc.yml",
+          "*.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "gh-pages/**"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ],
+        "exclude": [
+          "obj/**",
+          "gh-pages/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "gh-pages/**"
+        ]
+      }
+    ],
+    "dest": "gh-pages",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": [
+      "default"
+    ],
+    "postProcessors": [],
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": false,
+    "disableGitFeatures": true,
+    "xref": [
+      "https://docs.microsoft.com/dotnet/xrefmap.yml"
+    ]
+  }
+}
