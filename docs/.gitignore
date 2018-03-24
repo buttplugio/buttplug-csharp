@@ -1,0 +1,5 @@
+*.md
+gh-pages
+dist_pdf
+api/Buttplug.*
+dist/
