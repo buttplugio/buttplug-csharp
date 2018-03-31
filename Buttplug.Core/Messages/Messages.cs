@@ -158,7 +158,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// This is a container class for describing a device.
     /// </summary>
-    public class DeviceMessageInfo
+    public class DeviceMessageInfo : IButtplugDeviceInfoMessage
     {
         /// <summary>
         /// The name of the device.
@@ -177,7 +177,7 @@ namespace Buttplug.Core.Messages
         /// </summary>
         [SuppressMessage("ReSharper", "MemberInitializerValueIgnored", Justification = "JSON.net doesn't use the constructor")]
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, MessageAttributes> DeviceMessages = new Dictionary<string, MessageAttributes>();
+        public Dictionary<string, MessageAttributes> DeviceMessages; // = new Dictionary<string, MessageAttributes>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceMessageInfo"/> class.
@@ -192,6 +192,13 @@ namespace Buttplug.Core.Messages
             DeviceIndex = aIndex;
             DeviceMessages = aMessages;
         }
+
+        // Implementation details for IButtplugDeviceInfoMessage interface
+        string IButtplugDeviceInfoMessage.DeviceName => DeviceName;
+
+        uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
+
+        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
     }
 
     /// <summary>
@@ -318,7 +325,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// The DeviceAdded Buttplug message: sent to the client by the server when a new device is discoved.
     /// </summary>
-    public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
+    public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
     {
         /// <summary>
         /// The name of the device.
@@ -352,6 +359,13 @@ namespace Buttplug.Core.Messages
             : base(0, 0, 1, typeof(DeviceAddedVersion0))
         {
         }
+
+        // Implementation details for IButtplugDeviceInfoMessage interface
+        string IButtplugDeviceInfoMessage.DeviceName => DeviceName;
+
+        uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
+
+        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
     }
 
     /// <summary>
@@ -413,7 +427,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// The DeviceRemoved Buttplug message: sent to the client by the server when a new device is disconnected.
     /// </summary>
-    public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly
+    public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
     {
         /// <summary>
         /// The disconnected device's index.
@@ -430,6 +444,13 @@ namespace Buttplug.Core.Messages
         {
             DeviceIndex = aIndex;
         }
+
+        // Implementation details for IButtplugDeviceInfoMessage interface
+        string IButtplugDeviceInfoMessage.DeviceName => string.Empty;
+
+        uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
+
+        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => new Dictionary<string, MessageAttributes>();
     }
 
     /// <summary>
