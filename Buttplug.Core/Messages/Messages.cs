@@ -175,9 +175,12 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// List of command messages that this device supports with additional attribute data.
         /// </summary>
+        ///
+        /// While this is set in the constructor, it needs to be initialized here in order to keep
+        /// the JSON parser from setting it to null.
         [SuppressMessage("ReSharper", "MemberInitializerValueIgnored", Justification = "JSON.net doesn't use the constructor")]
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, MessageAttributes> DeviceMessages; // = new Dictionary<string, MessageAttributes>();
+        public Dictionary<string, MessageAttributes> DeviceMessages = new Dictionary<string, MessageAttributes>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceMessageInfo"/> class.
