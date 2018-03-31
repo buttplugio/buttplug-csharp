@@ -14,7 +14,7 @@ environment:
   sentry_api_url:
     secure: grqYfjT9kMwONAdl/iwYcI7NOEd8ounzFFehZIWX3I3y1oiIa7F4GrZJKNqWcucEhyyn9SpAnXiheKAJU/kl0nFT7QUlnXplEE9c/krbWDEy0mSMy5DaFv1+MijZ5hjm
   git_access_token:
-    secure: 6qJWs+pzFgvmZ5HObwXRJxZohaR0g21OEaV5LyomY455l6Qu2PX9zRkx8B4PHDrc
+    secure: SvHymEaf8z/NGLTrYUeI3PutAKTLiWlQtT0LVuVTkPGSG1uWXsF22ySBx4o/sRH1
   git_email: build@appveyor.com
   git_user: Appveyor Build
   
