@@ -7,7 +7,6 @@ using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
@@ -33,34 +32,48 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         public bool MayBeDevice(string advertName, List<Guid> advertGUIDs)
         {
-            if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(advertName))
+            if (_deviceInfo.NamePrefixes.Any())
             {
+                foreach (var deviceInfoNamePrefix in _deviceInfo.NamePrefixes)
+                {
+                    if (advertName.IndexOf(deviceInfoNamePrefix) != 0)
+                    {
+                        continue;
+                    }
+
+                    _bpLogger.Debug($"Found {advertName} via NamePrefix {deviceInfoNamePrefix}");
+                    return true;
+                }
+            }
+
+            if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(advertName) || !_deviceInfo.Names.Any())
+            {
+                _bpLogger.Trace($"Dropping query for {advertName}.");
                 return false;
             }
 
             if (_deviceInfo.Names.Any() && !advertGUIDs.Any())
             {
-                _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType().ToString());
-                _bpLogger.Debug("No advertised services?");
+                _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType());
                 return true;
             }
 
-            _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType().ToString());
+            _bpLogger.Trace("Found " + advertName + " for " + _deviceInfo.GetType() + " with services " + advertGUIDs);
             foreach (var s in _deviceInfo.Services)
             {
-                _bpLogger.Debug("Expecting " + s.ToString());
+                _bpLogger.Trace("Expecting " + s);
             }
 
             foreach (var s in advertGUIDs)
             {
-                _bpLogger.Debug("Got " + s.ToString());
+                _bpLogger.Trace("Got " + s);
             }
 
             // Intersect doesn't intersect until the enumerator is called
             var sv = _deviceInfo.Services.Intersect(advertGUIDs);
             foreach (var s in sv)
             {
-                _bpLogger.Debug("Matched " + s.ToString());
+                _bpLogger.Trace("Matched " + s);
                 return true;
             }
 
@@ -73,53 +86,55 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             // GetGattServicesForUuidAsync is 15063 only
             var services = await aDevice.GetGattServicesAsync(BluetoothCacheMode.Cached);
+            List<Guid> uuids = new List<Guid>();
             foreach (var s in services.Services)
             {
-                _bpLogger.Debug("Found service UUID: " + s.Uuid + " (" + aDevice.Name + ")");
+                _bpLogger.Trace($"Found service UUID: {s.Uuid} ({aDevice.Name})");
+                uuids.Add(s.Uuid);
             }
 
-            var srvResult = await aDevice.GetGattServicesForUuidAsync(_deviceInfo.Services[0], BluetoothCacheMode.Cached);
-            if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
+            var srvs = (from x in services.Services
+                from y in _deviceInfo.Services
+                where x.Uuid == y
+                select x).ToArray();
+
+            if (srvs.Length != 1)
             {
-                _bpLogger.Debug("Cannot find service for device (" + aDevice.Name + ")");
+                // Somehow we've gotten multiple services back, something we don't currently support.
+                _bpLogger.Error($"Found {srvs.Length} services for {aDevice.Name}, which is more/less than 1. Please fix this in the bluetooth definition.");
                 return null;
             }
 
-            var service = srvResult.Services.First();
+            var service = srvs[0];
 
             var chrResult = await service.GetCharacteristicsAsync();
             if (chrResult.Status != GattCommunicationStatus.Success)
             {
+                _bpLogger.Error($"Cannot connect to service {service.Uuid} of {aDevice.Name}.");
                 return null;
             }
 
             foreach (var s in chrResult.Characteristics)
             {
-                _bpLogger.Trace("Found characteristics UUID: " + s.Uuid + " (" + aDevice.Name + ")");
+                _bpLogger.Trace($"Found characteristics UUID: {s.Uuid} ({aDevice.Name})");
             }
 
-            var chrs = from x in chrResult.Characteristics
-                       where _deviceInfo.Characteristics.Contains(x.Uuid)
-                       select x;
+            var chrs = chrResult.Characteristics.ToArray();
 
-            var gattCharacteristics = chrs as GattCharacteristic[] ?? chrs.ToArray();
-            if (!gattCharacteristics.Any())
+            // If there aren't any characteristics by this point, something has gone wrong.
+            if (!chrs.Any())
             {
+                _bpLogger.Error($"Cannot find characteristics for service {service.Uuid} of {aDevice.Name}.");
                 return null;
             }
 
-            // TODO This assumes we're always planning on having the UUIDs sorted in the Info classes, which is probably not true.
-            var bleInterface = new UWPBluetoothDeviceInterface(_buttplugLogManager,
-                aDevice, gattCharacteristics.OrderBy((aChr) => aChr.Uuid).ToArray());
-
+            var bleInterface = new UWPBluetoothDeviceInterface(_buttplugLogManager, _deviceInfo, aDevice, chrs);
+            await bleInterface.SubscribeToUpdates();
             var device = _deviceInfo.CreateDevice(_buttplugLogManager, bleInterface);
-            if (await device.Initialize() is Ok)
-            {
-                return device;
-            }
 
-            // If initialization fails, don't actually send the message back. Just return null, we'll have the info in the logs.
-            return null;
+            // If initialization fails, don't actually send the message back. Just return null, we'll
+            // have the info in the logs.
+            return await device.Initialize() is Ok ? device : null;
         }
     }
 }

@@ -23,17 +23,13 @@ namespace Buttplug.Server.Bluetooth
                 new KiirooBluetoothInfo(),
                 new KiirooGen2VibeBluetoothInfo(),
                 new YoucupsBluetoothInfo(),
-                new LovenseRev1BluetoothInfo(),
-                new LovenseRev2BluetoothInfo(),
-                new LovenseRev3BluetoothInfo(),
-                new LovenseRev4BluetoothInfo(),
-                new LovenseRev5BluetoothInfo(),
-                new LovenseRev6BluetoothInfo(),
-                new LovenseRev7BluetoothInfo(),
+                new LovenseBluetoothInfo(),
                 new MagicMotionBluetoothInfo(),
                 new VibratissimoBluetoothInfo(),
-                new VorzeA10CycloneInfo(),
+                new VorzeSABluetoothInfo(),
                 new WeVibeBluetoothInfo(),
+                new MysteryVibeBluetoothInfo(),
+                new LiBoBluetoothInfo(),
             };
         }
     }

@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel;
 using Buttplug.Components.Controls;
 
-namespace Buttplug.Apps.WebsocketServerGUI
+namespace Buttplug.Apps.ServerGUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
-        private readonly WebsocketServerControl _wsTab;
+        private readonly ServerControl _wsTab;
 
         public MainWindow()
         {
@@ -27,7 +27,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             ButtplugTab.GetLogControl().MaxLogs = logLimit;
 
             ButtplugTab.SetServerDetails("Websocket Server", ping);
-            _wsTab = new WebsocketServerControl(ButtplugTab);
+            _wsTab = new ServerControl(ButtplugTab);
             ButtplugTab.SetApplicationTab("Websocket Server", _wsTab);
 
             ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");

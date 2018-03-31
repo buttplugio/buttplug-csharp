@@ -7,72 +7,67 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class WeVibeBluetoothInfo : IBluetoothDeviceInfo
+    internal class LiBoBluetoothInfo : IBluetoothDeviceInfo
     {
-        public Guid[] Services { get; } = { new Guid("f000bb03-0451-4000-b000-000000000000") };
+        public enum Chrs : uint
+        {
+            WriteShock = 0,
+            WriteVibrate,
+            ReadBattery,
+        }
+
+        public Guid[] Services { get; } =
+        {
+            new Guid("00006000-0000-1000-8000-00805f9b34fb"), // Write Service
+
+            // TODO Commenting out battery service until we can handle multiple services.
+
+            // new Guid("00006050-0000-1000-8000-00805f9b34fb"), // Read service (battery)
+        };
 
         public string[] NamePrefixes { get; } = { };
 
         public string[] Names { get; } =
         {
-            "Cougar",
-            "4 Plus",
-            "4plus",
-            "Bloom",
-            "classic",
-            "Ditto",
-            "Gala",
-            "Jive",
-            "Nova",
-            "NOVAV2",
-            "Pivot",
-            "Rave",
-            "Sync",
-            "Verge",
-            "Wish",
+            "PiPiJing"
         };
 
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
+        {
+            // tx1 characteristic
+            { (uint)Chrs.WriteShock, new Guid("00006001-0000-1000-8000-00805f9b34fb") }, // Shock
+
+            // tx2 characteristic
+            { (uint)Chrs.WriteVibrate, new Guid("00006002-0000-1000-8000-00805f9b34fb") }, // VibeMode
+
+            // rx characteristic
+            { (uint)Chrs.ReadBattery,  new Guid("00006051-0000-1000-8000-00805f9b34fb") }, // Read for battery level
+        };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new WeVibe(aLogManager, aInterface, this);
+            return new LiBo(aLogManager, aInterface, this);
         }
     }
 
-    internal class WeVibe : ButtplugBluetoothDevice
+    internal class LiBo : ButtplugBluetoothDevice
     {
-        private static readonly string[] DualVibes =
-        {
-            "Cougar",
-            "4 Plus",
-            "4plus",
-            "classic",
-            "Gala",
-            "Nova",
-            "NOVAV2",
-            "Sync",
-        };
-
         private readonly uint _vibratorCount = 1;
-        private readonly double[] _vibratorSpeed = { 0, 0 };
+        private readonly double[] _vibratorSpeed = { 0 };
 
-        public WeVibe(IButtplugLogManager aLogManager,
+        public LiBo(IButtplugLogManager aLogManager,
                       IBluetoothDeviceInterface aInterface,
                       IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"WeVibe {aInterface.Name}",
+                   $"LiBo ({aInterface.Name})",
                    aInterface,
                    aInfo)
         {
-            if (DualVibes.Contains(aInterface.Name))
-            {
-                _vibratorCount = 2;
-            }
-
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
             MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
+
+            // TODO Add a handler for Estim shocking, add a battery handler.
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
         }
 
@@ -98,7 +93,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > _vibratorCount)
+            if (cmdMsg.Speeds.Count != _vibratorCount)
             {
                 return new Error(
                     $"VibrateCmd requires between 1 and {_vibratorCount} vectors for this device.",
@@ -131,22 +126,15 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return new Ok(cmdMsg.Id);
             }
 
-            var rSpeedInt = Convert.ToUInt16(_vibratorSpeed[0] * 15);
-            var rSpeedExt = Convert.ToUInt16(_vibratorSpeed[_vibratorCount - 1] * 15);
+            // Map a 0 - 100% value to a 0 - 3 value since 0 * x == 0 this will turn off the vibe if
+            // speed is 0.00
+            int mode = (int)Math.Ceiling(_vibratorSpeed[0] * 3);
 
-            // 0f 03 00 bc 00 00 00 00
-            var data = new byte[] { 0x0f, 0x03, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00 };
-            data[3] = Convert.ToByte(rSpeedExt); // External
-            data[3] |= Convert.ToByte(rSpeedInt << 4); // Internal
+            var data = new byte[] { Convert.ToByte(mode) };
 
-            // ReSharper disable once InvertIf
-            if (rSpeedInt == 0 && rSpeedExt == 0)
-            {
-                data[1] = 0x00;
-                data[5] = 0x00;
-            }
-
-            return await Interface.WriteValue(aMsg.Id, data);
+            return await Interface.WriteValue(aMsg.Id,
+                (uint)LiBoBluetoothInfo.Chrs.WriteVibrate,
+                data);
         }
     }
 }

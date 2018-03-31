@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -12,25 +13,27 @@ namespace Buttplug.Server.Bluetooth.Devices
         public enum Chrs : uint
         {
             Tx = 0,
-            Rx,
-            Cmd,
-        }
+            Rx = 1,
+            Cmd = 2,
+        };
 
-        public string[] Names { get; } = { "Launch" };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
+        {
+            // tx
+            { (uint)Chrs.Tx, new Guid("88f80581-0000-01e6-aace-0002a5d5c51b") },
+
+            // rx
+            { (uint)Chrs.Rx, new Guid("88f80582-0000-01e6-aace-0002a5d5c51b") },
+
+            // cmd
+            { (uint)Chrs.Cmd, new Guid("88f80583-0000-01e6-aace-0002a5d5c51b") },
+        };
 
         public Guid[] Services { get; } = { new Guid("88f80580-0000-01e6-aace-0002a5d5c51b") };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx
-            new Guid("88f80581-0000-01e6-aace-0002a5d5c51b"),
+        public string[] Names { get; } = { "Launch" };
 
-            // rx
-            new Guid("88f80582-0000-01e6-aace-0002a5d5c51b"),
-
-            // cmd
-            new Guid("88f80583-0000-01e6-aace-0002a5d5c51b"),
-        };
+        public string[] NamePrefixes { get; } = { };
 
         public IButtplugDevice CreateDevice(
             IButtplugLogManager aLogManager,
@@ -62,7 +65,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             BpLogger.Trace($"Initializing {Name}");
             return await Interface.WriteValue(ButtplugConsts.SystemMsgId,
-                Info.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd],
+                (int)FleshlightLaunchBluetoothInfo.Chrs.Tx,
                 new byte[] { 0 },
                 true);
         }
@@ -123,7 +126,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             _lastPosition = Convert.ToDouble(cmdMsg.Position) / 99;
 
             return await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],
+                (int)FleshlightLaunchBluetoothInfo.Chrs.Tx,
                 new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed });
         }
     }

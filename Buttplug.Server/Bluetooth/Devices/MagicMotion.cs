@@ -26,15 +26,17 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public Guid[] Services { get; } = { new Guid("78667579-7b48-43db-b8c5-7928a6b0a335") };
 
+        public string[] NamePrefixes { get; } = { };
+
         public string[] Names { get; } =
         {
             "Smart Mini Vibe",
         };
 
-        public Guid[] Characteristics { get; } =
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
         {
             // tx characteristic
-            new Guid("78667579-a914-49a4-8333-aa3c0cd8fedc"),
+            { (uint)Chrs.Tx, new Guid("78667579-a914-49a4-8333-aa3c0cd8fedc") },
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
@@ -73,9 +75,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex,
-                new List<VibrateCmd.VibrateSubcommand>() { new VibrateCmd.VibrateSubcommand(0, cmdMsg.Speed) },
-                cmdMsg.Id));
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 1));
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
@@ -116,7 +116,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             // While there are 3 lovense revs right now, all of the characteristic arrays are the same.
             return await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)MagicMotionBluetoothInfo.Chrs.Tx],
+                (uint)MagicMotionBluetoothInfo.Chrs.Tx,
                 data);
         }
     }

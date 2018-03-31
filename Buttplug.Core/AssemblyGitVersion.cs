@@ -9,7 +9,7 @@ namespace Buttplug.Core
     public class AssemblyGitVersion : Attribute
     {
         /// <summary>
-        /// Gets the Git Version (includes commit SHA)
+        /// Git Version (includes commit SHA)
         /// </summary>
         public string Value { get; }
 

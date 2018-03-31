@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit.3.10.1\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.10.1\build\NUnit.props')" />
   <Import Project="..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -42,10 +43,10 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.0-rc03\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.9.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.9.0\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -61,14 +62,18 @@
     <Compile Include="ArgsTests.cs" />
     <Compile Include="AssemblyGitVersionTests.cs" />
     <Compile Include="Bluetooth\Devices\FleshlightLaunchTests.cs" />
+    <Compile Include="Bluetooth\Devices\GeneralDeviceTests.cs" />
     <Compile Include="Bluetooth\Devices\KiirooGen2VibeTests.cs" />
     <Compile Include="Bluetooth\Devices\KiirooTests.cs" />
-    <Compile Include="Bluetooth\Devices\VorzeA10CycloneTests.cs" />
+    <Compile Include="Bluetooth\Devices\LiBoTest.cs" />
+    <Compile Include="Bluetooth\Devices\MysteryVibeTests.cs" />
+    <Compile Include="Bluetooth\Devices\VorzeSATests.cs" />
     <Compile Include="ButtplugDeviceTests.cs" />
     <Compile Include="ButtplugJsonMessageParserTests.cs" />
     <Compile Include="ButtplugMessagesTests.cs" />
     <Compile Include="ButtplugMessageTests.cs" />
     <Compile Include="ButtplugServerTests.cs" />
+    <Compile Include="Util\BluetoothDeviceTestUtils.cs" />
     <Compile Include="Util\FleshlightHelperTests.cs" />
     <Compile Include="Bluetooth\Devices\LovenseTests.cs" />
     <Compile Include="Bluetooth\Devices\MagicMotionTests.cs" />
@@ -114,5 +119,6 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props'))" />
+    <Error Condition="!Exists('..\packages\NUnit.3.10.1\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.10.1\build\NUnit.props'))" />
   </Target>
 </Project>

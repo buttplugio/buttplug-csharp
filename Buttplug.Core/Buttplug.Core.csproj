@@ -5,7 +5,7 @@
     <PackageVersion>1.0.0-dev</PackageVersion>
     <RootNamespace>Buttplug.Core</RootNamespace>
     <AssemblyName>Buttplug.Core</AssemblyName>
-    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net47;netstandard2.0</TargetFrameworks>
     <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>Buttplug Core Library</Product>
@@ -33,7 +33,7 @@
     <DefineConstants>LIBLOG_PORTABLE</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net452' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net47' ">
     <!-- StyleCop doesn't like .Net Standard 2.0 for some reason... -->
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
@@ -41,17 +41,14 @@
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" version="11.1.0" />
     <PackageReference Include="LibLog" version="4.2.6" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" version="10.0.3" />
-    <PackageReference Include="NJsonSchema" version="9.10.19" />
-    <PackageReference Include="NLog" version="4.5.0-rc03" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="NJsonSchema" version="9.10.46" />
+    <PackageReference Include="NLog" version="4.5.4" />
     <PackageReference Include="StyleCop.Analyzers" version="1.1.0-beta004" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <PackageReference Include="Microsoft.CSharp" version="4.4.1" />
   </ItemGroup>
   
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net47' ">
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>

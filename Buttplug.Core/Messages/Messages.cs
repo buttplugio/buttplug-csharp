@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 
+// Namespace containing all Buttplug messages, as specified by the Buttplug Message Spec at
+// https://docs.buttplug.io/buttplug. For consistency sake, all message descriptions are stated in
+// relation to the server, i.e. message are sent "(from client) to server" or "(to client) from server".
 namespace Buttplug.Core.Messages
 {
     /// <summary>
-    /// The Ok Buttplug message: the normal response to most other messages.
+    /// Signifies the success of the last message/query.
     /// </summary>
     public class Ok : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Ok"/> class.
-        /// A message ID is always required as this is in response to another message.
         /// </summary>
-        /// <param name="aId">The Message ID</param>
+        /// <param name="aId">Message ID. Should match the ID of the message being responded to.</param>
         public Ok(uint aId)
             : base(aId)
         {
@@ -23,7 +26,8 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The Ping Buttplug message: sent by the client at a regular rate to keep the connecton alive.
+    /// Sent to server, at an interval specified by the server. If ping is not received in a timely
+    /// manner, devices are stopped and client/server connection is severed.
     /// </summary>
     // Resharper doesn't seem to be able to deduce that though.
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -32,7 +36,7 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="Ping"/> class.
         /// </summary>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aId">Message ID</param>
         public Ping(uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
@@ -40,14 +44,14 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The Test Buttplug message: Sends text to the server to be echo'ed back.
+    /// Sends text to a server, expected to be echoed back.
     /// </summary>
     public class Test : ButtplugMessage
     {
         private string _testStringImpl;
 
         /// <summary>
-        /// Gets or sets the text to send.
+        /// Text to send.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string TestString
@@ -67,8 +71,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="Test"/> class.
         /// </summary>
-        /// <param name="aString">The text to send</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aString">Text to send</param>
+        /// <param name="aId">Message ID</param>
         public Test(string aString, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
@@ -77,63 +81,63 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The Error Buttplug message: An indicator that something has gone wrong.
+    /// Indicator that there has been an error in the system, either due to the last message/query
+    /// sent, or due to an internal error.
     /// </summary>
     public class Error : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
-        /// The classes of error
+        /// Types of errors described by the message.
         /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Defined in external spec")]
         public enum ErrorClass
         {
             /// <summary>
-            /// The error was casued by unknown factors.
+            /// Error was caused by unknown factors.
             /// </summary>
             ERROR_UNKNOWN,
 
             /// <summary>
-            /// The error was casued by initilaisaion.
+            /// Error was caused by initilaisaion.
             /// </summary>
             ERROR_INIT,
 
             /// <summary>
-            /// The max ping timeout has been exceeded.
+            /// Max ping timeout has been exceeded.
             /// </summary>
             ERROR_PING,
 
             /// <summary>
-            /// There was an error parsing messages.
+            /// Error parsing messages.
             /// </summary>
             ERROR_MSG,
 
             /// <summary>
-            /// There was an error at the device manager level.
+            /// Error at the device manager level (device doesn't exist/disconnected, etc...)
             /// </summary>
             ERROR_DEVICE,
         }
 
         /// <summary>
-        /// The class of error this message represents.
+        /// Specific error type this message describes.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public ErrorClass ErrorCode;
 
         /// <summary>
-        /// The error message (hopefully human readable)
+        /// Human-readable error description
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string ErrorMessage;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Error"/> class.
-        /// The message ID may be zero if raised outside of servicing a
-        /// message from the client, otherwise the message ID must match
-        /// the message being serviced.
+        /// Initializes a new instance of the <see cref="Error"/> class. The message ID may be zero
+        /// if raised outside of servicing a message from the client, otherwise the message ID must
+        /// match the message being serviced.
         /// </summary>
-        /// <param name="aErrorMessage">The error message</param>
-        /// <param name="aErrorCode">The class of error</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aErrorMessage">Human-readable error description</param>
+        /// <param name="aErrorCode">Class of error</param>
+        /// <param name="aId">Message ID</param>
         public Error(string aErrorMessage, ErrorClass aErrorCode, uint aId)
             : base(aId)
         {
@@ -143,39 +147,37 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// This is a coantainer class for device attributes.
-    /// New attributes may be added, but never removed.
+    /// Container class for device attributes.
     /// </summary>
     public class MessageAttributes
     {
         /// <summary>
-        /// Number of actuators/sensors/channels/etc this message is addressing
+        /// Number of actuators/sensors/channels/etc this message is addressing.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public uint? FeatureCount;
     }
 
     /// <summary>
-    /// This is a container class for describing a device.
+    /// Container class for describing a device.
     /// </summary>
     public class DeviceMessageInfo : IButtplugDeviceInfoMessage
     {
         /// <summary>
-        /// The name of the device.
+        /// Name of the device
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string DeviceName;
 
         /// <summary>
-        /// The device's index.
+        /// Device index
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex;
 
         /// <summary>
-        /// List of command messages that this device supports with additional attribute data.
+        /// List of messages that a device supports, with additional attribute data.
         /// </summary>
-        ///
         /// While this is set in the constructor, it needs to be initialized here in order to keep
         /// the JSON parser from setting it to null.
         [SuppressMessage("ReSharper", "MemberInitializerValueIgnored", Justification = "JSON.net doesn't use the constructor")]
@@ -185,9 +187,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceMessageInfo"/> class.
         /// </summary>
-        /// <param name="aIndex">The device's index</param>
-        /// <param name="aName">The devices name</param>
-        /// <param name="aMessages">The device messages supported</param>
+        /// <param name="aIndex">Device index</param>
+        /// <param name="aName">Device name</param>
+        /// <param name="aMessages">List of device messages/attributes supported</param>
         public DeviceMessageInfo(uint aIndex, string aName,
             Dictionary<string, MessageAttributes> aMessages)
         {
@@ -205,25 +207,25 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// This is a container class for describing a device.
-    /// This is an older version of class, kept for downgrade support.
+    /// Container class for describing a device. Represents a prior spec version of the message, kept
+    /// for downgrade support.
     /// </summary>
     public class DeviceMessageInfoVersion0
     {
         /// <summary>
-        /// The name of the device.
+        /// Device name.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string DeviceName;
 
         /// <summary>
-        /// The device's index.
+        /// Devices index.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex;
 
         /// <summary>
-        /// List of command messages that this device supports.
+        /// Commands supported by device.
         /// </summary>
         [SuppressMessage("ReSharper", "MemberInitializerValueIgnored", Justification = "JSON.net doesn't use the constructor")]
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
@@ -232,9 +234,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceMessageInfoVersion0"/> class.
         /// </summary>
-        /// <param name="aIndex">The device's index</param>
-        /// <param name="aName">The devices name</param>
-        /// <param name="aMessages">The device messages supported</param>
+        /// <param name="aIndex">Device index</param>
+        /// <param name="aName">Device name</param>
+        /// <param name="aMessages">Commands supported by device</param>
         public DeviceMessageInfoVersion0(uint aIndex, string aName, string[] aMessages)
         {
             DeviceName = aName;
@@ -244,12 +246,12 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The DeviceList Buttplug message: encapsulates a list of devices connected to the server.
+    /// List of devices connected to the server.
     /// </summary>
     public class DeviceList : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
-        /// An array of devices.
+        /// List of devices currently connected.
         /// </summary>
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
         public readonly DeviceMessageInfo[] Devices = new DeviceMessageInfo[0];
@@ -257,8 +259,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceList"/> class.
         /// </summary>
-        /// <param name="aDeviceList">The array of devices</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceList">List of devices currently connected</param>
+        /// <param name="aId">Message ID</param>
         public DeviceList(DeviceMessageInfo[] aDeviceList, uint aId)
             : base(aId, 1, typeof(DeviceListVersion0))
         {
@@ -273,13 +275,13 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The DeviceList Buttplug message: encapsulates a list of devices connected to the server.
-    /// This is an older version of class, kept for downgrade support.
+    /// List of devices connected to the server. Represents a prior spec version of the message, kept
+    /// for downgrade support.
     /// </summary>
     public class DeviceListVersion0 : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
-        /// An array of devices.
+        /// List of connected devices.
         /// </summary>
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
         public readonly DeviceMessageInfoVersion0[] Devices = new DeviceMessageInfoVersion0[0];
@@ -287,8 +289,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceListVersion0"/> class.
         /// </summary>
-        /// <param name="aDeviceList">The array of devices</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceList">List of connected devices</param>
+        /// <param name="aId">Message ID</param>
         public DeviceListVersion0(DeviceMessageInfoVersion0[] aDeviceList, uint aId)
              : base(aId)
         {
@@ -302,10 +304,9 @@ namespace Buttplug.Core.Messages
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceListVersion0"/> class.
-        /// The downgrade constructor, for creating a <see cref="DeviceListVersion0"/> from a <see cref="DeviceList"/>
+        /// Initializes a new instance of the <see cref="DeviceListVersion0"/> class. Downgrade constructor, for creating a <see cref="DeviceListVersion0"/> from a <see cref="DeviceList"/>
         /// </summary>
-        /// <param name="aMsg">The message to convert to the older version.</param>
+        /// <param name="aMsg"><see cref="DeviceList"/> Message to convert to <see cref="DeviceListVersion0"/></param>
         public DeviceListVersion0(DeviceList aMsg)
              : base(aMsg.Id)
         {
@@ -326,18 +327,18 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The DeviceAdded Buttplug message: sent to the client by the server when a new device is discoved.
+    /// Sent from server when a new device is discoved.
     /// </summary>
     public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
     {
         /// <summary>
-        /// The name of the device.
+        /// Name of device.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string DeviceName;
 
         /// <summary>
-        /// List of command messages that this device supports with additional attribute data.
+        /// Commands supported by device.
         /// </summary>
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, MessageAttributes> DeviceMessages =
@@ -346,9 +347,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceAdded"/> class.
         /// </summary>
-        /// <param name="aIndex">The device's index</param>
-        /// <param name="aName">The device's name</param>
-        /// <param name="aMessages">The message supported</param>
+        /// <param name="aIndex">Device index</param>
+        /// <param name="aName">Device name</param>
+        /// <param name="aMessages">Commands supported by device</param>
         public DeviceAdded(uint aIndex, string aName,
             Dictionary<string, MessageAttributes> aMessages)
             : base(ButtplugConsts.SystemMsgId, aIndex, 1, typeof(DeviceAddedVersion0))
@@ -372,19 +373,18 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The DeviceAdded Buttplug message: sent to the client by the server when a new device is discoved.
-    /// This is an older version of class, kept for downgrade support.
+    /// Sent from server when a new device is discoved. Represents a prior spec version of the message, kept for downgrade support.
     /// </summary>
     public class DeviceAddedVersion0 : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
-        /// The name of the device.
+        /// Device name.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string DeviceName;
 
         /// <summary>
-        /// List of command messages that this device supports.
+        /// Commands supported by device.
         /// </summary>
         [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
         public string[] DeviceMessages = new string[0];
@@ -392,9 +392,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceAddedVersion0"/> class.
         /// </summary>
-        /// <param name="aIndex">The device's index</param>
-        /// <param name="aName">The device's name</param>
-        /// <param name="aMessages">The message supported</param>
+        /// <param name="aIndex">Device index</param>
+        /// <param name="aName">Device name</param>
+        /// <param name="aMessages">Commands supported by device</param>
         public DeviceAddedVersion0(uint aIndex, string aName, string[] aMessages)
             : base(ButtplugConsts.SystemMsgId, aIndex)
         {
@@ -409,10 +409,9 @@ namespace Buttplug.Core.Messages
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceAddedVersion0"/> class.
-        /// The downgrade constructor, for creating a <see cref="DeviceAddedVersion0"/> from a <see cref="DeviceAdded"/>
+        /// Initializes a new instance of the <see cref="DeviceAddedVersion0"/> class. Downgrade constructor, for creating a <see cref="DeviceAddedVersion0"/> from a <see cref="DeviceAdded"/>
         /// </summary>
-        /// <param name="aMsg">The message to convert to the older version.</param>
+        /// <param name="aMsg"><see cref="DeviceAdded"/> Message to convert to <see cref="DeviceAddedVersion0"/></param>
         public DeviceAddedVersion0(DeviceAdded aMsg)
             : base(aMsg.Id, aMsg.DeviceIndex)
         {
@@ -428,12 +427,12 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The DeviceRemoved Buttplug message: sent to the client by the server when a new device is disconnected.
+    /// Sent from server when a device is disconnected.
     /// </summary>
     public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
     {
         /// <summary>
-        /// The disconnected device's index.
+        /// Device index.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex;
@@ -441,7 +440,7 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceRemoved"/> class.
         /// </summary>
-        /// <param name="aIndex">The index of the disconnected device</param>
+        /// <param name="aIndex">Index of disconnected device</param>
         public DeviceRemoved(uint aIndex)
             : base(ButtplugConsts.SystemMsgId)
         {
@@ -457,14 +456,14 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The RequestDeviceList Buttplug message: sent to the server by the client to request a list of all connected devices.
+    /// Sent to server to request a list of all connected devices.
     /// </summary>
     public class RequestDeviceList : ButtplugMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestDeviceList"/> class.
         /// </summary>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aId">Message ID</param>
         public RequestDeviceList(uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
@@ -472,14 +471,14 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The StartScanning Buttplug message: request the server starts scanning for devices.
+    /// Sent to server, to start scanning for devices across supported busses.
     /// </summary>
     public class StartScanning : ButtplugMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="StartScanning"/> class.
         /// </summary>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aId">Message ID</param>
         public StartScanning(uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
@@ -487,14 +486,14 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The StopScanning Buttplug message: requests the server stops scanning for devices.
+    /// Sent to server, to stop scanning for devices across supported busses.
     /// </summary>
     public class StopScanning : ButtplugMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="StopScanning"/> class.
         /// </summary>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aId">Message ID</param>
         public StopScanning(uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
@@ -502,12 +501,12 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The ScanningFinished Buttplug message: sent to the client by the server when scanning has finished.
+    /// Sent from server when scanning has finished.
     /// </summary>
     public class ScanningFinished : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScanningFinished"/> class.
+        /// Initializes a new instance of the <see cref="ScanningFinished"/> class. ID is always 0.
         /// </summary>
         public ScanningFinished()
             : base(ButtplugConsts.SystemMsgId)
@@ -516,12 +515,12 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The RequestLog Buttplug message: sent to the server by the client to request log entries be sent to the client.
+    /// Sent to server to request log entries be relayed to client.
     /// </summary>
     public class RequestLog : ButtplugMessage
     {
         /// <summary>
-        /// The level of detail that the server should send to the client.
+        /// Level of log detail that should be relayed.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public ButtplugLogLevel LogLevel;
@@ -529,8 +528,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestLog"/> class.
         /// </summary>
-        /// <param name="aLogLevel">The log level the server should send.</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aLogLevel">Log level the server should sent</param>
+        /// <param name="aId">Message ID</param>
         public RequestLog(string aLogLevel, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
@@ -556,18 +555,18 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The Log Buttplug message: A log entry
+    /// Sent from server when logs have been requested. Contains a single log entry.
     /// </summary>
     public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
-        /// The log level this entry was raised on.
+        /// Log level of message.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public ButtplugLogLevel LogLevel;
 
         /// <summary>
-        /// The log message (hopefully human readable)
+        /// Log message.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string LogMessage;
@@ -575,8 +574,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="Log"/> class.
         /// </summary>
-        /// <param name="aLogLevel">The log level</param>
-        /// <param name="aLogMessage">The  log message</param>
+        /// <param name="aLogLevel">Log level</param>
+        /// <param name="aLogMessage">Log message</param>
         public Log(ButtplugLogLevel aLogLevel, string aLogMessage)
             : base(ButtplugConsts.SystemMsgId)
         {
@@ -586,18 +585,19 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The RequestServerInfo Buttplug message: beins the protocol handshake
+    /// Sent to server to set up client information, including client name and schema version.
+    /// Denotes the beginning of a conneciton handshake.
     /// </summary>
     public class RequestServerInfo : ButtplugMessage
     {
         /// <summary>
-        /// The client's name (will be shown in the server GUI).
+        /// Client name.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string ClientName;
 
         /// <summary>
-        /// The schema version supported by the client.
+        /// Client message schema version.
         /// </summary>
         [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public uint MessageVersion;
@@ -605,9 +605,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestServerInfo"/> class.
         /// </summary>
-        /// <param name="aClientName">The client's name</param>
-        /// <param name="aId">The message Id</param>
-        /// <param name="aSchemaVersion">The schema version</param>
+        /// <param name="aClientName">Client name</param>
+        /// <param name="aId">Message Id</param>
+        /// <param name="aSchemaVersion">Message schema version</param>
         public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId, uint aSchemaVersion = CurrentSchemaVersion)
             : base(aId)
         {
@@ -617,42 +617,43 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The ServerInfo Buttplug message: the second half of the protocol handshake
+    /// Sent from server, in response to <see cref="RequestServerInfo"/>. Contains server name,
+    /// message version, ping information, etc...
     /// </summary>
     public class ServerInfo : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
-        /// In the version string X.Y.Z, this is X (this is the server's product version)
+        /// Product major version.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public int MajorVersion;
 
         /// <summary>
-        /// In the version string X.Y.Z, this is Y (this is the server's product version)
+        /// Product minor version.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public int MinorVersion;
 
         /// <summary>
-        /// In the version string X.Y.Z, this is Z (this is the server's product version)
+        /// Product build version.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public int BuildVersion;
 
         /// <summary>
-        /// The schema version of the server (must be greater or equal to the client)
+        /// The schema version of the server. Must be greater or equal to version client reported in <see cref="RequestServerInfo"/>.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public uint MessageVersion;
 
         /// <summary>
-        /// The time in milliseconds in which the server will wait for a Ping message before disconnecting
+        /// Expected ping time (in milliseconds).
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public uint MaxPingTime;
 
         /// <summary>
-        /// The server's friendly name.
+        /// Server name.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string ServerName;
@@ -660,10 +661,10 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerInfo"/> class.
         /// </summary>
-        /// <param name="aServerName">The server's name</param>
-        /// <param name="aMessageVersion">The server's schema version</param>
-        /// <param name="aMaxPingTime">The ping timeout</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aServerName">Server name</param>
+        /// <param name="aMessageVersion">Server message schema version</param>
+        /// <param name="aMaxPingTime">Ping timeout</param>
+        /// <param name="aId">Message ID</param>
         public ServerInfo(string aServerName, uint aMessageVersion, uint aMaxPingTime, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
@@ -678,7 +679,8 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The FleshlightLaunchFW12Cmd Buttplug device message: controls a Fleshlight Launch
+    /// Sent to server, denotes commands for devices that can take Fleshlight Launch Firmware v1.2
+    /// style messages. See https://docs.buttplug.io/stphikal for protocol info.
     /// </summary>
     // ReSharper disable once InconsistentNaming
     public class FleshlightLaunchFW12Cmd : ButtplugDeviceMessage
@@ -726,10 +728,10 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="FleshlightLaunchFW12Cmd"/> class.
         /// </summary>
-        /// <param name="aDeviceIndex">The index of the device.</param>
-        /// <param name="aSpeed">The speed to move the fleshlight (0-99)</param>
-        /// <param name="aPosition">The position to move the fleshlight to (0-99)</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceIndex">Device index</param>
+        /// <param name="aSpeed">Speed to move the fleshlight (0-99)</param>
+        /// <param name="aPosition">Position to move the fleshlight to (0-99)</param>
+        /// <param name="aId">Message ID</param>
         public FleshlightLaunchFW12Cmd(uint aDeviceIndex, uint aSpeed, uint aPosition, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
@@ -739,14 +741,14 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The LovenseCmd Buttplug device message: controls Lovense devices
+    /// Sent to server, denotes commands for devices that can take Lovense style messages. See
+    /// https://docs.buttplug.io/stphikal for protocol info.
     /// </summary>
     // ReSharper disable once UnusedMember.Global
     public class LovenseCmd : ButtplugDeviceMessage
     {
         /// <summary>
-        /// The command string to send to the Lovense device.
-        /// E.g. "vibrate:10;"
+        /// Command string to send to the Lovense device.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string Command;
@@ -754,9 +756,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="LovenseCmd"/> class.
         /// </summary>
-        /// <param name="aDeviceIndex">The index of the device.</param>
-        /// <param name="aDeviceCmd">The command string</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceIndex">Device index</param>
+        /// <param name="aDeviceCmd">Lovense-formatted command string</param>
+        /// <param name="aId">Message ID</param>
         public LovenseCmd(uint aDeviceIndex, string aDeviceCmd, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
@@ -765,20 +767,19 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The KiirooCmd Buttplug device message: controls Gen1 Kiiroo devices
+    /// Sent to server, denotes commands for devices that can take Kiiroo (Generation 1) style
+    /// messages. See https://docs.buttplug.io/stphikal for protocol info.
     /// </summary>
     public class KiirooCmd : ButtplugDeviceMessage
     {
         /// <summary>
-        /// The Kiiroo command (in string form)
-        /// Gen1 Kiiroo devices accept 0-4 for vibration strength or position
+        /// The Kiiroo command (in string form).
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public string Command;
 
         /// <summary>
-        /// Gets or sets the Kiiroo command (in numeric form)
-        /// Gen1 Kiiroo devices accept 0-4 for vibration strength or position
+        /// Gets or sets the Kiiroo command (in numeric form).
         /// </summary>
         [JsonIgnore]
         public uint Position
@@ -807,9 +808,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="KiirooCmd"/> class.
         /// </summary>
-        /// <param name="aDeviceIndex">The index of the device.</param>
-        /// <param name="aPosition">The position or vibration speed (0-4)</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceIndex">Device index</param>
+        /// <param name="aPosition">Position or vibration speed (0-4)</param>
+        /// <param name="aId">Message ID</param>
         public KiirooCmd(uint aDeviceIndex, uint aPosition, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
@@ -818,14 +819,15 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The VorzeA10CycloneCmd Buttplug device message: controls a Vorze A10 Cyclone
+    /// Sent to server, denotes commands for devices that can take Vorze A10 Cyclone style messages.
+    /// See https://docs.buttplug.io/stphikal for protocol info.
     /// </summary>
     public class VorzeA10CycloneCmd : ButtplugDeviceMessage
     {
         private uint _speedImpl;
 
         /// <summary>
-        /// Gets or sets the speed to rotate (0-99)
+        /// Gets or sets the speed to rotate
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public uint Speed
@@ -843,7 +845,7 @@ namespace Buttplug.Core.Messages
         }
 
         /// <summary>
-        /// The rotation direction.
+        /// The rotation direction
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public bool Clockwise;
@@ -851,10 +853,10 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="VorzeA10CycloneCmd"/> class.
         /// </summary>
-        /// <param name="aDeviceIndex">The index of the device.</param>
-        /// <param name="aSpeed">The rotation speed (0-99)</param>
-        /// <param name="aClockwise">The direction to rotate in</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceIndex">Device Index</param>
+        /// <param name="aSpeed">Rotation speed (0-99)</param>
+        /// <param name="aClockwise">Direction to rotate</param>
+        /// <param name="aId">Message ID</param>
         public VorzeA10CycloneCmd(uint aDeviceIndex, uint aSpeed, bool aClockwise, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
@@ -864,15 +866,16 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The SingleMotorVibrateCmd Buttplug device message: controls vibrating devices
-    /// This has been superceeded by <see cref="VibrateCmd"/>
+    /// Sent to server, generic message that can control any vibrating device. If sent to device with
+    /// multiple vibrators, causes all vibrators to vibrate at same speed. This has been superceeded
+    /// by <see cref="VibrateCmd"/>.
     /// </summary>
     public class SingleMotorVibrateCmd : ButtplugDeviceMessage
     {
         private double _speedImpl;
 
         /// <summary>
-        /// Gets or sets the speed at which to vibrate at (0.0-1.0)
+        /// Gets or sets vibration speed (0.0-1.0)
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public double Speed
@@ -897,9 +900,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="SingleMotorVibrateCmd"/> class.
         /// </summary>
-        /// <param name="aDeviceIndex">The index of the device.</param>
-        /// <param name="aSpeed">The vibrator speed (0.0-1.0)</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceIndex">Device index</param>
+        /// <param name="aSpeed">Vibration speed (0.0-1.0)</param>
+        /// <param name="aId">Message ID</param>
         public SingleMotorVibrateCmd(uint aDeviceIndex, double aSpeed, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
@@ -908,26 +911,29 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The VibrateCmd Buttplug device message: controls vibrating devices
+    /// Sent to server, generic message that can control any vibrating device. Unlike <see
+    /// cref="SingleMotorVibrateCmd"/>, this message can take multiple commands for devices with
+    /// multiple vibrators.
     /// </summary>
     public class VibrateCmd : ButtplugDeviceMessage
     {
         /// <summary>
-        /// The container object for a vibration speed on a device that may
-        /// have multiple independent vibtators.
+        /// Container object for representing a single vibration speed on a device that may have
+        /// multiple independent vibtators.
         /// </summary>
         public class VibrateSubcommand
         {
             private double _speedImpl;
 
             /// <summary>
-            /// The index of the vibrator on device
+            /// Index of vibrator on device. Indexes are specific per device, see
+            /// https://docs.buttplug.io/stphikal for device info.
             /// </summary>
             [JsonProperty(Required = Required.Always)]
             public uint Index;
 
             /// <summary>
-            /// Gets or sets the speed to set the vibration motor to (0.0-1.0)
+            /// Gets/sets vibration speed (0.0-1.0)
             /// </summary>
             [JsonProperty(Required = Required.Always)]
             public double Speed
@@ -952,8 +958,8 @@ namespace Buttplug.Core.Messages
             /// <summary>
             /// Initializes a new instance of the <see cref="VibrateSubcommand"/> class.
             /// </summary>
-            /// <param name="aIndex">The vibration motor index</param>
-            /// <param name="aSpeed">The vibration speed</param>
+            /// <param name="aIndex">Vibration feature index</param>
+            /// <param name="aSpeed">Vibration speed</param>
             public VibrateSubcommand(uint aIndex, double aSpeed)
             {
                 Index = aIndex;
@@ -961,8 +967,32 @@ namespace Buttplug.Core.Messages
             }
         }
 
+        public static VibrateCmd Create(uint aDeviceIndex, uint aMsgId, double aSpeed, uint aCmdCount)
+        {
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat(aSpeed, (int)aCmdCount).ToArray(), aCmdCount);
+        }
+
+        public static VibrateCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<double> aSpeeds, uint aCmdCount)
+        {
+            if (aCmdCount != aSpeeds.Count())
+            {
+                throw new ArgumentException("Number of speeds and number of commands must match.");
+            }
+
+            var cmdList = new List<VibrateSubcommand>((int)aCmdCount);
+            // TODO This pattern sucks
+            uint i = 0;
+            foreach (var speed in aSpeeds)
+            {
+                cmdList.Add(new VibrateSubcommand(i, speed));
+                ++i;
+            }
+
+            return new VibrateCmd(aDeviceIndex, cmdList, aMsgId);
+        }
+
         /// <summary>
-        /// A list of vibrator speeds.
+        /// List of vibrator speeds.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public List<VibrateSubcommand> Speeds;
@@ -970,9 +1000,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="VibrateCmd"/> class.
         /// </summary>
-        /// <param name="aDeviceIndex">The index of the device.</param>
-        /// <param name="aSpeeds">A list of speeds</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceIndex">Device index</param>
+        /// <param name="aSpeeds">List of per-vibrator speed commands</param>
+        /// <param name="aId">Message ID</param>
         public VibrateCmd(uint aDeviceIndex, List<VibrateSubcommand> aSpeeds, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex, 1)
         {
@@ -981,26 +1011,28 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The RotateCmd Buttplug device message: controls rotating devices
+    /// Sent to server, generic message that can control any rotating device. This message can take
+    /// multiple commands for devices with multiple rotators.
     /// </summary>
     public class RotateCmd : ButtplugDeviceMessage
     {
         /// <summary>
-        /// The container object for a rotation speeds and directions on a device
-        /// that may have multiple independent rotators.
+        /// Container object for representing a single rotation command on a device that may have
+        /// multiple independent rotating features.
         /// </summary>
         public class RotateSubcommand
         {
             private double _speedImpl;
 
             /// <summary>
-            /// The index of the rotator on device
+            /// Index of rotation feature on device. Indexes are specific per device, see
+            /// https://docs.buttplug.io/stphikal for device info.
             /// </summary>
             [JsonProperty(Required = Required.Always)]
             public uint Index;
 
             /// <summary>
-            /// Gets or sets the speed to set the vibration motor to (0.0-1.0)
+            /// Gets/sets rotation speed.
             /// </summary>
             [JsonProperty(Required = Required.Always)]
             public double Speed
@@ -1023,7 +1055,7 @@ namespace Buttplug.Core.Messages
             }
 
             /// <summary>
-            /// Direction to rotate in.
+            /// Rotation direction.
             /// </summary>
             [JsonProperty(Required = Required.Always)]
             public bool Clockwise;
@@ -1031,9 +1063,9 @@ namespace Buttplug.Core.Messages
             /// <summary>
             /// Initializes a new instance of the <see cref="RotateSubcommand"/> class.
             /// </summary>
-            /// <param name="aIndex">The rotation motor index</param>
-            /// <param name="aSpeed">The rotation speed</param>
-            /// <param name="aClockwise">The rotation direction</param>
+            /// <param name="aIndex">Rotation feature index</param>
+            /// <param name="aSpeed">Rotation speed</param>
+            /// <param name="aClockwise">Rotation direction</param>
             public RotateSubcommand(uint aIndex, double aSpeed, bool aClockwise)
             {
                 Index = aIndex;
@@ -1042,8 +1074,28 @@ namespace Buttplug.Core.Messages
             }
         }
 
+        public static RotateCmd Create(uint aDeviceIndex, uint aMsgId, double aSpeed, bool aClockwise, uint aCmdCount)
+        {
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aSpeed, aClockwise), (int)aCmdCount), aCmdCount);
+        }
+
+        public static RotateCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(double speed, bool clockwise)> aCmds, uint aCmdCount)
+        {
+            if (aCmdCount != aCmds.Count())
+            {
+                throw new ArgumentException("Number of speeds and number of commands must match.");
+            }
+            var cmdList = new List<RotateSubcommand>((int)aCmdCount);
+            uint i = 0;
+            foreach (var cmd in aCmds)
+            {
+                cmdList.Add(new RotateSubcommand(i, cmd.speed, cmd.clockwise));
+            }
+            return new RotateCmd(aDeviceIndex, cmdList, aMsgId);
+        }
+
         /// <summary>
-        /// A list of rotation speeds and directions.
+        /// List of rotation speeds and directions.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public List<RotateSubcommand> Rotations;
@@ -1051,9 +1103,9 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="RotateCmd"/> class.
         /// </summary>
-        /// <param name="aDeviceIndex">The index of the device.</param>
-        /// <param name="aRotations">A list of rotations</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceIndex">Device index</param>
+        /// <param name="aRotations">List of rotations</param>
+        /// <param name="aId">Message ID</param>
         public RotateCmd(uint aDeviceIndex, List<RotateSubcommand> aRotations, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex, 1)
         {
@@ -1062,32 +1114,34 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The LinearCmd Buttplug device message: controls linear actuator (thrusting) devices
+    /// Sent to server, generic message that can control any linear-actuated device. This message can
+    /// take multiple commands for devices with multiple actuators.
     /// </summary>
     public class LinearCmd : ButtplugDeviceMessage
     {
         /// <summary>
-        /// The container object for a moement vector on a device that may
-        /// have multiple independent linear actuators.
+        /// Container object for representing a single linear motion command on a device that may
+        /// have multiple independent linear actuated features.
         /// </summary>
-        public class VectorSubcommands
+        public class VectorSubcommand
         {
             private double _positionImpl;
 
             /// <summary>
-            /// The index of the linear actuator on device
+            /// Index of actuator feature on device. Indexes are specific per device, see
+            /// https://docs.buttplug.io/stphikal for device info.
             /// </summary>
             [JsonProperty(Required = Required.Always)]
             public uint Index;
 
             /// <summary>
-            /// The time in milliseconds that the device should take to move to the target position
+            /// Duration of movement to goal position.
             /// </summary>
             [JsonProperty(Required = Required.Always)]
             public uint Duration;
 
             /// <summary>
-            /// Gets or sets the position within the actuators range to move to (0.0-1.0)
+            /// Gets/sets actuator goal position (0.0-1.0)
             /// </summary>
             [JsonProperty(Required = Required.Always)]
             public double Position
@@ -1110,12 +1164,12 @@ namespace Buttplug.Core.Messages
             }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="VectorSubcommands"/> class.
+            /// Initializes a new instance of the <see cref="VectorSubcommand"/> class.
             /// </summary>
-            /// <param name="aIndex">The rotation motor index</param>
-            /// <param name="aDuration">The duration of movement</param>
-            /// <param name="aPosition">The target position</param>
-            public VectorSubcommands(uint aIndex, uint aDuration, double aPosition)
+            /// <param name="aIndex">Linear actuator index</param>
+            /// <param name="aDuration">Duration of movement</param>
+            /// <param name="aPosition">Goal position</param>
+            public VectorSubcommand(uint aIndex, uint aDuration, double aPosition)
             {
                 Index = aIndex;
                 Duration = aDuration;
@@ -1123,19 +1177,41 @@ namespace Buttplug.Core.Messages
             }
         }
 
+        public static LinearCmd Create(uint aDeviceIndex, uint aMsgId, uint aDuration, double aPosition, uint aCmdCount)
+        {
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aDuration, aPosition), (int)aCmdCount), aCmdCount);
+        }
+
+        public static LinearCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(uint duration, double position)> aCmds, uint aCmdCount)
+        {
+            if (aCmdCount != aCmds.Count())
+            {
+                throw new ArgumentException("Number of speeds and number of commands must match.");
+            }
+            var cmdList = new List<VectorSubcommand>((int)aCmdCount);
+            uint i = 0;
+            foreach (var cmd in aCmds)
+            {
+                cmdList.Add(new VectorSubcommand(i, cmd.duration, cmd.position));
+                ++i;
+            }
+
+            return new LinearCmd(aDeviceIndex, cmdList, aMsgId);
+        }
+
         /// <summary>
-        /// A list of vectors.
+        /// List of linear movement vectors.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public List<VectorSubcommands> Vectors;
+        public List<VectorSubcommand> Vectors;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LinearCmd"/> class.
         /// </summary>
-        /// <param name="aDeviceIndex">The index of the device.</param>
-        /// <param name="aVectors">A list of vectors</param>
-        /// <param name="aId">The message ID</param>
-        public LinearCmd(uint aDeviceIndex, List<VectorSubcommands> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
+        /// <param name="aDeviceIndex">Device index</param>
+        /// <param name="aVectors">Movement vector list</param>
+        /// <param name="aId">Message ID</param>
+        public LinearCmd(uint aDeviceIndex, List<VectorSubcommand> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex, 1)
         {
             Vectors = aVectors;
@@ -1143,15 +1219,15 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The StopDeviceCmd Buttplug device message: stops a specic device
+    /// Sent to server, stops actions of a specific device.
     /// </summary>
     public class StopDeviceCmd : ButtplugDeviceMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="StopDeviceCmd"/> class.
         /// </summary>
-        /// <param name="aDeviceIndex">The index of the device.</param>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aDeviceIndex">Device index</param>
+        /// <param name="aId">Message ID</param>
         public StopDeviceCmd(uint aDeviceIndex, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
@@ -1159,14 +1235,14 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// The StopAllDevices Buttplug message: stops all devices
+    /// Sent to server, stops actions of all currently connected devices.
     /// </summary>
     public class StopAllDevices : ButtplugMessage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="StopAllDevices"/> class.
         /// </summary>
-        /// <param name="aId">The message ID</param>
+        /// <param name="aId">Message ID</param>
         public StopAllDevices(uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {

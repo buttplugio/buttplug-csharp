@@ -8,12 +8,12 @@ using static Buttplug.Core.Messages.Error;
 namespace Buttplug.Core
 {
     /// <summary>
-    /// An abstract representation of a Buttplug device
+    /// Abstract representation of a device
     /// </summary>
     public abstract class ButtplugDevice : IButtplugDevice
     {
         /// <inheritdoc />
-        public string Name { get; }
+        public string Name { get; protected set; }
 
         /// <inheritdoc />
         public string Identifier { get; }
@@ -91,6 +91,7 @@ namespace Buttplug.Core
         }
 
         /// <inheritdoc />
+        /// TODO: This should be a getter.
         public IEnumerable<Type> GetAllowedMessageTypes()
         {
             return MsgFuncs.Keys;

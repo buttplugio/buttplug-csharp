@@ -241,6 +241,12 @@ namespace Buttplug.Components.Controls
             OtherTab.Content = aTabControl;
             OtherTab.Visibility = Visibility.Visible;
         }
+        public void SetOtherTab2(string aTabName, UserControl aTabControl)
+        {
+            OtherTab2.Header = aTabName;
+            OtherTab2.Content = aTabControl;
+            OtherTab2.Visibility = Visibility.Visible;
+        }
 
         public ButtplugLogControl GetLogControl()
         {

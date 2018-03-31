@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Buttplug.Core;
+using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
@@ -10,18 +11,16 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
-    /*
     [TestFixture]
-    public class MagicMotionTests
+    public class MysteryVibeTests
     {
-        [NotNull]
-        private BluetoothDeviceTestUtils<MagicMotionBluetoothInfo> testUtil;
+        [NotNull] private BluetoothDeviceTestUtils<MysteryVibeBluetoothInfo> testUtil;
 
         [SetUp]
         public void Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<MagicMotionBluetoothInfo>();
-            testUtil.SetupTest("Smart Mini Vibe");
+            testUtil = new BluetoothDeviceTestUtils<MysteryVibeBluetoothInfo>();
+            testUtil.SetupTest("MV Crescendo");
         }
 
         [Test]
@@ -31,7 +30,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             {
                 { typeof(StopDeviceCmd), 0 },
                 { typeof(SingleMotorVibrateCmd), 0 },
-                { typeof(VibrateCmd), 1 },
+                { typeof(VibrateCmd), 6 },
             });
         }
 
@@ -43,7 +42,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], uint)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x80, 0x64, 0x00 }, (uint)MagicMotionBluetoothInfo.Chrs.Tx),
+                    (Enumerable.Repeat((byte)(MysteryVibe.MaxSpeed * 0.5), 6).ToArray(), testUtil.NoCharacteristic),
                 };
 
             testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -51,10 +50,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             expected =
                 new List<(byte[], uint)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 }, (uint)MagicMotionBluetoothInfo.Chrs.Tx),
+                    (MysteryVibe.NullSpeed, testUtil.NoCharacteristic),
                 };
 
-            testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
+            testUtil.TestDeviceMessageOnWrite(new StopDeviceCmd(4), expected, false);
         }
 
         [Test]
@@ -63,7 +62,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], uint)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x80, 0x64, 0x00 }, (uint)MagicMotionBluetoothInfo.Chrs.Tx),
+                    (Enumerable.Repeat((byte)(MysteryVibe.MaxSpeed * 0.5), 6).ToArray(), testUtil.NoCharacteristic),
                 };
 
             testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -75,17 +74,16 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], uint)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x80, 0x64, 0x00 }, (uint)MagicMotionBluetoothInfo.Chrs.Tx),
+                    (Enumerable.Repeat((byte)(MysteryVibe.MaxSpeed * 0.5), 6).ToArray(), testUtil.NoCharacteristic),
                 };
 
-            testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
+            testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 6), expected, false);
         }
 
         [Test]
         public void TestInvalidVibrateCmd()
         {
-            testUtil.TestInvalidVibrateCmd(1);
+            testUtil.TestInvalidVibrateCmd(6);
         }
     }
-    */
 }

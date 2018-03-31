@@ -4,28 +4,27 @@ using JetBrains.Annotations;
 namespace Buttplug.Core
 {
     /// <summary>
-    /// The Buttplug logging manager.
-    /// This handles recieving log messages and reporting any that match the
-    /// granularity level to any listeners
+    /// Interface for log managers. See <see cref="ButtplugLogManager"/> implementation for more info.
     /// </summary>
     public interface IButtplugLogManager
     {
         /// <summary>
-        /// This handler is called when a log message has been recieved
+        /// Called when a log message has been received.
         /// </summary>
         [CanBeNull]
         event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
 
         /// <summary>
-        /// The level of log to report
+        /// Log level to report.
         /// </summary>
         ButtplugLogLevel Level { set; }
 
         /// <summary>
-        /// Gets a Buttplug logger for the specified type
+        /// Gets a Buttplug logger for the specified type. Used for creating loggers specific to
+        /// class types, so the types can be prepended to the log message for tracing.
         /// </summary>
-        /// <param name="aType">The type this logger is for</param>
-        /// <returns>A Buttplug logger</returns>
+        /// <param name="aType">Type that this logger will be for</param>
+        /// <returns>Buttplug logger object</returns>
         [NotNull]
         IButtplugLog GetLogger(Type aType);
     }

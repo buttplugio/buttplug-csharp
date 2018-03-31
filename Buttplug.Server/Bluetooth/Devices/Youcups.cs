@@ -9,12 +9,9 @@ namespace Buttplug.Server.Bluetooth.Devices
 {
     internal class YoucupsBluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-        }
-
         public Guid[] Services { get; } = { new Guid("0000fee9-0000-1000-8000-00805f9b34fb") };
+
+        public string[] NamePrefixes { get; } = { };
 
         public string[] Names { get; } =
         {
@@ -22,11 +19,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Youcups",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("d44bc439-abfd-45a2-b575-925416129600"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -48,10 +41,14 @@ namespace Buttplug.Server.Bluetooth.Devices
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"Youcups Device ({FriendlyNames[aInterface.Name]})",
+                   $"Youcups Unknown",
                    aInterface,
                    aInfo)
         {
+            if (FriendlyNames.ContainsKey(aInterface.Name))
+            {
+                Name = $"Youcups {FriendlyNames[aInterface.Name]}";
+            }
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
             MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
@@ -70,9 +67,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex,
-                new List<VibrateCmd.VibrateSubcommand>() { new VibrateCmd.VibrateSubcommand(0, cmdMsg.Speed) },
-                cmdMsg.Id));
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 1));
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
@@ -109,7 +104,6 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)YoucupsBluetoothInfo.Chrs.Tx],
                 Encoding.ASCII.GetBytes($"$SYS,{(int)(_vibratorSpeed * 8), 1}?"));
         }
     }
