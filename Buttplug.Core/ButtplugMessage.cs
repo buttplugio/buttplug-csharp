@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Buttplug.Core.Messages;
 using Newtonsoft.Json;
 
 namespace Buttplug.Core
@@ -80,5 +82,27 @@ namespace Buttplug.Core
     /// </summary>
     public interface IButtplugMessageOutgoingOnly
     {
+    }
+
+    /// <summary>
+    /// Interface for messages containing Device Info, such as DeviceAdded/Removed. Allows functions
+    /// to take the interface as an argument instead of having to specialize per message type.
+    /// </summary>
+    public interface IButtplugDeviceInfoMessage
+    {
+        /// <summary>
+        /// The device name, which usually contains the device brand and model.
+        /// </summary>
+        string DeviceName { get; }
+
+        /// <summary>
+        /// The device index, which uniquely identifies the device on the server.
+        /// </summary>
+        uint DeviceIndex { get; }
+
+        /// <summary>
+        /// The Buttplug Protocol messages supported by this device, with additional attributes.
+        /// </summary>
+        Dictionary<string, MessageAttributes> DeviceMessages { get; }
     }
 }
