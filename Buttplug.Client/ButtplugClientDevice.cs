@@ -49,7 +49,7 @@ namespace Buttplug.Client
         /// </summary>
         /// <param name="aIndex">The device index.</param>
         /// <param name="aName">The device name.</param>
-        /// <param name="aMessages">The device allowed message list, with corresponding attributes</param>
+        /// <param name="aMessages">The device allowed message list, with corresponding attributes.</param>
         public ButtplugClientDevice(uint aIndex, string aName, Dictionary<string, MessageAttributes> aMessages)
         {
             Index = aIndex;
