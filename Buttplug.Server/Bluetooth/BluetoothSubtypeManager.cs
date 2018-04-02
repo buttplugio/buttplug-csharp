@@ -29,6 +29,7 @@ namespace Buttplug.Server.Bluetooth
                 new VorzeSABluetoothInfo(),
                 new WeVibeBluetoothInfo(),
                 new MysteryVibeBluetoothInfo(),
+                new LiBoBluetoothInfo(),
             };
         }
     }
