@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Buttplug.Components.Controls;
 using Buttplug.Components.WebsocketServer;
+using Buttplug.Components.IPCServer;
 using Buttplug.Core;
 using Buttplug.Server;
 using JetBrains.Annotations;
@@ -23,6 +24,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
     public partial class WebsocketServerControl
     {
         private readonly ButtplugWebsocketServer _ws;
+        private readonly ButtplugIPCServer _ps;
         private readonly IButtplugServerFactory _bpFactory;
         private readonly ButtplugConfig _config;
         private readonly ButtplugLogManager _logManager;
@@ -41,6 +43,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
             _logManager = new ButtplugLogManager();
             _log = _logManager.GetLogger(GetType());
             _ws = new ButtplugWebsocketServer();
+            _ps = new ButtplugIPCServer();
             _bpFactory = bpFactory;
             _config = new ButtplugConfig("Buttplug");
             _connUrls = new ConnUrlList();
@@ -86,6 +89,11 @@ namespace Buttplug.Apps.WebsocketServerGUI
             _ws.ConnectionUpdated += WebSocketConnectionAccepted;
             _ws.ConnectionClosed += WebSocketConnectionClosed;
 
+            _ps.OnException += WebSocketExceptionHandler;
+            _ps.ConnectionAccepted += IPCConnectionAccepted;
+            _ps.ConnectionUpdated += IPCConnectionAccepted;
+            _ps.ConnectionClosed += IPCConnectionClosed;
+
             _log.OnLogException += ExceptionLogged;
         }
 
@@ -124,6 +132,26 @@ namespace Buttplug.Apps.WebsocketServerGUI
         }
 
         private void WebSocketConnectionClosed(object aObj, [NotNull] ConnectionEventArgs aEvent)
+        {
+            _toastTimer.Enabled = false;
+            Dispatcher.InvokeAsync(() =>
+            {
+                ConnStatus.Content = "(Not Connected)";
+                DisconnectButton.IsEnabled = false;
+            });
+        }
+
+        private void IPCConnectionAccepted(object aObj, [NotNull] IPCConnectionEventArgs aEvent)
+        {
+            _toastTimer.Enabled = false;
+            Dispatcher.InvokeAsync(() =>
+            {
+                ConnStatus.Content = "(Connected) " + aEvent.ClientName;
+                DisconnectButton.IsEnabled = true;
+            });
+        }
+
+        private void IPCConnectionClosed(object aObj, [NotNull] IPCConnectionEventArgs aEvent)
         {
             _toastTimer.Enabled = false;
             Dispatcher.InvokeAsync(() =>
@@ -177,28 +205,40 @@ namespace Buttplug.Apps.WebsocketServerGUI
         {
             try
             {
-                _ws.StartServer(_bpFactory, (int)_port, _loopback, _secure, _hostname);
-                ConnToggleButton.Content = "Stop";
-                SecureCheckBox.IsEnabled = false;
-                PortTextBox.IsEnabled = false;
-                LoopbackCheckBox.IsEnabled = false;
-                _connUrls.Clear();
-                _connUrls.Add(new ConnUrlData(_secure, "localhost", _port));
-
-                if (!_loopback)
+                if (IPCCheckBox?.IsChecked ?? false)
                 {
-                    foreach (var network in NetworkInterface.GetAllNetworkInterfaces())
+                    _ps.StartServer(_bpFactory);
+
+                    _connUrls.Clear();
+                }
+                else
+                {
+                    _ws.StartServer(_bpFactory, (int)_port, _loopback, _secure, _hostname);
+                    SecureCheckBox.IsEnabled = false;
+                    PortTextBox.IsEnabled = false;
+                    LoopbackCheckBox.IsEnabled = false;
+
+                    _connUrls.Clear();
+                    _connUrls.Add(new ConnUrlData(_secure, "localhost", _port));
+
+                    if (!_loopback)
                     {
-                        foreach (IPAddressInformation address in network.GetIPProperties().UnicastAddresses)
+                        foreach (var network in NetworkInterface.GetAllNetworkInterfaces())
                         {
-                            if (address.Address.AddressFamily == AddressFamily.InterNetwork &&
-                                !IPAddress.IsLoopback(address.Address))
+                            foreach (IPAddressInformation address in network.GetIPProperties().UnicastAddresses)
                             {
-                                _connUrls.Add(new ConnUrlData(_secure, address.Address.ToString(), _port));
+                                if (address.Address.AddressFamily == AddressFamily.InterNetwork &&
+                                    !IPAddress.IsLoopback(address.Address))
+                                {
+                                    _connUrls.Add(new ConnUrlData(_secure, address.Address.ToString(), _port));
+                                }
                             }
                         }
                     }
                 }
+
+                IPCCheckBox.IsEnabled = false;
+                ConnToggleButton.Content = "Stop";
 
                 ConnStatus.Content = "(Not Connected)";
                 DisconnectButton.IsEnabled = false;
@@ -216,11 +256,21 @@ namespace Buttplug.Apps.WebsocketServerGUI
 
         public void StopServer()
         {
-            _ws.StopServer();
+            if (IPCCheckBox?.IsChecked ?? false)
+            {
+                _ps.StopServer();
+            }
+            else
+            {
+                _ws.StopServer();
+                SecureCheckBox.IsEnabled = true;
+                PortTextBox.IsEnabled = true;
+                LoopbackCheckBox.IsEnabled = true;
+            }
+
+            IPCCheckBox.IsEnabled = true;
+
             ConnToggleButton.Content = "Start";
-            SecureCheckBox.IsEnabled = true;
-            PortTextBox.IsEnabled = true;
-            LoopbackCheckBox.IsEnabled = true;
             ConnInfo.Visibility = Visibility.Collapsed;
         }
 
@@ -305,6 +355,20 @@ namespace Buttplug.Apps.WebsocketServerGUI
                 var data = (sender as Button).DataContext as ConnUrlData;
                 System.Diagnostics.Process.Start(new Uri(data.TestUrl).AbsoluteUri);
             }
+        }
+
+        private void IPCCheckBox_Unchecked(object aObj, RoutedEventArgs aEvent)
+        {
+            SecureCheckBox.IsEnabled = true;
+            LoopbackCheckBox.IsEnabled = true;
+            PortTextBox.IsEnabled = true;
+        }
+
+        private void IPCCheckBox_Checked(object aObj, RoutedEventArgs aEvent)
+        {
+            SecureCheckBox.IsEnabled = false;
+            LoopbackCheckBox.IsEnabled = false;
+            PortTextBox.IsEnabled = false;
         }
     }
 
