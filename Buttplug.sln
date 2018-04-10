@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client.Connectors.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client.Connectors.IPCConnector", "Buttplug.Client.Connectors.IPCConnector\Buttplug.Client.Connectors.IPCConnector.csproj", "{A7C3DF9C-D8BA-4C76-89F5-C13DFC3BD28F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.IPCServer", "Buttplug.Components.IPCServer\Buttplug.Components.IPCServer.csproj", "{A235B077-D870-49F0-9D6D-2A5D26726EFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -163,6 +165,10 @@ Global
 		{A7C3DF9C-D8BA-4C76-89F5-C13DFC3BD28F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7C3DF9C-D8BA-4C76-89F5-C13DFC3BD28F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7C3DF9C-D8BA-4C76-89F5-C13DFC3BD28F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A235B077-D870-49F0-9D6D-2A5D26726EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A235B077-D870-49F0-9D6D-2A5D26726EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A235B077-D870-49F0-9D6D-2A5D26726EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A235B077-D870-49F0-9D6D-2A5D26726EFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
