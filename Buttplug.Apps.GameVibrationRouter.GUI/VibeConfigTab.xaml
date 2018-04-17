@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Buttplug.Apps.GameVibrationRouter.GUI.VibeConfigTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Buttplug.Apps.GameVibrationRouter.GUI"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="500">
+    <Grid Background="#FFE5E5E5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">Vibration Multiplier:</Label>
+        <Slider x:Name="multiplierSlider" Foreground="Black" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" TickPlacement="BottomRight" ValueChanged="multiplierSlider_ValueChanged" Value="1" Maximum="5" TickFrequency="0.1" IsSnapToTickEnabled="True"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding ElementName=multiplierSlider, Path=Value, StringFormat='x\{0\}'}"></TextBlock>
+        
+    </Grid>
+</UserControl>

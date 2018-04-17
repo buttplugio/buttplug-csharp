@@ -14,6 +14,8 @@
 			</TabItem>
 		    <TabItem Name="OtherTab" Visibility="Collapsed">
 		    </TabItem>
+            <TabItem Name="OtherTab2" Visibility="Collapsed">
+            </TabItem>
             <TabItem Header="Logs">
                 <local:ButtplugLogControl x:Name="LogControl" />
             </TabItem>
