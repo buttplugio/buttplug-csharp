@@ -36,6 +36,9 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
         [NotNull]
         private readonly VibeGraphTab _graphTab;
 
+        [NotNull]
+        private readonly VibeConfigTab _vibeTab;
+
         private IpcServerChannel _xinputHookServer;
         private string _channelName;
         private List<ButtplugDeviceInfo> _devices = new List<ButtplugDeviceInfo>();
@@ -43,6 +46,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
         private Vibration _lastSentVibration = new Vibration();
         private Timer runTimer;
         private Timer commandTimer;
+        private double _vibrationMultiplier = 1;
 
         public MainWindow()
         {
@@ -70,6 +74,10 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             ButtplugTab.AddDevicePanel(_bpServer);
             ButtplugTab.SelectedDevicesChanged += OnSelectedDevicesChanged;
 
+            _vibeTab = new VibeConfigTab();
+            _vibeTab.MultiplierChanged += MultiplierChanged;
+            ButtplugTab.SetOtherTab2("Vibe Config", _vibeTab);
+
             var config = new ButtplugConfig("Buttplug");
             ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");
 
@@ -80,6 +88,11 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             commandTimer.Elapsed += OnVibrationTimer;
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12;
+        }
+
+        private void MultiplierChanged(object sender, double vibeMultiplier)
+        {
+            _vibrationMultiplier = vibeMultiplier;
         }
 
         public void AddPoint(object o, ElapsedEventArgs e)
@@ -142,14 +155,17 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
                     {
                         continue;
                     }
+                    double vibeSpeed = (_lastVibration.LeftMotorSpeed + _lastVibration.RightMotorSpeed) / (2.0 * 65535.0);
                     await _bpServer.SendMessage(new SingleMotorVibrateCmd(device.Index,
-                        (_lastVibration.LeftMotorSpeed + _lastVibration.RightMotorSpeed) / (2.0 * 65535.0)));
+                        Math.Min(vibeSpeed * _vibrationMultiplier, 1.0)));
                 }
             });
         }
 
         private void OnVibrationCommand(object aObj, Vibration aVibration)
         {
+            aVibration.LeftMotorSpeed = Convert.ToUInt16(aVibration.LeftMotorSpeed * _vibrationMultiplier > 65535 ? 65535 : aVibration.LeftMotorSpeed * _vibrationMultiplier);
+            aVibration.RightMotorSpeed = Convert.ToUInt16(aVibration.RightMotorSpeed * _vibrationMultiplier > 65535 ? 65535 : aVibration.RightMotorSpeed * _vibrationMultiplier);
             _lastVibration = aVibration;
         }
 
