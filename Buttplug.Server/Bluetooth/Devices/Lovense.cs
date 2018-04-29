@@ -135,6 +135,9 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             // Domi
             "LVS-Domi39",
+
+            // Domi
+            "LVS-Domi40",
         };
 
         public Guid[] Characteristics { get; } =
@@ -298,6 +301,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "LVS-Domi37", "Domi" },
             { "LVS-Domi38", "Domi" },
             { "LVS-Domi39", "Domi" },
+            { "LVS-Domi40", "Domi" },
             { "LVS-P36", "Edge" },
             { "LVS-Edge37", "Edge" },
             { "LVS-Edge38", "Edge" },
