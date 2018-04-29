@@ -249,6 +249,38 @@ namespace Buttplug.Server.Bluetooth.Devices
         }
     }
 
+    internal class LovenseRev8BluetoothInfo : IBluetoothDeviceInfo
+    {
+        public enum Chrs : uint
+        {
+            Tx = 0,
+            Rx,
+        }
+
+        public Guid[] Services { get; } = { new Guid("5a300001-0023-4bd4-bbd5-a6920e4c5653") };
+
+        public string[] Names { get; } =
+        {
+            // Hush. Again.
+            "LVS-Hush41",
+        };
+
+        public Guid[] Characteristics { get; } =
+        {
+            // tx characteristic
+            new Guid("5a300002-0023-4bd4-bbd5-a6920e4c5653"),
+
+            // rx characteristic
+            new Guid("5a300003-0023-4bd4-bbd5-a6920e4c5653"),
+        };
+
+        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
+            IBluetoothDeviceInterface aInterface)
+        {
+            return new Lovense(aLogManager, aInterface, this);
+        }
+    }
+
     internal class Lovense : ButtplugBluetoothDevice
     {
         private static readonly Dictionary<string, string> FriendlyNames = new Dictionary<string, string>
@@ -260,6 +292,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "LVS-S001", "Lush" },
             { "LVS-S35", "Lush" },
             { "LVS-Z36", "Hush" },
+            { "LVS-Hush41", "Hush" },
             { "LVS-Z001", "Hush" },
             { "LVS_Z001", "Hush" },
             { "LVS-Domi37", "Domi" },
