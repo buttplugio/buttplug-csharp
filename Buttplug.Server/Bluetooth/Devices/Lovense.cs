@@ -234,6 +234,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             // Lush. Again.
             "LVS-S35",
+            "LVS-Lush41",
         };
 
         public Guid[] Characteristics { get; } =
@@ -294,6 +295,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "LVS-L009", "Ambi" },
             { "LVS-S001", "Lush" },
             { "LVS-S35", "Lush" },
+            { "LVS-Lush41", "Lush" },
             { "LVS-Z36", "Hush" },
             { "LVS-Hush41", "Hush" },
             { "LVS-Z001", "Hush" },
