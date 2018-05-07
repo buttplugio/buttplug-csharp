@@ -5,12 +5,12 @@ using JetBrains.Annotations;
 namespace Buttplug.Core
 {
     /// <summary>
-    /// Event wrapper for a log message
+    /// Event wrapper for log message events.
     /// </summary>
     public class ButtplugLogMessageEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets the log message
+        /// Log message.
         /// </summary>
         [NotNull]
         public Log LogMessage { get; }
@@ -18,8 +18,8 @@ namespace Buttplug.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugLogMessageEventArgs"/> class.
         /// </summary>
-        /// <param name="aLogLevel">The log level</param>
-        /// <param name="aMessage">The log message</param>
+        /// <param name="aLogLevel">Log level</param>
+        /// <param name="aMessage">Log message</param>
         public ButtplugLogMessageEventArgs(ButtplugLogLevel aLogLevel, string aMessage)
         {
             LogMessage = new Log(aLogLevel, aMessage);

@@ -31,12 +31,12 @@
         Info,
 
         /// <summary>
-        /// Finer grained debug logging
+        /// Fine-grained debug logging
         /// </summary>
         Debug,
 
         /// <summary>
-        /// Highly detailed and noisy logging for debugging
+        /// Highly detailed (noisy) logging for debugging
         /// </summary>
         Trace,
     }

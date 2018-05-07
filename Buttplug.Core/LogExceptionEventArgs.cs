@@ -8,26 +8,26 @@ namespace Buttplug.Core
     public class LogExceptionEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets the error message
+        /// Error description.
         /// </summary>
         public string ErrorMessage { get; }
 
         /// <summary>
-        /// Gets the exception
+        /// Exception object related to error.
         /// </summary>
         public Exception Ex { get; }
 
         /// <summary>
-        /// Is the error local only, or can we send this to the client (assuming they want it)
+        /// If true, error should not be forwarded to client.
         /// </summary>
         public bool LocalOnly { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogExceptionEventArgs"/> class.
         /// </summary>
-        /// <param name="aEx"></param>
-        /// <param name="aLocalOnly"></param>
-        /// <param name="aErrorMessage"></param>
+        /// <param name="aEx">Exception to log</param>
+        /// <param name="aLocalOnly">If true, do not send error message to client</param>
+        /// <param name="aErrorMessage">Description of the error</param>
         public LogExceptionEventArgs(Exception aEx, bool aLocalOnly, string aErrorMessage)
         {
             ErrorMessage = aErrorMessage;
