@@ -9,22 +9,22 @@ namespace Buttplug.Core
     public static class ButtugLogExtenions
     {
         /// <summary>
-        /// Logs an Error Buttplug message as an error
+        /// Logs an <see cref="Error"/> Buttplug message as an error level log message.
         /// </summary>
-        /// <param name="logger">The logger</param>
-        /// <param name="error">The Error Buttplug message</param>
+        /// <param name="logger">Logger to use for message</param>
+        /// <param name="error">Error Buttplug message</param>
         public static void LogErrorMsg(this IButtplugLog logger, Error error)
         {
             logger.Error(error.ErrorMessage);
         }
 
         /// <summary>
-        /// Constructs a new Error Buttplug message and logs it as an error
+        /// Logs an error level log message, creates a Buttplug Error Message with the error description, and returns it.
         /// </summary>
-        /// <param name="logger">The logger</param>
-        /// <param name="aId">The message ID</param>
-        /// <param name="aCode">The error class</param>
-        /// <param name="aMsg">The error message</param>
+        /// <param name="logger">Logger to use for message</param>
+        /// <param name="aId">Message ID for created message</param>
+        /// <param name="aCode">Error class for message</param>
+        /// <param name="aMsg">Error description for message</param>
         /// <returns>A new Error Buttplug message</returns>
         [NotNull]
         public static Error LogErrorMsg(this IButtplugLog logger, uint aId, Error.ErrorClass aCode, string aMsg)
@@ -34,7 +34,7 @@ namespace Buttplug.Core
         }
 
         /// <summary>
-        /// Logs an Error Buttplug message as a warning
+        /// Logs an Error Buttplug message as a warning level log message.
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="warning"></param>
@@ -44,12 +44,12 @@ namespace Buttplug.Core
         }
 
         /// <summary>
-        /// Constructs a new Error Buttplug message and logs it as a warning
+        /// Logs a warning level log message, creates a Buttplug Error Message with the error description, and returns it.
         /// </summary>
-        /// <param name="logger">The logger</param>
-        /// <param name="aId">The message ID</param>
-        /// <param name="aCode">The error class</param>
-        /// <param name="aMsg">The error message</param>
+        /// <param name="logger">Logger to use for message</param>
+        /// <param name="aId">Message ID for created message</param>
+        /// <param name="aCode">Error class for message</param>
+        /// <param name="aMsg">Error description for message</param>
         /// <returns>A new Error Buttplug message</returns>
         [NotNull]
         public static Error LogWarnMsg(this IButtplugLog logger, uint aId, Error.ErrorClass aCode, string aMsg)

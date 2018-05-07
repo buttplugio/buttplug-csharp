@@ -4,12 +4,12 @@ using Newtonsoft.Json;
 namespace Buttplug.Core
 {
     /// <summary>
-    /// The device command subset of Buttplug messages
+    /// Subclass of Buttplug Messages, that command a device to take an action.
     /// </summary>
     public class ButtplugDeviceMessage : ButtplugMessage
     {
         /// <summary>
-        /// Gets or sets the index of the device this message is intended to act upon.
+        /// Device index the message is intended for.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public uint DeviceIndex { get; set; }
@@ -17,10 +17,10 @@ namespace Buttplug.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugDeviceMessage"/> class.
         /// </summary>
-        /// <param name="aId">The message ID</param>
-        /// <param name="aDeviceIndex">The device index</param>
-        /// <param name="aSchemaVersion">The version of the schema that the message was introduced. Required for cross version schema support.</param>
-        /// <param name="aPreviousType">The Type for the previous version of the message, or null. This is used to downgrade messages when cominucating with older clients.</param>
+        /// <param name="aId">Message ID</param>
+        /// <param name="aDeviceIndex">Device index</param>
+        /// <param name="aSchemaVersion">Version of the schema where the message was introduced. Required for cross-version schema support.</param>
+        /// <param name="aPreviousType">Previous version type of the message, or null. This is used to downgrade messages when communicating with older clients.</param>
         public ButtplugDeviceMessage(uint aId, uint aDeviceIndex, uint aSchemaVersion = 0, Type aPreviousType = null)
             : base(aId, aSchemaVersion, aPreviousType)
         {
