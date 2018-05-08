@@ -15,10 +15,18 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
     {
         [NotNull]
         private readonly BluetoothLEAdvertisementWatcher _bleWatcher;
+
         [NotNull]
         private readonly List<UWPBluetoothDeviceFactory> _deviceFactories;
+
         [NotNull]
         private readonly List<ulong> _currentlyConnecting;
+
+        [NotNull]
+        private readonly List<ulong> _alreadyDumped;
+
+        [NotNull]
+        private readonly object _btLock = new object();
 
         public static bool HasRegistryKeysSet()
         {
@@ -38,6 +46,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             BpLogger.Info("Loading UWP Bluetooth Manager");
             _currentlyConnecting = new List<ulong>();
+            _alreadyDumped = new List<ulong>();
 
             // Introspect the ButtplugDevices namespace for all Factory classes, then create instances of all of them.
             _deviceFactories = new List<UWPBluetoothDeviceFactory>();
@@ -77,7 +86,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             if (aEvent?.Advertisement == null)
             {
-                BpLogger.Debug("Null BLE advertisement recieved: skipping");
+                BpLogger.Debug("Null BLE advertisement received: skipping");
                 return;
             }
 
@@ -98,6 +107,11 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                             where x.MayBeDevice(advertName, advertGUIDs)
                             select x;
 
+            if (VerboseDeviceLogging)
+            {
+                DumpDevice(btAddr);
+            }
+
             // We should always have either 0 or 1 factories.
             var buttplugBluetoothDeviceFactories = factories as UWPBluetoothDeviceFactory[] ?? factories.ToArray();
             if (buttplugBluetoothDeviceFactories.Length != 1)
@@ -115,7 +129,16 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 return;
             }
 
-            _currentlyConnecting.Add(btAddr);
+            lock (_btLock)
+            {
+                if (_currentlyConnecting.Contains(btAddr))
+                {
+                    return;
+                }
+
+                _currentlyConnecting.Add(btAddr);
+            }
+
             var factory = buttplugBluetoothDeviceFactories.First();
             BpLogger.Debug($"Found BLE factory: {factory.GetType().Name}");
 
@@ -143,6 +166,57 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
 
             _currentlyConnecting.Remove(btAddr);
+        }
+
+        private void DumpDevice(ulong btAddr)
+        {
+            lock (_btLock)
+            {
+                if (_alreadyDumped.Contains(btAddr))
+                {
+                    return;
+                }
+
+                var fromBluetoothAddressAsync = BluetoothLEDevice.FromBluetoothAddressAsync(btAddr);
+                if (fromBluetoothAddressAsync == null)
+                {
+                    return;
+                }
+
+                var dev = fromBluetoothAddressAsync.GetAwaiter().GetResult();
+                BpLogger.Trace($"Device: {dev.Name}");
+                var services = dev.GetGattServicesAsync(BluetoothCacheMode.Cached).GetAwaiter().GetResult();
+                foreach (var service in services.Services)
+                {
+                    BpLogger.Trace($"Service: {service.Uuid} (0x{service.AttributeHandle:X4})");
+                    try
+                    {
+                        var charsacteristics =
+                            service.GetCharacteristicsAsync().GetAwaiter().GetResult()?.Characteristics;
+
+                        if (charsacteristics != null)
+                        {
+                            foreach (var charsacteristic in charsacteristics)
+                            {
+                                BpLogger.Trace(
+                                    $"Characteristic: {charsacteristic.Uuid} (0x{charsacteristic.AttributeHandle:X4}): {charsacteristic.CharacteristicProperties.ToString()}");
+                            }
+                        }
+
+                        charsacteristics = null;
+                    }
+                    catch (Exception e)
+                    {
+                        BpLogger.LogException(e);
+                    }
+                }
+
+                services = null;
+                dev.Dispose();
+                dev = null;
+                GC.Collect();
+                _alreadyDumped.Add(btAddr);
+            }
         }
 
         private void OnWatcherStopped(BluetoothLEAdvertisementWatcher aObj,

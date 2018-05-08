@@ -247,5 +247,15 @@ namespace Buttplug.Server
             aMgr.DeviceAdded += DeviceAddedHandler;
             aMgr.ScanningFinished += ScanningFinishedHandler;
         }
+
+        public bool SetVersoseDeviceLogging(bool verbose)
+        {
+            foreach (var manager in _managers)
+            {
+                manager.VerboseDeviceLogging = verbose;
+            }
+
+            return verbose;
+        }
     }
 }

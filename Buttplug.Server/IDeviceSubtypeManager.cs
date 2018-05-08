@@ -5,6 +5,8 @@ namespace Buttplug.Server
 {
     public interface IDeviceSubtypeManager
     {
+        bool VerboseDeviceLogging { get; set; }
+
         [CanBeNull]
         event EventHandler<DeviceAddedEventArgs> DeviceAdded;
 
