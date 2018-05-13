@@ -408,7 +408,6 @@ namespace Buttplug.Server.Bluetooth.Devices
                 _vibratorSpeeds[v.Index] = v.Speed;
                 var vId = _vibratorCount == 1 ? string.Empty : string.Empty + (v.Index + 1);
                 var res = await Interface.WriteValue(aMsg.Id,
-                    Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
                     Encoding.ASCII.GetBytes($"Vibrate{vId}:{(int)(_vibratorSpeeds[v.Index] * 20)};"));
 
                 if (!(res is Ok))
@@ -457,7 +456,6 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 _clockwise = !_clockwise;
                 await Interface.WriteValue(aMsg.Id,
-                   Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
                    Encoding.ASCII.GetBytes($"RotateChange;"));
             }
 
@@ -467,7 +465,6 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)LovenseRev1BluetoothInfo.Chrs.Tx],
                 Encoding.ASCII.GetBytes($"Rotate:{(int)(_rotateSpeed * 20)};"));
         }
     }
