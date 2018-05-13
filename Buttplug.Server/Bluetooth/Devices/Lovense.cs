@@ -322,30 +322,33 @@ namespace Buttplug.Server.Bluetooth.Devices
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"Lovense Device ({FriendlyNames[aInterface.Name]})",
+                   "Lovense Device",
                    aInterface,
                    aInfo)
         {
-            if (FriendlyNames[aInterface.Name] == "Edge")
+            if (FriendlyNames.ContainsKey(aInterface.Name))
             {
-                _vibratorCount++;
+                Name = $"Lovense Device ({FriendlyNames[aInterface.Name]})";
+                if (FriendlyNames[aInterface.Name] == "Edge")
+                {
+                    _vibratorCount++;
+                }
+                else if (FriendlyNames[aInterface.Name] == "Nora")
+                {
+                    MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
+                }
             }
 
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
             MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
-
-            if (FriendlyNames[aInterface.Name] == "Nora")
-            {
-                MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
-            }
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
             BpLogger.Debug("Stopping Device " + Name);
 
-            if (FriendlyNames[Interface.Name] == "Nora")
+            if (FriendlyNames.ContainsKey(Interface.Name) && FriendlyNames[Interface.Name] == "Nora")
             {
                 await HandleRotateCmd(new RotateCmd(aMsg.DeviceIndex,
                     new List<RotateCmd.RotateSubcommand> { new RotateCmd.RotateSubcommand(0, 0, _clockwise) },

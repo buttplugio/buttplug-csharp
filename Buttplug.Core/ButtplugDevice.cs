@@ -13,7 +13,7 @@ namespace Buttplug.Core
     public abstract class ButtplugDevice : IButtplugDevice
     {
         /// <inheritdoc />
-        public string Name { get; }
+        public string Name { get; protected set; }
 
         /// <inheritdoc />
         public string Identifier { get; }
