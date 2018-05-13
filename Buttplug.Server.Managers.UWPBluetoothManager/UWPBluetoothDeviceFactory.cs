@@ -40,26 +40,26 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
             if (_deviceInfo.Names.Any() && !advertGUIDs.Any())
             {
-                _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType().ToString());
+                _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType());
                 return true;
             }
 
-            _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType().ToString() + " with services " + advertGUIDs);
+            _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType() + " with services " + advertGUIDs);
             foreach (var s in _deviceInfo.Services)
             {
-                _bpLogger.Trace("Expecting " + s.ToString());
+                _bpLogger.Trace("Expecting " + s);
             }
 
             foreach (var s in advertGUIDs)
             {
-                _bpLogger.Trace("Got " + s.ToString());
+                _bpLogger.Trace("Got " + s);
             }
 
             // Intersect doesn't intersect until the enumerator is called
             var sv = _deviceInfo.Services.Intersect(advertGUIDs);
             foreach (var s in sv)
             {
-                _bpLogger.Trace("Matched " + s.ToString());
+                _bpLogger.Trace("Matched " + s);
                 return true;
             }
 
