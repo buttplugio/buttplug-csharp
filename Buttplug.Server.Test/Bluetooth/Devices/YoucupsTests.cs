@@ -40,46 +40,46 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             Assert.AreEqual(1, dev.GetMessageAttrs(typeof(VibrateCmd)).FeatureCount);
 
             Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 4)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWriten.Count);
+            Assert.AreEqual(0, inter.LastWritten.Count);
 
             Assert.True(dev.ParseMessage(new SingleMotorVibrateCmd(4, 0.5, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(6, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)YoucupsBluetoothInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual("$SYS,4?", Encoding.ASCII.GetString(inter.LastWriten[0].Value));
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual("$SYS,4?", Encoding.ASCII.GetString(inter.LastWritten[0].Value));
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new SingleMotorVibrateCmd(4, 0.5, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWriten.Count);
+            Assert.AreEqual(0, inter.LastWritten.Count);
 
             Assert.True(dev.ParseMessage(new SingleMotorVibrateCmd(4, 1, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(6, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)YoucupsBluetoothInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual("$SYS,8?", Encoding.ASCII.GetString(inter.LastWriten[0].Value));
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual("$SYS,8?", Encoding.ASCII.GetString(inter.LastWritten[0].Value));
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new SingleMotorVibrateCmd(4, 0.25, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(6, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)YoucupsBluetoothInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual("$SYS,2?", Encoding.ASCII.GetString(inter.LastWriten[0].Value));
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual("$SYS,2?", Encoding.ASCII.GetString(inter.LastWritten[0].Value));
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 9)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(9, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(9, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)YoucupsBluetoothInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual("$SYS,0?", Encoding.ASCII.GetString(inter.LastWriten[0].Value));
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual("$SYS,0?", Encoding.ASCII.GetString(inter.LastWritten[0].Value));
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new VibrateCmd(4,
                 new List<VibrateCmd.VibrateSubcommand>

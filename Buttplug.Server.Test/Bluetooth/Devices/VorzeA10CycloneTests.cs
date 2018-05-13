@@ -39,46 +39,46 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             Assert.AreEqual(1, dev.GetMessageAttrs(typeof(RotateCmd)).FeatureCount);
 
             Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 4)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWriten.Count);
+            Assert.AreEqual(0, inter.LastWritten.Count);
 
             Assert.True(dev.ParseMessage(new VorzeA10CycloneCmd(4, 50, true, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(6, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x01, 0x01, 0xb2 }, inter.LastWriten[0].Value);
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual(new byte[] { 0x01, 0x01, 0xb2 }, inter.LastWritten[0].Value);
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new VorzeA10CycloneCmd(4, 50, true, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWriten.Count);
+            Assert.AreEqual(0, inter.LastWritten.Count);
 
             Assert.True(dev.ParseMessage(new VorzeA10CycloneCmd(4, 99, true, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(6, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x01, 0x01, 0xe3 }, inter.LastWriten[0].Value);
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual(new byte[] { 0x01, 0x01, 0xe3 }, inter.LastWritten[0].Value);
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new VorzeA10CycloneCmd(4, 25, false, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(6, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x01, 0x01, 0x19 }, inter.LastWriten[0].Value);
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual(new byte[] { 0x01, 0x01, 0x19 }, inter.LastWritten[0].Value);
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 9)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(9, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(9, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x01, 0x01, 0x00 }, inter.LastWriten[0].Value);
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual(new byte[] { 0x01, 0x01, 0x00 }, inter.LastWritten[0].Value);
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new RotateCmd(4,
                 new List<RotateCmd.RotateSubcommand>
