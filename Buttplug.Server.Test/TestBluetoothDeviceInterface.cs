@@ -27,7 +27,7 @@ namespace Buttplug.Server.Test
             }
         }
 
-        public List<WriteData> LastWriten = new List<WriteData>();
+        public List<WriteData> LastWritten = new List<WriteData>();
 
         public event EventHandler DeviceRemoved;
 
@@ -43,7 +43,7 @@ namespace Buttplug.Server.Test
 
         public Task<ButtplugMessage> WriteValue(uint aMsgId, Guid aCharacteristic, byte[] aValue, bool aWriteWithResponse = false)
         {
-            LastWriten.Add(new WriteData(aValue)
+            LastWritten.Add(new WriteData(aValue)
             {
                 MsgId = aMsgId,
                 Characteristic = aCharacteristic,

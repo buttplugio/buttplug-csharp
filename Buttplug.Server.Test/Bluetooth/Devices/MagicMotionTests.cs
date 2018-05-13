@@ -39,46 +39,46 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             Assert.AreEqual(1, dev.GetMessageAttrs(typeof(VibrateCmd)).FeatureCount);
 
             Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 4)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWriten.Count);
+            Assert.AreEqual(0, inter.LastWritten.Count);
 
             Assert.True(dev.ParseMessage(new SingleMotorVibrateCmd(4, 0.5, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(6, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)MagicMotionBluetoothInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x80, 0x64, 0x00 }, inter.LastWriten[0].Value);
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual(new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x80, 0x64, 0x00 }, inter.LastWritten[0].Value);
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new SingleMotorVibrateCmd(4, 0.5, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWriten.Count);
+            Assert.AreEqual(0, inter.LastWritten.Count);
 
             Assert.True(dev.ParseMessage(new SingleMotorVibrateCmd(4, 1, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(6, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)MagicMotionBluetoothInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0xff, 0x64, 0x00 }, inter.LastWriten[0].Value);
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual(new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0xff, 0x64, 0x00 }, inter.LastWritten[0].Value);
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new SingleMotorVibrateCmd(4, 0.25, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(6, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)MagicMotionBluetoothInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x40, 0x64, 0x00 }, inter.LastWriten[0].Value);
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual(new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x40, 0x64, 0x00 }, inter.LastWritten[0].Value);
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 9)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWriten.Count);
-            Assert.AreEqual(9, inter.LastWriten[0].MsgId);
+            Assert.AreEqual(1, inter.LastWritten.Count);
+            Assert.AreEqual(9, inter.LastWritten[0].MsgId);
             Assert.AreEqual(bleInfo.Characteristics[(uint)MagicMotionBluetoothInfo.Chrs.Tx],
-                inter.LastWriten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 }, inter.LastWriten[0].Value);
-            Assert.False(inter.LastWriten[0].WriteWithResponse);
-            inter.LastWriten.Clear();
+                inter.LastWritten[0].Characteristic);
+            Assert.AreEqual(new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 }, inter.LastWritten[0].Value);
+            Assert.False(inter.LastWritten[0].WriteWithResponse);
+            inter.LastWritten.Clear();
 
             Assert.True(dev.ParseMessage(new VibrateCmd(4,
                 new List<VibrateCmd.VibrateSubcommand>
