@@ -72,19 +72,25 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             // GetGattServicesForUuidAsync is 15063 only
             var services = await aDevice.GetGattServicesAsync(BluetoothCacheMode.Cached);
+            List<Guid> uuids = new List<Guid>();
             foreach (var s in services.Services)
             {
-                _bpLogger.Debug("Found service UUID: " + s.Uuid + " (" + aDevice.Name + ")");
+                _bpLogger.Trace("Found service UUID: " + s.Uuid + " (" + aDevice.Name + ")");
+                uuids.Add(s.Uuid);
             }
 
-            var srvResult = await aDevice.GetGattServicesForUuidAsync(_deviceInfo.Services[0], BluetoothCacheMode.Cached);
-            if (srvResult.Status != GattCommunicationStatus.Success || !srvResult.Services.Any())
+            var srvs = (from x in services.Services
+                from y in _deviceInfo.Services
+                where x.Uuid == y
+                select x).ToArray();
+
+            if (srvs.Length != 1)
             {
-                _bpLogger.Debug("Cannot find service for device (" + aDevice.Name + ")");
-                return null;
+                // TODO Throw a correct exception here
+                throw new NotImplementedException();
             }
 
-            var service = srvResult.Services.First();
+            var service = srvs[0];
 
             var chrResult = await service.GetCharacteristicsAsync();
             if (chrResult.Status != GattCommunicationStatus.Success)
@@ -97,28 +103,38 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 _bpLogger.Trace("Found characteristics UUID: " + s.Uuid + " (" + aDevice.Name + ")");
             }
 
-            var chrs = from x in chrResult.Characteristics
-                       where _deviceInfo.Characteristics.Contains(x.Uuid)
-                       select x;
+            GattCharacteristic[] chrs;
 
-            var gattCharacteristics = chrs as GattCharacteristic[] ?? chrs.ToArray();
-            if (!gattCharacteristics.Any())
+            // If the device info contains characteristics, only load what we've listed. Otherwise,
+            // just throw everything in and assume we know what we're doing and expect characteristic
+            // introspection to happen.
+            if (_deviceInfo.Characteristics.Length > 0)
+            {
+                chrs = (from x in chrResult.Characteristics
+                    where _deviceInfo.Characteristics.Contains(x.Uuid)
+                    select x).ToArray();
+            }
+            else
+            {
+                chrs = chrResult.Characteristics.ToArray();
+            }
+
+            // If there aren't any characteristics by this point, something has gone wrong.
+            if (!chrs.Any())
             {
                 return null;
             }
 
-            // TODO This assumes we're always planning on having the UUIDs sorted in the Info classes, which is probably not true.
+            // TODO This assumes we're always planning on having the UUIDs sorted in the Info
+            // classes, which is probably not true.
             var bleInterface = new UWPBluetoothDeviceInterface(_buttplugLogManager,
-                aDevice, gattCharacteristics.OrderBy((aChr) => aChr.Uuid).ToArray());
+                aDevice, chrs.OrderBy(aChr => aChr.Uuid).ToArray());
 
             var device = _deviceInfo.CreateDevice(_buttplugLogManager, bleInterface);
-            if (await device.Initialize() is Ok)
-            {
-                return device;
-            }
 
-            // If initialization fails, don't actually send the message back. Just return null, we'll have the info in the logs.
-            return null;
+            // If initialization fails, don't actually send the message back. Just return null, we'll
+            // have the info in the logs.
+            return await device.Initialize() is Ok ? device : null;
         }
     }
 }

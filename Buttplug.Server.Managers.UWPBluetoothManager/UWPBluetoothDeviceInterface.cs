@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
+using System;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
@@ -17,8 +16,12 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
     {
         public string Name => _bleDevice.Name;
 
+        private GattCharacteristic _txChar;
+
+        private GattCharacteristic _rxChar;
+
         [NotNull]
-        private readonly GattCharacteristic[] _gattCharacteristics;
+        private readonly GattCharacteristic[] _namedChars;
 
         [NotNull]
         private readonly IButtplugLog _bpLogger;
@@ -35,11 +38,30 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         public UWPBluetoothDeviceInterface(
             [NotNull] IButtplugLogManager aLogManager,
             [NotNull] BluetoothLEDevice aDevice,
-            [NotNull] GattCharacteristic[] aCharacteristics)
+            [NotNull] GattCharacteristic[] aChars)
         {
             _bpLogger = aLogManager.GetLogger(GetType());
             _bleDevice = aDevice;
-            _gattCharacteristics = aCharacteristics;
+            _namedChars = aChars;
+
+            if (aChars.Length <= 2)
+            {
+                foreach (var c in aChars)
+                {
+                    if ((c.CharacteristicProperties & GattCharacteristicProperties.Read) != 0 ||
+                        (c.CharacteristicProperties & GattCharacteristicProperties.Notify) != 0)
+                    {
+                        _rxChar = c;
+                    }
+                    else if ((c.CharacteristicProperties & GattCharacteristicProperties.WriteWithoutResponse) != 0 ||
+                             (c.CharacteristicProperties & GattCharacteristicProperties.Write) != 0)
+
+                    {
+                        _txChar = c;
+                    }
+                }
+            }
+
             _bleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
         }
 
@@ -56,19 +78,23 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             return _bleDevice.BluetoothAddress;
         }
 
+        public async Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse = false)
+        {
+            if (_txChar == null)
+            {
+                // Throw here
+            }
+
+            return await WriteValue(aMsgId, _txChar, aValue, aWriteWithResponse);
+        }
+
         [ItemNotNull]
         public async Task<ButtplugMessage> WriteValue(uint aMsgId,
             Guid aCharacteristic,
             byte[] aValue,
-            bool aWriteOption = false)
+            bool aWriteWithResponse = false)
         {
-            if (!(_currentTask is null))
-            {
-                _currentTask.Cancel();
-                _bpLogger.Error("Cancelling device transfer in progress for new transfer.");
-            }
-
-            var chrs = from x in _gattCharacteristics
+            var chrs = from x in _namedChars
                        where x.Uuid == aCharacteristic
                        select x;
 
@@ -83,8 +109,23 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 _bpLogger.Warn($"Multiple gattCharacteristics for {aCharacteristic} found");
             }
 
-            var gattCharacteristic = gattCharacteristics[0];
-            _currentTask = gattCharacteristic.WriteValueAsync(aValue.AsBuffer(), aWriteOption ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
+            // We need the GattCharacteristic cast, otherwise the parameters are ambiguous. I have no
+            // idea how GattCharacteristic implicitly casts to Guid but here we are.
+            return await WriteValue(aMsgId, (GattCharacteristic)gattCharacteristics[0], aValue, aWriteWithResponse);
+        }
+
+        private async Task<ButtplugMessage> WriteValue(uint aMsgId,
+            GattCharacteristic aChar,
+            byte[] aValue,
+            bool aWriteWithResponse = false)
+        {
+            if (!(_currentTask is null))
+            {
+                _currentTask.Cancel();
+                _bpLogger.Error("Cancelling device transfer in progress for new transfer.");
+            }
+
+            _currentTask = aChar.WriteValueAsync(aValue.AsBuffer(), aWriteWithResponse ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
             try
             {
                 var status = await _currentTask;
@@ -106,9 +147,11 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         public void Disconnect()
         {
             DeviceRemoved?.Invoke(this, new EventArgs());
-            for (int i = 0; i < _gattCharacteristics.Length; i++)
+            _txChar = null;
+            _rxChar = null;
+            for (int i = 0; i < _namedChars.Length; i++)
             {
-                _gattCharacteristics[i] = null;
+                _namedChars[i] = null;
             }
 
             _bleDevice.Dispose();
