@@ -11,6 +11,14 @@ namespace Buttplug.Server
         [NotNull]
         protected readonly IButtplugLogManager LogManager;
 
+        private bool _verboseDeviceLogging = false;
+
+        public bool VerboseDeviceLogging
+        {
+            get => _verboseDeviceLogging;
+            set => _verboseDeviceLogging = value;
+        }
+
         public event EventHandler<DeviceAddedEventArgs> DeviceAdded;
 
         public event EventHandler<EventArgs> ScanningFinished;

@@ -229,6 +229,22 @@ namespace Buttplug.Components.Controls
             _ravenClient?.Capture(new SentryEvent(string.Join("\n", LogControl.GetLogs())));
         }
 
+        private void DumpDevicesButton_Click(object aSender, RoutedEventArgs aEvent)
+        {
+            var res = _deviceManager?.SetVersoseDeviceLogging(((Button)aSender).Content.ToString() == "Enable verbose device information");
+            if (res == null)
+            {
+                return;
+            }
+
+            if (!res.Value)
+            {
+                ((Button)aSender).Content = "Enable verbose device information";
+            }
+
+            ((Button)aSender).Content = "Disable verbose device information";
+        }
+
         public void SetApplicationTab(string aTabName, UserControl aTabControl)
         {
             ApplicationTab.Header = aTabName;
