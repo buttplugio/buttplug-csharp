@@ -14,6 +14,7 @@
         <Label Content="Port:"  Grid.Row="0" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <TextBox Name="PortTextBox"  Grid.Row="0" HorizontalAlignment="Left" Height="23" Margin="60,14,0,0" TextWrapping="Wrap" Text="12345" VerticalAlignment="Top" Width="120" LostFocus="PortTextBox_LostFocus"/>
         <CheckBox Name="SecureCheckBox"  Grid.Row="0" Content="SSL/TLS" HorizontalAlignment="Right" Margin="0,17,10,0" VerticalAlignment="Top" Unchecked="SecureCheckBox_Unchecked" Checked="SecureCheckBox_Checked"/>
+	    <CheckBox Name="IPCCheckBox"  Grid.Row="0" Content="IPC" HorizontalAlignment="Right" Margin="0,17,200,0" VerticalAlignment="Top" Unchecked="IPCCheckBox_Unchecked" Checked="IPCCheckBox_Checked"/>
         <CheckBox Name="LoopbackCheckBox"  Grid.Row="0" Content="Localhost Only" HorizontalAlignment="Right" Margin="0,17,90,0" VerticalAlignment="Top" Unchecked="LoopbackCheckBox_Unchecked" Checked="LoopbackCheckBox_Checked"/>
         <Button Name="ConnToggleButton"  Grid.Row="1" Content="Start" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75" Click="ConnToggleButton_Click"/>
         

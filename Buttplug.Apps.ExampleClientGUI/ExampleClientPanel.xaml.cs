@@ -13,7 +13,7 @@ namespace Buttplug.Apps.ExampleClientGUI
     {
         public ConcurrentDictionary<uint, ButtplugClientDevice> Devices = new ConcurrentDictionary<uint, ButtplugClientDevice>();
 
-        private ButtplugWSClient _client;
+        private IButtplugClient _client;
 
         private ButtplugDeviceControl devControl;
 
@@ -45,10 +45,18 @@ namespace Buttplug.Apps.ExampleClientGUI
             {
                 ConnToggleButton.Content = "Disconnect";
                 AdressTextBox.IsEnabled = false;
+                UseIPC.IsEnabled = false;
                 if (_client == null)
                 {
                     devControl.Reset();
-                    _client = new ButtplugWSClient("Example Client");
+                    if (UseIPC?.IsChecked ?? false)
+                    {
+                        _client = new ButtplugIPCClient("Example Client");
+                    }
+                    else
+                    {
+                        _client = new ButtplugWSClient("Example Client");
+                    }
 
                     _client.DeviceAdded += OnDeviceChanged;
                     _client.DeviceRemoved += OnDeviceChanged;
@@ -67,7 +75,7 @@ namespace Buttplug.Apps.ExampleClientGUI
             {
                 if (_client != null)
                 {
-                    await _client.Connect(new Uri(AdressTextBox.Text), true);
+                    await _client.Connect(new Uri(!UseIPC?.IsChecked ?? true ? AdressTextBox.Text : "pipe://ButtplugPipe"), true);
 
                     foreach (var dev in _client.Devices)
                     {
@@ -107,6 +115,7 @@ namespace Buttplug.Apps.ExampleClientGUI
                 _client = null;
                 ConnToggleButton.Content = "Connect";
                 AdressTextBox.IsEnabled = true;
+                UseIPC.IsEnabled = true;
             });
         }
 
@@ -140,8 +149,7 @@ namespace Buttplug.Apps.ExampleClientGUI
                     _client.SendDeviceMessage(dev,
                         new FleshlightLaunchFW12Cmd(dev.Index,
                             Convert.ToUInt32(LinearSpeed.Value),
-                            Convert.ToUInt32(LinearPosition.Value),
-                            _client.NextMsgId));
+                            Convert.ToUInt32(LinearPosition.Value)));
                 }
             }
         }
@@ -166,8 +174,7 @@ namespace Buttplug.Apps.ExampleClientGUI
                             _client.SendDeviceMessage(dev,
                                 new VibrateCmd(dev.Index,
                                     new List<VibrateCmd.VibrateSubcommand>
-                                    { new VibrateCmd.VibrateSubcommand(i, VibrateSpeed.Value) },
-                                    _client.NextMsgId));
+                                    { new VibrateCmd.VibrateSubcommand(i, VibrateSpeed.Value) }));
                         }
                     }
                     catch
@@ -198,8 +205,8 @@ namespace Buttplug.Apps.ExampleClientGUI
                             _client.SendDeviceMessage(dev,
                                 new RotateCmd(dev.Index,
                                     new List<RotateCmd.RotateSubcommand>
-                                            { new RotateCmd.RotateSubcommand(i, RotateSpeed.Value * (clockwise ? 1 : -1), clockwise) },
-                                    _client.NextMsgId));
+                                            { new RotateCmd.RotateSubcommand(i, RotateSpeed.Value * (clockwise ? 1 : -1), clockwise) }
+                                    ));
                         }
                     }
                     catch
@@ -226,9 +233,19 @@ namespace Buttplug.Apps.ExampleClientGUI
                             new LinearCmd.VectorSubcommands(0,
                                 Convert.ToUInt32(LinearDuration.Text),
                                 Linear2Position.Value),
-                        }, _client.NextMsgId));
+                        }));
                 }
             }
+        }
+
+        private void UseIPC_Checked(object sender, RoutedEventArgs e)
+        {
+            AdressTextBox.IsEnabled = false;
+        }
+
+        private void UseIPC_Unchecked(object sender, RoutedEventArgs e)
+        {
+            AdressTextBox.IsEnabled = true;
         }
     }
 }
