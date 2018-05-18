@@ -11,6 +11,9 @@ namespace Buttplug.Server.Bluetooth
         string[] Names { get; }
 
         [NotNull]
+        string[] NamePrefixes { get; }
+
+        [NotNull]
         Guid[] Services { get; }
 
         [NotNull]
