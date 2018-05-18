@@ -31,10 +31,10 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Smart Mini Vibe",
         };
 
-        public Guid[] Characteristics { get; } =
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
         {
             // tx characteristic
-            new Guid("78667579-a914-49a4-8333-aa3c0cd8fedc"),
+            { (uint)Chrs.Tx, new Guid("78667579-a914-49a4-8333-aa3c0cd8fedc") },
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
@@ -116,7 +116,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             // While there are 3 lovense revs right now, all of the characteristic arrays are the same.
             return await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)MagicMotionBluetoothInfo.Chrs.Tx],
+                (uint)MagicMotionBluetoothInfo.Chrs.Tx,
                 data);
         }
     }

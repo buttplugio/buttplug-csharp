@@ -10,24 +10,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 {
     internal class KiirooBluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Rx = 0,
-            Tx = 1,
-        }
-
         public string[] Names { get; } = { "ONYX", "PEARL" };
 
         public Guid[] Services { get; } = { new Guid("49535343-fe7d-4ae5-8fa9-9fafd205e455") };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // rx
-            new Guid("49535343-1e4d-4bd9-ba61-23c647249616"),
-
-            // tx
-            new Guid("49535343-8841-43f4-a8d4-ecbe34729bb3"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -81,7 +68,6 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValue(cmdMsg.Id,
-                Info.Characteristics[(uint)KiirooBluetoothInfo.Chrs.Tx],
                 Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"));
         }
 

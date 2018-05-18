@@ -24,14 +24,11 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Vibratissimo",
         };
 
-        public Guid[] Characteristics { get; } =
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
         {
-            // tx characteristic
-            new Guid("00001524-1212-efde-1523-785feabcd123"),
-            new Guid("00001526-1212-efde-1523-785feabcd123"),
-
-            // rx characteristic
-            new Guid("00001527-1212-efde-1523-785feabcd123"),
+            { (uint)Chrs.TxMode, new Guid("00001524-1212-efde-1523-785feabcd123") },
+            { (uint)Chrs.TxSpeed, new Guid("00001526-1212-efde-1523-785feabcd123") },
+            { (uint)Chrs.Rx, new Guid("00001527-1212-efde-1523-785feabcd123") },
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
@@ -111,13 +108,13 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var data = new byte[] { 0x03, 0xff };
             await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)VibratissimoBluetoothInfo.Chrs.TxMode],
+                (uint)VibratissimoBluetoothInfo.Chrs.TxMode,
                 data);
 
             data[0] = Convert.ToByte(_vibratorSpeed * byte.MaxValue);
             data[1] = 0x00;
             return await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)VibratissimoBluetoothInfo.Chrs.TxSpeed],
+                (uint)VibratissimoBluetoothInfo.Chrs.TxSpeed,
                 data);
         }
     }

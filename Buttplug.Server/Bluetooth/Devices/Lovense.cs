@@ -9,12 +9,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 {
     internal class LovenseRev1BluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
         public Guid[] Services { get; } = { new Guid("0000fff0-0000-1000-8000-00805f9b34fb") };
 
         public string[] Names { get; } =
@@ -29,14 +23,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "LVS-L009",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("0000fff2-0000-1000-8000-00805f9b34fb"),
-
-            // rx characteristic
-            new Guid("0000fff1-0000-1000-8000-00805f9b34fb"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -47,12 +34,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class LovenseRev2BluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
         public Guid[] Services { get; } = { new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e") };
 
         public string[] Names { get; } =
@@ -67,14 +48,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "LVS_Z001",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("6e400002-b5a3-f393-e0a9-e50e24dcca9e"),
-
-            // rx characteristic
-            new Guid("6e400003-b5a3-f393-e0a9-e50e24dcca9e"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -85,12 +59,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class LovenseRev3BluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
         public Guid[] Services { get; } = { new Guid("50300001-0024-4bd4-bbd5-a6920e4c5653") };
 
         public string[] Names { get; } =
@@ -99,14 +67,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "LVS-P36",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("50300002-0024-4bd4-bbd5-a6920e4c5653"),
-
-            // rx characteristic
-            new Guid("50300003-0024-4bd4-bbd5-a6920e4c5653"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -117,12 +78,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class LovenseRev4BluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
         public Guid[] Services { get; } = { new Guid("57300001-0023-4bd4-bbd5-a6920e4c5653") };
 
         public string[] Names { get; } =
@@ -143,14 +98,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "LVS-Domi41",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("57300002-0023-4bd4-bbd5-a6920e4c5653"),
-
-            // rx characteristic
-            new Guid("57300003-0023-4bd4-bbd5-a6920e4c5653"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -161,12 +109,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class LovenseRev5BluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
         public Guid[] Services { get; } = { new Guid("5a300001-0024-4bd4-bbd5-a6920e4c5653") };
 
         public string[] Names { get; } =
@@ -175,14 +117,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "LVS-Z36",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("5a300002-0024-4bd4-bbd5-a6920e4c5653"),
-
-            // rx characteristic
-            new Guid("5a300003-0024-4bd4-bbd5-a6920e4c5653"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -193,12 +128,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class LovenseRev6BluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
         public Guid[] Services { get; } = { new Guid("50300001-0023-4bd4-bbd5-a6920e4c5653") };
 
         public string[] Names { get; } =
@@ -207,14 +136,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "LVS-Edge38",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("50300002-0023-4bd4-bbd5-a6920e4c5653"),
-
-            // rx characteristic
-            new Guid("50300003-0023-4bd4-bbd5-a6920e4c5653"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -225,12 +147,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class LovenseRev7BluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
         public Guid[] Services { get; } = { new Guid("53300001-0023-4bd4-bbd5-a6920e4c5653") };
 
         public string[] Names { get; } =
@@ -240,14 +156,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "LVS-Lush41",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("53300002-0023-4bd4-bbd5-a6920e4c5653"),
-
-            // rx characteristic
-            new Guid("53300003-0023-4bd4-bbd5-a6920e4c5653"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -258,12 +167,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class LovenseRev8BluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
         public Guid[] Services { get; } = { new Guid("5a300001-0023-4bd4-bbd5-a6920e4c5653") };
 
         public string[] Names { get; } =
@@ -272,14 +175,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "LVS-Hush41",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("5a300002-0023-4bd4-bbd5-a6920e4c5653"),
-
-            // rx characteristic
-            new Guid("5a300003-0023-4bd4-bbd5-a6920e4c5653"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)

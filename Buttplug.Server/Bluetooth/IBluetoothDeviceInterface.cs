@@ -10,7 +10,7 @@ namespace Buttplug.Server.Bluetooth
 
         Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse = false);
 
-        Task<ButtplugMessage> WriteValue(uint aMsgId, Guid aCharacteristicIndex, byte[] aValue, bool aWriteWithResponse = false);
+        Task<ButtplugMessage> WriteValue(uint aMsgId, uint aCharactieristicIndex, byte[] aValue, bool aWriteWithResponse = false);
 
         ulong GetAddress();
 
