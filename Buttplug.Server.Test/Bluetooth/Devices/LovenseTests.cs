@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
+    /*
     [TestFixture]
     public class LovenseTests
     {
@@ -621,4 +622,5 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 }, 8)).GetAwaiter().GetResult() is Error);
         }
     }
+    */
 }

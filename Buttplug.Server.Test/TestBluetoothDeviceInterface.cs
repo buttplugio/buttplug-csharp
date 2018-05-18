@@ -7,6 +7,7 @@ using Buttplug.Server.Bluetooth;
 
 namespace Buttplug.Server.Test
 {
+    /*
     public class TestBluetoothDeviceInterface : IBluetoothDeviceInterface
     {
         public string Name { get; }
@@ -41,7 +42,13 @@ namespace Buttplug.Server.Test
             DeviceRemoved += (obj, args) => { Removed = true; };
         }
 
-        public Task<ButtplugMessage> WriteValue(uint aMsgId, Guid aCharacteristic, byte[] aValue, bool aWriteWithResponse = false)
+        public Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse = false)
+        {
+            // TODO should probably have an actual guid here
+            return WriteValue(aMsgId, Guid.Empty, aValue, aWriteWithResponse);
+        }
+
+        public Task<ButtplugMessage> WriteValue(uint aMsgId, uint aCharacteristic, byte[] aValue, bool aWriteWithResponse = false)
         {
             LastWritten.Add(new WriteData(aValue)
             {
@@ -62,4 +69,5 @@ namespace Buttplug.Server.Test
             DeviceRemoved?.Invoke(this, new EventArgs());
         }
     }
+    */
 }
