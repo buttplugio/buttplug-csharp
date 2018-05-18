@@ -7,175 +7,36 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class LovenseRev1BluetoothInfo : IBluetoothDeviceInfo
+    internal class LovenseBluetoothInfo : IBluetoothDeviceInfo
     {
-        public Guid[] Services { get; } = { new Guid("0000fff0-0000-1000-8000-00805f9b34fb") };
-
-        public string[] Names { get; } =
+        public enum Chrs : uint
         {
-            // Nora
-            "LVS-A011", "LVS-C011",
-
-            // Max
-            "LVS-B011",
-
-            // Ambi
-            "LVS-L009",
-        };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Lovense(aLogManager, aInterface, this);
+            Tx = 0,
+            Rx,
         }
-    }
 
-    internal class LovenseRev2BluetoothInfo : IBluetoothDeviceInfo
-    {
-        public Guid[] Services { get; } = { new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e") };
+        // Use NamePrefix instead
+        public string[] Names { get; } = { };
 
-        public string[] Names { get; } =
-        {
-            // Lush
-            "LVS-S001",
-
-            // Hush
-            "LVS-Z001",
-
-            // Hush
-            "LVS_Z001",
-        };
-
+        // Use autocreated TX/RX characteristics
         public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
+        public Guid[] Services { get; } =
         {
-            return new Lovense(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class LovenseRev3BluetoothInfo : IBluetoothDeviceInfo
-    {
-        public Guid[] Services { get; } = { new Guid("50300001-0024-4bd4-bbd5-a6920e4c5653") };
-
-        public string[] Names { get; } =
-        {
-            // Edge
-            "LVS-P36",
+            new Guid("0000fff0-0000-1000-8000-00805f9b34fb"),
+            new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e"),
+            new Guid("50300001-0024-4bd4-bbd5-a6920e4c5653"),
+            new Guid("57300001-0023-4bd4-bbd5-a6920e4c5653"),
+            new Guid("5a300001-0024-4bd4-bbd5-a6920e4c5653"),
+            new Guid("50300001-0023-4bd4-bbd5-a6920e4c5653"),
+            new Guid("53300001-0023-4bd4-bbd5-a6920e4c5653"),
+            new Guid("5a300001-0023-4bd4-bbd5-a6920e4c5653"),
         };
 
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
+        public string[] NamePrefixes { get; } =
         {
-            return new Lovense(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class LovenseRev4BluetoothInfo : IBluetoothDeviceInfo
-    {
-        public Guid[] Services { get; } = { new Guid("57300001-0023-4bd4-bbd5-a6920e4c5653") };
-
-        public string[] Names { get; } =
-        {
-            // Domi
-            "LVS-Domi37",
-
-            // Domi
-            "LVS-Domi38",
-
-            // Domi
-            "LVS-Domi39",
-
-            // Domi
-            "LVS-Domi40",
-
-            // Domi
-            "LVS-Domi41",
+            "LVS",
         };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Lovense(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class LovenseRev5BluetoothInfo : IBluetoothDeviceInfo
-    {
-        public Guid[] Services { get; } = { new Guid("5a300001-0024-4bd4-bbd5-a6920e4c5653") };
-
-        public string[] Names { get; } =
-        {
-            // Hush. Again.
-            "LVS-Z36",
-        };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Lovense(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class LovenseRev6BluetoothInfo : IBluetoothDeviceInfo
-    {
-        public Guid[] Services { get; } = { new Guid("50300001-0023-4bd4-bbd5-a6920e4c5653") };
-
-        public string[] Names { get; } =
-        {
-            "LVS-Edge37",
-            "LVS-Edge38",
-        };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Lovense(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class LovenseRev7BluetoothInfo : IBluetoothDeviceInfo
-    {
-        public Guid[] Services { get; } = { new Guid("53300001-0023-4bd4-bbd5-a6920e4c5653") };
-
-        public string[] Names { get; } =
-        {
-            // Lush. Again.
-            "LVS-S35",
-            "LVS-Lush41",
-        };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Lovense(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class LovenseRev8BluetoothInfo : IBluetoothDeviceInfo
-    {
-        public Guid[] Services { get; } = { new Guid("5a300001-0023-4bd4-bbd5-a6920e4c5653") };
-
-        public string[] Names { get; } =
-        {
-            // Hush. Again.
-            "LVS-Hush41",
-        };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)

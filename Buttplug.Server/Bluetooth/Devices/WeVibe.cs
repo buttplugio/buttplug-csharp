@@ -11,6 +11,8 @@ namespace Buttplug.Server.Bluetooth.Devices
     {
         public Guid[] Services { get; } = { new Guid("f000bb03-0451-4000-b000-000000000000") };
 
+        public string[] NamePrefixes { get; } = { };
+
         public string[] Names { get; } =
         {
             "Cougar",

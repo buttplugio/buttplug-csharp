@@ -22,6 +22,8 @@ namespace Buttplug.Server.Bluetooth.Devices
             { (uint)Chrs.Tx, new Guid("40ee2222-63ec-4b7f-8ce7-712efd55b90e") },
         };
 
+        public string[] NamePrefixes { get; } = { };
+
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
