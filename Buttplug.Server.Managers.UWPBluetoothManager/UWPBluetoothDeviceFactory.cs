@@ -7,7 +7,6 @@ using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
@@ -33,6 +32,20 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         public bool MayBeDevice(string advertName, List<Guid> advertGUIDs)
         {
+            if (_deviceInfo.NamePrefixes.Any())
+            {
+                foreach (var deviceInfoNamePrefix in _deviceInfo.NamePrefixes)
+                {
+                    if (advertName.IndexOf(deviceInfoNamePrefix) != 0)
+                    {
+                        continue;
+                    }
+
+                    _bpLogger.Debug("Found " + advertName + " via NamePrefix " + deviceInfoNamePrefix);
+                    return true;
+                }
+            }
+
             if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(advertName))
             {
                 return false;
