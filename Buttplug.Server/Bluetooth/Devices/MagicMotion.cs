@@ -26,6 +26,8 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public Guid[] Services { get; } = { new Guid("78667579-7b48-43db-b8c5-7928a6b0a335") };
 
+        public string[] NamePrefixes { get; } = { };
+
         public string[] Names { get; } =
         {
             "Smart Mini Vibe",
