@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
+    /*
     [TestFixture]
     public class MagicMotionTests
     {
@@ -93,4 +94,5 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 }, 8)).GetAwaiter().GetResult() is Error);
         }
     }
+    */
 }

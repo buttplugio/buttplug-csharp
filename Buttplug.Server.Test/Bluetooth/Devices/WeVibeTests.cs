@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
+    /*
     [TestFixture]
     public class WeVibeTests
     {
@@ -215,4 +216,5 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 }, 8)).GetAwaiter().GetResult() is Error);
         }
     }
+    */
 }
