@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -16,10 +17,9 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public string[] Names { get; } = { "CycSA" };
 
-        public Guid[] Characteristics { get; } =
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
         {
-                // tx characteristic
-                new Guid("40ee2222-63ec-4b7f-8ce7-712efd55b90e"),
+            { (uint)Chrs.Tx, new Guid("40ee2222-63ec-4b7f-8ce7-712efd55b90e") },
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
@@ -102,7 +102,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
             return await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
+                (uint)VorzeA10CycloneInfo.Chrs.Tx,
                 new byte[] { 0x01, 0x01, rawSpeed });
         }
     }

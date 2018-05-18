@@ -26,16 +26,16 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public Guid[] Services { get; } = { new Guid("88f82580-0000-01e6-aace-0002a5d5c51b") };
 
-        public Guid[] Characteristics { get; } =
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
         {
             // tx
-            new Guid("88f82581-0000-01e6-aace-0002a5d5c51b"),
+            { (uint)Chrs.Tx, new Guid("88f82581-0000-01e6-aace-0002a5d5c51b") },
 
             // rx (touch: 3 zone bitmask)
-            new Guid("88f82582-0000-01e6-aace-0002a5d5c51b"),
+            { (uint)Chrs.RxTouch, new Guid("88f82582-0000-01e6-aace-0002a5d5c51b") },
 
             // rx (accellorometer?)
-            new Guid("88f82584-0000-01e6-aace-0002a5d5c51b"),
+            { (uint)Chrs.RxAccel, new Guid("88f82584-0000-01e6-aace-0002a5d5c51b") },
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
@@ -186,7 +186,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             };
 
             return await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],
+                (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx,
                 data);
         }
     }

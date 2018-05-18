@@ -9,11 +9,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 {
     internal class YoucupsBluetoothInfo : IBluetoothDeviceInfo
     {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-        }
-
         public Guid[] Services { get; } = { new Guid("0000fee9-0000-1000-8000-00805f9b34fb") };
 
         public string[] Names { get; } =
@@ -22,11 +17,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Youcups",
         };
 
-        public Guid[] Characteristics { get; } =
-        {
-            // tx characteristic
-            new Guid("d44bc439-abfd-45a2-b575-925416129600"),
-        };
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -109,7 +100,6 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValue(aMsg.Id,
-                Info.Characteristics[(uint)YoucupsBluetoothInfo.Chrs.Tx],
                 Encoding.ASCII.GetBytes($"$SYS,{(int)(_vibratorSpeed * 8), 1}?"));
         }
     }

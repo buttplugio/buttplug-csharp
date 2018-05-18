@@ -3,6 +3,7 @@ using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
@@ -20,8 +21,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         private GattCharacteristic _rxChar;
 
-        [NotNull]
-        private readonly GattCharacteristic[] _namedChars;
+        private readonly Dictionary<uint, GattCharacteristic> _indexedChars;
 
         [NotNull]
         private readonly IButtplugLog _bpLogger;
@@ -37,14 +37,36 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         public UWPBluetoothDeviceInterface(
             [NotNull] IButtplugLogManager aLogManager,
+            [NotNull] IBluetoothDeviceInfo aInfo,
             [NotNull] BluetoothLEDevice aDevice,
             [NotNull] GattCharacteristic[] aChars)
         {
             _bpLogger = aLogManager.GetLogger(GetType());
             _bleDevice = aDevice;
-            _namedChars = aChars;
 
-            if (aChars.Length <= 2)
+            if (aInfo.Characteristics.Count > 0)
+            {
+                foreach (var item in aInfo.Characteristics)
+                {
+                    var c = (from x in aChars
+                            where x.Uuid == item.Value
+                        select x).ToArray();
+                    if (c.Length != 1)
+                    {
+                        var err = $"Cannot find characteristic ${item.Value} for device {Name}";
+                        _bpLogger.Error(err);
+                        throw new Exception(err);
+                    }
+
+                    if (_indexedChars == null)
+                    {
+                        _indexedChars = new Dictionary<uint, GattCharacteristic>();
+                    }
+
+                    _indexedChars.Add(item.Key, c[0]);
+                }
+            }
+            else if (aChars.Length <= 2)
             {
                 foreach (var c in aChars)
                 {
@@ -60,6 +82,12 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                         _txChar = c;
                     }
                 }
+            }
+            else
+            {
+                var err = $"No characteristics to connect to for device {Name}";
+                _bpLogger.Error(err);
+                throw new Exception(err);
             }
 
             _bleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
@@ -82,7 +110,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             if (_txChar == null)
             {
-                // Throw here
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"WriteValue using txChar called with no txChar available");
             }
 
             return await WriteValue(aMsgId, _txChar, aValue, aWriteWithResponse);
@@ -90,28 +119,25 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         [ItemNotNull]
         public async Task<ButtplugMessage> WriteValue(uint aMsgId,
-            Guid aCharacteristic,
+            uint aIndex,
             byte[] aValue,
             bool aWriteWithResponse = false)
         {
-            var chrs = from x in _namedChars
-                       where x.Uuid == aCharacteristic
-                       select x;
-
-            var gattCharacteristics = chrs.ToArray();
-
-            if (!gattCharacteristics.Any())
+            if (_indexedChars == null)
             {
-                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"Requested characteristic {aCharacteristic} not found");
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"WriteValue using indexed characteristics called with no indexed characteristics available");
             }
-            else if (gattCharacteristics.Length > 1)
+
+            if (!_indexedChars.ContainsKey(aIndex))
             {
-                _bpLogger.Warn($"Multiple gattCharacteristics for {aCharacteristic} found");
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"WriteValue using indexed characteristics called with invalid index");
             }
 
             // We need the GattCharacteristic cast, otherwise the parameters are ambiguous. I have no
             // idea how GattCharacteristic implicitly casts to Guid but here we are.
-            return await WriteValue(aMsgId, (GattCharacteristic)gattCharacteristics[0], aValue, aWriteWithResponse);
+            return await WriteValue(aMsgId, _indexedChars[aIndex], aValue, aWriteWithResponse);
         }
 
         private async Task<ButtplugMessage> WriteValue(uint aMsgId,
@@ -149,10 +175,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             DeviceRemoved?.Invoke(this, new EventArgs());
             _txChar = null;
             _rxChar = null;
-            for (int i = 0; i < _namedChars.Length; i++)
-            {
-                _namedChars[i] = null;
-            }
+            _indexedChars.Clear();
 
             _bleDevice.Dispose();
             _bleDevice = null;
