@@ -17,13 +17,13 @@ namespace Buttplug.Server.Bluetooth.Devices
             Cmd = 2,
         };
 
-        public string[] Names { get; } = { "Launch" };
+        public static string[] NamesInfo = { "Launch" };
 
-        public string[] NamePrefixes { get; } = { };
+        public static string[] NamePrefixesInfo = { };
 
-        public Guid[] Services { get; } = { new Guid("88f80580-0000-01e6-aace-0002a5d5c51b") };
+        public static Guid[] ServicesInfo = { new Guid("88f80580-0000-01e6-aace-0002a5d5c51b") };
 
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
+        public static Dictionary<uint, Guid> CharacteristicsInfo { get; } = new Dictionary<uint, Guid>()
         {
             // tx
             { (uint)Chrs.Tx, new Guid("88f80581-0000-01e6-aace-0002a5d5c51b") },
@@ -34,6 +34,14 @@ namespace Buttplug.Server.Bluetooth.Devices
             // cmd
             { (uint)Chrs.Cmd, new Guid("88f80583-0000-01e6-aace-0002a5d5c51b") },
         };
+
+        public Dictionary<uint, Guid> Characteristics { get; } = CharacteristicsInfo;
+
+        public Guid[] Services { get; } = ServicesInfo;
+
+        public string[] Names { get; } = NamesInfo;
+
+        public string[] NamePrefixes { get; } = NamePrefixesInfo;
 
         public IButtplugDevice CreateDevice(
             IButtplugLogManager aLogManager,

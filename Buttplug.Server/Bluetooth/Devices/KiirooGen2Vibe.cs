@@ -17,18 +17,18 @@ namespace Buttplug.Server.Bluetooth.Devices
             RxAccel = 2,
         }
 
-        public string[] Names { get; } =
+        public static string[] NamesInfo { get; } =
         {
             "Pearl2",
             "Fuse",
             "Virtual Blowbot",
         };
 
-        public string[] NamePrefixes { get; } = { };
+        public static string[] NamePrefixesInfo { get; } = { };
 
-        public Guid[] Services { get; } = { new Guid("88f82580-0000-01e6-aace-0002a5d5c51b") };
+        public static Guid[] ServicesInfo { get; } = { new Guid("88f82580-0000-01e6-aace-0002a5d5c51b") };
 
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
+        public static Dictionary<uint, Guid> CharacteristicsInfo { get; } = new Dictionary<uint, Guid>()
         {
             // tx
             { (uint)Chrs.Tx, new Guid("88f82581-0000-01e6-aace-0002a5d5c51b") },
@@ -39,6 +39,14 @@ namespace Buttplug.Server.Bluetooth.Devices
             // rx (accellorometer?)
             { (uint)Chrs.RxAccel, new Guid("88f82584-0000-01e6-aace-0002a5d5c51b") },
         };
+
+        public Dictionary<uint, Guid> Characteristics { get; } = CharacteristicsInfo;
+
+        public Guid[] Services { get; } = ServicesInfo;
+
+        public string[] Names { get; } = NamesInfo;
+
+        public string[] NamePrefixes { get; } = NamePrefixesInfo;
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -53,14 +61,14 @@ namespace Buttplug.Server.Bluetooth.Devices
         private readonly double[] _vibratorSpeeds = { 0, 0, 0 };
 
         // ReSharper disable once InconsistentNaming
-        private struct KiirooGen2VibeType
+        internal struct KiirooGen2VibeType
         {
             public string Brand;
             public uint VibeCount;
             public uint[] VibeOrder;
         }
 
-        private static readonly Dictionary<string, KiirooGen2VibeType> DevInfos = new Dictionary<string, KiirooGen2VibeType>()
+        internal static readonly Dictionary<string, KiirooGen2VibeType> DevInfos = new Dictionary<string, KiirooGen2VibeType>()
         {
             {
                 "Pearl2",
