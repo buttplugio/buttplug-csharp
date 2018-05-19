@@ -35,7 +35,7 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" version="11.1.0" />
-    <PackageReference Include="NLog" version="4.5.0-rc03" />
+    <PackageReference Include="NLog" version="4.5.4" />
     <PackageReference Include="StyleCop.Analyzers" version="1.1.0-beta004" PrivateAssets="All" />
     <PackageReference Include="WebSocket4Net" Version="0.15.2" />
   </ItemGroup>
