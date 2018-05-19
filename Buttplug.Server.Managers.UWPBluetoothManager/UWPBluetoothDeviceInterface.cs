@@ -70,13 +70,13 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             {
                 foreach (var c in aChars)
                 {
-                    if ((c.CharacteristicProperties & GattCharacteristicProperties.Read) != 0 ||
-                        (c.CharacteristicProperties & GattCharacteristicProperties.Notify) != 0)
+                    if (c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read) ||
+                        c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
                     {
                         _rxChar = c;
                     }
-                    else if ((c.CharacteristicProperties & GattCharacteristicProperties.WriteWithoutResponse) != 0 ||
-                             (c.CharacteristicProperties & GattCharacteristicProperties.Write) != 0)
+                    else if (c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse) ||
+                             c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write))
 
                     {
                         _txChar = c;
@@ -91,6 +91,19 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
 
             _bleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
+        }
+
+        public async Task SubscribeToUpdates()
+        {
+            if (_rxChar != null && _rxChar.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
+            {
+                GattCommunicationStatus status = await _rxChar.WriteClientCharacteristicConfigurationDescriptorAsync(
+                    GattClientCharacteristicConfigurationDescriptorValue.Notify);
+                if (status == GattCommunicationStatus.Success)
+                {
+                    // Server has been informed of clients interest.
+                }
+            }
         }
 
         private void ConnectionStatusChangedHandler([NotNull] BluetoothLEDevice aDevice, [NotNull] object aObj)
@@ -168,6 +181,40 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
 
             return new Ok(aMsgId);
+        }
+
+        public async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId)
+        {
+            if (_rxChar == null)
+            {
+                return (_bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"ReadValue using rxChar called with no rxChar available"), new byte[] { });
+            }
+
+            return await ReadValue(aMsgId, _rxChar);
+        }
+
+        public async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, uint aIndex)
+        {
+            if (_indexedChars == null)
+            {
+                return (_bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"ReadValue using indexed characteristics called with no indexed characteristics available"), new byte[] { });
+            }
+
+            if (!_indexedChars.ContainsKey(aIndex))
+            {
+                return (_bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"ReadValue using indexed characteristics called with invalid index"), new byte[] { });
+            }
+
+            return await ReadValue(aMsgId, _indexedChars[aIndex]);
+        }
+
+        private async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, GattCharacteristic aChar)
+        {
+            var result = aChar.ReadValueAsync().GetResults().Value.ToArray();
+            return (new Ok(aMsgId), result);
         }
 
         public void Disconnect()
