@@ -6,7 +6,7 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class VorzeA10CycloneInfo : IBluetoothDeviceInfo
+    internal class VorzeA10CycloneBluetoothInfo : IBluetoothDeviceInfo
     {
         public enum Chrs : uint
         {
@@ -104,7 +104,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
             return await Interface.WriteValue(aMsg.Id,
-                (uint)VorzeA10CycloneInfo.Chrs.Tx,
+                (uint)VorzeA10CycloneBluetoothInfo.Chrs.Tx,
                 new byte[] { 0x01, 0x01, rawSpeed });
         }
     }
