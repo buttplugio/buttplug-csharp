@@ -1,98 +1,127 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
+using Buttplug.Server.Test.Util;
+using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
-    /*
     [TestFixture]
     public class VorzeA10CycloneTests
     {
-        [Test]
-        public void VorzeA10CycloneTest()
+        [NotNull]
+        private BluetoothDeviceTestUtils<VorzeA10CycloneBluetoothInfo> testUtil;
+
+        [SetUp]
+        public void Init()
         {
-            var bleInfo = new VorzeA10CycloneInfo();
+            testUtil = new BluetoothDeviceTestUtils<VorzeA10CycloneBluetoothInfo>();
+            testUtil.SetupTest("CycSA");
+        }
 
-            Assert.True(bleInfo.Characteristics.Length > (uint)VorzeA10CycloneInfo.Chrs.Tx);
-            Assert.NotNull(bleInfo.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx]);
+        [Test]
+        public void TestAllowedMessages()
+        {
+            testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
+            {
+                { typeof(StopDeviceCmd), 0 },
+                { typeof(VorzeA10CycloneCmd), 0 },
+                { typeof(RotateCmd), 1 },
+            });
+        }
 
-            Assert.NotNull(bleInfo.Services);
-            Assert.True(bleInfo.Services.Any());
-            Assert.NotNull(bleInfo.Services[0]);
+        // StopDeviceCmd noop test handled in GeneralDeviceTests
 
-            Assert.NotNull(bleInfo.Names);
+        [Test]
+        public void TestStopDeviceCmd()
+        {
+            var expected = new byte[] { 0x1, 0x1, 50 };
 
-            // Test the Ditto
-            var inter = new TestBluetoothDeviceInterface("CycSA", 2);
-            var dev = bleInfo.CreateDevice(new ButtplugLogManager(), inter);
-            Assert.AreEqual(3, dev.GetAllowedMessageTypes().Count());
-            Assert.True(dev.GetAllowedMessageTypes().Contains(typeof(StopDeviceCmd)));
-            Assert.NotNull(dev.GetMessageAttrs(typeof(StopDeviceCmd)));
-            Assert.Null(dev.GetMessageAttrs(typeof(StopDeviceCmd)).FeatureCount);
-            Assert.True(dev.GetAllowedMessageTypes().Contains(typeof(VorzeA10CycloneCmd)));
-            Assert.NotNull(dev.GetMessageAttrs(typeof(VorzeA10CycloneCmd)));
-            Assert.Null(dev.GetMessageAttrs(typeof(VorzeA10CycloneCmd)).FeatureCount);
-            Assert.True(dev.GetAllowedMessageTypes().Contains(typeof(RotateCmd)));
-            Assert.NotNull(dev.GetMessageAttrs(typeof(RotateCmd)));
-            Assert.AreEqual(1, dev.GetMessageAttrs(typeof(RotateCmd)).FeatureCount);
-
-            Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 4)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWritten.Count);
-
-            Assert.True(dev.ParseMessage(new VorzeA10CycloneCmd(4, 50, true, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWritten.Count);
-            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
-            Assert.AreEqual(bleInfo.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
-                inter.LastWritten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x01, 0x01, 0xb2 }, inter.LastWritten[0].Value);
-            Assert.False(inter.LastWritten[0].WriteWithResponse);
-            inter.LastWritten.Clear();
-
-            Assert.True(dev.ParseMessage(new VorzeA10CycloneCmd(4, 50, true, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWritten.Count);
-
-            Assert.True(dev.ParseMessage(new VorzeA10CycloneCmd(4, 99, true, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWritten.Count);
-            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
-            Assert.AreEqual(bleInfo.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
-                inter.LastWritten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x01, 0x01, 0xe3 }, inter.LastWritten[0].Value);
-            Assert.False(inter.LastWritten[0].WriteWithResponse);
-            inter.LastWritten.Clear();
-
-            Assert.True(dev.ParseMessage(new VorzeA10CycloneCmd(4, 25, false, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWritten.Count);
-            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
-            Assert.AreEqual(bleInfo.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
-                inter.LastWritten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x01, 0x01, 0x19 }, inter.LastWritten[0].Value);
-            Assert.False(inter.LastWritten[0].WriteWithResponse);
-            inter.LastWritten.Clear();
-
-            Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 9)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWritten.Count);
-            Assert.AreEqual(9, inter.LastWritten[0].MsgId);
-            Assert.AreEqual(bleInfo.Characteristics[(uint)VorzeA10CycloneInfo.Chrs.Tx],
-                inter.LastWritten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x01, 0x01, 0x00 }, inter.LastWritten[0].Value);
-            Assert.False(inter.LastWritten[0].WriteWithResponse);
-            inter.LastWritten.Clear();
-
-            Assert.True(dev.ParseMessage(new RotateCmd(4,
-                new List<RotateCmd.RotateSubcommand>
+            testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
+                new List<(byte[], uint)>()
                 {
-                    new RotateCmd.RotateSubcommand(0, 0.75, true),
-                    new RotateCmd.RotateSubcommand(1, 0.75, false),
-                }, 8)).GetAwaiter().GetResult() is Error);
-            Assert.True(dev.ParseMessage(new RotateCmd(4,
-                new List<RotateCmd.RotateSubcommand>
+                    (expected, (uint)VorzeA10CycloneBluetoothInfo.Chrs.Tx)
+                }, false);
+
+            expected = new byte[] { 0x1, 0x1, 0 };
+
+            testUtil.TestDeviceMessage(new StopDeviceCmd(4),
+                new List<(byte[], uint)>()
                 {
-                    new RotateCmd.RotateSubcommand(1, 0.75, false),
-                }, 8)).GetAwaiter().GetResult() is Error);
+                    (expected, (uint)VorzeA10CycloneBluetoothInfo.Chrs.Tx),
+                }, false);
+        }
+
+        [Test]
+        public void TestVorzeA10CycloneCmd()
+        {
+            var expected = new byte[] { 0x1, 0x1, 50 };
+
+            testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
+                new List<(byte[], uint)>()
+                {
+                        (expected, (uint)VorzeA10CycloneBluetoothInfo.Chrs.Tx),
+                }, false);
+
+            expected = new byte[] { 0x1, 0x1, 50 + 128 };
+
+            testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, true),
+                new List<(byte[], uint)>()
+                {
+                    (expected, (uint)VorzeA10CycloneBluetoothInfo.Chrs.Tx),
+                }, false);
+        }
+
+        [Test]
+        public void TestRotateCmd()
+        {
+            var expected = new byte[] { 0x1, 0x1, 50 };
+
+            testUtil.TestDeviceMessage(
+                new RotateCmd(4, new List<RotateCmd.RotateSubcommand>()
+                {
+                    new RotateCmd.RotateSubcommand(0, 0.5, false),
+                }),
+                new List<(byte[], uint)>()
+                {
+                    (expected, (uint)VorzeA10CycloneBluetoothInfo.Chrs.Tx),
+                }, false);
+
+            expected = new byte[] { 0x1, 0x1, 50 + 128 };
+
+            testUtil.TestDeviceMessage(
+                new RotateCmd(4, new List<RotateCmd.RotateSubcommand>()
+                {
+                    new RotateCmd.RotateSubcommand(0, 0.5, true),
+                }),
+                new List<(byte[], uint)>()
+                {
+                    (expected, (uint)VorzeA10CycloneBluetoothInfo.Chrs.Tx),
+                }, false);
+        }
+
+        [Test]
+        public void TestInvalidVibrateCmd()
+        {
+            testUtil.TestInvalidDeviceMessage(
+                new RotateCmd(4, new List<RotateCmd.RotateSubcommand>()
+                {
+                }));
+            testUtil.TestInvalidDeviceMessage(
+                new RotateCmd(4, new List<RotateCmd.RotateSubcommand>()
+                {
+                    new RotateCmd.RotateSubcommand(0, 0.5, true),
+                    new RotateCmd.RotateSubcommand(1, 0.5, true),
+                }));
+            testUtil.TestInvalidDeviceMessage(
+                new RotateCmd(4, new List<RotateCmd.RotateSubcommand>()
+                {
+                    new RotateCmd.RotateSubcommand(0xffffffff, 0.5, true),
+                }));
         }
     }
-    */
 }

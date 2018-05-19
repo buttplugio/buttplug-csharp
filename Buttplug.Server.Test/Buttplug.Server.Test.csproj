@@ -61,6 +61,7 @@
     <Compile Include="ArgsTests.cs" />
     <Compile Include="AssemblyGitVersionTests.cs" />
     <Compile Include="Bluetooth\Devices\FleshlightLaunchTests.cs" />
+    <Compile Include="Bluetooth\Devices\GeneralDeviceTests.cs" />
     <Compile Include="Bluetooth\Devices\KiirooGen2VibeTests.cs" />
     <Compile Include="Bluetooth\Devices\KiirooTests.cs" />
     <Compile Include="Bluetooth\Devices\VorzeA10CycloneTests.cs" />
