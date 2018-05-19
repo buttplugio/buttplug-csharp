@@ -15,12 +15,12 @@ using JetBrains.Annotations;
 using Microsoft.Win32;
 using Windows.UI.Notifications;
 
-namespace Buttplug.Apps.WebsocketServerGUI
+namespace Buttplug.Apps.ServerGUI
 {
     /// <summary>
     /// Interaction logic for WebsocketServerControl.xaml
     /// </summary>
-    public partial class WebsocketServerControl
+    public partial class ServerControl
     {
         private readonly ButtplugWebsocketServer _ws;
         private readonly IButtplugServerFactory _bpFactory;
@@ -35,7 +35,7 @@ namespace Buttplug.Apps.WebsocketServerGUI
         private Timer _toastTimer;
         private string _currentExceptionMessage;
 
-        public WebsocketServerControl(IButtplugServerFactory bpFactory)
+        public ServerControl(IButtplugServerFactory bpFactory)
         {
             InitializeComponent();
             _logManager = new ButtplugLogManager();

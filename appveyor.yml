@@ -87,7 +87,7 @@ after_build:
   - ps: $result = [xml](Get-Content .\resharper-clt-output.xml)
   - ps: $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
 test_script:
-  - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"$env:SYSTEMDRIVE\Tools\NUnit3\nunit3-console.exe" -targetargs:"Buttplug.Server.Test\bin\$env:CONFIGURATION\Buttplug.Server.Test.dll Buttplug.Client.Test\bin\$env:CONFIGURATION\Buttplug.Client.Test.dll Buttplug.Apps.WebsocketServerGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.WebsocketServerGUI.Test.dll Buttplug.Apps.KiirooEmulatorGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.KiirooEmulatorGUI.Test.dll --workers=1 --inprocess --result=myresults.xml;format=AppVeyor" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
+  - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"$env:SYSTEMDRIVE\Tools\NUnit3\nunit3-console.exe" -targetargs:"Buttplug.Server.Test\bin\$env:CONFIGURATION\Buttplug.Server.Test.dll Buttplug.Client.Test\bin\$env:CONFIGURATION\Buttplug.Client.Test.dll Buttplug.Apps.ServerGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.ServerGUI.Test.dll Buttplug.Apps.KiirooEmulatorGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.KiirooEmulatorGUI.Test.dll --workers=1 --inprocess --result=myresults.xml;format=AppVeyor" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
 after_test:
   - ps: |
       If (($env:CONFIGURATION -imatch "Debug")) {

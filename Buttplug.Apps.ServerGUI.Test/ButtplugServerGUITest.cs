@@ -2,10 +2,10 @@
 using System.Threading;
 using NUnit.Framework;
 
-namespace Buttplug.Apps.WebsocketServerGUI.Test
+namespace Buttplug.Apps.ServerGUI.Test
 {
     [TestFixture]
-    public class ButtplugWebsocketServerGUITest
+    public class ButtplugServerGUITest
     {
         private Exception didStart;
 
