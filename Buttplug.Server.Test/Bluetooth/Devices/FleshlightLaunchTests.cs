@@ -1,118 +1,117 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
+using Buttplug.Server.Test.Util;
+using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
-    /*
     [TestFixture]
     public class FleshlightLaunchTests
     {
-        [Test]
-        public void FleshlightLaunchTest()
+        [NotNull]
+        private BluetoothDeviceTestUtils<FleshlightLaunchBluetoothInfo> testUtil;
+
+        [SetUp]
+        public void Init()
         {
-            var bleInfo = new FleshlightLaunchBluetoothInfo();
+            testUtil = new BluetoothDeviceTestUtils<FleshlightLaunchBluetoothInfo>();
+            testUtil.SetupTest("Launch");
+        }
 
-            foreach (var chr in new[]
+        [Test]
+        public void TestAllowedMessages()
+        {
+            testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
             {
-                FleshlightLaunchBluetoothInfo.Chrs.Rx,
-                FleshlightLaunchBluetoothInfo.Chrs.Tx,
-                FleshlightLaunchBluetoothInfo.Chrs.Cmd,
-            })
+                { typeof(StopDeviceCmd), 0 },
+                { typeof(FleshlightLaunchFW12Cmd), 0 },
+                { typeof(LinearCmd), 1 },
+            });
+        }
+
+        [Test]
+        public void TestInitialize()
+        {
+            testUtil.TestDeviceInitialize(new List<(byte[], uint)>()
             {
-                Assert.True(bleInfo.Characteristics.Length > (uint)chr);
-                Assert.NotNull(bleInfo.Characteristics[(uint)chr]);
-            }
+                (new byte[1] { 0x0 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
+            }, true);
+        }
 
-            Assert.NotNull(bleInfo.Services);
-            Assert.True(bleInfo.Services.Any());
-            Assert.NotNull(bleInfo.Services[0]);
+        // StopDeviceCmd test handled in GeneralDeviceTests
 
-            Assert.NotNull(bleInfo.Names);
+        // In all device message tests, expect WriteWithResponse to be false.
+        [Test]
+        public void TestFleshlightLaunchFW12Cmd()
+        {
+            testUtil.TestDeviceMessage(new FleshlightLaunchFW12Cmd(4, 50, 50),
+                new List<(byte[], uint)>()
+                {
+                    (new byte[2] { 50, 50 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
+                }, false);
+        }
 
-            // Test the Launch
-            var inter = new TestBluetoothDeviceInterface("Launch", 2);
-            var dev = bleInfo.CreateDevice(new ButtplugLogManager(), inter);
-            Assert.AreEqual(3, dev.GetAllowedMessageTypes().Count());
-            Assert.True(dev.GetAllowedMessageTypes().Contains(typeof(StopDeviceCmd)));
-            Assert.NotNull(dev.GetMessageAttrs(typeof(StopDeviceCmd)));
-            Assert.Null(dev.GetMessageAttrs(typeof(StopDeviceCmd)).FeatureCount);
-            Assert.True(dev.GetAllowedMessageTypes().Contains(typeof(FleshlightLaunchFW12Cmd)));
-            Assert.NotNull(dev.GetMessageAttrs(typeof(FleshlightLaunchFW12Cmd)));
-            Assert.Null(dev.GetMessageAttrs(typeof(FleshlightLaunchFW12Cmd)).FeatureCount);
-            Assert.True(dev.GetAllowedMessageTypes().Contains(typeof(LinearCmd)));
-            Assert.NotNull(dev.GetMessageAttrs(typeof(LinearCmd)));
-            Assert.AreEqual(1, dev.GetMessageAttrs(typeof(LinearCmd)).FeatureCount);
+        // TODO Test currently fails because we will send repeated packets to the launch. See #402.
+        /*
+        [Test]
+        public void TestRepeatedFleshlightLaunchFW12Cmd()
+        {
+            testUtil.TestDeviceMessage(new FleshlightLaunchFW12Cmd(4, 50, 50),
+                new List<byte[]>()
+                {
+                    new byte[2] { 50, 50 },
+                }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx, false);
+            testUtil.TestDeviceMessageNoop(new FleshlightLaunchFW12Cmd(4, 50, 50));
+        }
+        */
 
-            Assert.True(dev.Initialize().GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWritten.Count);
-            Assert.AreEqual(0, inter.LastWritten[0].MsgId);
-            Assert.AreEqual(bleInfo.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd],
-                inter.LastWritten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x00 }, inter.LastWritten[0].Value);
-            Assert.True(inter.LastWritten[0].WriteWithResponse);
-            inter.LastWritten.Clear();
-
-            Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 4)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWritten.Count);
-
-            Assert.True(dev.ParseMessage(new FleshlightLaunchFW12Cmd(4, 50, 50, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWritten.Count);
-            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
-            Assert.AreEqual(bleInfo.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],
-                inter.LastWritten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x32, 0x32 }, inter.LastWritten[0].Value);
-            Assert.False(inter.LastWritten[0].WriteWithResponse);
-            inter.LastWritten.Clear();
-
-            Assert.True(dev.ParseMessage(new FleshlightLaunchFW12Cmd(4, 50, 50, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWritten.Count);
-            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
-            Assert.AreEqual(bleInfo.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],
-                inter.LastWritten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x32, 0x32 }, inter.LastWritten[0].Value);
-            Assert.False(inter.LastWritten[0].WriteWithResponse);
-            inter.LastWritten.Clear();
-
-            Assert.True(dev.ParseMessage(new FleshlightLaunchFW12Cmd(4, 99, 99, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWritten.Count);
-            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
-            Assert.AreEqual(bleInfo.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],
-                inter.LastWritten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x63, 0x63 }, inter.LastWritten[0].Value);
-            Assert.False(inter.LastWritten[0].WriteWithResponse);
-            inter.LastWritten.Clear();
-
-            Assert.True(dev.ParseMessage(new LinearCmd(4, new List<LinearCmd.VectorSubcommands>
+        [Test]
+        public void TestVectorCmd()
+        {
+            var msg = new LinearCmd(4, new List<LinearCmd.VectorSubcommands>
             {
-                new LinearCmd.VectorSubcommands(0, 500, 0),
-            }, 6)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(1, inter.LastWritten.Count);
-            Assert.AreEqual(6, inter.LastWritten[0].MsgId);
-            Assert.AreEqual(bleInfo.Characteristics[(uint)FleshlightLaunchBluetoothInfo.Chrs.Tx],
-                inter.LastWritten[0].Characteristic);
-            Assert.AreEqual(new byte[] { 0x00, 0x29 }, inter.LastWritten[0].Value);
-            Assert.False(inter.LastWritten[0].WriteWithResponse);
-            inter.LastWritten.Clear();
+                new LinearCmd.VectorSubcommands(0, 500, 0.5),
+            });
+            testUtil.TestDeviceMessage(msg,
+                new List<(byte[], uint)>()
+                {
+                    (new byte[2] { 50, 20 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
+                }, false);
+        }
 
-            Assert.True(dev.ParseMessage(new StopDeviceCmd(4, 9)).GetAwaiter().GetResult() is Ok);
-            Assert.AreEqual(0, inter.LastWritten.Count);
-
-            Assert.True(dev.ParseMessage(new LinearCmd(4,
+        [Test]
+        public void TestInvalidVectorCmdTooManyFeatures()
+        {
+            var msg = new LinearCmd(4,
                 new List<LinearCmd.VectorSubcommands>
                 {
                     new LinearCmd.VectorSubcommands(0, 500, 0.75),
                     new LinearCmd.VectorSubcommands(1, 500, 0.75),
-                }, 8)).GetAwaiter().GetResult() is Error);
-            Assert.True(dev.ParseMessage(new LinearCmd(4,
+                });
+            testUtil.TestInvalidDeviceMessage(msg);
+        }
+
+        [Test]
+        public void TestInvalidVectorCmdWrongFeatures()
+        {
+            var msg = new LinearCmd(4,
                 new List<LinearCmd.VectorSubcommands>
                 {
-                    new LinearCmd.VectorSubcommands(1, 500, 0.75),
-                }, 8)).GetAwaiter().GetResult() is Error);
+                    new LinearCmd.VectorSubcommands(0xffffffff, 500, 0.75),
+                });
+            testUtil.TestInvalidDeviceMessage(msg);
+        }
+
+        [Test]
+        public void TestInvalidVectorNotEnoughFeatures()
+        {
+            var msg = new LinearCmd(4,
+                new List<LinearCmd.VectorSubcommands>
+                {
+                });
+            testUtil.TestInvalidDeviceMessage(msg);
         }
     }
-    */
 }
