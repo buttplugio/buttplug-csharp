@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.UW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.XInputGamepadManager", "Buttplug.Server.Managers.XInputGamepadManager\Buttplug.Server.Managers.XInputGamepadManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.Server", "Buttplug.Components.Server\Buttplug.Components.Server.csproj", "{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.WebsocketServer", "Buttplug.Components.WebsocketServer\Buttplug.Components.WebsocketServer.csproj", "{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.KiirooEmulatorGUI", "Buttplug.Apps.KiirooEmulatorGUI\Buttplug.Apps.KiirooEmulatorGUI.csproj", "{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}"
 EndProject
@@ -29,9 +29,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.Control
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.KiirooEmulatorGUI.Test", "Buttplug.Apps.KiirooEmulatorGUI.Test\Buttplug.Apps.KiirooEmulatorGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.WebsocketServerGUI", "Buttplug.Apps.WebsocketServerGUI\Buttplug.Apps.WebsocketServerGUI.csproj", "{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.ServerGUI", "Buttplug.Apps.ServerGUI\Buttplug.Apps.ServerGUI.csproj", "{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.WebsocketServerGUI.Test", "Buttplug.Apps.WebsocketServerGUI.Test\Buttplug.Apps.WebsocketServerGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.ServerGUI.Test", "Buttplug.Apps.ServerGUI.Test\Buttplug.Apps.ServerGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.GUI", "Buttplug.Apps.GameVibrationRouter.GUI\Buttplug.Apps.GameVibrationRouter.GUI.csproj", "{C5244A21-A2F0-4505-BE96-431F045D8163}"
 EndProject

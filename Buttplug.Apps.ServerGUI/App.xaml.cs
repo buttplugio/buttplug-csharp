@@ -1,4 +1,4 @@
-﻿namespace Buttplug.Apps.WebsocketServerGUI
+﻿namespace Buttplug.Apps.ServerGUI
 {
     /// <summary>
     /// Interaction logic for App.xaml
