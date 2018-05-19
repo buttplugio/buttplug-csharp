@@ -59,6 +59,22 @@ namespace Buttplug.Server.Test
             return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
         }
 
+        public Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId)
+        {
+            return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), new byte[] { }));
+        }
+
+        public Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, uint aIndex)
+        {
+            return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), new byte[] { }));
+        }
+
+        // noop for tests
+        public Task SubscribeToUpdates()
+        {
+            return Task.CompletedTask;
+        }
+
         public ulong GetAddress()
         {
             return _address;
