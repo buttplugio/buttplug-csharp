@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Buttplug.Core;
+using Buttplug.Core.Messages;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Buttplug.Core;
-using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
@@ -16,12 +16,12 @@ namespace Buttplug.Server.Bluetooth.Devices
         }
 
         // Use NamePrefix instead
-        public string[] Names { get; } = { };
+        public static string[] NamesInfo { get; } = { };
 
         // Use autocreated TX/RX characteristics
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
+        public static Dictionary<uint, Guid> CharacteristicsInfo { get; } = new Dictionary<uint, Guid>();
 
-        public Guid[] Services { get; } =
+        public static Guid[] ServicesInfo { get; } =
         {
             new Guid("0000fff0-0000-1000-8000-00805f9b34fb"),
             new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e"),
@@ -33,10 +33,18 @@ namespace Buttplug.Server.Bluetooth.Devices
             new Guid("5a300001-0023-4bd4-bbd5-a6920e4c5653"),
         };
 
-        public string[] NamePrefixes { get; } =
+        public static string[] NamePrefixesInfo { get; } =
         {
             "LVS",
         };
+
+        public Dictionary<uint, Guid> Characteristics { get; } = CharacteristicsInfo;
+
+        public Guid[] Services { get; } = ServicesInfo;
+
+        public string[] Names { get; } = NamesInfo;
+
+        public string[] NamePrefixes { get; } = NamePrefixesInfo;
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -47,65 +55,103 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class Lovense : ButtplugBluetoothDevice
     {
-        private static readonly Dictionary<string, string> FriendlyNames = new Dictionary<string, string>
+        // Identify Lovense devices against the character we expect to get back from the DeviceType read.
+        // See https://docs.buttplug.io/stpihkal for protocol info.
+        public enum LovenseDeviceType : uint
         {
-            { "LVS-A011", "Nora" },
-            { "LVS-C011", "Nora" },
-            { "LVS-B011", "Max" },
-            { "LVS-L009", "Ambi" },
-            { "LVS-S001", "Lush" },
-            { "LVS-S35", "Lush" },
-            { "LVS-Lush41", "Lush" },
-            { "LVS-Z36", "Hush" },
-            { "LVS-Hush41", "Hush" },
-            { "LVS-Z001", "Hush" },
-            { "LVS_Z001", "Hush" },
-            { "LVS-Domi37", "Domi" },
-            { "LVS-Domi38", "Domi" },
-            { "LVS-Domi39", "Domi" },
-            { "LVS-Domi40", "Domi" },
-            { "LVS-Domi41", "Domi" },
-            { "LVS-P36", "Edge" },
-            { "LVS-Edge37", "Edge" },
-            { "LVS-Edge38", "Edge" },
-        };
+            Max = 'B',
+            // Nora is A or C. Set to A here, then on type check, convert C to A.
+            Nora = 'A',
+            Ambi = 'L',
+            Lush = 'S',
+            Hush = 'Z',
+            Domi = 'W',
+            Edge = 'P',
+            Osci = 'O',
+            Unknown = 0,
+        }
 
-        private readonly uint _vibratorCount = 1;
+        private uint _vibratorCount = 1;
         private readonly double[] _vibratorSpeeds = { 0, 0 };
         private bool _clockwise = true;
         private double _rotateSpeed;
+        private LovenseDeviceType _deviceType = LovenseDeviceType.Unknown;
 
         public Lovense(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   "Lovense Device",
+                   "Lovense Unknown Device",
                    aInterface,
                    aInfo)
         {
-            if (FriendlyNames.ContainsKey(aInterface.Name))
-            {
-                Name = $"Lovense Device ({FriendlyNames[aInterface.Name]})";
-                if (FriendlyNames[aInterface.Name] == "Edge")
-                {
-                    _vibratorCount++;
-                }
-                else if (FriendlyNames[aInterface.Name] == "Nora")
-                {
-                    MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
-                }
-            }
-
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
             MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
+        }
+
+        public override async Task<ButtplugMessage> Initialize()
+        {
+            BpLogger.Trace($"Initializing {Name}");
+            await Interface.WriteValue(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes($"DeviceType;"), true);
+
+            var (msg, result) = await Interface.ReadValue(ButtplugConsts.SystemMsgId);
+            if (msg is Error)
+            {
+                BpLogger.Error($"Error retreiving device info from Lovense {Name}");
+                return msg;
+            }
+
+            // Expected Format
+            // X:YY:ZZZZZZZZZZZZ
+            // X is device type leter
+            // YY is firmware version
+            // Z is bluetooth address
+            var deviceInfoString = Encoding.ASCII.GetString(result);
+            var deviceInfo = deviceInfoString.Split(':');
+            // If we don't get back the amount of tokens we expect, identify as unknown, log, bail.
+            if (deviceInfo.Length != 3 || deviceInfo[0].Length != 1)
+            {
+                BpLogger.Warn($"Unknown Lovense DeviceType of {deviceInfoString} found. Please report to Buttplug Developers by filing an issue at https://github.com/metafetish/buttplug/");
+                return msg;
+            }
+
+            var deviceTypeLetter = deviceInfo[0][0];
+            int.TryParse(deviceInfo[1], out var deviceVersion);
+            BpLogger.Trace($"Lovense DeviceType Return: {deviceInfo}");
+            if (!Enum.IsDefined(typeof(LovenseDeviceType), (uint)deviceTypeLetter))
+            {
+                // If we don't know what device this is, just assume it has a single vibrator, call it unknown, log something.
+                BpLogger.Warn($"Unknown Lovense Device of Type {deviceTypeLetter} found. Please report to Buttplug Developers by filing an issue at https://github.com/metafetish/buttplug/");
+                return msg;
+            }
+
+            Name = $"Lovense {Enum.GetName(typeof(LovenseDeviceType), (uint)deviceTypeLetter)} v{deviceVersion}";
+
+            _deviceType = (LovenseDeviceType)deviceTypeLetter;
+
+            switch (_deviceType)
+            {
+                case LovenseDeviceType.Edge:
+                    // Edge has 2 vibrators
+                    _vibratorCount++;
+                    MsgFuncs.Remove(typeof(VibrateCmd));
+                    MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
+                    break;
+                case LovenseDeviceType.Nora:
+                    // Nora has a rotator
+                    MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
+                    break;
+            }
+
+            return msg;
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
         {
             BpLogger.Debug("Stopping Device " + Name);
 
-            if (FriendlyNames.ContainsKey(Interface.Name) && FriendlyNames[Interface.Name] == "Nora")
+            if (_deviceType == LovenseDeviceType.Nora)
             {
                 await HandleRotateCmd(new RotateCmd(aMsg.DeviceIndex,
                     new List<RotateCmd.RotateSubcommand> { new RotateCmd.RotateSubcommand(0, 0, _clockwise) },
