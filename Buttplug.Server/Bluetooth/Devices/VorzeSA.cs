@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Buttplug.Core;
+using Buttplug.Core.Messages;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Buttplug.Core;
-using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class VorzeA10CycloneBluetoothInfo : IBluetoothDeviceInfo
+    internal class VorzeSABluetoothInfo : IBluetoothDeviceInfo
     {
         public enum Chrs : uint
         {
@@ -15,7 +15,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public Guid[] Services { get; } = { new Guid("40ee1111-63ec-4b7f-8ce7-712efd55b90e") };
 
-        public string[] Names { get; } = { "CycSA" };
+        public string[] Names { get; } = { "CycSA", "UFOSA" };
 
         public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
         {
@@ -27,23 +27,47 @@ namespace Buttplug.Server.Bluetooth.Devices
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
         {
-            return new VorzeA10Cyclone(aLogManager, aInterface, this);
+            return new VorzeSA(aLogManager, aInterface, this);
         }
     }
 
-    internal class VorzeA10Cyclone : ButtplugBluetoothDevice
+    internal class VorzeSA : ButtplugBluetoothDevice
     {
         private bool _clockwise = true;
         private uint _speed;
 
-        public VorzeA10Cyclone(IButtplugLogManager aLogManager,
-                               IBluetoothDeviceInterface aInterface,
-                               IBluetoothDeviceInfo aInfo)
+        private enum DeviceType
+        {
+            CycloneOrUnknown = 1,
+            UFO = 2,
+        }
+
+        private DeviceType _deviceType = DeviceType.CycloneOrUnknown;
+
+        public VorzeSA(IButtplugLogManager aLogManager,
+                       IBluetoothDeviceInterface aInterface,
+                       IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   "Vorze A10 Cyclone",
+                   "Vorze SA",
                    aInterface,
                    aInfo)
         {
+            if (aInterface.Name == "CycSA")
+            {
+                _deviceType = DeviceType.CycloneOrUnknown;
+                Name = "Vorze A10 Cyclone SA";
+            }
+            else if (aInterface.Name == "UFOSA")
+            {
+                _deviceType = DeviceType.UFO;
+                Name = "Vorze UFO SA";
+            }
+            else
+            {
+                // If the device doesn't identify, warn and try sending it Cyclone packets.
+                BpLogger.Warn($"Vorze product with unrecognized name ({Name}) found. This product may not work with Buttplug. Contact the developers for more info.");
+            }
+
             MsgFuncs.Add(typeof(VorzeA10CycloneCmd), new ButtplugDeviceWrapper(HandleVorzeA10CycloneCmd));
             MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
@@ -104,8 +128,8 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
             return await Interface.WriteValue(aMsg.Id,
-                (uint)VorzeA10CycloneBluetoothInfo.Chrs.Tx,
-                new byte[] { 0x01, 0x01, rawSpeed });
+                (uint)VorzeSABluetoothInfo.Chrs.Tx,
+                new byte[] { (byte)_deviceType, 0x01, rawSpeed });
         }
     }
 }
