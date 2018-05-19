@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Core", "Buttplug.Core\Buttplug.Core.csproj", "{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Core", "Buttplug.Core\Buttplug.Core.csproj", "{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.ProjectFiles", "Buttplug.ProjectFiles\Buttplug.ProjectFiles.csproj", "{437B1971-00B6-4638-A700-756F4B7610AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client", "Buttplug.Client\Buttplug.Client.csproj", "{1592D845-8FE5-4F33-A665-D7675C9AAEE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Client", "Buttplug.Client\Buttplug.Client.csproj", "{1592D845-8FE5-4F33-A665-D7675C9AAEE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server", "Buttplug.Server\Buttplug.Server.csproj", "{23D9EC18-2DBA-4149-A951-B84786D4BFA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server", "Buttplug.Server\Buttplug.Server.csproj", "{23D9EC18-2DBA-4149-A951-B84786D4BFA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client.Test", "Buttplug.Client.Test\Buttplug.Client.Test.csproj", "{F8AAA25F-6C62-4BCC-A916-9B52B9A01F52}"
 EndProject
@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.UW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.XInputGamepadManager", "Buttplug.Server.Managers.XInputGamepadManager\Buttplug.Server.Managers.XInputGamepadManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.WebsocketServer", "Buttplug.Components.WebsocketServer\Buttplug.Components.WebsocketServer.csproj", "{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.Server", "Buttplug.Components.Server\Buttplug.Components.Server.csproj", "{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.KiirooEmulatorGUI", "Buttplug.Apps.KiirooEmulatorGUI\Buttplug.Apps.KiirooEmulatorGUI.csproj", "{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}"
 EndProject
@@ -139,10 +139,6 @@ Global
 		{334D5731-7619-471E-85C3-240831514741}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{334D5731-7619-471E-85C3-240831514741}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{334D5731-7619-471E-85C3-240831514741}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.Release|Any CPU.Build.0 = Release|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -151,6 +147,10 @@ Global
 		{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83574729-6EB4-43E9-B7CC-AC5725380038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83574729-6EB4-43E9-B7CC-AC5725380038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83574729-6EB4-43E9-B7CC-AC5725380038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83574729-6EB4-43E9-B7CC-AC5725380038}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
