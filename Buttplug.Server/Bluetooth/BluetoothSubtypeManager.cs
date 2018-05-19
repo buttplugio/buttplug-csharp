@@ -26,7 +26,7 @@ namespace Buttplug.Server.Bluetooth
                 new LovenseBluetoothInfo(),
                 new MagicMotionBluetoothInfo(),
                 new VibratissimoBluetoothInfo(),
-                new VorzeA10CycloneBluetoothInfo(),
+                new VorzeSABluetoothInfo(),
                 new WeVibeBluetoothInfo(),
             };
         }
