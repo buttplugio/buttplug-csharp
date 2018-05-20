@@ -41,13 +41,14 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                         continue;
                     }
 
-                    _bpLogger.Debug("Found " + advertName + " via NamePrefix " + deviceInfoNamePrefix);
+                    _bpLogger.Debug($"Found {advertName} via NamePrefix {deviceInfoNamePrefix}");
                     return true;
                 }
             }
 
-            if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(advertName))
+            if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(advertName) || !_deviceInfo.Names.Any())
             {
+                _bpLogger.Trace($"Dropping query for {advertName}.");
                 return false;
             }
 
@@ -57,7 +58,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 return true;
             }
 
-            _bpLogger.Debug("Found " + advertName + " for " + _deviceInfo.GetType() + " with services " + advertGUIDs);
+            _bpLogger.Trace("Found " + advertName + " for " + _deviceInfo.GetType() + " with services " + advertGUIDs);
             foreach (var s in _deviceInfo.Services)
             {
                 _bpLogger.Trace("Expecting " + s);
