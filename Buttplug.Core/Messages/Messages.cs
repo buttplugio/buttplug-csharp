@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
 
 // Namespace containing all Buttplug messages, as specified by the Buttplug Message Spec at
 // https://docs.buttplug.io/buttplug. For consistency sake, all message descriptions are stated in
@@ -966,6 +967,30 @@ namespace Buttplug.Core.Messages
             }
         }
 
+        public static VibrateCmd Create(uint aDeviceIndex, uint aMsgId, double aSpeed, uint aCmdCount)
+        {
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat(aSpeed, (int)aCmdCount).ToArray(), aCmdCount);
+        }
+
+        public static VibrateCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<double> aSpeeds, uint aCmdCount)
+        {
+            if (aCmdCount != aSpeeds.Count())
+            {
+                throw new ArgumentException("Number of speeds and number of commands must match.");
+            }
+
+            var cmdList = new List<VibrateSubcommand>((int)aCmdCount);
+            // TODO This pattern sucks
+            uint i = 0;
+            foreach (var speed in aSpeeds)
+            {
+                cmdList.Add(new VibrateSubcommand(i, speed));
+                ++i;
+            }
+
+            return new VibrateCmd(aDeviceIndex, cmdList, aMsgId);
+        }
+
         /// <summary>
         /// List of vibrator speeds.
         /// </summary>
@@ -1049,6 +1074,26 @@ namespace Buttplug.Core.Messages
             }
         }
 
+        public static RotateCmd Create(uint aDeviceIndex, uint aMsgId, double aSpeed, bool aClockwise, uint aCmdCount)
+        {
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aSpeed, aClockwise), (int)aCmdCount), aCmdCount);
+        }
+
+        public static RotateCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(double speed, bool clockwise)> aCmds, uint aCmdCount)
+        {
+            if (aCmdCount != aCmds.Count())
+            {
+                throw new ArgumentException("Number of speeds and number of commands must match.");
+            }
+            var cmdList = new List<RotateSubcommand>((int)aCmdCount);
+            uint i = 0;
+            foreach (var cmd in aCmds)
+            {
+                cmdList.Add(new RotateSubcommand(i, cmd.speed, cmd.clockwise));
+            }
+            return new RotateCmd(aDeviceIndex, cmdList, aMsgId);
+        }
+
         /// <summary>
         /// List of rotation speeds and directions.
         /// </summary>
@@ -1130,6 +1175,28 @@ namespace Buttplug.Core.Messages
                 Duration = aDuration;
                 Position = aPosition;
             }
+        }
+
+        public static LinearCmd Create(uint aDeviceIndex, uint aMsgId, uint aDuration, double aPosition, uint aCmdCount)
+        {
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aDuration, aPosition), (int)aCmdCount), aCmdCount);
+        }
+
+        public static LinearCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(uint duration, double position)> aCmds, uint aCmdCount)
+        {
+            if (aCmdCount != aCmds.Count())
+            {
+                throw new ArgumentException("Number of speeds and number of commands must match.");
+            }
+            var cmdList = new List<VectorSubcommand>((int)aCmdCount);
+            uint i = 0;
+            foreach (var cmd in aCmds)
+            {
+                cmdList.Add(new VectorSubcommand(i, cmd.duration, cmd.position));
+                ++i;
+            }
+
+            return new LinearCmd(aDeviceIndex, cmdList, aMsgId);
         }
 
         /// <summary>

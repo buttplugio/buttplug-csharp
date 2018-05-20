@@ -146,5 +146,16 @@ namespace Buttplug.Server.Test.Util
             Clear();
             Assert.True(bleDevice.ParseMessage(aOutgoingMessage).GetAwaiter().GetResult() is Error);
         }
+
+        public void TestInvalidVibrateCmd(uint aNumVibes)
+        {
+            TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 0));
+            TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, aNumVibes + 1));
+            TestInvalidDeviceMessage(
+                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
+                {
+                    new VibrateCmd.VibrateSubcommand(0xffffffff, 0.5),
+                }));
+        }
     }
 }

@@ -17,12 +17,14 @@ namespace Buttplug.Server.Bluetooth.Devices
             RxAccel = 2,
         }
 
-        public string[] Names { get; } =
+        public static string[] NamesInfo =
         {
             "Pearl2",
             "Fuse",
             "Virtual Blowbot",
         };
+
+        public string[] Names { get; } = NamesInfo;
 
         public string[] NamePrefixes { get; } = { };
 
@@ -62,17 +64,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         internal static readonly Dictionary<string, KiirooGen2VibeType> DevInfos = new Dictionary<string, KiirooGen2VibeType>()
         {
-            {
-                // If we don't know what the device is, use unknown, which may not work well but also
-                // won't crash.
-                "Unknown",
-                new KiirooGen2VibeType
-                {
-                    Brand = "Unknown",
-                    VibeCount = 1,
-                    VibeOrder = new[] { 0u, 1u, 2u },
-                }
-            },
             {
                 "Pearl2",
                 new KiirooGen2VibeType
@@ -119,6 +110,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
             else
             {
+                BpLogger.Warn($"Cannot identify device {Name}, defaulting to Pearl2 settings.");
                 _devInfo = DevInfos["Unknown"];
             }
 
@@ -129,14 +121,9 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd([NotNull] ButtplugDeviceMessage aMsg)
         {
-            BpLogger.Debug("Stopping Device " + Name);
-            var vCmds = new List<VibrateCmd.VibrateSubcommand>();
-            for (uint i = 0; i < _devInfo.VibeCount; i++)
-            {
-                vCmds.Add(new VibrateCmd.VibrateSubcommand(i, 0));
-            }
+            BpLogger.Debug($"Stopping Device {Name}");
 
-            return await HandleVibrateCmd(new VibrateCmd(aMsg.DeviceIndex, vCmds, aMsg.Id));
+            return await HandleVibrateCmd(VibrateCmd.Create(aMsg.DeviceIndex, aMsg.Id, 0, _devInfo.VibeCount));
         }
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd([NotNull] ButtplugDeviceMessage aMsg)
@@ -146,18 +133,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            if (Math.Abs(_vibratorSpeeds[0] - cmdMsg.Speed) < 0.0001 && Math.Abs(_vibratorSpeeds[0] - cmdMsg.Speed) < 0.0001)
-            {
-                return new Ok(cmdMsg.Id);
-            }
-
-            var vCmds = new List<VibrateCmd.VibrateSubcommand>();
-            for (uint i = 0; i < _devInfo.VibeCount; i++)
-            {
-                vCmds.Add(new VibrateCmd.VibrateSubcommand(i, cmdMsg.Speed));
-            }
-
-            return await HandleVibrateCmd(new VibrateCmd(aMsg.DeviceIndex, vCmds, aMsg.Id));
+            return await HandleVibrateCmd(VibrateCmd.Create(aMsg.DeviceIndex, aMsg.Id, cmdMsg.Speed, _devInfo.VibeCount));
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd([NotNull] ButtplugDeviceMessage aMsg)

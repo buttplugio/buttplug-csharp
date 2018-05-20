@@ -84,12 +84,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public void TestInvalidVectorCmdTooManyFeatures()
         {
-            var msg = new LinearCmd(4,
-                new List<LinearCmd.VectorSubcommand>
-                {
-                    new LinearCmd.VectorSubcommand(0, 500, 0.75),
-                    new LinearCmd.VectorSubcommand(1, 500, 0.75),
-                });
+            var msg = LinearCmd.Create(4, 0, 500, 0.75, 2);
             testUtil.TestInvalidDeviceMessage(msg);
         }
 
@@ -107,10 +102,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public void TestInvalidVectorNotEnoughFeatures()
         {
-            var msg = new LinearCmd(4,
-                new List<LinearCmd.VectorSubcommand>
-                {
-                });
+            var msg = LinearCmd.Create(4, 0, 500, 0.75, 0);
             testUtil.TestInvalidDeviceMessage(msg);
         }
     }

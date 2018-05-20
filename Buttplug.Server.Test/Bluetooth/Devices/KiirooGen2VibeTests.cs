@@ -53,8 +53,6 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             }
         }
 
-        // TODO: Test invalid SingleMotorVibrateCmd?
-
         [Test]
         public void TestVibrateCmd()
         {
@@ -91,30 +89,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             {
                 var testUtil = new BluetoothDeviceTestUtils<KiirooGen2VibeBluetoothInfo>();
                 testUtil.SetupTest(item.Key);
-                var features = new List<VibrateCmd.VibrateSubcommand>();
-                testUtil.TestInvalidDeviceMessage(new VibrateCmd(4, features));
-
-                for (var i = 0u; i < item.Value.VibeCount + 1; ++i)
-                {
-                    features.Add(new VibrateCmd.VibrateSubcommand(i, 0.5));
-                }
-
-                testUtil.TestInvalidDeviceMessage(new VibrateCmd(4, features));
-            }
-        }
-
-        [Test]
-        public void TestInvalidVibrateCmdWrongFeatures()
-        {
-            foreach (var item in KiirooGen2Vibe.DevInfos)
-            {
-                var testUtil = new BluetoothDeviceTestUtils<KiirooGen2VibeBluetoothInfo>();
-                testUtil.SetupTest(item.Key);
-                var features = new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0xffffffff, 0.5)
-                };
-                testUtil.TestInvalidDeviceMessage(new VibrateCmd(4, features));
+                testUtil.TestInvalidVibrateCmd(item.Value.VibeCount);
             }
         }
     }
