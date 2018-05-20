@@ -41,10 +41,14 @@ namespace Buttplug.Server.Bluetooth.Devices
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"Youcups Device ({FriendlyNames[aInterface.Name]})",
+                   $"Youcups Unknown",
                    aInterface,
                    aInfo)
         {
+            if (FriendlyNames.ContainsKey(aInterface.Name))
+            {
+                Name = $"Youcups {FriendlyNames[aInterface.Name]}";
+            }
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
             MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
