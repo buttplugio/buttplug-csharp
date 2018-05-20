@@ -62,7 +62,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                       IBluetoothDeviceInterface aInterface,
                       IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"WeVibe Device ({aInterface.Name})",
+                   $"WeVibe {aInterface.Name}",
                    aInterface,
                    aInfo)
         {

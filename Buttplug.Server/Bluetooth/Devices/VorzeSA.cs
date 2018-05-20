@@ -48,7 +48,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   "Vorze SA",
+                   "Vorze SA Unknown",
                    aInterface,
                    aInfo)
         {

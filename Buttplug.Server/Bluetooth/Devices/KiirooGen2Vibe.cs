@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
@@ -71,6 +71,17 @@ namespace Buttplug.Server.Bluetooth.Devices
         internal static readonly Dictionary<string, KiirooGen2VibeType> DevInfos = new Dictionary<string, KiirooGen2VibeType>()
         {
             {
+                // If we don't know what the device is, use unknown, which may not work well but also
+                // won't crash.
+                "Unknown",
+                new KiirooGen2VibeType
+                {
+                    Brand = "Unknown",
+                    VibeCount = 1,
+                    VibeOrder = new[] { 0u, 1u, 2u },
+                }
+            },
+            {
                 "Pearl2",
                 new KiirooGen2VibeType
                 {
@@ -105,11 +116,20 @@ namespace Buttplug.Server.Bluetooth.Devices
                       [NotNull] IBluetoothDeviceInterface aInterface,
                       [NotNull] IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"{DevInfos[aInterface.Name].Brand} {aInterface.Name}",
+                   "Kiiroo Unknown",
                    aInterface,
                    aInfo)
         {
-            _devInfo = DevInfos[aInterface.Name];
+            if (DevInfos.ContainsKey(aInterface.Name))
+            {
+                Name = $"{DevInfos[aInterface.Name].Brand} {aInterface.Name}";
+                _devInfo = DevInfos[aInterface.Name];
+            }
+            else
+            {
+                _devInfo = DevInfos["Unknown"];
+            }
+
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
             MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes { FeatureCount = _devInfo.VibeCount }));
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
