@@ -88,13 +88,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            var subCmds = new List<VibrateCmd.VibrateSubcommand>();
-            for (var i = 0u; i < _vibratorCount; i++)
-            {
-                subCmds.Add(new VibrateCmd.VibrateSubcommand(i, cmdMsg.Speed));
-            }
-
-            return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex, subCmds, cmdMsg.Id));
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, _vibratorCount));
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)

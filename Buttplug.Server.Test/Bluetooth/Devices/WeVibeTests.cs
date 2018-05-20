@@ -77,26 +77,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     (new byte[] { 0x0f, 0x03, 0x00, 0x88, 0x00, 0x03, 0x00, 0x00 }, testUtil.NoCharacteristic),
                 };
 
-            testUtil.TestDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0, 0.5),
-                }), expected, false);
+            testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
         }
 
         [Test]
         public void TestInvalidVibrateCmd()
         {
-            testUtil.TestInvalidDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                }));
-            testUtil.TestInvalidDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0, 0.5),
-                    new VibrateCmd.VibrateSubcommand(1, 0.5),
-                }));
+            testUtil.TestInvalidVibrateCmd(1);
         }
     }
 
@@ -167,33 +154,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     (new byte[] { 0x0f, 0x03, 0x00, 0x4B, 0x00, 0x03, 0x00, 0x00 }, testUtil.NoCharacteristic),
                 };
 
-            testUtil.TestDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0, 0.25),
-                    new VibrateCmd.VibrateSubcommand(1, 0.75),
-                }), expected, false);
+            testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, new double[] { 0.25, 0.75 }, 2), expected, false);
         }
 
         [Test]
         public void TestInvalidVibrateCmd()
         {
-            testUtil.TestInvalidDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                }));
-            testUtil.TestInvalidDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0, 0.5),
-                    new VibrateCmd.VibrateSubcommand(1, 0.5),
-                    new VibrateCmd.VibrateSubcommand(2, 0.5),
-                }));
-            testUtil.TestInvalidDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0xffffffff, 0.5),
-                }));
+            testUtil.TestInvalidVibrateCmd(2);
         }
     }
 }

@@ -153,9 +153,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             if (_deviceType == LovenseDeviceType.Nora)
             {
-                await HandleRotateCmd(new RotateCmd(aMsg.DeviceIndex,
-                    new List<RotateCmd.RotateSubcommand> { new RotateCmd.RotateSubcommand(0, 0, _clockwise) },
-                    aMsg.Id));
+                await HandleRotateCmd(RotateCmd.Create(aMsg.DeviceIndex, aMsg.Id, 0, _clockwise, 1));
             }
 
             return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id));
@@ -168,13 +166,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            var speeds = new List<VibrateCmd.VibrateSubcommand>();
-            for (uint i = 0; i < _vibratorCount; i++)
-            {
-                speeds.Add(new VibrateCmd.VibrateSubcommand(i, cmdMsg.Speed));
-            }
-
-            return await HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex, speeds, cmdMsg.Id));
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, _vibratorCount));
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)

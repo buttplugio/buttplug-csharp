@@ -78,31 +78,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     (Encoding.ASCII.GetBytes("2,\n"), testUtil.NoCharacteristic),
                 };
 
-            testUtil.TestDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0, 0.5),
-                }), expected, false);
+            testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
         }
 
         [Test]
         public void TestInvalidVibrateCmd()
         {
-            testUtil.TestInvalidDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                }));
-            testUtil.TestInvalidDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0, 0.5),
-                    new VibrateCmd.VibrateSubcommand(1, 0.5),
-                }));
-            testUtil.TestInvalidDeviceMessage(
-                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
-                {
-                    new VibrateCmd.VibrateSubcommand(0xffffffff, 0.5),
-                }));
+            testUtil.TestInvalidVibrateCmd(1);
         }
     }
 }
