@@ -1078,7 +1078,7 @@ namespace Buttplug.Core.Messages
         /// Container object for representing a single linear motion command on a device that may
         /// have multiple independent linear actuated features.
         /// </summary>
-        public class VectorSubcommands
+        public class VectorSubcommand
         {
             private double _positionImpl;
 
@@ -1119,12 +1119,12 @@ namespace Buttplug.Core.Messages
             }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="VectorSubcommands"/> class.
+            /// Initializes a new instance of the <see cref="VectorSubcommand"/> class.
             /// </summary>
             /// <param name="aIndex">Linear actuator index</param>
             /// <param name="aDuration">Duration of movement</param>
             /// <param name="aPosition">Goal position</param>
-            public VectorSubcommands(uint aIndex, uint aDuration, double aPosition)
+            public VectorSubcommand(uint aIndex, uint aDuration, double aPosition)
             {
                 Index = aIndex;
                 Duration = aDuration;
@@ -1136,7 +1136,7 @@ namespace Buttplug.Core.Messages
         /// List of linear movement vectors.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public List<VectorSubcommands> Vectors;
+        public List<VectorSubcommand> Vectors;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LinearCmd"/> class.
@@ -1144,7 +1144,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aDeviceIndex">Device index</param>
         /// <param name="aVectors">Movement vector list</param>
         /// <param name="aId">Message ID</param>
-        public LinearCmd(uint aDeviceIndex, List<VectorSubcommands> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
+        public LinearCmd(uint aDeviceIndex, List<VectorSubcommand> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex, 1)
         {
             Vectors = aVectors;

@@ -70,9 +70,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public void TestVectorCmd()
         {
-            var msg = new LinearCmd(4, new List<LinearCmd.VectorSubcommands>
+            var msg = new LinearCmd(4, new List<LinearCmd.VectorSubcommand>
             {
-                new LinearCmd.VectorSubcommands(0, 500, 0.5),
+                new LinearCmd.VectorSubcommand(0, 500, 0.5),
             });
             testUtil.TestDeviceMessage(msg,
                 new List<(byte[], uint)>()
@@ -85,10 +85,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public void TestInvalidVectorCmdTooManyFeatures()
         {
             var msg = new LinearCmd(4,
-                new List<LinearCmd.VectorSubcommands>
+                new List<LinearCmd.VectorSubcommand>
                 {
-                    new LinearCmd.VectorSubcommands(0, 500, 0.75),
-                    new LinearCmd.VectorSubcommands(1, 500, 0.75),
+                    new LinearCmd.VectorSubcommand(0, 500, 0.75),
+                    new LinearCmd.VectorSubcommand(1, 500, 0.75),
                 });
             testUtil.TestInvalidDeviceMessage(msg);
         }
@@ -97,9 +97,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public void TestInvalidVectorCmdWrongFeatures()
         {
             var msg = new LinearCmd(4,
-                new List<LinearCmd.VectorSubcommands>
+                new List<LinearCmd.VectorSubcommand>
                 {
-                    new LinearCmd.VectorSubcommands(0xffffffff, 500, 0.75),
+                    new LinearCmd.VectorSubcommand(0xffffffff, 500, 0.75),
                 });
             testUtil.TestInvalidDeviceMessage(msg);
         }
@@ -108,7 +108,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public void TestInvalidVectorNotEnoughFeatures()
         {
             var msg = new LinearCmd(4,
-                new List<LinearCmd.VectorSubcommands>
+                new List<LinearCmd.VectorSubcommand>
                 {
                 });
             testUtil.TestInvalidDeviceMessage(msg);
