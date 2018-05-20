@@ -1,9 +1,9 @@
-﻿using Buttplug.Core.Messages;
+﻿using System.Collections.Generic;
+using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 // TODO Clean up/simplify how we handle per-device testing here.
 namespace Buttplug.Server.Test.Bluetooth.Devices
