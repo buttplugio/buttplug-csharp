@@ -17,18 +17,18 @@ namespace Buttplug.Server.Bluetooth.Devices
             RxAccel = 2,
         }
 
-        public static string[] NamesInfo { get; } =
+        public string[] Names { get; } =
         {
             "Pearl2",
             "Fuse",
             "Virtual Blowbot",
         };
 
-        public static string[] NamePrefixesInfo { get; } = { };
+        public string[] NamePrefixes { get; } = { };
 
-        public static Guid[] ServicesInfo { get; } = { new Guid("88f82580-0000-01e6-aace-0002a5d5c51b") };
+        public Guid[] Services { get; } = { new Guid("88f82580-0000-01e6-aace-0002a5d5c51b") };
 
-        public static Dictionary<uint, Guid> CharacteristicsInfo { get; } = new Dictionary<uint, Guid>()
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
         {
             // tx
             { (uint)Chrs.Tx, new Guid("88f82581-0000-01e6-aace-0002a5d5c51b") },
@@ -39,14 +39,6 @@ namespace Buttplug.Server.Bluetooth.Devices
             // rx (accellorometer?)
             { (uint)Chrs.RxAccel, new Guid("88f82584-0000-01e6-aace-0002a5d5c51b") },
         };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = CharacteristicsInfo;
-
-        public Guid[] Services { get; } = ServicesInfo;
-
-        public string[] Names { get; } = NamesInfo;
-
-        public string[] NamePrefixes { get; } = NamePrefixesInfo;
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
