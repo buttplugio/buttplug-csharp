@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -67,6 +67,9 @@ namespace Buttplug.Components.Controls
             DeviceListBox.SelectionMode = SelectionMode.Multiple;
             DeviceListBox.SelectionChanged += SelectionChangedHandler;
             _ops = new List<DispatcherOperation>();
+
+            // We can only attach our window closing handler over load is complete.
+            Loaded += OnControlLoad;
         }
 
         public void SetButtplugServer(ButtplugServer aServer)
@@ -110,6 +113,25 @@ namespace Buttplug.Components.Controls
                 dr.Connected = false;
                 _devices.UpdateList();
             }
+        }
+
+        private void OnControlLoad(object aObj, RoutedEventArgs aArgs)
+        {
+            // Attach a closing handler to the window, to make sure scanning stops when the
+            // application is closed.
+            var window = Window.GetWindow(this);
+            window.Closing += OnWindowClosing;
+        }
+
+        private async void OnWindowClosing(object aSender, CancelEventArgs aE)
+        {
+            // If server is live, stop scanning, and clear our handler.
+            if (_bpServer != null)
+            {
+                await _bpServer?.SendMessage(new StopScanning());
+            }
+            var window = Window.GetWindow(this);
+            window.Closing -= OnWindowClosing;
         }
 
         private void OnMessageReceived(object aObj, MessageReceivedEventArgs aEvent)
