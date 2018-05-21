@@ -41,6 +41,8 @@ namespace Buttplug.Server.Test
 
         public event EventHandler DeviceRemoved;
 
+        public event EventHandler ValueWritten;
+
         public bool Removed;
 
         public TestBluetoothDeviceInterface(string aName)
@@ -74,6 +76,7 @@ namespace Buttplug.Server.Test
                 Characteristic = aCharacteristic,
                 WriteWithResponse = aWriteWithResponse,
             });
+            ValueWritten?.Invoke(this, new EventArgs());
             return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
         }
 
