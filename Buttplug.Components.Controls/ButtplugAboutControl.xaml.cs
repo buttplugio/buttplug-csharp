@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -66,20 +67,31 @@ namespace Buttplug.Components.Controls
             return AboutVersionNumber.Text + " " + _gitHash;
         }
 
+        private void TryUri(string aUri)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(aUri);
+            }
+            catch (Win32Exception)
+            {
+                MessageBox.Show($"No browser available to open link! Go to {aUri}.", "Browser open error", MessageBoxButton.OK);
+            }
+        }
+
         private void GithubRequestNavigate(object aObj, MouseButtonEventArgs aEvent)
         {
-            System.Diagnostics.Process.Start(
-                new Uri($"http://github.com/metafetish/buttplug-csharp/commit/{_gitHash}").AbsoluteUri);
+            TryUri(new Uri($"http://github.com/metafetish/buttplug-csharp/commit/{_gitHash}").AbsoluteUri);
         }
 
         private void PatreonRequestNavigate(object aObj, MouseButtonEventArgs aEvent)
         {
-            System.Diagnostics.Process.Start(new Uri("http://patreon.com/qdot").AbsoluteUri);
+            TryUri(new Uri("http://patreon.com/qdot").AbsoluteUri);
         }
 
         private void Hyperlink_RequestNavigate(object aSender, System.Windows.Navigation.RequestNavigateEventArgs aEvent)
         {
-            System.Diagnostics.Process.Start(aEvent.Uri.AbsoluteUri);
+            TryUri(aEvent.Uri.AbsoluteUri);
         }
 
         private void IconImage_Click(object aSender, RoutedEventArgs aEvent)
