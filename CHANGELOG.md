@@ -1,3 +1,21 @@
+# 0.2.2 (2018-05-21)
+
+## Features
+
+- Added Hardware Support
+  - Vorze UFO SA
+  - LiBo Whale
+  - MysteryVibe Crescendo
+  - Cyclone X10 (USB)
+- Added name prefix device searching (Hopefully fixes Lovense update problems)
+- Rename WebsocketServer to Server in preparation for IPC
+
+## Bugfixes
+
+- Reduce crashes caused by missing device names in friendly name tables
+- Remove ping checking from Server to stop background tab disconnects on webbrowsers
+- Fix crash when trying to open link on systems without a browser selected.
+
 # 0.2.1 (2018-03-08)
 
 ## Features
