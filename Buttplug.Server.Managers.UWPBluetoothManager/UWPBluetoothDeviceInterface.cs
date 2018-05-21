@@ -49,8 +49,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 foreach (var item in aInfo.Characteristics)
                 {
                     var c = (from x in aChars
-                            where x.Uuid == item.Value
-                        select x).ToArray();
+                             where x.Uuid == item.Value
+                             select x).ToArray();
                     if (c.Length != 1)
                     {
                         var err = $"Cannot find characteristic ${item.Value} for device {Name}";
@@ -164,20 +164,31 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 _bpLogger.Error("Cancelling device transfer in progress for new transfer.");
             }
 
-            _currentTask = aChar.WriteValueAsync(aValue.AsBuffer(), aWriteWithResponse ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
             try
             {
+                _currentTask = aChar.WriteValueAsync(aValue.AsBuffer(),
+                    aWriteWithResponse ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
                 var status = await _currentTask;
                 _currentTask = null;
                 if (status != GattCommunicationStatus.Success)
                 {
-                    return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {status}");
+                    return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                        $"GattCommunication Error: {status}");
                 }
             }
             catch (InvalidOperationException e)
             {
-                // This exception will be thrown if the bluetooth device disconnects in the middle of a transfer.
-                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"GattCommunication Error: {e.Message}");
+                // This exception will be thrown if the bluetooth device disconnects in the middle of
+                // a transfer.
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"GattCommunication Error: {e.Message}");
+            }
+            catch (TaskCanceledException e)
+            {
+                // This exception will be thrown if the bluetooth device disconnects in the middle of
+                // a transfer (happened when MysteryVibe lost power).
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"Device disconnected: {e.Message}");
             }
 
             return new Ok(aMsgId);
