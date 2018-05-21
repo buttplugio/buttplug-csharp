@@ -156,7 +156,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
                         continue;
                     }
                     double vibeSpeed = (_lastVibration.LeftMotorSpeed + _lastVibration.RightMotorSpeed) / (2.0 * 65535.0);
-                    await _bpServer.SendMessage(new SingleMotorVibrateCmd(device.Index, Math.Min(vibeSpeed * _vibrationMultiplier, 1.0));
+                    await _bpServer.SendMessage(new SingleMotorVibrateCmd(device.Index, Math.Min(vibeSpeed * _vibrationMultiplier, 1.0)));
                 }
             });
         }
