@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,9 +14,13 @@ using JetBrains.Annotations;
 using Microsoft.Win32;
 using NLog;
 using NLog.Config;
+
 #if DEBUG
+
 using NLog.Targets;
+
 #endif
+
 using SharpRaven;
 using SharpRaven.Data;
 
@@ -28,8 +32,10 @@ namespace Buttplug.Components.Controls
     public partial class ButtplugTabControl : IButtplugServerFactory
     {
         private readonly RavenClient _ravenClient;
+
         [NotNull]
         private readonly Logger _guiLog;
+
         private int _releaseId;
         private string _serverName;
         private uint _maxPingTime;
@@ -44,6 +50,7 @@ namespace Buttplug.Components.Controls
             _guiLog = LogManager.GetCurrentClassLogger();
             LogManager.Configuration = LogManager.Configuration ?? new LoggingConfiguration();
 #if DEBUG
+
             // Debug Logger Setup
             var t = new DebuggerTarget();
             LogManager.Configuration.AddTarget("debugger", t);
@@ -60,8 +67,7 @@ namespace Buttplug.Components.Controls
                 _guiLog.Error("Sentry URL invalid, cannot submit crash reports!");
             }
 
-            // Cover all of the possible bases for WPF failure
-            // http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
+            // Cover all of the possible bases for WPF failure http://stackoverflow.com/questions/12024470/unhandled-exception-still-crashes-application-after-being-caught
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
 
             // Null check application, otherwise test bringup for GUI tests will fail
@@ -100,8 +106,8 @@ namespace Buttplug.Components.Controls
             // Set up internal services
             ButtplugServer bpServer;
 
-            // Due to the weird inability to close BLE devices, we have to share device managers across buttplug
-            // server instances. Otherwise we'll just hold device connections open forever.
+            // Due to the weird inability to close BLE devices, we have to share device managers
+            // across buttplug server instances. Otherwise we'll just hold device connections open forever.
             if (_deviceManager == null)
             {
                 bpServer = new ButtplugServer(aServerName, aMaxPingTime);
@@ -143,6 +149,8 @@ namespace Buttplug.Components.Controls
             bpServer.AddDeviceSubtypeManager(aLogger => new ETSerialManager(aLogger));
             bpServer.AddDeviceSubtypeManager(aLogger => new WinUSBManager(aLogger));
             bpServer.AddDeviceSubtypeManager(aLogger => new HidManager(aLogger));
+
+            // Simulator Manager makes it hard to profile, and isn't documented. Uncomment to use.
             /*
 #if DEBUG
             bpServer.AddDeviceSubtypeManager(aLogger => new SimulatorManager(aLogger));
