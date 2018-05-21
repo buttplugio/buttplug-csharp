@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using Buttplug.Components.Controls;
 
 namespace Buttplug.Apps.ServerGUI
@@ -13,8 +13,13 @@ namespace Buttplug.Apps.ServerGUI
         public MainWindow()
         {
             var config = new ButtplugConfig("Buttplug");
-            uint ping;
-            uint.TryParse(config.GetValue("buttplug.server.maxPing", "1000"), out ping);
+            uint ping = 0;
+
+            // As long as the server is websocket only, we can depend on websocket ping as an
+            // application keepalive. Once we support both IPC and WebSocket, we should implement
+            // required ping for IPC.
+
+            // uint.TryParse(config.GetValue("buttplug.server.maxPing", "1000"), out ping);
 
             InitializeComponent();
 
