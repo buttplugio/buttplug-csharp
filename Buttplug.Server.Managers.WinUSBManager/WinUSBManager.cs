@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Buttplug.Core;
 using MadWizard.WinUSBNet;
 using Microsoft.Win32;
@@ -49,16 +49,41 @@ namespace Buttplug.Server.Managers.WinUSBManager
                 return;
             }
 
-            var deviceGUID = (string[])deviceParameters.GetValue("DeviceInterfaceGUIDs", string.Empty);
-            if (deviceGUID == null || deviceGUID.ToString().Length == 0)
+            var deviceRegistryObject = deviceParameters.GetValue("DeviceInterfaceGUIDs", string.Empty);
+            string deviceGuid = "";
+            if (deviceRegistryObject == null)
             {
                 BpLogger.Debug("No TranceVibrator Devices Driver GUIDs found in registry.");
                 InvokeScanningFinished();
                 return;
             }
 
+            try
+            {
+                var guidStrings = (string[])deviceRegistryObject;
+                deviceGuid = guidStrings[0];
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    // Some versions of Zadig, the registry key writes as a string, not a string array?
+                    deviceGuid = (string)deviceRegistryObject;
+                }
+                catch (Exception)
+                {
+                    BpLogger.Error("Cannot cast device GUID from registry value, cannot connect to Trancevibe.");
+                }
+            }
+
+            if (deviceGuid.Length == 0)
+            {
+                BpLogger.Error("Cannot find device GUID from registry value, cannot connect to Trancevibe.");
+                return;
+            }
+
             // Only valid for our Trancevibrator install
-            var devices = USBDevice.GetDevices(deviceGUID[0]);
+            var devices = USBDevice.GetDevices(deviceGuid);
             if (devices == null || devices.Length == 0)
             {
                 BpLogger.Error("No USB Device found!");
