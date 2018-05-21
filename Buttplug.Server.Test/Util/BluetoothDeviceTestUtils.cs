@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
@@ -125,6 +126,17 @@ namespace Buttplug.Server.Test.Util
             Clear();
             Assert.True(bleDevice.Initialize().GetAwaiter().GetResult() is Ok);
 
+            TestPacketMatching(aExpectedBytes, aWriteWithResponse);
+        }
+
+        // Testing timing with delays is a great way to get inetermittents, but here we are. Sadness.
+        public void TestDeviceMessageOnWrite(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
+        {
+            Clear();
+            Assert.True(bleDevice.ParseMessage(aOutgoingMessage).GetAwaiter().GetResult() is Ok);
+            var resetEvent = new ManualResetEvent(false);
+            bleIface.ValueWritten += (aObj, aArgs) => { resetEvent.Set(); };
+            resetEvent.WaitOne(1000);
             TestPacketMatching(aExpectedBytes, aWriteWithResponse);
         }
 
