@@ -61,7 +61,6 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInfo)
         {
             // Create a new timer that wont fire any events just yet
-
             _updateValueTimer.Interval = DelayTimeMS;
             _updateValueTimer.Elapsed += MysteryVibeUpdateHandler;
             _updateValueTimer.Enabled = false;
