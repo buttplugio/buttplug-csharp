@@ -72,6 +72,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             ButtplugTab.SelectedDevicesChanged += OnSelectedDevicesChanged;
 
             _graphTab.MultiplierChanged += MultiplierChanged;
+            _graphTab.PassthruChanged += PassthruChanged;
 
             var config = new ButtplugConfig("Buttplug");
             ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");
@@ -88,6 +89,11 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
         private void MultiplierChanged(object sender, double vibeMultiplier)
         {
             _vibrationMultiplier = vibeMultiplier;
+        }
+
+        private void PassthruChanged(object sender, bool shouldPassthru)
+        {
+            ButtplugGameVibrationRouterInterface._shouldPassthru = shouldPassthru;
         }
 
         public void AddPoint(object o, ElapsedEventArgs e)
