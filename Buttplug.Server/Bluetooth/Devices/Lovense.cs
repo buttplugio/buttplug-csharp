@@ -1,4 +1,4 @@
-﻿using Buttplug.Core;
+using Buttplug.Core;
 using Buttplug.Core.Messages;
 using System;
 using System.Collections.Generic;
@@ -55,13 +55,15 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class Lovense : ButtplugBluetoothDevice
     {
-        // Identify Lovense devices against the character we expect to get back from the DeviceType read.
-        // See https://docs.buttplug.io/stpihkal for protocol info.
+        // Identify Lovense devices against the character we expect to get back from the DeviceType
+        // read. See https://docs.buttplug.io/stpihkal for protocol info.
         public enum LovenseDeviceType : uint
         {
             Max = 'B',
+
             // Nora is A or C. Set to A here, then on type check, convert C to A.
             Nora = 'A',
+
             Ambi = 'L',
             Lush = 'S',
             Hush = 'Z',
@@ -93,58 +95,92 @@ namespace Buttplug.Server.Bluetooth.Devices
         public override async Task<ButtplugMessage> Initialize()
         {
             BpLogger.Trace($"Initializing {Name}");
-            await Interface.WriteValue(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes($"DeviceType;"), true);
+            var writeMsg = await Interface.WriteValue(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes($"DeviceType;"), true);
+            if (writeMsg is Error)
+            {
+                BpLogger.Error($"Error requesting device info from Lovense {Name}");
+                return writeMsg;
+            }
 
             var (msg, result) = await Interface.ReadValue(ButtplugConsts.SystemMsgId);
-            if (msg is Error)
+            if (msg is Ok)
             {
-                BpLogger.Error($"Error retreiving device info from Lovense {Name}");
-                return msg;
+                // Expected Format X:YY:ZZZZZZZZZZZZ X is device type leter YY is firmware version Z
+                // is bluetooth address
+                var deviceInfoString = Encoding.ASCII.GetString(result);
+                var deviceInfo = deviceInfoString.Split(':');
+
+                // If we don't get back the amount of tokens we expect, identify as unknown, log, bail.
+                if (deviceInfo.Length != 3 || deviceInfo[0].Length != 1)
+                {
+                    return BpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, Error.ErrorClass.ERROR_DEVICE,
+                        $"Unknown Lovense DeviceType of {deviceInfoString} found. Please report to Buttplug Developers by filing an issue at https://github.com/metafetish/buttplug/");
+                }
+
+                var deviceTypeLetter = deviceInfo[0][0];
+                int.TryParse(deviceInfo[1], out var deviceVersion);
+                BpLogger.Trace($"Lovense DeviceType Return: {deviceInfo}");
+                if (!Enum.IsDefined(typeof(LovenseDeviceType), (uint)deviceTypeLetter))
+                {
+                    // If we don't know what device this is, just assume it has a single vibrator,
+                    // call it unknown, log something.
+                    return BpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, Error.ErrorClass.ERROR_DEVICE,
+                        $"Unknown Lovense Device of Type {deviceTypeLetter} found. Please report to Buttplug Developers by filing an issue at https://github.com/metafetish/buttplug/");
+                }
+
+                Name = $"Lovense {Enum.GetName(typeof(LovenseDeviceType), (uint)deviceTypeLetter)} v{deviceVersion}";
+
+                _deviceType = (LovenseDeviceType)deviceTypeLetter;
+            }
+            else
+            {
+                // TODO Bug #417 - Older lovense devices don't respond to DeviceType; query
+                BpLogger.Warn($"Error retreiving device info from Lovense {Name}, using fallback method");
+
+                // Some of the older devices seem to have issues with info lookups? Not sure why, so
+                // for now use fallback method.
+                switch (Interface.Name.Substring(0, 6))
+                {
+                    case "LVS-B0":
+                        _deviceType = LovenseDeviceType.Max;
+                        break;
+
+                    case "LVS-A0":
+                    case "LVS-C0":
+                        _deviceType = LovenseDeviceType.Nora;
+                        break;
+
+                    default:
+                        _deviceType = LovenseDeviceType.Unknown;
+                        break;
+                }
+
+                Name = $"Lovense {Enum.GetName(typeof(LovenseDeviceType), (uint)_deviceType)}";
             }
 
-            // Expected Format
-            // X:YY:ZZZZZZZZZZZZ
-            // X is device type leter
-            // YY is firmware version
-            // Z is bluetooth address
-            var deviceInfoString = Encoding.ASCII.GetString(result);
-            var deviceInfo = deviceInfoString.Split(':');
-            // If we don't get back the amount of tokens we expect, identify as unknown, log, bail.
-            if (deviceInfo.Length != 3 || deviceInfo[0].Length != 1)
+            if (_deviceType == LovenseDeviceType.Unknown)
             {
-                BpLogger.Warn($"Unknown Lovense DeviceType of {deviceInfoString} found. Please report to Buttplug Developers by filing an issue at https://github.com/metafetish/buttplug/");
-                return msg;
+                BpLogger.Error("Lovense device type unknown, treating as single vibrator device. Please contact developers for more info.");
             }
-
-            var deviceTypeLetter = deviceInfo[0][0];
-            int.TryParse(deviceInfo[1], out var deviceVersion);
-            BpLogger.Trace($"Lovense DeviceType Return: {deviceInfo}");
-            if (!Enum.IsDefined(typeof(LovenseDeviceType), (uint)deviceTypeLetter))
-            {
-                // If we don't know what device this is, just assume it has a single vibrator, call it unknown, log something.
-                BpLogger.Warn($"Unknown Lovense Device of Type {deviceTypeLetter} found. Please report to Buttplug Developers by filing an issue at https://github.com/metafetish/buttplug/");
-                return msg;
-            }
-
-            Name = $"Lovense {Enum.GetName(typeof(LovenseDeviceType), (uint)deviceTypeLetter)} v{deviceVersion}";
-
-            _deviceType = (LovenseDeviceType)deviceTypeLetter;
 
             switch (_deviceType)
             {
                 case LovenseDeviceType.Edge:
+
                     // Edge has 2 vibrators
                     _vibratorCount++;
                     MsgFuncs.Remove(typeof(VibrateCmd));
                     MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
                     break;
+
                 case LovenseDeviceType.Nora:
+
                     // Nora has a rotator
                     MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
                     break;
             }
 
-            return msg;
+            return new Ok(ButtplugConsts.SystemMsgId);
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
