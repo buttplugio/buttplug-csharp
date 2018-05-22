@@ -89,6 +89,20 @@ namespace Buttplug.Apps.ServerGUI
             _log.OnLogException += ExceptionLogged;
         }
 
+        private void SetLastError(string aErrorMsg)
+        {
+            LastErrorLabel.Visibility = Visibility.Visible;
+            LastError.Visibility = Visibility.Visible;
+            LastError.Text = aErrorMsg;
+        }
+
+        private void ClearLastError()
+        {
+            LastErrorLabel.Visibility = Visibility.Hidden;
+            LastError.Visibility = Visibility.Hidden;
+            LastError.Text = string.Empty;
+        }
+
         private void WebSocketExceptionHandler(object aObj, [NotNull] UnhandledExceptionEventArgs aEx)
         {
             _toastTimer.Enabled = true;
@@ -120,6 +134,8 @@ namespace Buttplug.Apps.ServerGUI
             {
                 ConnStatus.Content = "(Connected) " + aEvent.ClientName;
                 DisconnectButton.IsEnabled = true;
+                // We've gotten a connection, clear the last error.
+                ClearLastError();
             });
         }
 
@@ -162,7 +178,7 @@ namespace Buttplug.Apps.ServerGUI
                 Dispatcher.InvokeAsync(() =>
                 {
                     // Show the error message in the app
-                    LastError.Text = aEvent.ErrorMessage;
+                    SetLastError(aEvent.ErrorMessage);
                 });
                 _toastTimer.Enabled = true;
             }
@@ -203,6 +219,9 @@ namespace Buttplug.Apps.ServerGUI
                 ConnStatus.Content = "(Not Connected)";
                 DisconnectButton.IsEnabled = false;
                 ConnInfo.IsEnabled = true;
+
+                // We've brought the server up, clear the error.
+                ClearLastError();
             }
             catch (SocketException e)
             {
