@@ -30,6 +30,7 @@
                     <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding ElementName=multiplierSlider, Path=Value, StringFormat='x\{0:0.0\}'}" Height="16" Margin="15.333,0,14,0.333" Width="auto"></TextBlock>
                 </Grid>
             </GroupBox>
+            <CheckBox Name="PassthruCheckBox"  Grid.Row="1" Content="Pass Gamepad Rumble To Gamepad" IsChecked="True" HorizontalAlignment="Left" Margin="0,5,0,5" VerticalAlignment="Stretch" Checked="PassthruCheckBox_Changed" Unchecked="PassthruCheckBox_Changed" />
         </Grid>
         <wpf:CartesianChart Name="LowPowerChart" Grid.Row="1" Series="{Binding LowPowerSeriesCollection}" Background="Black" DisableAnimations="True"  Hoverable="False" DataTooltip="{x:Null}">
             <wpf:CartesianChart.AxisY>

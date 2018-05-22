@@ -12,6 +12,7 @@ namespace Buttplug.Apps.GameVibrationRouter.Payload
         private readonly ButtplugGameVibrationRouterInterface _interface;
         private LocalHook _xinputSetStateHookObj;
         private Vibration _lastMessage = new Vibration {LeftMotorSpeed = 65535, RightMotorSpeed = 65535};
+        private static bool _shouldPassthru = true;
         private readonly Queue<Vibration> _messageQueue = new Queue<Vibration>();
         private static Exception _ex;
         private static ButtplugGameVibrationRouterPayload _instance;
@@ -72,7 +73,7 @@ namespace Buttplug.Apps.GameVibrationRouter.Payload
                 while (_interface.Ping(RemoteHooking.GetCurrentProcessId(), ""))
                 {
                     Thread.Sleep(1);
-
+                    _shouldPassthru = _interface.ShouldPassthru();
                     if (_messageQueue.Count > 0)
                     {
                         lock (_messageQueue)
@@ -127,8 +128,11 @@ namespace Buttplug.Apps.GameVibrationRouter.Payload
             try
             {
                 // Always send to the controller first, then do what we need to.
-                XInputSetStateShim(aGamePadIndex, aVibrationRef);
-
+                if (_shouldPassthru)
+                {
+                    XInputSetStateShim(aGamePadIndex, aVibrationRef);
+                }
+               
                 ButtplugGameVibrationRouterPayload This = _instance;
                 // No reason to send duplicate packets.
                 if (This._lastMessage.LeftMotorSpeed == aVibrationRef.LeftMotorSpeed &&

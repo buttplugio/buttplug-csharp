@@ -24,6 +24,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
         private readonly ChartValues<double> LowPowerValues;
         private readonly ChartValues<double> HighPowerValues;
         public event EventHandler<double> MultiplierChanged;
+        public event EventHandler<bool> PassthruChanged;
 
         public VibeGraphTab()
         {
@@ -84,7 +85,11 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
                 // Usually means we're shutting down. noop.
             }
         }
-        
+
+        private void PassthruCheckBox_Changed(object aSender, RoutedEventArgs aArgs)
+        {
+            PassthruChanged?.Invoke(this, PassthruCheckBox.IsChecked.Value);
+        }
 
         private void multiplierSlider_ValueChanged(object aSender, System.Windows.RoutedPropertyChangedEventArgs<double> aArgs)
         {

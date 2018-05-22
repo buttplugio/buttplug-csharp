@@ -37,11 +37,13 @@ namespace Buttplug.Apps.GameVibrationRouter.Interface
         private static bool _shouldStop;
 
         private Timer _exitTimer = new Timer();
-        private bool _hasPinged = false;
+        public static bool _shouldPassthru = true;
+        private bool _hasPinged;
         public ButtplugGameVibrationRouterInterface()
         {
             // Every time we create a new instance, reset the static stopping variable.
             _shouldStop = false;
+            _shouldPassthru = true;
             // Check 4 times a second
             _exitTimer.Interval = 250;
             _exitTimer.Enabled = true;
@@ -57,6 +59,11 @@ namespace Buttplug.Apps.GameVibrationRouter.Interface
                 return;
             }
             _hasPinged = false;
+        }
+
+        public bool ShouldPassthru()
+        {
+            return _shouldPassthru;
         }
 
         public void Exit()
