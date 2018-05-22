@@ -202,7 +202,7 @@ namespace Buttplug.Apps.ServerGUI
 
                 ConnStatus.Content = "(Not Connected)";
                 DisconnectButton.IsEnabled = false;
-                ConnInfo.Visibility = Visibility.Visible;
+                ConnInfo.IsEnabled = true;
             }
             catch (SocketException e)
             {
@@ -216,12 +216,12 @@ namespace Buttplug.Apps.ServerGUI
 
         public void StopServer()
         {
-            _ws.StopServer();
+            _ws?.StopServer();
             ConnToggleButton.Content = "Start";
             SecureCheckBox.IsEnabled = true;
             PortTextBox.IsEnabled = true;
             LoopbackCheckBox.IsEnabled = true;
-            ConnInfo.Visibility = Visibility.Collapsed;
+            ConnInfo.IsEnabled = false;
         }
 
         private void ConnToggleButton_Click(object aObj, RoutedEventArgs aEvent)
