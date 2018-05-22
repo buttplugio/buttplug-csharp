@@ -36,9 +36,6 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
         [NotNull]
         private readonly VibeGraphTab _graphTab;
 
-        [NotNull]
-        private readonly VibeConfigTab _vibeTab;
-
         private IpcServerChannel _xinputHookServer;
         private string _channelName;
         private List<ButtplugDeviceInfo> _devices = new List<ButtplugDeviceInfo>();
@@ -74,9 +71,7 @@ namespace Buttplug.Apps.GameVibrationRouter.GUI
             ButtplugTab.AddDevicePanel(_bpServer);
             ButtplugTab.SelectedDevicesChanged += OnSelectedDevicesChanged;
 
-            _vibeTab = new VibeConfigTab();
-            _vibeTab.MultiplierChanged += MultiplierChanged;
-            ButtplugTab.SetOtherTab2("Vibe Config", _vibeTab);
+            _graphTab.MultiplierChanged += MultiplierChanged;
 
             var config = new ButtplugConfig("Buttplug");
             ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");
