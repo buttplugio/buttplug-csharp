@@ -1,4 +1,4 @@
-﻿using Buttplug.Core;
+using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
@@ -66,7 +66,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     _indexedChars.Add(item.Key, c[0]);
                 }
             }
-            else if (aChars.Length <= 2)
+            else
             {
                 foreach (var c in aChars)
                 {
@@ -83,7 +83,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     }
                 }
             }
-            else
+            if (_rxChar == null && _txChar == null && _indexedChars == null)
             {
                 var err = $"No characteristics to connect to for device {Name}";
                 _bpLogger.Error(err);
@@ -103,6 +103,14 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 {
                     // Server has been informed of clients interest.
                 }
+                else
+                {
+                    _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: Failed Request");
+                }
+            }
+            else
+            {
+                _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: No Rx characteristic found.");
             }
         }
 
@@ -224,8 +232,13 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         private async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, GattCharacteristic aChar)
         {
-            var result = aChar.ReadValueAsync().GetResults().Value.ToArray();
-            return (new Ok(aMsgId), result);
+            var result = await aChar.ReadValueAsync();
+            if (result?.Value == null)
+            {
+                return (_bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"Got null read from {Name}"), null);
+            }
+
+            return (new Ok(aMsgId), result.Value.ToArray());
         }
 
         public void Disconnect()
