@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -21,13 +21,14 @@ namespace Buttplug.Components.WebsocketServer
 {
     internal static class CertUtils
     {
+        /// <exception cref="CryptographicException">Sometimes thrown due to issues generating keys.</exception>
         public static X509Certificate2 GetCert(string app, string hostname = "localhost")
         {
             var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), app);
             var caPfx = Path.Combine(appPath, "ca.pfx");
             var certPfx = Path.Combine(appPath, "cert.pfx");
 
-            // Patch release rework of cert handling: our websocket server doesn't acept a chain!
+            // Patch release rework of cert handling: our websocket server doesn't accept a chain!
             if (File.Exists(caPfx))
             {
                 File.Delete(caPfx);
@@ -58,7 +59,8 @@ namespace Buttplug.Components.WebsocketServer
                 X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
         }
 
-        // Note: Much of this code comes from https://stackoverflow.com/a/22247129
+        /// Note: Much of this code comes from https://stackoverflow.com/a/22247129
+        /// <exception cref="CryptographicException">Sometimes thrown due to issues generating keys.</exception>
         private static X509Certificate2 GenerateSelfSignedCertificate(string subject)
         {
             const int keyStrength = 2048;
@@ -134,14 +136,10 @@ namespace Buttplug.Components.WebsocketServer
             var rsa = RsaPrivateKeyStructure.GetInstance(seq);
             var rsaparams = new RsaPrivateCrtKeyParameters(
                 rsa.Modulus, rsa.PublicExponent, rsa.PrivateExponent, rsa.Prime1, rsa.Prime2, rsa.Exponent1, rsa.Exponent2, rsa.Coefficient);
-            try
-            {
-                x509.PrivateKey = ToDotNetKey(rsaparams); // x509.PrivateKey = DotNetUtilities.ToRSA(rsaparams);
-            }
-            catch (CryptographicException e)
-            {
-                throw new Exception($"Exception on cert generation!\nSubject {subject}\nHostname {Environment.MachineName}\nSequenceCount {seq.Count} (should be 9?)", e);
-            }
+
+            // This can throw CryptographicException in some cases. Catch above here and deal with it
+            // in the application level.
+            x509.PrivateKey = ToDotNetKey(rsaparams); // x509.PrivateKey = DotNetUtilities.ToRSA(rsaparams);
 
             return x509;
         }

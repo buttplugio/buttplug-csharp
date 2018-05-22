@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -46,8 +46,8 @@ namespace Buttplug.Apps.ServerGUI
             _connUrls = new ConnUrlList();
             _port = 12345;
 
-            // Usually, if we throw errors then connect, it's not actually an error.
-            // If we don't connect after a second of throwing an exception, pop the toaster, but not before then.
+            // Usually, if we throw errors then connect, it's not actually an error. If we don't
+            // connect after a second of throwing an exception, pop the toaster, but not before then.
             _toastTimer = new Timer
             {
                 Interval = 1000,
@@ -206,11 +206,14 @@ namespace Buttplug.Apps.ServerGUI
             }
             catch (SocketException e)
             {
-                _log.LogException(e, true, e.Message);
+                _currentExceptionMessage = e.Message;
+                _log.LogException(e, true, _currentExceptionMessage);
             }
             catch (CryptographicException e)
             {
-                _log.LogException(e, true, e.Message);
+                _currentExceptionMessage =
+                    "Cannot start server with SSL. Try turning off SSL. The server can still be used with ScriptPlayer, but not web applications. If you need SSL, contact Buttplug Developers for support (see About Tab).";
+                _log.LogException(e, true, _currentExceptionMessage);
             }
         }
 
@@ -291,8 +294,7 @@ namespace Buttplug.Apps.ServerGUI
                 }
                 catch (Exception ex)
                 {
-                    // We've seen weird instances of can't open clipboard
-                    // but it's pretty rare. Log it.
+                    // We've seen weird instances of can't open clipboard but it's pretty rare. Log it.
                     _log.LogException(ex);
                 }
             }

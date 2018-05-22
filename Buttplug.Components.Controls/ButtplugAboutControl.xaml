@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Buttplug.Components.Controls.ButtplugAboutControl"
+<UserControl x:Class="Buttplug.Components.Controls.ButtplugAboutControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -18,11 +18,12 @@
 			<TextBlock Grid.Row="0" HorizontalAlignment="Left" Margin="150,0,0,0" VerticalAlignment="Stretch" Height="auto" Width="auto">
                 <Span FontSize="19" FontWeight="Bold">Buttplug <Run Name="AboutVersionNumber">1.0.0.0-branch</Run> (C# Edition)</Span><LineBreak />
                 <Run Name="AboutGitVersion" Cursor="Hand">0123456789abcdef0123456789abcdef01234567</Run><LineBreak />
-                By <Hyperlink NavigateUri="https://metafetish.com" RequestNavigate="Hyperlink_RequestNavigate">Metafetish</Hyperlink><LineBreak />
+                By <Hyperlink NavigateUri="https://metafetish.com" RequestNavigate="Hyperlink_RequestNavigate">Nonpolynomial Labs, LLC</Hyperlink><LineBreak />
                 <LineBreak/>
                 Software updates at <Hyperlink NavigateUri="https://github.com/metafetish" RequestNavigate="Hyperlink_RequestNavigate">https://buttplug.io/</Hyperlink><LineBreak/>
                 Documentation at <Hyperlink NavigateUri="https://buttplug.io/docs" RequestNavigate="Hyperlink_RequestNavigate">https://buttplug.io/docs</Hyperlink><LineBreak/>
                 Source code at <Hyperlink NavigateUri="https://github.com/metafetish" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/metafetish</Hyperlink><LineBreak/>
+                Forums and Support at <Hyperlink NavigateUri="https://metafetish.club" RequestNavigate="Hyperlink_RequestNavigate">https://metafetish.club</Hyperlink><LineBreak/>
                 License information <Hyperlink Click="LicenseHyperlink_Click" >here</Hyperlink><LineBreak/>
 			</TextBlock>
 
