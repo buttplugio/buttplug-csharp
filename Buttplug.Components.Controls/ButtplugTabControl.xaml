@@ -12,9 +12,7 @@
 			<TabItem Header="Devices" Name="DevicesTab">
 				<local:ButtplugDeviceControl x:Name="DeviceControl" />
 			</TabItem>
-		    <TabItem Name="OtherTab" Visibility="Collapsed">
-		    </TabItem>
-            <TabItem Name="OtherTab2" Visibility="Collapsed">
+            <TabItem Name="OtherTab" Visibility="Collapsed">
             </TabItem>
             <TabItem Header="Logs">
                 <local:ButtplugLogControl x:Name="LogControl" />

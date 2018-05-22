@@ -143,10 +143,11 @@ namespace Buttplug.Components.Controls
             bpServer.AddDeviceSubtypeManager(aLogger => new ETSerialManager(aLogger));
             bpServer.AddDeviceSubtypeManager(aLogger => new WinUSBManager(aLogger));
             bpServer.AddDeviceSubtypeManager(aLogger => new HidManager(aLogger));
+            /*
 #if DEBUG
             bpServer.AddDeviceSubtypeManager(aLogger => new SimulatorManager(aLogger));
 #endif
-
+*/
             return bpServer;
         }
 
@@ -240,12 +241,6 @@ namespace Buttplug.Components.Controls
             OtherTab.Header = aTabName;
             OtherTab.Content = aTabControl;
             OtherTab.Visibility = Visibility.Visible;
-        }
-        public void SetOtherTab2(string aTabName, UserControl aTabControl)
-        {
-            OtherTab2.Header = aTabName;
-            OtherTab2.Content = aTabControl;
-            OtherTab2.Visibility = Visibility.Visible;
         }
 
         public ButtplugLogControl GetLogControl()

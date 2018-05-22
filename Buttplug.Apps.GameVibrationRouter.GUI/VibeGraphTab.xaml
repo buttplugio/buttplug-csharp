@@ -9,10 +9,29 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Background="#FFE5E5E5">
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <wpf:CartesianChart Name="LowPowerChart" Grid.Row="0" Series="{Binding LowPowerSeriesCollection}" Background="Black" DisableAnimations="True"  Hoverable="False" DataTooltip="{x:Null}">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <GroupBox Header="Vibration Multiplier" Grid.Row="0">
+                <Grid Row="0" RenderTransformOrigin="0.841,0.517">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Slider x:Name="multiplierSlider" Foreground="Black" Grid.Column="0" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" TickPlacement="BottomRight" ValueChanged="multiplierSlider_ValueChanged" Value="1" Maximum="5" TickFrequency="0.1" IsSnapToTickEnabled="True" Margin="0,2,0,1.667"/>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding ElementName=multiplierSlider, Path=Value, StringFormat='x\{0:0.0\}'}" Height="16" Margin="15.333,0,14,0.333" Width="auto"></TextBlock>
+                </Grid>
+            </GroupBox>
+        </Grid>
+        <wpf:CartesianChart Name="LowPowerChart" Grid.Row="1" Series="{Binding LowPowerSeriesCollection}" Background="Black" DisableAnimations="True"  Hoverable="False" DataTooltip="{x:Null}">
             <wpf:CartesianChart.AxisY>
                 <wpf:Axis MinValue="0" MaxValue="65535" ShowLabels="False"></wpf:Axis>
             </wpf:CartesianChart.AxisY>
@@ -20,7 +39,7 @@
                 <wpf:Axis MinValue="0" MaxRange="200" ShowLabels="False"></wpf:Axis>
             </wpf:CartesianChart.AxisX>
         </wpf:CartesianChart>
-        <wpf:CartesianChart Name="HighPowerChart" Grid.Row="1" Series="{Binding HighPowerSeriesCollection}"  Background="Black" DisableAnimations="True"  Hoverable="False" DataTooltip="{x:Null}">
+        <wpf:CartesianChart Name="HighPowerChart" Grid.Row="2" Series="{Binding HighPowerSeriesCollection}"  Background="Black" DisableAnimations="True"  Hoverable="False" DataTooltip="{x:Null}">
             <wpf:CartesianChart.AxisY>
                 <wpf:Axis MinValue="0" MaxValue="65535" ShowLabels="False"></wpf:Axis>
             </wpf:CartesianChart.AxisY>
