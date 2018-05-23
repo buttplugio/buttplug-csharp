@@ -116,18 +116,21 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return writeMsg;
             }
 
-            var (msg, result) = await Interface.ReadValueAsync(ButtplugConsts.SystemMsgId, aToken).ConfigureAwait(false);
             var deviceInfoString = string.Empty;
-
-            if (msg is Ok)
+            try
             {
-                deviceInfoString = Encoding.ASCII.GetString(result);
+                var (msg, result) =
+                    await Interface.ReadValueAsync(ButtplugConsts.SystemMsgId, aToken).ConfigureAwait(false);
+                if (msg is Ok && result.Length > 0)
+                {
+                    deviceInfoString = Encoding.ASCII.GetString(result);
+                }
             }
-            else
+            catch (ButtplugDeviceException)
             {
                 // The device info notification isn't available immediately.
                 // TODO Turn this into a task semaphore with cancellation/timeout, let system handle check timing.
-                int timeout = 500;
+                int timeout = 1000;
                 while (timeout > 0)
                 {
                     if (_lastNotifyReceived != string.Empty)

@@ -6,9 +6,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
@@ -87,7 +89,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 foreach (var c in aChars)
                 {
                     if (c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read) ||
-                        c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
+                        c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify) ||
+                        c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
                     {
                         _rxChar = c;
                     }
@@ -139,18 +142,31 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 return;
             }
 
-            if (!aCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
+            if (!aCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify) &&
+                !aCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
             {
                 _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: No Notify characteristic found.");
                 return;
             }
 
-            var status = await aCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
-                GattClientCharacteristicConfigurationDescriptorValue.Notify);
-            if (status != GattCommunicationStatus.Success)
+            if (aCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
             {
-                _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: Failed Request");
-                return;
+                var status = await aCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                    GattClientCharacteristicConfigurationDescriptorValue.Notify);
+                if (status != GattCommunicationStatus.Success)
+                {
+                    _bpLogger.Error($"Cannot subscribe to BLE notify updates from {Name}: Failed Request {status}");
+                }
+            }
+
+            if (aCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
+            {
+                var status = await aCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                    GattClientCharacteristicConfigurationDescriptorValue.Indicate);
+                if (status != GattCommunicationStatus.Success)
+                {
+                    _bpLogger.Error($"Cannot subscribe to BLE indicate updates from {Name}: Failed Request {status}");
+                }
             }
 
             // Server has been informed of clients interest.
@@ -277,9 +293,9 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         private async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, GattCharacteristic aChar, CancellationToken aToken)
         {
             var result = await aChar.ReadValueAsync().AsTask(aToken).ConfigureAwait(false);
-            if (result?.Value == null)
+            if (result.Status != GattCommunicationStatus.Success)
             {
-                throw new ButtplugDeviceException(_bpLogger, $"Got null read from {Name}", aMsgId);
+                throw new ButtplugDeviceException(_bpLogger, $"Error while reading from {Name}", aMsgId);
             }
 
             return (new Ok(aMsgId), result.Value.ToArray());

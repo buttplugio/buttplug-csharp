@@ -4,15 +4,15 @@
 //     license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using Buttplug.Core.Logging;
-using Buttplug.Server.Bluetooth;
-using JetBrains.Annotations;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
 using System.Threading.Tasks;
+using Buttplug.Core.Logging;
+using Buttplug.Server.Bluetooth;
+using JetBrains.Annotations;
+using Microsoft.Win32;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 
