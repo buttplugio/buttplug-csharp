@@ -22,6 +22,7 @@ namespace Buttplug.Server.Bluetooth
                 new FleshlightLaunchBluetoothInfo(),
                 new KiirooBluetoothInfo(),
                 new KiirooGen2VibeBluetoothInfo(),
+                new KiirooOnyx2BluetoothInfo(),
                 new YoucupsBluetoothInfo(),
                 new LovenseBluetoothInfo(),
                 new MagicMotionBluetoothInfo(),
