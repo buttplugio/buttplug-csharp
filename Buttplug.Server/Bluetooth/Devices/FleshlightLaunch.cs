@@ -43,18 +43,63 @@ namespace Buttplug.Server.Bluetooth.Devices
         }
     }
 
+    internal class KiirooOnyx2BluetoothInfo : IBluetoothDeviceInfo
+    {
+        public enum Chrs : uint
+        {
+            Tx = 0,
+            Rx,
+            Cmd,
+        }
+
+        public string[] Names { get; } = { "Onyx2" };
+
+        public string[] NamePrefixes { get; } = { };
+
+        public Guid[] Services { get; } = { new Guid("f60402a6-0293-4bdb-9f20-6758133f7090") };
+
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>
+        {
+            // Tx
+            { (uint)Chrs.Tx, new Guid("02962ac9-e86f-4094-989d-231d69995fc2") },
+
+            // Rx
+            { (uint)Chrs.Rx, new Guid("d44d0393-0731-43b3-a373-8fc70b1f3323") },
+
+            // Cmd
+            { (uint)Chrs.Cmd, new Guid("c7b7a04b-2cc4-40ff-8b10-5d531d1161db") },
+        };
+
+        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
+            IBluetoothDeviceInterface aInterface)
+        {
+            return new FleshlightLaunch(aLogManager, aInterface, this);
+        }
+    }
+
     internal class FleshlightLaunch : ButtplugBluetoothDevice
     {
+        private static Dictionary<string, string> _brandNames = new Dictionary<string, string>
+        {
+            { "Launch", "Fleshlight" },
+            { "Onyx2", "Kiiroo" },
+        };
+
         private double _lastPosition;
 
         public FleshlightLaunch([NotNull] IButtplugLogManager aLogManager,
                                 [NotNull] IBluetoothDeviceInterface aInterface,
                                 [NotNull] IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   "Fleshlight Launch",
+                   aInterface.Name,
                    aInterface,
                    aInfo)
         {
+            if (_brandNames.ContainsKey(aInterface.Name))
+            {
+                Name = $"{_brandNames[aInterface.Name]} {aInterface.Name}";
+            }
+
             // Setup message function array
             MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchRawCmd));
             MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
@@ -64,8 +109,15 @@ namespace Buttplug.Server.Bluetooth.Devices
         public override async Task<ButtplugMessage> Initialize()
         {
             BpLogger.Trace($"Initializing {Name}");
+            var chr = (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx;
+
+            if (Name == "Kiiroo Onyx2")
+            {
+                chr = (uint)KiirooOnyx2BluetoothInfo.Chrs.Cmd;
+            }
+
             return await Interface.WriteValue(ButtplugConsts.SystemMsgId,
-                (int)FleshlightLaunchBluetoothInfo.Chrs.Tx,
+                chr,
                 new byte[] { 0 },
                 true);
         }

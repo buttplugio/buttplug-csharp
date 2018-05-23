@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="ArgsTests.cs" />
     <Compile Include="AssemblyGitVersionTests.cs" />
+    <Compile Include="Bluetooth\Devices\KiirooOnyx2Tests.cs" />
     <Compile Include="Bluetooth\Devices\FleshlightLaunchTests.cs" />
     <Compile Include="Bluetooth\Devices\GeneralDeviceTests.cs" />
     <Compile Include="Bluetooth\Devices\KiirooGen2VibeTests.cs" />
