@@ -7,6 +7,7 @@
   - LiBo Whale
   - MysteryVibe Crescendo
   - Cyclone X10 (USB)
+  - Kiiroo Onyx 2
 - Added name prefix device searching (Hopefully fixes Lovense update problems)
 - Rename WebsocketServer to Server in preparation for IPC
 - Add signal multiplier to GVR, for games with light vibration
