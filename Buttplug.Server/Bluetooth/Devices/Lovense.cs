@@ -95,6 +95,11 @@ namespace Buttplug.Server.Bluetooth.Devices
         public override async Task<ButtplugMessage> Initialize()
         {
             BpLogger.Trace($"Initializing {Name}");
+
+            // Subscribing to read updates
+            await Interface.SubscribeToUpdates();
+
+            // Retreiving device type info for identification.
             var writeMsg = await Interface.WriteValue(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes($"DeviceType;"), true);
             if (writeMsg is Error)
             {

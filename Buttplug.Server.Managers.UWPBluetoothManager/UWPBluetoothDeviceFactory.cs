@@ -129,7 +129,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
 
             var bleInterface = new UWPBluetoothDeviceInterface(_buttplugLogManager, _deviceInfo, aDevice, chrs);
-            await bleInterface.SubscribeToUpdates();
+
             var device = _deviceInfo.CreateDevice(_buttplugLogManager, bleInterface);
 
             // If initialization fails, don't actually send the message back. Just return null, we'll
