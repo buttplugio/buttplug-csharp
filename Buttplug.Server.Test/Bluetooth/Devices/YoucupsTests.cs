@@ -40,7 +40,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], uint)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,4?"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("$SYS,4?"), (uint)YoucupsBluetoothInfo.Chrs.Tx),
                 };
 
             testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -48,7 +48,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             expected =
                 new List<(byte[], uint)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,0?"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("$SYS,0?"), (uint)YoucupsBluetoothInfo.Chrs.Tx),
                 };
 
             testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -60,7 +60,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], uint)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,4?"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("$SYS,4?"), (uint)YoucupsBluetoothInfo.Chrs.Tx),
                 };
 
             testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -72,7 +72,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], uint)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,4?"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("$SYS,4?"), (uint)YoucupsBluetoothInfo.Chrs.Tx),
                 };
 
             testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);

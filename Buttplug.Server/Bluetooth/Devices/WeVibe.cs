@@ -9,6 +9,12 @@ namespace Buttplug.Server.Bluetooth.Devices
 {
     internal class WeVibeBluetoothInfo : IBluetoothDeviceInfo
     {
+        public enum Chrs : uint
+        {
+            Tx = 0,
+            Rx,
+        }
+
         public Guid[] Services { get; } = { new Guid("f000bb03-0451-4000-b000-000000000000") };
 
         public string[] NamePrefixes { get; } = { };
@@ -32,7 +38,13 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Wish",
         };
 
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
+        // WeVibe causes the characteristic detector to misidentify characteristics. Do not remove these.
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
+        {
+            // tx characteristic
+            { (uint)Chrs.Tx, new Guid("f000c000-0451-4000-b000-000000000000") },
+            { (uint)Chrs.Rx, new Guid("f000b000-0451-4000-b000-000000000000") },
+        };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
@@ -146,7 +158,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 data[5] = 0x00;
             }
 
-            return await Interface.WriteValue(aMsg.Id, data);
+            return await Interface.WriteValue(aMsg.Id, (uint)WeVibeBluetoothInfo.Chrs.Tx, data);
         }
     }
 }

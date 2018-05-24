@@ -1,14 +1,19 @@
-﻿using System;
+﻿using Buttplug.Core;
+using Buttplug.Core.Messages;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Buttplug.Core;
-using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
     internal class YoucupsBluetoothInfo : IBluetoothDeviceInfo
     {
+        public enum Chrs : uint
+        {
+            Tx = 0,
+        }
+
         public Guid[] Services { get; } = { new Guid("0000fee9-0000-1000-8000-00805f9b34fb") };
 
         public string[] NamePrefixes { get; } = { };
@@ -19,7 +24,10 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Youcups",
         };
 
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>();
+        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
+        {
+            { (uint)Chrs.Tx, new Guid("d44bc439-abfd-45a2-b575-925416129600") },
+        };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
             IBluetoothDeviceInterface aInterface)
