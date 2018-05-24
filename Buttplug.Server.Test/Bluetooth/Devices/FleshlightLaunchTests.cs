@@ -36,7 +36,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         {
             testUtil.TestDeviceInitialize(new List<(byte[], uint)>()
             {
-                (new byte[1] { 0x0 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
+                (new byte[1] { 0x0 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd),
             }, true);
         }
 

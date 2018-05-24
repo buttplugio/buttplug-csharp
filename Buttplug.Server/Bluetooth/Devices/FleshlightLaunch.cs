@@ -109,7 +109,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         public override async Task<ButtplugMessage> Initialize()
         {
             BpLogger.Trace($"Initializing {Name}");
-            var chr = (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx;
+            var chr = (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd;
 
             if (Name == "Kiiroo Onyx2")
             {
