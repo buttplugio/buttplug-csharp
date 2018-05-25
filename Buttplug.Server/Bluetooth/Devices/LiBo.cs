@@ -39,9 +39,10 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             // tx2 characteristic
             { (uint)Chrs.WriteVibrate, new Guid("00006002-0000-1000-8000-00805f9b34fb") }, // VibeMode
-
+            /*
             // rx characteristic
             { (uint)Chrs.ReadBattery,  new Guid("00006051-0000-1000-8000-00805f9b34fb") }, // Read for battery level
+            */
         };
 
         public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
