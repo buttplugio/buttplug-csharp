@@ -190,7 +190,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         break;
                 }
 
-                Name = $"Lovense {Enum.GetName(typeof(LovenseDeviceType), (uint)_deviceType)}";
+                Name = $"Lovense {Enum.GetName(typeof(LovenseDeviceType), (uint)_deviceType)} v{Interface.Name.Substring(Interface.Name.Length - 2)}";
             }
 
             if (_deviceType == LovenseDeviceType.Unknown)
