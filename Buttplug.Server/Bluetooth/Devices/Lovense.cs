@@ -182,7 +182,9 @@ namespace Buttplug.Server.Bluetooth.Devices
                     case "LVS-C0":
                         _deviceType = LovenseDeviceType.Nora;
                         break;
-
+                    case "LVS-L0":
+                        _deviceType = LovenseDeviceType.Ambi;
+                        break;
                     default:
                         _deviceType = LovenseDeviceType.Unknown;
                         break;
