@@ -4,8 +4,8 @@
 [![codecov](https://codecov.io/gh/metafetish/buttplug-csharp/branch/master/graph/badge.svg)](https://codecov.io/gh/metafetish/buttplug-csharp)
 
 [![Patreon donate button](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/qdot)
-[![Discourse Forum](https://img.shields.io/badge/discourse-online-brightgreen.svg)](https://metafetish.club)
-[![Discord](https://img.shields.io/discord/353303527587708932.svg?logo=discord)](https://discord.gg/t9g9RuD)
+[![Discourse Forum](https://img.shields.io/badge/discourse-forum-blue.svg)](https://metafetish.club)
+[![Discord](https://img.shields.io/discord/353303527587708932.svg?logo=discord)](https://discord.buttplug.io)
 [![Twitter](https://img.shields.io/twitter/follow/buttplugio.svg?style=social&logo=twitter)](https://twitter.com/buttplugio)
 
 Buttplug is a framework for hooking up hardware to interfaces, where
@@ -14,11 +14,12 @@ anything. It's basically a userland HID manager for things that may
 not specifically be HID.
 
 If you're looking for the installer for the Websocket Server, Game
-Vibration Router, or Kiiroo Emulator, [visit our releases page.](https://github.com/metafetish/buttplug-csharp/releases/)
+Vibration Router, or Kiiroo Emulator, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
 
 ## Table Of Contents
 
 - [Support The Project](#support-the-project)
+- [API Documentation](#api-documentation)
 - [Buttplug Spec and Documentation](#buttplug-spec-and-documentation)
 - [Hardware Support](#hardware-support)
 - [Installation](#installation)
@@ -29,18 +30,21 @@ Vibration Router, or Kiiroo Emulator, [visit our releases page.](https://github.
 
 ## Support The Project
 
-If you find this project helpful, you
-can
-[support Metafetish projects via Patreon](http://patreon.com/qdot)!
-Every donation helps us afford more hardware to reverse, document, and
-write code for!
+If you find this project helpful, you can [support us via
+Patreon](http://patreon.com/qdot)! Every donation helps us afford more
+hardware to reverse, document, and write code for!
+
+## API Documentation
+
+API documentation for the current release is available at
+[https://buttplug-csharp.docs.buttplug.io](https://buttplug-csharp.docs.buttplug.io).
 
 ## Buttplug Spec and Documentation
 
 Buttplug implementations are available in multiple languages (rust,
 javascript, etc)/frameworks/platforms. For a full
 list of documentation, libraries, and applications,
-[see the README in the main buttplug repo](http://github.com/metafetish/buttplug).
+[see the README in the main buttplug repo](http://github.com/buttplugio/buttplug).
 
 ## Hardware Support
 
@@ -86,7 +90,7 @@ well as the following applications:
 - Game Vibration Router
 - Kiiroo Desktop Platform Emulator
 
-To download the installer for these applications, [visit our releases page.](https://github.com/metafetish/buttplug-csharp/releases/)
+To download the installer for these applications, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
 
 ## Development
 
