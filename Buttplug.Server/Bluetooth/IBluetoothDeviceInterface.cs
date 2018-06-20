@@ -8,6 +8,8 @@ namespace Buttplug.Server.Bluetooth
     {
         string Name { get; }
 
+        event EventHandler<BluetoothNotifyEventArgs> BluetoothNotifyReceived;
+
         Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse = false);
 
         Task<ButtplugMessage> WriteValue(uint aMsgId, uint aCharactieristicIndex, byte[] aValue, bool aWriteWithResponse = false);

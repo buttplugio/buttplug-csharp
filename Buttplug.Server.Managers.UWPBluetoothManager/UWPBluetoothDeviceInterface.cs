@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
+using Windows.Security.Cryptography;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
@@ -34,6 +35,9 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         [CanBeNull]
         public event EventHandler DeviceRemoved;
+
+        [CanBeNull]
+        public event EventHandler<BluetoothNotifyEventArgs> BluetoothNotifyReceived;
 
         public UWPBluetoothDeviceInterface(
             [NotNull] IButtplugLogManager aLogManager,
@@ -102,6 +106,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 if (status == GattCommunicationStatus.Success)
                 {
                     // Server has been informed of clients interest.
+                    _rxChar.ValueChanged += BluetoothNotifyReceivedHandler;
                 }
                 else
                 {
@@ -120,6 +125,13 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             {
                 DeviceRemoved?.Invoke(this, new EventArgs());
             }
+        }
+
+        private void BluetoothNotifyReceivedHandler(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            byte[] bytes;
+            CryptographicBuffer.CopyToByteArray(args.CharacteristicValue, out bytes);
+            BluetoothNotifyReceived?.Invoke(this, new BluetoothNotifyEventArgs(bytes));
         }
 
         public ulong GetAddress()

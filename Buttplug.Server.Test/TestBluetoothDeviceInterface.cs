@@ -43,6 +43,8 @@ namespace Buttplug.Server.Test
 
         public event EventHandler ValueWritten;
 
+        public event EventHandler<BluetoothNotifyEventArgs> BluetoothNotifyReceived;
+
         public bool Removed;
 
         public TestBluetoothDeviceInterface(string aName)
