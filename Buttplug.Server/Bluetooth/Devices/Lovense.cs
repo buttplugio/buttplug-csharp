@@ -78,6 +78,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         private bool _clockwise = true;
         private double _rotateSpeed;
         private LovenseDeviceType _deviceType = LovenseDeviceType.Unknown;
+        private string _lastNotifyReceived = string.Empty;
 
         public Lovense(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface,
@@ -98,6 +99,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             // Subscribing to read updates
             await Interface.SubscribeToUpdates();
+            Interface.BluetoothNotifyReceived += NotifyReceived;
 
             // Retreiving device type info for identification.
             var writeMsg = await Interface.WriteValue(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes($"DeviceType;"), true);
@@ -108,11 +110,33 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             var (msg, result) = await Interface.ReadValue(ButtplugConsts.SystemMsgId);
+            string deviceInfoString = string.Empty;
+
             if (msg is Ok)
+            {
+                deviceInfoString = Encoding.ASCII.GetString(result);
+            }
+            else
+            {
+                // The device info notification isn't available immediately.
+                int timeout = 500;
+                while (timeout > 0)
+                {
+                    if (_lastNotifyReceived != string.Empty)
+                    {
+                        deviceInfoString = _lastNotifyReceived;
+                        break;
+                    }
+
+                    timeout -= 5;
+                    await Task.Delay(5);
+                }
+            }
+
+            if (deviceInfoString != string.Empty)
             {
                 // Expected Format X:YY:ZZZZZZZZZZZZ X is device type leter YY is firmware version Z
                 // is bluetooth address
-                var deviceInfoString = Encoding.ASCII.GetString(result);
                 var deviceInfo = deviceInfoString.Split(':');
 
                 // If we don't get back the amount of tokens we expect, identify as unknown, log, bail.
@@ -123,8 +147,12 @@ namespace Buttplug.Server.Bluetooth.Devices
                 }
 
                 var deviceTypeLetter = deviceInfo[0][0];
+                if (deviceTypeLetter == 'C')
+                {
+                    deviceTypeLetter = 'A';
+                }
                 int.TryParse(deviceInfo[1], out var deviceVersion);
-                BpLogger.Trace($"Lovense DeviceType Return: {deviceInfo}");
+                BpLogger.Trace($"Lovense DeviceType Return: {deviceTypeLetter}");
                 if (!Enum.IsDefined(typeof(LovenseDeviceType), (uint)deviceTypeLetter))
                 {
                     // If we don't know what device this is, just assume it has a single vibrator,
@@ -186,6 +214,13 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return new Ok(ButtplugConsts.SystemMsgId);
+        }
+
+        private async void NotifyReceived(Object sender, BluetoothNotifyEventArgs args)
+        {
+            string data = Encoding.ASCII.GetString(args.bytes);
+            //BpLogger.Trace(data);
+            _lastNotifyReceived = data;
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
