@@ -119,6 +119,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             else
             {
                 // The device info notification isn't available immediately.
+                // TODO Turn this into a task semaphore with cancellation/timeout, let system handle check timing.
                 int timeout = 500;
                 while (timeout > 0)
                 {
@@ -135,6 +136,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             if (deviceInfoString != string.Empty)
             {
+                BpLogger.Debug($"Received device query return for {Interface.Name}");
                 // Expected Format X:YY:ZZZZZZZZZZZZ X is device type leter YY is firmware version Z
                 // is bluetooth address
                 var deviceInfo = deviceInfoString.Split(':');
@@ -167,7 +169,9 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
             else
             {
-                // TODO Bug #417 - Older lovense devices don't respond to DeviceType; query
+                // If we for some reason don't get a device info query back, use fallback method.
+                //
+                // TODO Remove this branch at some point? Not sure we'll need it now since device queries seem stable.
                 BpLogger.Warn($"Error retreiving device info from Lovense {Name}, using fallback method");
 
                 // Some of the older devices seem to have issues with info lookups? Not sure why, so

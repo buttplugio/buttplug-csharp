@@ -16,7 +16,8 @@ namespace Buttplug.Server.Bluetooth
         {
             // This used to go through all assemblies looking for IBluetoothDeviceInfo, but that
             // ended up constantly breaking due to Reflection issues on different platforms/setups.
-            // Now we just build a new info array on manager load, keeps things simple, and outside info can be added via AddInfo calls.
+            // Now we just build a new info array on manager load, keeps things simple, and outside
+            // info can be added via AddInfo calls.
             BuiltinDevices = new List<IBluetoothDeviceInfo>
             {
                 new FleshlightLaunchBluetoothInfo(),
