@@ -95,10 +95,6 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(LovenseCmd), new ButtplugDeviceMessageHandler(HandleLovenseCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
         }
 
         public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)
@@ -154,7 +150,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 if (deviceInfo.Length != 3 || deviceInfo[0].Length != 1)
                 {
                     return BpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, Error.ErrorClass.ERROR_DEVICE,
-                        $"Unknown Lovense DeviceType of {deviceInfoString} found. Please report to Buttplug Developers by filing an issue at https://github.com/metafetish/buttplug/");
+                        $"Unknown Lovense DeviceType of {deviceInfoString} found. Please report to Buttplug Developers by filing an issue at https://github.com/buttplugio/buttplug/");
                 }
 
                 var deviceTypeLetter = deviceInfo[0][0];
@@ -169,8 +165,10 @@ namespace Buttplug.Server.Bluetooth.Devices
                 {
                     // If we don't know what device this is, just assume it has a single vibrator,
                     // call it unknown, log something.
-                    return BpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, Error.ErrorClass.ERROR_DEVICE,
-                        $"Unknown Lovense Device of Type {deviceTypeLetter} found. Please report to Buttplug Developers by filing an issue at https://github.com/metafetish/buttplug/");
+                    AddCommonMessages();
+                    BpLogger.LogErrorMsg(new Error($"Unknown Lovense Device of Type {deviceTypeLetter} found. Please report to Buttplug Developers by filing an issue at https://github.com/buttplugio/buttplug/",
+                        Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId));
+                    return new Ok(ButtplugConsts.SystemMsgId);
                 }
 
                 Name = $"Lovense {Enum.GetName(typeof(LovenseDeviceType), (uint)deviceTypeLetter)} v{deviceVersion}";
@@ -218,8 +216,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
                     // Edge has 2 vibrators
                     _vibratorCount++;
-                    MsgFuncs.Remove(typeof(VibrateCmd));
-                    MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
                     break;
 
                 case LovenseDeviceType.Nora:
@@ -229,7 +225,20 @@ namespace Buttplug.Server.Bluetooth.Devices
                     break;
             }
 
+            // Common messages.
+            AddCommonMessages();
+
             return new Ok(ButtplugConsts.SystemMsgId);
+        }
+
+        private void AddCommonMessages()
+        {
+            MsgFuncs.Add(typeof(LovenseCmd), new ButtplugDeviceMessageHandler(HandleLovenseCmd));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+
+            // At present there are no Lovense devices that do not have at least one vibrator.
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
         }
 
         private void NotifyReceived(object sender, BluetoothNotifyEventArgs args)
