@@ -87,11 +87,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                    "Lovense Unknown Device",
                    aInterface,
                    aInfo)
-        {
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
-        }
+        { }
 
         public override async Task<ButtplugMessage> Initialize()
         {
@@ -206,18 +202,22 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 case LovenseDeviceType.Edge:
 
-                    // Edge has 2 vibrators
+                    // Edge has 2 vibrators.
                     _vibratorCount++;
-                    MsgFuncs.Remove(typeof(VibrateCmd));
-                    MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
                     break;
 
                 case LovenseDeviceType.Nora:
 
-                    // Nora has a rotator
+                    // Nora has a rotator.
                     MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
                     break;
             }
+
+            // Common messages.
+            // At present there are no Lovense devices that do not have at least one vibrator.
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
 
             return new Ok(ButtplugConsts.SystemMsgId);
         }
