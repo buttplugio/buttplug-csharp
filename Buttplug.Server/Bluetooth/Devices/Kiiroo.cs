@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using Buttplug.Server.Util;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server.Bluetooth.Devices
@@ -18,6 +19,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             Cmd,
             Cmd2,
         }
+
         public string[] Names { get; } = { "ONYX", "PEARL" };
 
         public string[] NamePrefixes { get; } = { };
@@ -78,12 +80,14 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd,
                     new MessageAttributes() { FeatureCount = 1 }));
+                MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd),
+                    new ButtplugDeviceWrapper(HandleFleshlightLaunchFW12Cmd));
             }
         }
 
         private void OnBluetoothMessageReceived(object sender, BluetoothNotifyEventArgs aArgs)
         {
-            BpLogger.Trace($"Kirroo sent data: {BitConverter.ToString(aArgs.bytes)}");
+            // no-op, but required for the Onyx to work
         }
 
         public override async Task<ButtplugMessage> Initialize()
@@ -92,15 +96,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             Interface.BluetoothNotifyReceived += OnBluetoothMessageReceived;
             await Interface.SubscribeToUpdates(ButtplugConsts.SystemMsgId, (int)KiirooBluetoothInfo.Chrs.Rx);
 
-            // Tell the Onyx to behave?
-            // Not really sure what we're doing here, but this is what we see in the wild
-
-            // Mode select?
-            await Interface.WriteValue(ButtplugConsts.SystemMsgId,
-                (uint)KiirooBluetoothInfo.Chrs.Cmd,
-                new byte[] { 0x01, 0x00 }, true);
-
-            // Twice for luck?
+            // Mode select
             await Interface.WriteValue(ButtplugConsts.SystemMsgId,
                 (uint)KiirooBluetoothInfo.Chrs.Cmd,
                 new byte[] { 0x01, 0x00 }, true);
@@ -110,43 +106,12 @@ namespace Buttplug.Server.Bluetooth.Devices
                 (uint)KiirooBluetoothInfo.Chrs.Tx,
                 new byte[] { 0x30, 0x2c }, true);
 
-            // Version request?
-            await Interface.WriteValue(ButtplugConsts.SystemMsgId,
-                (uint)KiirooBluetoothInfo.Chrs.Tx,
-                new byte[] { 0x76 }, true);
-
-            // Handshake? Works for Onyx...
-            await Interface.WriteValue(ButtplugConsts.SystemMsgId,
-                (uint)KiirooBluetoothInfo.Chrs.Cmd2,
-                new byte[] { 0xff, 0x10, 0x00, 0x20, 0x00, 0x00, 0x00, 0x64, 0x00 }, true);
-
-            // Handshake? Twice for luck?
-            await Interface.WriteValue(ButtplugConsts.SystemMsgId,
-                (uint)KiirooBluetoothInfo.Chrs.Cmd2,
-                new byte[] { 0xff, 0x10, 0x00, 0x20, 0x00, 0x00, 0x00, 0x64, 0x00 }, true);
-
-            // Mode request?
-            var res = await Interface.ReadValue(ButtplugConsts.SystemMsgId,
-                (uint)KiirooBluetoothInfo.Chrs.Cmd2);
-            BpLogger.Trace($"Kirroo read data: {BitConverter.ToString(res.Item2)}");
-
-            // Set to start position again?
-            await Interface.WriteValue(ButtplugConsts.SystemMsgId,
-                (uint)KiirooBluetoothInfo.Chrs.Tx,
-                new byte[] { 0x30, 0x2c }, true);
-
-            // Mode request?
-            res = await Interface.ReadValue(ButtplugConsts.SystemMsgId,
-                (uint)KiirooBluetoothInfo.Chrs.Cmd2);
-            BpLogger.Trace($"Kirroo read data: {BitConverter.ToString(res.Item2)}");
-
             if (Interface.Name != "ONYX")
             {
                 return new Ok(ButtplugConsts.SystemMsgId);
             }
 
             // Onyx specific
-
             Interface.DeviceRemoved += (sender, args) =>
             {
                 _onyxTimer?.Change(Timeout.Infinite, Timeout.Infinite);
@@ -282,6 +247,19 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await HandleKiirooRawCmd(new KiirooCmd(aMsg.DeviceIndex, Convert.ToUInt16(_deviceSpeed * 4), aMsg.Id));
+        }
+
+        private Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd([NotNull] ButtplugDeviceMessage aMsg)
+        {
+            if (!(aMsg is FleshlightLaunchFW12Cmd cmdMsg) || Interface.Name != "ONYX")
+            {
+                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(
+                    aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
+            }
+
+            var pos = Convert.ToDouble(cmdMsg.Position) / 99.0;
+            var dur = Convert.ToUInt32(FleshlightHelper.GetDuration(Math.Abs(pos - _currentPosition), cmdMsg.Speed / 99));
+            return HandleLinearCmd(LinearCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, dur, pos, 1));
         }
 
         private Task<ButtplugMessage> HandleLinearCmd([NotNull] ButtplugDeviceMessage aMsg)

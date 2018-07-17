@@ -103,7 +103,7 @@ namespace Buttplug.Server.Test
         }
 
         // noop for tests
-        public Task SubscribeToUpdates(uint aMsgId, uint aIndex)
+        public Task<ButtplugMessage> SubscribeToUpdates(uint aMsgId, uint aIndex)
         {
             return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
         }
