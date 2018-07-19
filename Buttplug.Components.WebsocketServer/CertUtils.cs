@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Org.BouncyCastle.Asn1;
@@ -28,31 +29,45 @@ namespace Buttplug.Components.WebsocketServer
             var caPfx = Path.Combine(appPath, "ca.pfx");
             var certPfx = Path.Combine(appPath, "cert.pfx");
 
+            var dir = Directory.CreateDirectory(appPath);
+
+            Console.Out.WriteLine($"AppData: {appPath}");
+            Console.Out.WriteLine($"AppData Exists: {Directory.Exists(appPath)}");
+            Console.Out.WriteLine($"CAPath: {caPfx}");
+            Console.Out.WriteLine($"CAPath Exists: {File.Exists(caPfx)} (this shouldn't)");
+            Console.Out.WriteLine($"CertPath: {certPfx}");
+            Console.Out.WriteLine($"CertPath Exists: {File.Exists(certPfx)}");
+            Console.Out.WriteLine($"Dir exists: {dir.Exists}");
+            Console.Out.WriteLine($"Dir contains: {string.Join("; ", dir.GetFiles().Select(f => f.FullName))}");
+
             // Patch release rework of cert handling: our websocket server doesn't accept a chain!
-            if (File.Exists(caPfx))
+            if (File.Exists(caPfx) || dir.EnumerateFiles().Where(f => f.Name.ToLower() == "ca.pfx").Any())
             {
                 File.Delete(caPfx);
-                if (File.Exists(certPfx))
+                if (File.Exists(certPfx) || dir.EnumerateFiles().Where(f => f.Name.ToLower() == "cert.pfx").Any())
                 {
                     File.Delete(certPfx);
                 }
             }
 
-            if (File.Exists(certPfx))
+            if (File.Exists(certPfx) || dir.EnumerateFiles().Where(f => f.Name.ToLower() == "cert.pfx").Any())
             {
+                Console.Out.WriteLine($"Using existing cert");
                 return new X509Certificate2(
                     File.ReadAllBytes(certPfx),
                     (string)null,
                     X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
             }
 
+            Console.Out.WriteLine($"Generating new cert");
             var clientCert = GenerateSelfSignedCertificate(hostname);
             var p12Cert = clientCert.Export(X509ContentType.Pfx);
-            Directory.CreateDirectory(appPath);
+            Console.Out.WriteLine($"Writing new cert");
             var w = File.OpenWrite(certPfx);
             w.Write(p12Cert, 0, p12Cert.Length);
             w.Close();
 
+            Console.Out.WriteLine($"Using new cert");
             return new X509Certificate2(
                 File.ReadAllBytes(certPfx),
                 (string)null,

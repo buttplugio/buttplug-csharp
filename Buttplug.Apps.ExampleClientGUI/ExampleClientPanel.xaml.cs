@@ -218,7 +218,7 @@ namespace Buttplug.Apps.ExampleClientGUI
 
             foreach (var dev in Devices.Values)
             {
-                if (dev.AllowedMessages.ContainsKey("FleshlightLaunchFW12Cmd"))
+                if (dev.AllowedMessages.ContainsKey("LinearCmd"))
                 {
                     _client.SendDeviceMessage(dev,
                         new LinearCmd(dev.Index, new List<LinearCmd.VectorSubcommand>()
