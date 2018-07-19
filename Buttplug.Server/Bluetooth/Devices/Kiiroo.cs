@@ -145,15 +145,21 @@ namespace Buttplug.Server.Bluetooth.Devices
                 var nowTime = DateTime.Now;
                 var delta = nowTime.Subtract(oldTime);
 
+                if (delta.TotalMilliseconds < 50)
+                {
+                    // Skip. Don't flood BLE
+                    return;
+                }
+
                 if (Convert.ToUInt32(distance * 4) == 0 && delta.TotalMilliseconds < 500)
                 {
                     // Skip. We do want to occationally ping the Onyx, but only every half a second
                     return;
                 }
 
-                _currentTime = DateTime.Now;
+                _currentTime = nowTime;
 
-                if (_currentTime.CompareTo(_targetTime) >= 0 || distance < 0.000001)
+                if (_currentTime.CompareTo(_targetTime) >= 0 || Convert.ToUInt32(distance * 4) == 0)
                 {
                     // We've overdue: jump to target
                     _currentPosition = _targetPosition;
@@ -164,7 +170,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                     // The hard part: find the persentage time gone, then add that percentate of the movement delta
                     var delta2 = _targetTime.Subtract(oldTime);
 
-                    var move = Convert.ToDouble(delta.TotalMilliseconds) / (Convert.ToDouble(delta2.TotalMilliseconds) + 1) * distance;
+                    var move = (Convert.ToDouble(delta.TotalMilliseconds) / (Convert.ToDouble(delta2.TotalMilliseconds) + 1)) * distance;
                     _currentPosition += move * (_targetPosition > _currentPosition ? 1 : -1);
                     _currentPosition = Math.Max(0, Math.Min(1, _currentPosition));
                 }
