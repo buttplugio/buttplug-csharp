@@ -46,6 +46,7 @@ namespace Buttplug.Components.Controls
         {
             try
             {
+                Directory.CreateDirectory(Path.GetDirectoryName(_configFile));
                 File.WriteAllText(_configFile, _config.ToString());
                 _modtime = File.GetLastWriteTimeUtc(_configFile);
             }
