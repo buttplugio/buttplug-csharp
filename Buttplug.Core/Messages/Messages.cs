@@ -1042,12 +1042,12 @@ namespace Buttplug.Core.Messages
                 {
                     if (value < 0)
                     {
-                        throw new ArgumentException("VibrateCmd Speed cannot be less than 0!");
+                        throw new ArgumentException("RotateCmd Speed cannot be less than 0!");
                     }
 
                     if (value > 1)
                     {
-                        throw new ArgumentException("VibrateCmd Speed cannot be greater than 1!");
+                        throw new ArgumentException("RotateCmd Speed cannot be greater than 1!");
                     }
 
                     _speedImpl = value;
@@ -1151,12 +1151,12 @@ namespace Buttplug.Core.Messages
                 {
                     if (value < 0)
                     {
-                        throw new ArgumentException("VibrateCmd Speed cannot be less than 0!");
+                        throw new ArgumentException("LinearCmd Speed cannot be less than 0!");
                     }
 
                     if (value > 1)
                     {
-                        throw new ArgumentException("VibrateCmd Speed cannot be greater than 1!");
+                        throw new ArgumentException("LinearCmd Speed cannot be greater than 1!");
                     }
 
                     _positionImpl = value;
