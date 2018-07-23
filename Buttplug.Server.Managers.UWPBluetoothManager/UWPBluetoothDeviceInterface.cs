@@ -1,12 +1,12 @@
-using Buttplug.Core;
-using Buttplug.Core.Messages;
-using Buttplug.Server.Bluetooth;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Buttplug.Core;
+using Buttplug.Core.Messages;
+using Buttplug.Server.Bluetooth;
+using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
@@ -87,6 +87,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     }
                 }
             }
+
             if (_rxChar == null && _txChar == null && _indexedChars == null)
             {
                 var err = $"No characteristics to connect to for device {Name}";
@@ -115,8 +116,38 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
             else
             {
-                _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: No Rx characteristic found.");
+                _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: No Notify characteristic found.");
             }
+        }
+
+        public async Task<ButtplugMessage> SubscribeToUpdates(uint aMsgId, uint aIndex)
+        {
+            if (_indexedChars == null)
+            {
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"SubscribeToUpdates using indexed characteristics called with no indexed characteristics available");
+            }
+
+            if (!_indexedChars.ContainsKey(aIndex))
+            {
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"SubscribeToUpdates using indexed characteristics called with invalid index");
+            }
+
+            GattCommunicationStatus status = await _indexedChars[aIndex].WriteClientCharacteristicConfigurationDescriptorAsync(
+                GattClientCharacteristicConfigurationDescriptorValue.Notify);
+            if (status == GattCommunicationStatus.Success)
+            {
+                // Server has been informed of clients interest.
+                _indexedChars[aIndex].ValueChanged += BluetoothNotifyReceivedHandler;
+            }
+            else
+            {
+                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    $"Cannot subscribe to BLE updates from {Name} with indexed characteristics: Failed Request");
+            }
+
+            return new Ok(aMsgId);
         }
 
         private void ConnectionStatusChangedHandler([NotNull] BluetoothLEDevice aDevice, [NotNull] object aObj)
@@ -129,9 +160,13 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         private void BluetoothNotifyReceivedHandler(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
-            byte[] bytes;
-            CryptographicBuffer.CopyToByteArray(args.CharacteristicValue, out bytes);
-            BluetoothNotifyReceived?.Invoke(this, new BluetoothNotifyEventArgs(bytes));
+            byte[] bytes = new byte[args?.CharacteristicValue.Length ?? 0];
+            args.CharacteristicValue?.ToArray().CopyTo(bytes, 0);
+            var iChars = _indexedChars.Where(x => x.Value.Uuid == sender.Uuid);
+
+            BluetoothNotifyReceived?.Invoke(this, new BluetoothNotifyEventArgs(bytes,
+                iChars.Count() == 1 ? iChars.First().Key : (uint?)null,
+                DateTime.Now));
         }
 
         public ulong GetAddress()

@@ -6,9 +6,15 @@ namespace Buttplug.Server.Bluetooth
     {
         public byte[] bytes { get; }
 
-        public BluetoothNotifyEventArgs(byte[] aBytes)
+        public uint? charIdx { get; }
+
+        public DateTime dateTime { get; }
+
+        public BluetoothNotifyEventArgs(byte[] aBytes, uint? aCharIdx, DateTime aDateTime)
         {
             bytes = aBytes;
+            charIdx = aCharIdx;
+            dateTime = aDateTime;
         }
     }
 }
