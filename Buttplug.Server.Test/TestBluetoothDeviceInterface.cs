@@ -112,6 +112,12 @@ namespace Buttplug.Server.Test
             return Task.CompletedTask;
         }
 
+        // noop for tests
+        public Task SubscribeToUpdates(uint aIndex)
+        {
+            return Task.CompletedTask;
+        }
+
         public ulong GetAddress()
         {
             return _address;
