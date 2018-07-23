@@ -264,7 +264,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             var pos = Convert.ToDouble(cmdMsg.Position) / 99.0;
-            var dur = Convert.ToUInt32(FleshlightHelper.GetDuration(Math.Abs(pos - _currentPosition), cmdMsg.Speed / 99));
+            var dur = Convert.ToUInt32(FleshlightHelper.GetDuration(Math.Abs((1 - pos) - _currentPosition), cmdMsg.Speed / 99.0));
             return HandleLinearCmd(LinearCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, dur, pos, 1));
         }
 
