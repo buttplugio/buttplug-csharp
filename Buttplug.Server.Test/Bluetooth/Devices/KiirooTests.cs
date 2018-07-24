@@ -86,5 +86,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         {
             testUtil.TestInvalidVibrateCmd(1);
         }
+
+        [Test]
+        public void TestKiirooCmd()
+        {
+            var expected =
+                new List<(byte[], uint)>()
+                {
+                    (Encoding.ASCII.GetBytes("3,\n"), testUtil.NoCharacteristic),
+                };
+
+            testUtil.TestDeviceMessage(new KiirooCmd(4, 3), expected, false);
+        }
     }
 }
