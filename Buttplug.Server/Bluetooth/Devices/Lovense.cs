@@ -89,6 +89,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInfo)
         {
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
+            MsgFuncs.Add(typeof(LovenseCmd), new ButtplugDeviceWrapper(HandleLovenseCmd));
             MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
         }
@@ -294,6 +295,16 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return new Ok(cmdMsg.Id);
+        }
+
+        private async Task<ButtplugMessage> HandleLovenseCmd(ButtplugDeviceMessage aMsg)
+        {
+            if (!(aMsg is LovenseCmd cmdMsg))
+            {
+                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+            }
+
+            return await Interface.WriteValue(aMsg.Id, Encoding.ASCII.GetBytes(cmdMsg.Command));
         }
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg)

@@ -40,6 +40,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 { typeof(StopDeviceCmd), 0 },
                 { typeof(SingleMotorVibrateCmd), 0 },
                 { typeof(VibrateCmd), 1 },
+                { typeof(LovenseCmd), 0 },
             });
         }
 
@@ -125,6 +126,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 { typeof(StopDeviceCmd), 0 },
                 { typeof(SingleMotorVibrateCmd), 0 },
                 { typeof(VibrateCmd), 2 },
+                { typeof(LovenseCmd), 0 },
             });
         }
 
@@ -215,6 +217,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 { typeof(SingleMotorVibrateCmd), 0 },
                 { typeof(VibrateCmd), 1 },
                 { typeof(RotateCmd), 1 },
+                { typeof(LovenseCmd), 0 },
             });
         }
 
