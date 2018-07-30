@@ -33,6 +33,9 @@ Source: "Buttplug.Apps.KiirooEmulatorGUI\bin\{#Configuration}\*.config"; DestDir
 Source: "Buttplug.Apps.ServerGUI\bin\{#Configuration}\*.exe"; DestDir: "{app}"
 Source: "Buttplug.Apps.ServerGUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
 Source: "Buttplug.Apps.ServerGUI\bin\{#Configuration}\*.config"; DestDir: "{app}"
+Source: "Buttplug.Apps.ServerCLI\bin\{#Configuration}\*.exe"; DestDir: "{app}"
+Source: "Buttplug.Apps.ServerCLI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
+Source: "Buttplug.Apps.ServerCLI\bin\{#Configuration}\*.config"; DestDir: "{app}"
 Source: "Buttplug.Apps.GameVibrationRouter.GUI\bin\{#Configuration}\*.exe"; DestDir: "{app}"
 Source: "Buttplug.Apps.GameVibrationRouter.GUI\bin\{#Configuration}\*.dll"; DestDir: "{app}"
 Source: "Buttplug.Apps.GameVibrationRouter.GUI\bin\{#Configuration}\*.config"; DestDir: "{app}"
@@ -53,6 +56,7 @@ Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\{{415579bd-5399-48ef-8521-775ebcd647
 Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\ButtplugKiirooEmulatorGUI.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\ButtplugServerGUI.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\ButtplugGameVibrationRouterGUI.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Classes\AppID\Buttplug.Apps.ServerCLI.exe"; ValueType:string; ValueName: "AppID"; ValueData: "{{415579bd-5399-48ef-8521-775ebcd647af}"; Flags: uninsdeletekey
 
 [Code]
 
