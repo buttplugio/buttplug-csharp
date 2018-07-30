@@ -34,14 +34,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" version="11.1.0" />
-    <PackageReference Include="NLog" version="4.5.4" />
+    <PackageReference Include="JetBrains.Annotations" version="2018.2.1" />
+    <PackageReference Include="NLog" version="4.5.7" />
     <PackageReference Include="StyleCop.Analyzers" version="1.1.0-beta004" PrivateAssets="All" />
     <PackageReference Include="WebSocket4Net" Version="0.15.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net47' ">
-    <PackageReference Include="Microsoft.CSharp" version="4.4.1" />
+    <PackageReference Include="Microsoft.CSharp" version="4.5.0" />
   </ItemGroup>
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net47' ">
