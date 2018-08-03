@@ -34,6 +34,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ButtplugWSClient.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" version="2018.2.1" />
     <PackageReference Include="NLog" version="4.5.7" />
     <PackageReference Include="StyleCop.Analyzers" version="1.1.0-beta004" PrivateAssets="All" />
@@ -56,6 +60,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj" />
+    <ProjectReference Include="..\Buttplug.Server\Buttplug.Server.csproj" />
   </ItemGroup>
   
   <PropertyGroup>

@@ -7,7 +7,7 @@ namespace Buttplug.Server.Test
     internal class TestDeviceSubtypeManager : DeviceSubtypeManager
     {
         [CanBeNull]
-        private readonly TestDevice _device;
+        public readonly TestDevice Device;
 
         public bool StartScanningCalled { get; private set; }
 
@@ -21,16 +21,16 @@ namespace Buttplug.Server.Test
         public TestDeviceSubtypeManager([NotNull] TestDevice aDevice)
             : base(new ButtplugLogManager())
         {
-            _device = aDevice;
+            Device = aDevice;
         }
 
         public override void StartScanning()
         {
             StartScanningCalled = true;
             StopScanningCalled = false;
-            if (!(_device is null))
+            if (!(Device is null))
             {
-                InvokeDeviceAdded(new DeviceAddedEventArgs(_device));
+                InvokeDeviceAdded(new DeviceAddedEventArgs(Device));
             }
         }
 

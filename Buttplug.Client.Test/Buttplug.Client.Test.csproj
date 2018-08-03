@@ -62,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgsTests.cs" />
-    <Compile Include="ButtPlugClientTests.cs" />
+    <Compile Include="ButtplugClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

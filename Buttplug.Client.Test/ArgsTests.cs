@@ -30,12 +30,5 @@ namespace Buttplug.Client.Test
             Assert.AreEqual("test", arg.Message.LogMessage);
             Assert.AreEqual(Core.ButtplugLogLevel.Debug, arg.Message.LogLevel);
         }
-
-        [Test]
-        public void ScanningFinishedEventArgsTest()
-        {
-            var arg = new ScanningFinishedEventArgs(new Core.Messages.ScanningFinished());
-            Assert.AreEqual(0U, arg.Message.Id);
-        }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Components.WebsocketServer;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
@@ -12,177 +11,162 @@ using NUnit.Framework;
 namespace Buttplug.Client.Test
 {
     [TestFixture]
-    public class ButtplugClientTests : IButtplugServerFactory
+    public class ButtplugClientTests
     {
-        private class ButtplugTestClient : ButtplugWSClient
-        {
-            public ButtplugTestClient(string aClientName)
-                : base(aClientName)
-            {
-            }
-
-            public async Task<ButtplugMessage> SendMsg(ButtplugMessage aMsg)
-            {
-                return await SendMessage(aMsg);
-            }
-        }
-
-        private ButtplugTestClient _client;
-        private ButtplugWebsocketServer _server;
+        private AutoResetEvent _resetEvent;
+        private ButtplugClient _client;
+        private ButtplugServer _server;
+        private ButtplugEmbeddedConnector _connector;
         private TestDeviceSubtypeManager _subtypeMgr;
-        private DeviceManager _devMgr;
         private ButtplugLogManager _logMgr;
 
-        public ButtplugServer GetServer()
+        [SetUp]
+        public void SetUp()
         {
-            return new TestServer(200, _devMgr, false);
-        }
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
+            _resetEvent = new AutoResetEvent(false);
             _logMgr = new ButtplugLogManager();
-            _devMgr = new DeviceManager(new ButtplugLogManager());
-            _subtypeMgr = new TestDeviceSubtypeManager();
-            _devMgr.AddDeviceSubtypeManager(_subtypeMgr);
+            _subtypeMgr = new TestDeviceSubtypeManager(new TestDevice(_logMgr, "Test Device"));
+            _server = new TestServer();
+            _server.AddDeviceSubtypeManager(_subtypeMgr);
+            _connector = new ButtplugEmbeddedConnector(_server, "Test Server", 100);
+            _client = new ButtplugClient("Test Client", _connector);
         }
 
         [TearDown]
         public void CleanUp()
         {
             _client?.Disconnect();
-            _server?.Disconnect();
+        }
+
+        private void WaitForEvent()
+        {
+            if (!_resetEvent.WaitOne(100))
+            {
+                throw new Exception("Event timeout!");
+            }
+
+            _resetEvent.Reset();
         }
 
         [Test]
-        public void TestConnection()
+        public async Task TestBasicConnectDisconnect()
         {
-            var eEvent = new AutoResetEvent(false);
+            Assert.False(_client.Connected);
+            await _client.Connect();
+            Assert.True(_client.Connected);
+            await _client.Disconnect();
+            Assert.False(_client.Connected);
+        }
 
-            _subtypeMgr.AddDevice(new TestDevice(_logMgr, "A", "1"));
-            _server = new ButtplugWebsocketServer();
-            _server.StartServer(this);
+        [Test]
+        public void TestClientDeviceEquality()
+        {
+            var testDevice = new ButtplugClientDevice(1, "Test Device", new Dictionary<string, MessageAttributes>()
+            {
+                { "SingleMotorVibrateCmd", new MessageAttributes() },
+                { "VibrateCmd", new MessageAttributes(2) },
+                { "StopDeviceCmd", new MessageAttributes() },
+            });
+            var testDevice2 = new ButtplugClientDevice(1, "Test Device", new Dictionary<string, MessageAttributes>()
+            {
+                { "SingleMotorVibrateCmd", new MessageAttributes() },
+                { "VibrateCmd", new MessageAttributes(2) },
+                { "StopDeviceCmd", new MessageAttributes() },
+            });
+            var testDevice3 = new ButtplugClientDevice(1, "Test Device", new Dictionary<string, MessageAttributes>()
+            {
+                { "SingleMotorVibrateCmd", new MessageAttributes() },
+                { "VibrateCmd", new MessageAttributes(2) },
+            });
+            var testDevice4 = new ButtplugClientDevice(1, "Test Device", new Dictionary<string, MessageAttributes>()
+            {
+                { "SingleMotorVibrateCmd", new MessageAttributes() },
+                { "VibrateCmd", new MessageAttributes(2) },
+                { "DifferentName", new MessageAttributes() },
+            });
+            var testDevice5 = new ButtplugClientDevice(1, "Test Device", new Dictionary<string, MessageAttributes>()
+            {
+                { "SingleMotorVibrateCmd", new MessageAttributes() },
+                { "VibrateCmd", new MessageAttributes(2) },
+                { "StopDeviceCmd", new MessageAttributes() },
+                { "TooMany", new MessageAttributes() },
+            });
 
-            _client = new ButtplugTestClient("Test client");
-            _client.Connect(new Uri("ws://localhost:12345/buttplug")).Wait();
+            Assert.AreEqual(testDevice, testDevice2);
+            Assert.AreNotEqual(testDevice, testDevice3);
+            Assert.AreNotEqual(testDevice, testDevice4);
+            Assert.AreNotEqual(testDevice, testDevice5);
+        }
 
-            var msgId = _client.NextMsgId;
-            var res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
-            Assert.True(res != null);
-            Assert.True(res is Core.Messages.Test);
-            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id > msgId);
+        [Test]
+        public async Task TestDeviceScanning()
+        {
+            var testDevice = new ButtplugClientDevice(1, "Test Device", new Dictionary<string, MessageAttributes>()
+            {
+                { "SingleMotorVibrateCmd", new MessageAttributes() },
+                { "VibrateCmd", new MessageAttributes(2) },
+                { "StopDeviceCmd", new MessageAttributes() },
+            });
 
-            // Check ping is working
-            Thread.Sleep(400);
+            await _client.Connect();
 
-            msgId = _client.NextMsgId;
-            res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
-            Assert.True(res != null);
-            Assert.True(res is Core.Messages.Test);
-            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id > msgId);
-
-            res = _client.SendMsg(new Core.Messages.Test("Test string")).GetAwaiter().GetResult();
-            Assert.True(res != null);
-            Assert.True(res is Core.Messages.Test);
-            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id > msgId);
-
-            Assert.True(_client.NextMsgId > 5);
-
-            // Test that events are raised
-            var scanningFinished = false;
-            ButtplugClientDevice lastAdded = null;
-            ButtplugClientDevice lastRemoved = null;
             _client.ScanningFinished += (aSender, aArg) =>
             {
-                scanningFinished = true;
-                eEvent.Set();
+                _resetEvent.Set();
             };
 
             _client.DeviceAdded += (aSender, aArg) =>
             {
-                lastAdded = aArg.Device;
-                eEvent.Set();
+                Assert.AreEqual(testDevice, aArg.Device);
+                _resetEvent.Set();
             };
-
-            _client.DeviceRemoved += (aSender, aArg) =>
-            {
-                lastRemoved = aArg.Device;
-                eEvent.Set();
-            };
-            _client.StartScanning().Wait();
-            Assert.Null(lastAdded);
-            _subtypeMgr.AddDevice(new TestDevice(_logMgr, "B", "2"));
-            eEvent.WaitOne(10000);
-            eEvent.Reset();
-            Assert.NotNull(lastAdded);
-            Assert.AreEqual("B", lastAdded.Name);
-
-            Assert.True(!scanningFinished);
-            _client.StopScanning().Wait();
-            eEvent.WaitOne(10000);
-            eEvent.Reset();
-            Assert.True(scanningFinished);
-
-            Assert.AreEqual(2, _client.Devices.Length);
-            Assert.AreEqual("A", _client.Devices[0].Name);
-            Assert.AreEqual("B", _client.Devices[1].Name);
-
-            eEvent.Reset();
-            Assert.Null(lastRemoved);
-            foreach (var dev in _devMgr._devices.Values)
-            {
-                if ((dev as TestDevice)?.Identifier == "2")
-                {
-                    (dev as TestDevice).RemoveDevice();
-                }
-            }
-
-            eEvent.WaitOne(10000);
-            eEvent.Reset();
-            Assert.NotNull(lastRemoved);
-            Assert.AreEqual("B", lastRemoved.Name);
-            Assert.AreEqual(1, _client.Devices.Length);
-            Assert.AreEqual("A", _client.Devices[0].Name);
-
-            // Shut it down
-            _client.Disconnect().Wait();
-            _server.StopServer();
+            await _client.StartScanning();
+            WaitForEvent();
+            await _client.StopScanning();
+            WaitForEvent();
         }
 
         [Test]
-        public void TestSSLConnection()
+        public async Task TestDeviceMessage()
         {
-            _server = new ButtplugWebsocketServer();
-            _server.StartServer(this, 12346, true, true);
-
-            _client = new ButtplugTestClient("Test client");
-            _client.Connect(new Uri("wss://localhost:12346/buttplug"), true).Wait();
-
-            var msgId = _client.NextMsgId;
-            var res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
-            Assert.True(res != null);
-            Assert.True(res is Core.Messages.Test);
-            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id > msgId);
-
-            // Check ping is working
-            Thread.Sleep(400);
-
-            msgId = _client.NextMsgId;
-            res = _client.SendMsg(new Core.Messages.Test("Test string", msgId)).GetAwaiter().GetResult();
-            Assert.True(res != null);
-            Assert.True(res is Core.Messages.Test);
-            Assert.True(((Core.Messages.Test)res).TestString == "Test string");
-            Assert.True(((Core.Messages.Test)res).Id > msgId);
-
-            Assert.True(_client.NextMsgId > 4);
-
-            // Shut it down
-            _client.Disconnect().Wait();
-            _server.StopServer();
+            await _client.Connect();
+            await _client.StartScanning();
+            await _client.StopScanning();
+            Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessage(_client.Devices[0], new FleshlightLaunchFW12Cmd(0, 0, 0)));
+            var testDevice = new ButtplugClientDevice(2, "Test Device 2", new Dictionary<string, MessageAttributes>()
+            {
+                { "SingleMotorVibrateCmd", new MessageAttributes() },
+                { "VibrateCmd", new MessageAttributes(2) },
+            });
+            Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessage(testDevice, new FleshlightLaunchFW12Cmd(0, 0, 0)));
+            // Shouldn't throw.
+            await _client.SendDeviceMessage(_client.Devices[0], new SingleMotorVibrateCmd(0, 0.5));
+            Assert.AreEqual(_subtypeMgr.Device.V1, 0.5);
+            Assert.AreEqual(_subtypeMgr.Device.V2, 0.5);
         }
+
+        [Test]
+        public async Task TestDeviceRemovalEvent()
+        {
+            await _client.Connect();
+            await _client.StartScanning();
+            await _client.StopScanning();
+
+            var testDevice = _client.Devices[0];
+            _client.DeviceRemoved += (aSender, aArg) =>
+            {
+                Assert.AreEqual(testDevice, aArg.Device);
+                _resetEvent.Set();
+            };
+            _subtypeMgr.Device.Disconnect();
+            WaitForEvent();
+            Assert.AreEqual(_client.Devices.Length, 0);
+        }
+
+        // TODO Add Log Tests
+
+        // TODO Add Ping Timeout Tests
+
+        // TODO Add connector (server) disconnect event test
     }
 }
