@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
@@ -8,7 +10,7 @@ namespace Buttplug.Client
     /// <summary>
     /// The Buttplug Client representation of a Buttplug Device connected to a server.
     /// </summary>
-    public class ButtplugClientDevice
+    public class ButtplugClientDevice : IEquatable<ButtplugClientDevice>
     {
         /// <summary>
         /// The device index, which uniquely identifies the device on the server.
@@ -55,6 +57,29 @@ namespace Buttplug.Client
             Index = aIndex;
             Name = aName;
             AllowedMessages = aMessages;
+        }
+
+        public bool Equals(ButtplugClientDevice aDevice)
+        {
+            if (Index != aDevice.Index ||
+                Name != aDevice.Name ||
+                AllowedMessages.Count != aDevice.AllowedMessages.Count ||
+                !AllowedMessages.Keys.SequenceEqual(aDevice.AllowedMessages.Keys))
+            {
+                return false;
+            }
+
+            // If we made it this far, do actual value comparison in the attributes
+            try
+            {
+                // https://stackoverflow.com/a/9547463/4040754
+                return !aDevice.AllowedMessages.Where(entry => !AllowedMessages[entry.Key].Equals(entry.Value))
+                    .ToDictionary(entry => entry.Key, entry => entry.Value).Any();
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

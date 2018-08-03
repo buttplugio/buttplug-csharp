@@ -149,13 +149,27 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Container class for device attributes.
     /// </summary>
-    public class MessageAttributes
+    public class MessageAttributes : IEquatable<MessageAttributes>
     {
         /// <summary>
         /// Number of actuators/sensors/channels/etc this message is addressing.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public uint? FeatureCount;
+
+        public MessageAttributes()
+        {
+        }
+
+        public MessageAttributes(uint aFeatureCount)
+        {
+            FeatureCount = aFeatureCount;
+        }
+
+        public bool Equals(MessageAttributes aAttrs)
+        {
+            return FeatureCount == aAttrs.FeatureCount;
+        }
     }
 
     /// <summary>
