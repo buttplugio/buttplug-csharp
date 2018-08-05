@@ -26,6 +26,12 @@ namespace Buttplug.Client
         private readonly ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs =
             new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
 
+        /// <summary>
+        /// Used for dispatching events to the owning application context.
+        /// </summary>
+        [NotNull]
+        private readonly SynchronizationContext _owningDispatcher = SynchronizationContext.Current ?? new SynchronizationContext();
+
         public Task<ButtplugMessage> PrepareMessage(ButtplugMessage aMsg)
         {
             // The client always increments the IDs on outgoing messages

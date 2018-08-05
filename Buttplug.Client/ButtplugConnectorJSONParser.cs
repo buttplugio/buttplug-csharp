@@ -3,13 +3,13 @@ using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
-    public class ButtplugJSONConnector
+    public class ButtplugConnectorJSONParser
     {
         /// <summary>
         /// Used for converting messages between JSON and Objects.
         /// </summary>
         [NotNull]
-        private readonly ButtplugJsonMessageParser _parser = new ButtplugJsonMessageParser();
+        private readonly ButtplugJsonMessageParser _parser = new ButtplugJsonMessageParser(new ButtplugLogManager());
 
         /// <summary>
         /// Converts a single <see cref="ButtplugMessage"/> into a JSON string.

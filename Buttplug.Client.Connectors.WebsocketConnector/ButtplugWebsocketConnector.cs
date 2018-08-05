@@ -1,27 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using WebSocket4Net;
 
 namespace Buttplug.Client.Connectors.WebsocketConnector
 {
-    public class ButtplugWebsocketConnector : IButtplugClientConnector
+    public class ButtplugWebsocketConnector : ButtplugRemoteJSONConnector, IButtplugClientConnector
     {
         /// <summary>
         /// Guards re-entrancy of websocket message sending function.
         /// </summary>
         [NotNull] private readonly object _sendLock = new object();
-
-        /// <summary>
-        /// Used for cancelling out of websocket wait loops.
-        /// </summary>
-        [NotNull] private readonly CancellationTokenSource _tokenSource;
 
         /// <summary>
         /// Websocket access object.
@@ -41,31 +34,24 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         /// <summary>
         /// Used for error handling during the connection process.
         /// </summary>
-        private bool _connecting;
+        private bool _connecting => _connectedOrFailed?.Task != null && !_connectedOrFailed.Task.IsCompleted;
+
+        public bool Connected => _ws != null && _ws.State != WebSocketState.Closed;
+
+        public event EventHandler Disconnected;
 
         /// <summary>
         /// Used for dispatching events to the owning application context.
         /// </summary>
-        [NotNull] private readonly SynchronizationContext _owningDispatcher;
+        private readonly SynchronizationContext _owningDispatcher = SynchronizationContext.Current ?? new SynchronizationContext();
 
-        public ButtplugWebsocketConnector(string aHost, uint aPort)
-        {
-            _tokenSource = new CancellationTokenSource();
-        }
+        private readonly Uri _uri;
 
-        [NotNull] private readonly ButtplugJSONConnector _jsonConnector = new ButtplugJSONConnector();
+        private readonly bool _ignoreSSLErrors;
 
         /// <summary>
-        /// Creates the connection to the Buttplug Server and performs the protocol handshake.
+        /// 
         /// </summary>
-        /// <remarks>
-        /// Once the WebSocket connection is open, the RequestServerInfo message is sent; the
-        /// response is used to set up the ping timer loop. The RequestDeviceList message is also
-        /// sent, so that any devices the server is already connected to are made known to the client.
-        ///
-        /// <b>Important:</b> Ensure that <see cref="DeviceAdded"/>, <see cref="DeviceRemoved"/> and
-        /// <see cref="ErrorReceived"/> handlers are set before Connect is called.
-        /// </remarks>
         /// <param name="aURL">
         /// The URL for the Buttplug WebSocket Server, in the form of wss://address:port (wss:// is
         /// to ws:// as https:// is to http://)
@@ -73,16 +59,25 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         /// <param name="aIgnoreSSLErrors">
         /// When using SSL (wss://), prevents bad certificates from causing connection failures
         /// </param>
+        public ButtplugWebsocketConnector(Uri aUri, bool aIgnoreSSLErrors)
+        {
+            _uri = aUri;
+            _ignoreSSLErrors = aIgnoreSSLErrors;
+        }
+
+        /// <summary>
+        /// Creates the connection to the Buttplug Server and performs the protocol handshake.
+        /// </summary>
         /// <returns>Nothing (Task used for async/await)</returns>
         [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Embedded acronyms")]
-        public async Task Connect(Uri aURL, bool aIgnoreSSLErrors = false)
+        public async Task Connect()
         {
             if (_ws != null && (_ws.State == WebSocketState.Connecting || _ws.State == WebSocketState.Open))
             {
                 throw new InvalidOperationException("Already connected!");
             }
 
-            _ws = new WebSocket(aURL.ToString());
+            _ws = new WebSocket(_uri.ToString());
 
             _connectedOrFailed = new TaskCompletionSource<object>();
             _disconnected = new TaskCompletionSource<object>();
@@ -91,7 +86,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             _ws.Closed += ClosedHandler;
             _ws.Error += ErrorHandler;
 
-            if (aIgnoreSSLErrors)
+            if (_ignoreSSLErrors)
             {
                 _ws.Security.AllowNameMismatchCertificate = true;
                 _ws.Security.AllowUnstrustedCertificate = true;
@@ -100,9 +95,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
             _ws.Open();
 
-            _connecting = true;
             await _connectedOrFailed.Task;
-            _connecting = false;
 
             if (_ws.State != WebSocketState.Open)
             {
@@ -121,7 +114,6 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         {
             if (_connecting)
             {
-                Task t;
                 _connectedOrFailed.TrySetException(aEventArgs.Exception);
             }
 
@@ -138,8 +130,8 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         /// <param name="aEventArgs">Event parameters, unused.</param>
         private void ClosedHandler(object aSender, EventArgs aEventArgs)
         {
-            _disconnected.TrySetResult(true);
-            _owningDispatcher.Send(_ => { Disconnect().Wait(); }, null);
+            _disconnected.TrySetResult(null);
+            Disconnect().Wait();
         }
 
         /// <summary>
@@ -150,7 +142,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
         private void OpenedHandler(object aSender, EventArgs aEventArgs)
         {
-            _connectedOrFailed.TrySetResult(true);
+            _connectedOrFailed.TrySetResult(null);
         }
 
         /// <summary>
@@ -174,19 +166,37 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             }
             catch
             {
-                // noop - something when wrong closing the socket, but we're about to dispose of it anyway.
-            }
-
-            try
-            {
-                _tokenSource.Cancel();
-            }
-            catch
-            {
-                // noop - something when wrong closing the socket, but we're about to dispose of it anyway.
+                // noop - something went wrong closing the socket, but we're about to dispose of it anyway.
             }
 
             _ws = null;
+            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
+        }
+
+        public async Task<ButtplugMessage> Send(ButtplugMessage aMsg)
+        {
+            var (msgString, msgPromise) = PrepareMessage(aMsg);
+            try
+            {
+                lock (_sendLock)
+                {
+                    if (_ws != null && _ws.State == WebSocketState.Open)
+                    {
+                        _ws.Send(msgString);
+                    }
+                    else
+                    {
+                        return new Error("Bad WS state!", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
+                    }
+                }
+
+                return await msgPromise;
+            }
+            catch (Exception e)
+            {
+                // Noop - WS probably closed on us during read
+                return new Error(e.Message, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
+            }
         }
 
         /// <summary>
@@ -198,11 +208,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         /// <param name="aArgs">Event parameters, including the data received.</param>
         private void MessageReceivedHandler(object aSender, WebSocket4Net.MessageReceivedEventArgs aArgs)
         {
-            var msgs = _jsonConnector.Deserialize(aArgs.Message);
-            foreach (var msg in msgs)
-            {
-                // TODO Send messages to sorter
-            }
+            _owningDispatcher.Send(_ => ReceiveMessages(aArgs.Message), null);
         }
     }
 }

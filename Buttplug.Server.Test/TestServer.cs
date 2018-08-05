@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test
 {
-    internal class TestServer : ButtplugServer
+    public class TestServer : ButtplugServer
     {
         public readonly List<string> OutgoingAsync = new List<string>();
 
