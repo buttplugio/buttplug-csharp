@@ -90,7 +90,7 @@ namespace Buttplug.Client.Test
         {
             await _client.Connect();
             await _client.StartScanning();
-            // await _client.StopScanning();
+            await _client.StopScanning();
             Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessage(_client.Devices[0], new FleshlightLaunchFW12Cmd(0, 0, 0)));
             var testDevice = new ButtplugClientDevice(2, "Test Device 2", new Dictionary<string, MessageAttributes>()
             {
@@ -109,7 +109,7 @@ namespace Buttplug.Client.Test
         {
             await _client.Connect();
             await _client.StartScanning();
-            // await _client.StopScanning();
+            await _client.StopScanning();
 
             var testDevice = _client.Devices[0];
             _client.DeviceRemoved += (aSender, aArg) =>

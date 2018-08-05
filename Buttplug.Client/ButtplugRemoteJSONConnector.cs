@@ -27,7 +27,7 @@ namespace Buttplug.Client
             {
                 if (msg.Id == 0)
                 {
-                    MessageReceived.Invoke(this, new MessageReceivedEventArgs(msg));
+                    MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
                     continue;
                 }
 
