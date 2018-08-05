@@ -16,9 +16,6 @@ namespace Buttplug.Components.IPCServer
 {
     public class ButtplugIPCServer
     {
-        [CanBeNull]
-        private NamedPipeServerStream _pipeServer;
-
         [NotNull]
         private IButtplugServerFactory _factory;
 
@@ -47,9 +44,9 @@ namespace Buttplug.Components.IPCServer
         private CancellationTokenSource _cancellation;
 
         [CanBeNull]
-        private Task _acceptThread;
+        private Task _acceptTask;
 
-        public bool IsConnected => _acceptThread?.Status == TaskStatus.Running;
+        public bool IsConnected => _acceptTask?.Status == TaskStatus.Running;
 
         public void StartServer([NotNull] IButtplugServerFactory aFactory, string aPipeName = "ButtplugPipe")
         {
@@ -59,27 +56,26 @@ namespace Buttplug.Components.IPCServer
             _logManager = new ButtplugLogManager();
             _logger = _logManager.GetLogger(this.GetType());
 
-            _pipeServer = new NamedPipeServerStream(aPipeName, PipeDirection.InOut, 10, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
-            _acceptThread = new Task(() => { ConnectionAccepter(aPipeName, _cancellation.Token); }, _cancellation.Token, TaskCreationOptions.LongRunning);
-            _acceptThread.Start();
+            _acceptTask = new Task(() => { ConnectionAccepter(aPipeName, _cancellation.Token); }, _cancellation.Token, TaskCreationOptions.LongRunning);
+            _acceptTask.Start();
         }
 
         private async void ConnectionAccepter(string aPipeName, CancellationToken aCancellationToken)
         {
             while (!aCancellationToken.IsCancellationRequested)
             {
-                await _pipeServer.WaitForConnectionAsync(aCancellationToken);
-                if (!_pipeServer.IsConnected)
+                var pipeServer = new NamedPipeServerStream(aPipeName, PipeDirection.InOut, 10, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+                await pipeServer.WaitForConnectionAsync(aCancellationToken);
+                if (!pipeServer.IsConnected)
                 {
                     continue;
                 }
 
-                var temp = _pipeServer;
+                var temp = pipeServer;
                 var reader = new Task(() => { AcceptIPCClientsAsync(temp, _cancellation.Token); }, _cancellation.Token,
                     TaskCreationOptions.LongRunning);
                 reader.Start();
-
-                _pipeServer = new NamedPipeServerStream(aPipeName, PipeDirection.InOut, 10, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+                reader.Wait(aCancellationToken);
             }
         }
 
@@ -89,9 +85,9 @@ namespace Buttplug.Components.IPCServer
             {
                 try
                 {
-                    var output = Encoding.ASCII.GetBytes(new ButtplugJsonMessageParser(_logManager).Serialize(_logger.LogErrorMsg(
+                    var output = Encoding.UTF8.GetBytes(new ButtplugJsonMessageParser(_logManager).Serialize(_logger.LogErrorMsg(
                         ButtplugConsts.SystemMsgId, ErrorClass.ERROR_INIT, "WebSocketServer already in use!"), 0));
-                    aServer.Write(output, 0, output.Length);
+                    await aServer.WriteAsync(output, 0, output.Length, aToken);
                     aServer.Close();
                 }
                 catch
@@ -100,7 +96,7 @@ namespace Buttplug.Components.IPCServer
                 }
                 finally
                 {
-                    aServer.Dispose();
+                    // aServer.Dispose();
                 }
 
                 return;
@@ -109,11 +105,11 @@ namespace Buttplug.Components.IPCServer
             _connections.Enqueue(aServer);
             ConnectionAccepted?.Invoke(this, new IPCConnectionEventArgs());
 
-            var buttplug = _factory.GetServer();
+            var buttplugServer = _factory.GetServer();
 
             EventHandler<MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
             {
-                var msg = buttplug.Serialize(aEvent.Message);
+                var msg = buttplugServer.Serialize(aEvent.Message);
                 if (msg == null)
                 {
                     return;
@@ -123,7 +119,7 @@ namespace Buttplug.Components.IPCServer
                 {
                     if (aServer != null && aServer.IsConnected)
                     {
-                        var output = Encoding.ASCII.GetBytes(msg);
+                        var output = Encoding.UTF8.GetBytes(msg);
                         aServer.WriteAsync(output, 0, output.Length, aToken);
                     }
 
@@ -139,7 +135,7 @@ namespace Buttplug.Components.IPCServer
                 }
             };
 
-            buttplug.MessageReceived += msgReceived;
+            buttplugServer.MessageReceived += msgReceived;
 
             EventHandler<MessageReceivedEventArgs> clientConnected = (aObject, aEvent) =>
             {
@@ -148,7 +144,7 @@ namespace Buttplug.Components.IPCServer
                 ConnectionUpdated?.Invoke(this, new IPCConnectionEventArgs(clientName));
             };
 
-            buttplug.ClientConnected += clientConnected;
+            buttplugServer.ClientConnected += clientConnected;
 
             try
             {
@@ -164,7 +160,7 @@ namespace Buttplug.Components.IPCServer
                             len = await aServer.ReadAsync(buffer, 0, buffer.Length, aToken);
                             if (len > 0)
                             {
-                                msg += Encoding.ASCII.GetString(buffer, 0, len);
+                                msg += Encoding.UTF8.GetString(buffer, 0, len);
                             }
                         }
                         catch
@@ -175,14 +171,14 @@ namespace Buttplug.Components.IPCServer
 
                     if (msg.Length > 0)
                     {
-                        var respMsgs = await buttplug.SendMessage(msg);
-                        var respMsg = buttplug.Serialize(respMsgs);
+                        var respMsgs = await buttplugServer.SendMessage(msg);
+                        var respMsg = buttplugServer.Serialize(respMsgs);
                         if (respMsg == null)
                         {
                             continue;
                         }
 
-                        var output = Encoding.ASCII.GetBytes(respMsg);
+                        var output = Encoding.UTF8.GetBytes(respMsg);
                         await aServer.WriteAsync(output, 0, output.Length, aToken);
 
                         foreach (var m in respMsgs)
@@ -209,9 +205,9 @@ namespace Buttplug.Components.IPCServer
             }
             finally
             {
-                buttplug.MessageReceived -= msgReceived;
-                await buttplug.Shutdown();
-                buttplug = null;
+                buttplugServer.MessageReceived -= msgReceived;
+                await buttplugServer.Shutdown();
+                buttplugServer = null;
                 _connections.TryDequeue(out var stashed);
                 while (stashed != aServer && _connections.Any())
                 {
@@ -219,16 +215,25 @@ namespace Buttplug.Components.IPCServer
                     _connections.TryDequeue(out stashed);
                 }
 
-                aServer.Dispose();
-                aServer = null;
+                aServer.Close();
+                // aServer.Dispose();
+                // aServer = null;
                 ConnectionClosed?.Invoke(this, new IPCConnectionEventArgs());
             }
         }
 
         public void StopServer()
         {
-            _cancellation.Cancel();
-            _pipeServer = null;
+            if (!_cancellation.IsCancellationRequested)
+            {
+                try
+                {
+                    _cancellation.Cancel();
+                }
+                catch
+                {
+                }
+            }
         }
 
         public void Disconnect()
@@ -237,6 +242,11 @@ namespace Buttplug.Components.IPCServer
             {
                 conn.Close();
             }
+        }
+
+        ~ButtplugIPCServer()
+        {
+            StopServer();
         }
     }
 }

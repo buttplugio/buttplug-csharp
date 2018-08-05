@@ -5,16 +5,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F8AAA25F-6C62-4BCC-A916-9B52B9A01F52}</ProjectGuid>
+    <ProjectGuid>{B4535163-1B5E-4864-BF40-6234BD38E00E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Buttplug.Client.Test</RootNamespace>
-    <AssemblyName>Buttplug.Client.Test</AssemblyName>
+    <RootNamespace>Buttplug.Client.Connectors.IPCConnector.Test</RootNamespace>
+    <AssemblyName>Buttplug.Client.Connectors.IPCConnector.Test</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,7 +23,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,58 +31,43 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=2018.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.2018.2.1\lib\net20\JetBrains.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.7\lib\net45\NLog.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ArgsTests.cs" />
-    <Compile Include="ButtplugClientConnectorTestServerFactory.cs" />
-    <Compile Include="ButtplugClientEmbeddedConnectorTests.cs" />
-    <Compile Include="ButtplugClientConnectorTestBase.cs" />
-    <Compile Include="ButtplugClientTests.cs" />
+    <Compile Include="ButtplugClientIPCConnectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Client.Connectors.WebsocketConnector\Buttplug.Client.Connectors.WebsocketConnector.csproj">
-      <Project>{b2c07152-347f-449e-84e7-2a13d69cfb10}</Project>
-      <Name>Buttplug.Client.Connectors.WebsocketConnector</Name>
+    <ProjectReference Include="..\Buttplug.Client.Connectors.IPCConnector\Buttplug.Client.Connectors.IPCConnector.csproj">
+      <Project>{a7c3df9c-d8ba-4c76-89f5-c13dfc3bd28f}</Project>
+      <Name>Buttplug.Client.Connectors.IPCConnector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Client.Test\Buttplug.Client.Test.csproj">
+      <Project>{f8aaa25f-6c62-4bcc-a916-9b52b9a01f52}</Project>
+      <Name>Buttplug.Client.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Client\Buttplug.Client.csproj">
       <Project>{1592d845-8fe5-4f33-a665-d7675c9aaee4}</Project>
       <Name>Buttplug.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Components.WebsocketServer\Buttplug.Components.WebsocketServer.csproj">
-      <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
-      <Name>Buttplug.Components.WebsocketServer</Name>
+    <ProjectReference Include="..\Buttplug.Components.IPCServer\Buttplug.Components.IPCServer.csproj">
+      <Project>{a235b077-d870-49f0-9d6d-2a5d26726efc}</Project>
+      <Name>Buttplug.Components.IPCServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
@@ -98,6 +81,10 @@
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug.Server</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

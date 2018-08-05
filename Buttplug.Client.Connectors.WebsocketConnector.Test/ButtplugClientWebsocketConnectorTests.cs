@@ -19,7 +19,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
             _logMgr = new ButtplugLogManager();
             _subtypeMgr = new TestDeviceSubtypeManager(new TestDevice(_logMgr, "Test Device"));
             _websocketServer = new ButtplugWebsocketServer();
-            _websocketServer.StartServer(new ButtplugClientWebsocketConnectorServerFactory(_subtypeMgr));
+            _websocketServer.StartServer(new ButtplugClientConnectorTestServerFactory(_subtypeMgr));
         }
 
         public override void SetUpConnector()

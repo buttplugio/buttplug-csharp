@@ -1,14 +1,13 @@
-﻿using Buttplug.Core;
-using Buttplug.Server;
+﻿using Buttplug.Server;
 using Buttplug.Server.Test;
 
-namespace Buttplug.Client.Connectors.WebsocketConnector.Test
+namespace Buttplug.Client.Test
 {
-    public class ButtplugClientWebsocketConnectorServerFactory : IButtplugServerFactory
+    public class ButtplugClientConnectorTestServerFactory : IButtplugServerFactory
     {
         private readonly TestDeviceSubtypeManager _subtypeMgr;
 
-        public ButtplugClientWebsocketConnectorServerFactory(TestDeviceSubtypeManager aMgr)
+        public ButtplugClientConnectorTestServerFactory(TestDeviceSubtypeManager aMgr)
         {
             _subtypeMgr = aMgr;
         }
