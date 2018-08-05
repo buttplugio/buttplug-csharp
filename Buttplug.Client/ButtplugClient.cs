@@ -3,6 +3,7 @@ using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -81,14 +82,8 @@ namespace Buttplug.Client
         /// Stores information about devices currently connected to the server.
         /// </summary>
         [NotNull]
-        private readonly ConcurrentDictionary<uint, ButtplugClientDevice> _devices =
-            new ConcurrentDictionary<uint, ButtplugClientDevice>();
-
-        /// <summary>
-        /// Used for dispatching events to the owning application context.
-        /// </summary>
-        [NotNull]
-        private readonly SynchronizationContext _owningDispatcher = SynchronizationContext.Current ?? new SynchronizationContext();
+        private readonly Dictionary<uint, ButtplugClientDevice> _devices =
+            new Dictionary<uint, ButtplugClientDevice>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClient"/> class.
@@ -127,38 +122,30 @@ namespace Buttplug.Client
             switch (msg)
             {
                 case Log l:
-                    _owningDispatcher.Send(_ =>
-                    {
-                        Log?.Invoke(this, new LogEventArgs(l));
-                    }, null);
+                    Log?.Invoke(this, new LogEventArgs(l));
                     break;
 
                 case DeviceAdded d:
                     var dev = new ButtplugClientDevice(d);
-                    _devices.AddOrUpdate(d.DeviceIndex, dev, (idx, old) => dev);
-                    _owningDispatcher.Send(_ =>
-                    {
-                        DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(dev));
-                    }, null);
+                    _devices.Add(d.DeviceIndex, dev);
+                    DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(dev));
                     break;
 
                 case DeviceRemoved d:
-                    if (_devices.TryRemove(d.DeviceIndex, out ButtplugClientDevice oldDev))
+                    if (!_devices.ContainsKey(d.DeviceIndex))
                     {
-                        _owningDispatcher.Send(_ =>
-                        {
-                            DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
-                        }, null);
+                        // TODO: Throw error?
+                        return;
                     }
 
+                    var oldDev = _devices[d.DeviceIndex];
+                    _devices.Remove(d.DeviceIndex);
+                    DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
                     break;
 
                 case ScanningFinished sf:
-                    _owningDispatcher.Send(_ =>
-                    {
-                        // The scanning finished event is self explanatory and doesn't require extra arguments.
-                        ScanningFinished?.Invoke(this, new EventArgs());
-                    }, null);
+                    // The scanning finished event is self explanatory and doesn't require extra arguments.
+                    ScanningFinished?.Invoke(this, new EventArgs());
                     break;
             }
         }
@@ -240,10 +227,7 @@ namespace Buttplug.Client
 
             _connector.MessageReceived -= MessageReceivedHandler;
             await _connector.Disconnect();
-            _owningDispatcher.Send(_ =>
-            {
-                ServerDisconnect?.Invoke(this, new EventArgs());
-            }, null);
+            ServerDisconnect?.Invoke(this, new EventArgs());
         }
 
         /// <summary>
@@ -262,10 +246,7 @@ namespace Buttplug.Client
                     return;
                 }
 
-                _owningDispatcher.Send(_ =>
-                {
-                    PingTimeout?.Invoke(this, new EventArgs());
-                }, null);
+                PingTimeout?.Invoke(this, new EventArgs());
                 throw new Exception((msg as Error).ErrorMessage);
             }
             catch

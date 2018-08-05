@@ -1,10 +1,9 @@
 ﻿using Buttplug.Core;
-using Buttplug.Server;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server.Test
 {
-    internal class TestDeviceSubtypeManager : DeviceSubtypeManager
+    public class TestDeviceSubtypeManager : DeviceSubtypeManager
     {
         [CanBeNull]
         public readonly TestDevice Device;

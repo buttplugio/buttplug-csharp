@@ -6,7 +6,7 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Test
 {
-    internal class TestDevice : ButtplugDevice
+    public class TestDevice : ButtplugDevice
     {
         public double V1 = 0;
         public double V2 = 0;
