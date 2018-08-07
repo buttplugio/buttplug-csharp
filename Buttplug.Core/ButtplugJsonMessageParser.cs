@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Buttplug.Core.Messages;
+﻿using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core
@@ -94,62 +94,88 @@ namespace Buttplug.Core
         [NotNull]
         public ButtplugMessage[] Deserialize(string aJsonMsg)
         {
-            _bpLogger?.Trace($"Got JSON Message: {aJsonMsg}");
-
             var res = new List<ButtplugMessage>();
-            JArray msgArray;
+            _bpLogger?.Trace($"Got JSON Message: {aJsonMsg}");
+            var textReader = new StringReader(aJsonMsg);
+            var reader = new JsonTextReader(textReader)
+            {
+                CloseInput = false,
+                SupportMultipleContent = true,
+            };
+
             try
             {
-                msgArray = JArray.Parse(aJsonMsg);
+                while (reader.Read())
+                {
+                    JArray msgArray;
+                    try
+                    {
+                        msgArray = JArray.Load(reader);
+                    }
+                    catch (JsonReaderException e)
+                    {
+                        var err = new Error($"Not valid JSON: {aJsonMsg} - {e.Message}", ErrorClass.ERROR_MSG,
+                            ButtplugConsts.SystemMsgId);
+                        _bpLogger?.LogErrorMsg(err);
+                        res.Add(err);
+                        return res.ToArray();
+                    }
+
+                    var errors = _schema.Validate(msgArray);
+                    if (errors.Any())
+                    {
+                        var err = new Error(
+                            "Message does not conform to schema: " + string.Join(", ",
+                                errors.Select(aErr => aErr.ToString()).ToArray()), ErrorClass.ERROR_MSG,
+                            ButtplugConsts.SystemMsgId);
+                        _bpLogger?.LogErrorMsg(err);
+                        res.Add(err);
+                        return res.ToArray();
+                    }
+
+                    if (!msgArray.Any())
+                    {
+                        var err = new Error("No messages in array", ErrorClass.ERROR_MSG,
+                            ButtplugConsts.SystemMsgId);
+                        _bpLogger?.LogErrorMsg(err);
+                        res.Add(err);
+                        return res.ToArray();
+                    }
+
+                    // JSON input is an array of messages. We currently only handle the first one.
+                    foreach (var o in msgArray.Children<JObject>())
+                    {
+                        if (!o.Properties().Any())
+                        {
+                            var err = new Error("No message name available", ErrorClass.ERROR_MSG,
+                                ButtplugConsts.SystemMsgId);
+                            _bpLogger?.LogErrorMsg(err);
+                            res.Add(err);
+                            continue;
+                        }
+
+                        var msgName = o.Properties().First().Name;
+                        if (!_messageTypes.Any() || !_messageTypes.ContainsKey(msgName))
+                        {
+                            var err = new Error($"{msgName} is not a valid message class", ErrorClass.ERROR_MSG,
+                                ButtplugConsts.SystemMsgId);
+                            _bpLogger?.LogErrorMsg(err);
+                            res.Add(err);
+                            continue;
+                        }
+
+                        // This specifically could fail due to object conversion.
+                        res.Add(DeserializeAs(o, _messageTypes[msgName], msgName, aJsonMsg));
+                    }
+                }
             }
             catch (JsonReaderException e)
             {
-                var err = new Error($"Not valid JSON: {aJsonMsg} - {e.Message}", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
+                var err = new Error($"Not valid JSON: {aJsonMsg} - {e.Message}", ErrorClass.ERROR_MSG,
+                    ButtplugConsts.SystemMsgId);
                 _bpLogger?.LogErrorMsg(err);
                 res.Add(err);
                 return res.ToArray();
-            }
-
-            var errors = _schema.Validate(msgArray);
-            if (errors.Any())
-            {
-                var err = new Error("Message does not conform to schema: " + string.Join(", ", errors.Select(aErr => aErr.ToString()).ToArray()), ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
-                _bpLogger?.LogErrorMsg(err);
-                res.Add(err);
-                return res.ToArray();
-            }
-
-            if (!msgArray.Any())
-            {
-                var err = new Error("No messages in array", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
-                _bpLogger?.LogErrorMsg(err);
-                res.Add(err);
-                return res.ToArray();
-            }
-
-            // JSON input is an array of messages.
-            // We currently only handle the first one.
-            foreach (var o in msgArray.Children<JObject>())
-            {
-                if (!o.Properties().Any())
-                {
-                    var err = new Error("No message name available", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
-                    _bpLogger?.LogErrorMsg(err);
-                    res.Add(err);
-                    continue;
-                }
-
-                var msgName = o.Properties().First().Name;
-                if (!_messageTypes.Any() || !_messageTypes.ContainsKey(msgName))
-                {
-                    var err = new Error($"{msgName} is not a valid message class", ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId);
-                    _bpLogger?.LogErrorMsg(err);
-                    res.Add(err);
-                    continue;
-                }
-
-                // This specifically could fail due to object conversion.
-                res.Add(DeserializeAs(o, _messageTypes[msgName], msgName, aJsonMsg));
             }
 
             return res.ToArray();
@@ -192,7 +218,8 @@ namespace Buttplug.Core
         }
 
         /// <summary>
-        /// Serializes a single <see cref="ButtplugMessage"/> object into a JSON string for a specified version of the schema.
+        /// Serializes a single <see cref="ButtplugMessage"/> object into a JSON string for a
+        /// specified version of the schema.
         /// </summary>
         /// <param name="aMsg"><see cref="ButtplugMessage"/> object</param>
         /// <param name="clientSchemaVersion">Target schema version</param>
@@ -234,7 +261,8 @@ namespace Buttplug.Core
         }
 
         /// <summary>
-        /// Serializes a collection of ButtplugMessage objects into a JSON string for a specified version of the schema.
+        /// Serializes a collection of ButtplugMessage objects into a JSON string for a specified
+        /// version of the schema.
         /// </summary>
         /// <param name="aMsgs">A collection of ButtplugMessage objects</param>
         /// <param name="clientSchemaVersion">The target schema version</param>
