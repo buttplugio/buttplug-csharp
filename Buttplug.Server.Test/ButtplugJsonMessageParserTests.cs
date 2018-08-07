@@ -60,6 +60,28 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
+        public void DeserializeConcatenatedMessages()
+        {
+            var m = _server.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}][{\"Test\":{\"TestString\":\"Test\",\"Id\":1}}]");
+            Assert.True(m.Length == 2);
+            foreach (var msg in m)
+            {
+                switch (msg)
+                {
+                    case Error e:
+                        Assert.True(false, $"Got Error: {e.ErrorMessage}");
+                        break;
+                    case Core.Messages.Test tm:
+                        Assert.True(tm.TestString == "Test");
+                        break;
+                    default:
+                        Assert.True(false, $"Got wrong message type {msg.GetType().Name}");
+                        break;
+                }
+            }
+        }
+
+        [Test]
         public void DeserializeCorrectMessage()
         {
             var m = _server.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}]");
