@@ -27,9 +27,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
 
         private NamedPipeClientStream _pipeClient;
 
-        private Task _readThread;
-
-        private CancellationTokenSource _cancellationToken;
+        private Task _readTask;
 
         /// <summary>
         /// Status of the client connection.
@@ -51,7 +49,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
         /// Creates the connection to the Buttplug Server and performs the protocol handshake.
         /// </summary>
         /// <returns>Nothing (Task used for async/await)</returns>
-        public async Task Connect()
+        public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             if (Connected)
             {
@@ -63,28 +61,29 @@ namespace Buttplug.Client.Connectors.IPCConnector
                 PipeDirection.InOut, PipeOptions.Asynchronous,
                 TokenImpersonationLevel.Impersonation);
 
-            await _pipeClient.ConnectAsync(2000);
+            await _pipeClient.ConnectAsync(aToken);
 
-            _cancellationToken = new CancellationTokenSource();
-            _readThread = new Task(async () => { await pipeReader(_cancellationToken.Token); },
-                _cancellationToken.Token,
+            _readTask = new Task(async () => { await pipeReader(aToken); },
+                aToken,
                 TaskCreationOptions.LongRunning);
-            _readThread.Start();
+            _readTask.Start();
         }
 
         /// <summary>
         /// Closes the WebSocket Connection.
         /// </summary>
         /// <returns>Nothing (Task used for async/await)</returns>
-        public async Task Disconnect()
+        public async Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
         {
-            _cancellationToken.Cancel();
+
+            // TODO Create internal token for cancellation and use link source with external key
+            //_cancellationToken.Cancel();
             _pipeClient.Close();
-            _readThread.Wait();
+            _readTask.Wait();
             _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
         }
 
-        public async Task<ButtplugMessage> Send(ButtplugMessage aMsg)
+        public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
             var (msgString, promise) = PrepareMessage(aMsg);
             var output = Encoding.UTF8.GetBytes(msgString);

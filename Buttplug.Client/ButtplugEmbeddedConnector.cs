@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Server;
@@ -21,25 +22,25 @@ namespace Buttplug.Client
             Server.MessageReceived += OnServerMessageReceived;
         }
 
-        public ButtplugEmbeddedConnector(ButtplugServer aServer, string aServerName, uint aMaxPingTime = 0)
+        public ButtplugEmbeddedConnector(ButtplugServer aServer)
         {
             Server = aServer;
             Server.MessageReceived += OnServerMessageReceived;
         }
 
-        public Task Connect()
+        public Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             Connected = true;
             return Task.CompletedTask;
         }
 
-        public Task Disconnect()
+        public Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             Connected = false;
             return Task.CompletedTask;
         }
 
-        public async Task<ButtplugMessage> Send(ButtplugMessage aMsg)
+        public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
             return await Server.SendMessage(aMsg);
         }

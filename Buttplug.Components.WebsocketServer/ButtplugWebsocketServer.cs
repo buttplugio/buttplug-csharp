@@ -4,10 +4,10 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Core.Messages;
 using Buttplug.Server;
 using JetBrains.Annotations;
 using vtortola.WebSockets;
+using vtortola.WebSockets.Rfc6455;
 using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Components.WebsocketServer
@@ -41,32 +41,37 @@ namespace Buttplug.Components.WebsocketServer
         [NotNull]
         private ConcurrentDictionary<string, WebSocket> _connections = new ConcurrentDictionary<string, WebSocket>();
 
+        private uint _maxConnections = 1;
+
         [NotNull]
         private CancellationTokenSource _cancellation;
 
-        public bool IsConnected => _server.IsStarted;
+        public bool IsConnected => _server != null;
 
-        public void StartServer([NotNull] IButtplugServerFactory aFactory, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
+        public async Task StartServer([NotNull] IButtplugServerFactory aFactory, uint maxConnections = 1, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
         {
             _cancellation = new CancellationTokenSource();
             _factory = aFactory;
+
+            _maxConnections = maxConnections;
 
             _logManager = new ButtplugLogManager();
             _logger = _logManager.GetLogger(GetType());
 
             var endpoint = new IPEndPoint(aLoopBack ? IPAddress.Loopback : IPAddress.Any, aPort);
-            _server = new WebSocketListener(endpoint);
-            var rfc6455 = new vtortola.WebSockets.Rfc6455.WebSocketFactoryRfc6455(_server);
-            _server.Standards.RegisterStandard(rfc6455);
+
+            var options = new WebSocketListenerOptions();
+            options.Standards.RegisterRfc6455();
             if (aSecure)
             {
                 var cert = CertUtils.GetCert("Buttplug", aHostname);
-                _server.ConnectionExtensions.RegisterExtension(new WebSocketSecureConnectionExtension(cert));
+                options.ConnectionExtensions.RegisterSecureConnection(cert);
             }
 
-            _server.Start();
+            _server = new WebSocketListener(endpoint, options);
+            await _server.StartAsync();
 
-            Task.Run(() => AcceptWebSocketClientsAsync(_server, _cancellation.Token));
+            await Task.Run(() => AcceptWebSocketClientsAsync(_server, _cancellation.Token));
         }
 
         private async Task AcceptWebSocketClientsAsync(WebSocketListener aServer, CancellationToken aToken)
@@ -79,7 +84,7 @@ namespace Buttplug.Components.WebsocketServer
                     ws = await aServer.AcceptWebSocketAsync(aToken).ConfigureAwait(false);
                     if (ws != null)
                     {
-                        Task.Run(() => HandleConnectionAsync(ws, aToken));
+                        await Task.Run(() => HandleConnectionAsync(ws, aToken), aToken);
                     }
                 }
                 catch (Exception aEx)
@@ -91,13 +96,13 @@ namespace Buttplug.Components.WebsocketServer
 
         private async Task HandleConnectionAsync(WebSocket ws, CancellationToken cancellation)
         {
-            if (!_connections.IsEmpty)
+            if (_connections.Count == _maxConnections)
             {
                 try
                 {
-                    ws.WriteString(new ButtplugJsonMessageParser(_logManager).Serialize(_logger.LogErrorMsg(
+                    await ws.WriteStringAsync(new ButtplugJsonMessageParser(_logManager).Serialize(_logger.LogErrorMsg(
                         ButtplugConsts.SystemMsgId, ErrorClass.ERROR_INIT, "WebSocketServer already in use!"), 0));
-                    ws.Close();
+                    await ws.CloseAsync();
                 }
                 catch
                 {
@@ -117,6 +122,7 @@ namespace Buttplug.Components.WebsocketServer
 
             var session = new ButtplugWebsocketServerSession(_logManager, _factory.GetServer(), ws, _cancellation);
             await session.RunServerSession();
+            _connections.TryRemove(remoteId, out var closews);
         }
 
         public void StopServer()
@@ -124,13 +130,13 @@ namespace Buttplug.Components.WebsocketServer
             _cancellation.Cancel();
         }
 
-        public void Disconnect(string remoteId = null)
+        public async Task Disconnect(string remoteId = null)
         {
             if (remoteId == null)
             {
                 foreach (var conn in _connections.Values)
                 {
-                    conn.Close();
+                    await conn.CloseAsync();
                 }
 
                 return;
@@ -138,7 +144,7 @@ namespace Buttplug.Components.WebsocketServer
 
             if (_connections.TryGetValue(remoteId, out WebSocket ws))
             {
-                ws.Close();
+                await ws.CloseAsync();
             }
         }
     }
