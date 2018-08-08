@@ -24,7 +24,8 @@ namespace Buttplug.Components.WebsocketServer
 
         private IButtplugLog _logger;
 
-        [NotNull] private BufferBlock<string> _outgoingMessages = new BufferBlock<string>();
+        [NotNull]
+        private BufferBlock<string> _outgoingMessages = new BufferBlock<string>();
 
         public ButtplugWebsocketServerSession(IButtplugLogManager aLogManager, ButtplugServer aServer, WebSocket aSocket, CancellationTokenSource aExternalCancelSource)
         {
@@ -136,6 +137,7 @@ namespace Buttplug.Components.WebsocketServer
             {
                 // noop
             }
+
             _server.MessageReceived -= ReceiveMessageFromServerHandler;
             await _server.Shutdown();
             _ws.Dispose();

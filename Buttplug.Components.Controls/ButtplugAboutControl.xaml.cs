@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using Buttplug.Core;
 using JetBrains.Annotations;

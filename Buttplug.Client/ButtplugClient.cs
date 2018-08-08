@@ -1,12 +1,11 @@
-﻿using Buttplug.Core;
-using Buttplug.Core.Messages;
-using JetBrains.Annotations;
-using System;
-using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core;
+using Buttplug.Core.Messages;
+using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
@@ -74,16 +73,16 @@ namespace Buttplug.Client
         private readonly IButtplugLog _bpLogger;
 
         /// <summary>
-        /// Connector to use for the client. Can be local (server embedded), IPC, Websocket, etc...
-        /// </summary>
-        private IButtplugClientConnector _connector;
-
-        /// <summary>
         /// Stores information about devices currently connected to the server.
         /// </summary>
         [NotNull]
         private readonly Dictionary<uint, ButtplugClientDevice> _devices =
             new Dictionary<uint, ButtplugClientDevice>();
+
+        /// <summary>
+        /// Connector to use for the client. Can be local (server embedded), IPC, Websocket, etc...
+        /// </summary>
+        private IButtplugClientConnector _connector;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClient"/> class.
@@ -247,6 +246,7 @@ namespace Buttplug.Client
                 }
 
                 PingTimeout?.Invoke(this, new EventArgs());
+
                 // TODO This exception goes nowhere. Why is this even thrown.
                 throw new Exception((msg as Error).ErrorMessage);
             }

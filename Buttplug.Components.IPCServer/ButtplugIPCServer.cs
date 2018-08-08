@@ -10,7 +10,6 @@ using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
 using JetBrains.Annotations;
-using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Components.IPCServer
 {

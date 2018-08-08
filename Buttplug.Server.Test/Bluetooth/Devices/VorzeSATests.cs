@@ -52,7 +52,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
                     new List<(byte[], uint)>()
                     {
-                        (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx)
+                        (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
                     }, false);
 
                 expected = new byte[] { deviceIndex, 0x1, 0 };

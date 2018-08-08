@@ -1,12 +1,12 @@
-using Buttplug.Core;
-using Buttplug.Core.Messages;
-using Buttplug.Server.Bluetooth;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Buttplug.Core;
+using Buttplug.Core.Messages;
+using Buttplug.Server.Bluetooth;
+using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
@@ -81,12 +81,12 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     }
                     else if (c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse) ||
                              c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write))
-
                     {
                         _txChar = c;
                     }
                 }
             }
+
             if (_rxChar == null && _txChar == null && _indexedChars == null)
             {
                 var err = $"No characteristics to connect to for device {Name}";

@@ -46,7 +46,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 }
             }
 
-            if (_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(advertName) || !_deviceInfo.Names.Any())
+            if ((_deviceInfo.Names.Any() && !_deviceInfo.Names.Contains(advertName)) || !_deviceInfo.Names.Any())
             {
                 _bpLogger.Trace($"Dropping query for {advertName}.");
                 return false;

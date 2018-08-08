@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
@@ -20,6 +18,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public void Init()
         {
             testUtil = new BluetoothDeviceTestUtils<LovenseBluetoothInfo>();
+
             // Just leave name the same as the prefix, we'll set device type via initialize.
             testUtil.SetupTest("LVS", false);
             testUtil.AddExpectedRead(testUtil.NoCharacteristic, Encoding.ASCII.GetBytes("W:39:000000000000"));
@@ -106,6 +105,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public void Init()
         {
             testUtil = new BluetoothDeviceTestUtils<LovenseBluetoothInfo>();
+
             // Just leave name the same as the prefix, we'll set device type via initialize.
             testUtil.SetupTest("LVS", false);
             testUtil.AddExpectedRead(testUtil.NoCharacteristic, Encoding.ASCII.GetBytes("P:39:000000000000"));
@@ -196,6 +196,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public void Init()
         {
             testUtil = new BluetoothDeviceTestUtils<LovenseBluetoothInfo>();
+
             // Just leave name the same as the prefix, we'll set device type via initialize.
             testUtil.SetupTest("LVS", false);
             testUtil.AddExpectedRead(testUtil.NoCharacteristic, Encoding.ASCII.GetBytes("A:13:000000000000"));

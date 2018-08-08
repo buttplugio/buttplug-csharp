@@ -15,7 +15,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     // assuming all devices will act the same. If you need varying reactions per device, put those
     // tests in the specific device test class.
     [TestFixture]
-    class GeneralDeviceTests
+    public class GeneralDeviceTests
     {
         private IBluetoothDeviceGeneralTestUtils GetInterfaceObj(IBluetoothDeviceInfo aInfo)
         {

@@ -994,6 +994,7 @@ namespace Buttplug.Core.Messages
             }
 
             var cmdList = new List<VibrateSubcommand>((int)aCmdCount);
+
             // TODO This pattern sucks
             uint i = 0;
             foreach (var speed in aSpeeds)
@@ -1099,12 +1100,14 @@ namespace Buttplug.Core.Messages
             {
                 throw new ArgumentException("Number of speeds and number of commands must match.");
             }
+
             var cmdList = new List<RotateSubcommand>((int)aCmdCount);
             uint i = 0;
             foreach (var cmd in aCmds)
             {
                 cmdList.Add(new RotateSubcommand(i, cmd.speed, cmd.clockwise));
             }
+
             return new RotateCmd(aDeviceIndex, cmdList, aMsgId);
         }
 
@@ -1202,6 +1205,7 @@ namespace Buttplug.Core.Messages
             {
                 throw new ArgumentException("Number of speeds and number of commands must match.");
             }
+
             var cmdList = new List<VectorSubcommand>((int)aCmdCount);
             uint i = 0;
             foreach (var cmd in aCmds)

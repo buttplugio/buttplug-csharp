@@ -134,6 +134,7 @@ namespace Buttplug.Apps.ServerGUI
             {
                 ConnStatus.Content = "(Connected) " + aEvent.ClientName;
                 DisconnectButton.IsEnabled = true;
+
                 // We've gotten a connection, clear the last error.
                 ClearLastError();
             });

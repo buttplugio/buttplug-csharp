@@ -130,6 +130,7 @@ namespace Buttplug.Components.Controls
             {
                 await _bpServer?.SendMessage(new StopScanning());
             }
+
             var window = Window.GetWindow(this);
             window.Closing -= OnWindowClosing;
         }

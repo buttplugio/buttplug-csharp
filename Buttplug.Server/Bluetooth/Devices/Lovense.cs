@@ -1,9 +1,9 @@
-using Buttplug.Core;
-using Buttplug.Core.Messages;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Buttplug.Core;
+using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
@@ -138,6 +138,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             if (deviceInfoString != string.Empty)
             {
                 BpLogger.Debug($"Received device query return for {Interface.Name}");
+
                 // Expected Format X:YY:ZZZZZZZZZZZZ X is device type leter YY is firmware version Z
                 // is bluetooth address
                 var deviceInfo = deviceInfoString.Split(':');
@@ -154,6 +155,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 {
                     deviceTypeLetter = 'A';
                 }
+
                 int.TryParse(deviceInfo[1], out var deviceVersion);
                 BpLogger.Trace($"Lovense DeviceType Return: {deviceTypeLetter}");
                 if (!Enum.IsDefined(typeof(LovenseDeviceType), (uint)deviceTypeLetter))
@@ -223,9 +225,10 @@ namespace Buttplug.Server.Bluetooth.Devices
             return new Ok(ButtplugConsts.SystemMsgId);
         }
 
-        private async void NotifyReceived(Object sender, BluetoothNotifyEventArgs args)
+        private async void NotifyReceived(object sender, BluetoothNotifyEventArgs args)
         {
             string data = Encoding.ASCII.GetString(args.bytes);
+
             //BpLogger.Trace(data);
             _lastNotifyReceived = data;
         }

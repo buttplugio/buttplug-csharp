@@ -1,9 +1,9 @@
-﻿using Buttplug.Core;
-using Buttplug.Core.Messages;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Buttplug.Core;
+using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
@@ -57,6 +57,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 Name = $"Youcups {FriendlyNames[aInterface.Name]}";
             }
+
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
             MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
@@ -14,7 +11,8 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     [TestFixture]
     public class MysteryVibeTests
     {
-        [NotNull] private BluetoothDeviceTestUtils<MysteryVibeBluetoothInfo> testUtil;
+        [NotNull]
+        private BluetoothDeviceTestUtils<MysteryVibeBluetoothInfo> testUtil;
 
         [SetUp]
         public void Init()
