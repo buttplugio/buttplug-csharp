@@ -6,7 +6,6 @@ using System.Windows.Threading;
 using Buttplug.Server;
 using Buttplug.Server.Managers.ETSerialManager;
 using Buttplug.Server.Managers.HidManager;
-using Buttplug.Server.Managers.SimulatorManager;
 using Buttplug.Server.Managers.UWPBluetoothManager;
 using Buttplug.Server.Managers.WinUSBManager;
 using Buttplug.Server.Managers.XInputGamepadManager;
@@ -150,12 +149,6 @@ namespace Buttplug.Components.Controls
             bpServer.AddDeviceSubtypeManager(aLogger => new WinUSBManager(aLogger));
             bpServer.AddDeviceSubtypeManager(aLogger => new HidManager(aLogger));
 
-            // Simulator Manager makes it hard to profile, and isn't documented. Uncomment to use.
-            /*
-#if DEBUG
-            bpServer.AddDeviceSubtypeManager(aLogger => new SimulatorManager(aLogger));
-#endif
-*/
             return bpServer;
         }
 

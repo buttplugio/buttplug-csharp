@@ -33,10 +33,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.Payload", "Buttplug.Apps.GameVibrationRouter.Payload\Buttplug.Apps.GameVibrationRouter.Payload.csproj", "{DACAECFE-B190-4584-B50E-0BAAD557F0CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.DeviceSimulatorGUI", "Buttplug.Apps.DeviceSimulatorGUI\Buttplug.Apps.DeviceSimulatorGUI.csproj", "{EBF5270A-54CB-4328-8E54-37972920EF1D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.SimulatorManager", "Buttplug.Server.Managers.SimulatorManager\Buttplug.Server.Managers.SimulatorManager.csproj", "{334D5731-7619-471E-85C3-240831514741}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.ETSerialManager", "Buttplug.Server.Managers.ETSerialManager\Buttplug.Server.Managers.ETSerialManager.csproj", "{436CF4FF-AE10-45DA-8909-9AACF1ED6425}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.WinUSBManager", "Buttplug.Server.Managers.WinUSBManager\Buttplug.Server.Managers.WinUSBManager.csproj", "{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}"
@@ -97,10 +93,6 @@ Global
 		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78395}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78395}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78395}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -121,14 +113,6 @@ Global
 		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBF5270A-54CB-4328-8E54-37972920EF1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBF5270A-54CB-4328-8E54-37972920EF1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBF5270A-54CB-4328-8E54-37972920EF1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBF5270A-54CB-4328-8E54-37972920EF1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{334D5731-7619-471E-85C3-240831514741}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{334D5731-7619-471E-85C3-240831514741}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{334D5731-7619-471E-85C3-240831514741}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{334D5731-7619-471E-85C3-240831514741}.Release|Any CPU.Build.0 = Release|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Release|Any CPU.ActiveCfg = Release|Any CPU

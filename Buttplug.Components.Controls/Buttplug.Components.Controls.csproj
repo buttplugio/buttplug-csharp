@@ -168,10 +168,6 @@
       <Project>{83574729-6EB4-43E9-B7CC-AC5725380038}</Project>
       <Name>Buttplug.Server.Managers.HidManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Server.Managers.SimulatorManager\Buttplug.Server.Managers.SimulatorManager.csproj">
-      <Project>{334d5731-7619-471e-85c3-240831514741}</Project>
-      <Name>Buttplug.Server.Managers.SimulatorManager</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Buttplug.Server.Managers.UWPBluetoothManager\Buttplug.Server.Managers.UWPBluetoothManager.csproj">
       <Project>{223ea194-8318-4189-bec8-73734c3f4a78}</Project>
       <Name>Buttplug.Server.Managers.UWPBluetoothManager</Name>
