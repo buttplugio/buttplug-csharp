@@ -21,13 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.XI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.WebsocketServer", "Buttplug.Components.WebsocketServer\Buttplug.Components.WebsocketServer.csproj", "{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.KiirooEmulatorGUI", "Buttplug.Apps.KiirooEmulatorGUI\Buttplug.Apps.KiirooEmulatorGUI.csproj", "{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.KiirooPlatformEmulator", "Buttplug.Components.KiirooPlatformEmulator\Buttplug.Components.KiirooPlatformEmulator.csproj", "{C606B29A-EE61-452C-8557-9DC9B37E87D1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.Controls", "Buttplug.Components.Controls\Buttplug.Components.Controls.csproj", "{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.KiirooEmulatorGUI.Test", "Buttplug.Apps.KiirooEmulatorGUI.Test\Buttplug.Apps.KiirooEmulatorGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78395}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.ServerGUI", "Buttplug.Apps.ServerGUI\Buttplug.Apps.ServerGUI.csproj", "{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}"
 EndProject
@@ -99,14 +93,6 @@ Global
 		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76E03B47-DCA6-49D1-99C2-2EA28D3A8E78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C606B29A-EE61-452C-8557-9DC9B37E87D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C606B29A-EE61-452C-8557-9DC9B37E87D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C606B29A-EE61-452C-8557-9DC9B37E87D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C606B29A-EE61-452C-8557-9DC9B37E87D1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Release|Any CPU.ActiveCfg = Release|Any CPU
