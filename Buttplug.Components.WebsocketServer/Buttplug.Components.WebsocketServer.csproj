@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ButtplugWebsocketServer.cs" />
+    <Compile Include="ButtplugWebsocketServerSession.cs" />
     <Compile Include="CertUtils.cs" />
     <Compile Include="ConnectionEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

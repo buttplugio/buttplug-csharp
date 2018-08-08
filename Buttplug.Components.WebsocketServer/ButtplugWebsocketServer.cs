@@ -52,7 +52,7 @@ namespace Buttplug.Components.WebsocketServer
             _factory = aFactory;
 
             _logManager = new ButtplugLogManager();
-            _logger = _logManager.GetLogger(this.GetType());
+            _logger = _logManager.GetLogger(GetType());
 
             var endpoint = new IPEndPoint(aLoopBack ? IPAddress.Loopback : IPAddress.Any, aPort);
             _server = new WebSocketListener(endpoint);
@@ -115,98 +115,12 @@ namespace Buttplug.Components.WebsocketServer
             _connections.AddOrUpdate(remoteId, ws, (oldWs, newWs) => newWs);
             ConnectionAccepted?.Invoke(this, new ConnectionEventArgs(remoteId));
 
-            var buttplug = _factory.GetServer();
-
-            EventHandler<MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
-            {
-                var msg = buttplug.Serialize(aEvent.Message);
-                if (msg == null)
-                {
-                    return;
-                }
-
-                try
-                {
-                    if (ws != null && ws.IsConnected)
-                    {
-                        ws.WriteString(msg);
-                    }
-
-                    if (aEvent.Message is Error && (aEvent.Message as Error).ErrorCode == Error.ErrorClass.ERROR_PING && ws != null && ws.IsConnected)
-                    {
-                        ws.Close();
-                    }
-                }
-                catch (WebSocketException e)
-                {
-                    // Probably means we're repling to a message we recieved just before shutdown.
-                    _logger.Error(e.Message, true);
-                }
-            };
-
-            buttplug.MessageReceived += msgReceived;
-
-            EventHandler<MessageReceivedEventArgs> clientConnected = (aObject, aEvent) =>
-            {
-                var msg = aEvent.Message as RequestServerInfo;
-                var clientName = msg?.ClientName ?? "Unknown client";
-                ConnectionUpdated?.Invoke(this, new ConnectionEventArgs(remoteId, clientName));
-            };
-
-            buttplug.ClientConnected += clientConnected;
-
-            try
-            {
-                while (ws.IsConnected && !cancellation.IsCancellationRequested)
-                {
-                    var msg = await ws.ReadStringAsync(cancellation).ConfigureAwait(false);
-                    if (msg != null)
-                    {
-                        var respMsgs = await buttplug.SendMessage(msg);
-                        var respMsg = buttplug.Serialize(respMsgs);
-                        if (respMsg == null)
-                        {
-                            continue;
-                        }
-
-                        await ws.WriteStringAsync(respMsg, cancellation);
-
-                        foreach (var m in respMsgs)
-                        {
-                            if (m is Error && (m as Error).ErrorCode == Error.ErrorClass.ERROR_PING && ws != null && ws.IsConnected)
-                            {
-                                ws.Close();
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e.Message, true);
-                try
-                {
-                    ws.Close();
-                }
-                catch
-                {
-                    // noop
-                }
-            }
-            finally
-            {
-                buttplug.MessageReceived -= msgReceived;
-                await buttplug.Shutdown();
-                buttplug = null;
-                ws.Dispose();
-                _connections.TryRemove(remoteId, out _);
-                ConnectionClosed?.Invoke(this, new ConnectionEventArgs(remoteId));
-            }
+            var session = new ButtplugWebsocketServerSession(_logManager, _factory.GetServer(), ws, _cancellation);
+            await session.RunServerSession();
         }
 
         public void StopServer()
         {
-            _server?.Stop();
             _cancellation.Cancel();
         }
 
