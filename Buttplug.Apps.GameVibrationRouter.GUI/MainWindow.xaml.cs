@@ -8,8 +8,6 @@ using JetBrains.Annotations;
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Sockets;
 using Buttplug.Client.Test;
 using Buttplug.Components.WebsocketServer;
 using Buttplug.Core;

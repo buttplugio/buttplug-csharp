@@ -1,6 +1,5 @@
 ﻿using Buttplug.Core;
 using System;
-using System.Collections.Concurrent;
 using System.IO.Pipes;
 using System.Security.Principal;
 using System.Text;

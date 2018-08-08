@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -85,6 +84,7 @@ namespace Buttplug.Server.Test.Util
         public void TestDeviceAllowedMessages([NotNull] Dictionary<Type, uint> aExpectedMessageArgs)
         {
             Clear();
+
             // If we've updated a class with new messages, but haven't updated the device, fail.
             Assert.AreEqual(aExpectedMessageArgs.Count, bleDevice.GetAllowedMessageTypes().Count());
             foreach (var item in aExpectedMessageArgs)

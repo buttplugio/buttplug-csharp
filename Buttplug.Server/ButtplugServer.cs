@@ -21,7 +21,8 @@ namespace Buttplug.Server
         [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> ClientConnected;
 
-        [CanBeNull] public event EventHandler PingTimeout;
+        [CanBeNull]
+        public event EventHandler PingTimeout;
 
         [NotNull]
         protected readonly IButtplugLogManager BpLogManager;

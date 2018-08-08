@@ -50,7 +50,7 @@ namespace Buttplug.Server.Managers.WinUSBManager
             }
 
             var deviceRegistryObject = deviceParameters.GetValue("DeviceInterfaceGUIDs", string.Empty);
-            string deviceGuid = "";
+            string deviceGuid = string.Empty;
             if (deviceRegistryObject == null)
             {
                 BpLogger.Debug("No TranceVibrator Devices Driver GUIDs found in registry.");

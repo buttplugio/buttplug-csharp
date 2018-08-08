@@ -15,7 +15,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             Tx = 0,
             Rx = 1,
             Cmd = 2,
-        };
+        }
 
         public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
         {

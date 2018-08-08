@@ -98,6 +98,7 @@ namespace Buttplug.Client.Test
                 { "VibrateCmd", new MessageAttributes(2) },
             });
             Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessageAsync(testDevice, new FleshlightLaunchFW12Cmd(0, 0, 0)));
+
             // Shouldn't throw.
             await _client.SendDeviceMessageAsync(_client.Devices[0], new SingleMotorVibrateCmd(0, 0.5));
             Assert.AreEqual(_subtypeMgr.Device.V1, 0.5);

@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;

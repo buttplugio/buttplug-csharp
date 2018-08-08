@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {

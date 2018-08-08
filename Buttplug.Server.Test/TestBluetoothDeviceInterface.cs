@@ -61,6 +61,7 @@ namespace Buttplug.Server.Test
             {
                 ExpectedRead.Add(aCharacteristicIndex, new List<byte[]>());
             }
+
             ExpectedRead[aCharacteristicIndex].Add(aValue);
         }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -29,7 +28,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public string[] Names { get; } =
         {
-            "PiPiJing"
+            "PiPiJing",
         };
 
         public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()

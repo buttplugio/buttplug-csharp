@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Buttplug.Client.Test;
-using Buttplug.Client.Connectors.IPCConnector;
+﻿using Buttplug.Client.Test;
 using Buttplug.Components.IPCServer;
 using Buttplug.Core;
 using Buttplug.Server.Test;
