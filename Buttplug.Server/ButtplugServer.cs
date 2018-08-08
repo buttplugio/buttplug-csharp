@@ -21,6 +21,8 @@ namespace Buttplug.Server
         [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> ClientConnected;
 
+        [CanBeNull] public event EventHandler PingTimeout;
+
         [NotNull]
         protected readonly IButtplugLogManager BpLogManager;
 
@@ -106,6 +108,7 @@ namespace Buttplug.Server
                 Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
             SendMessage(new StopAllDevices()).Wait();
             _pingTimedOut = true;
+            PingTimeout?.Invoke(this, new EventArgs());
         }
 
         [NotNull]
