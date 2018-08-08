@@ -29,7 +29,7 @@ namespace Buttplug.Client.Test
         [TearDown]
         public void CleanUp()
         {
-            _client?.Disconnect().Wait();
+            _client?.DisconnectAsync().Wait();
         }
 
         private void SetEvent()
@@ -51,9 +51,9 @@ namespace Buttplug.Client.Test
         public async Task TestBasicConnectDisconnect()
         {
             Assert.False(_client.Connected);
-            await _client.Connect();
+            await _client.ConnectAsync();
             Assert.True(_client.Connected);
-            await _client.Disconnect();
+            await _client.DisconnectAsync();
             Assert.False(_client.Connected);
         }
 
@@ -67,7 +67,7 @@ namespace Buttplug.Client.Test
                 { "StopDeviceCmd", new MessageAttributes() },
             });
 
-            await _client.Connect();
+            await _client.ConnectAsync();
 
             _client.ScanningFinished += (aSender, aArg) =>
             {
@@ -79,27 +79,27 @@ namespace Buttplug.Client.Test
                 Assert.AreEqual(testDevice, aArg.Device);
                 SetEvent();
             };
-            await _client.StartScanning();
+            await _client.StartScanningAsync();
             await WaitForEvent();
-            await _client.StopScanning();
+            await _client.StopScanningAsync();
             await WaitForEvent();
         }
 
         [Test]
         public async Task TestDeviceMessage()
         {
-            await _client.Connect();
-            await _client.StartScanning();
-            await _client.StopScanning();
-            Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessage(_client.Devices[0], new FleshlightLaunchFW12Cmd(0, 0, 0)));
+            await _client.ConnectAsync();
+            await _client.StartScanningAsync();
+            await _client.StopScanningAsync();
+            Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessageAsync(_client.Devices[0], new FleshlightLaunchFW12Cmd(0, 0, 0)));
             var testDevice = new ButtplugClientDevice(2, "Test Device 2", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
             });
-            Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessage(testDevice, new FleshlightLaunchFW12Cmd(0, 0, 0)));
+            Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessageAsync(testDevice, new FleshlightLaunchFW12Cmd(0, 0, 0)));
             // Shouldn't throw.
-            await _client.SendDeviceMessage(_client.Devices[0], new SingleMotorVibrateCmd(0, 0.5));
+            await _client.SendDeviceMessageAsync(_client.Devices[0], new SingleMotorVibrateCmd(0, 0.5));
             Assert.AreEqual(_subtypeMgr.Device.V1, 0.5);
             Assert.AreEqual(_subtypeMgr.Device.V2, 0.5);
         }
@@ -107,9 +107,9 @@ namespace Buttplug.Client.Test
         [Test]
         public async Task TestDeviceRemovalEvent()
         {
-            await _client.Connect();
-            await _client.StartScanning();
-            await _client.StopScanning();
+            await _client.ConnectAsync();
+            await _client.StartScanningAsync();
+            await _client.StopScanningAsync();
 
             var testDevice = _client.Devices[0];
             _client.DeviceRemoved += (aSender, aArg) =>

@@ -105,7 +105,7 @@ namespace Buttplug.Client
         /// </summary>
         ~ButtplugClient()
         {
-            Disconnect().Wait();
+            DisconnectAsync().Wait();
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Buttplug.Client
             }
         }
 
-        public async Task Connect()
+        public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             if (Connected)
             {
@@ -158,7 +158,7 @@ namespace Buttplug.Client
             }
 
             _connector.MessageReceived += MessageReceivedHandler;
-            await _connector.Connect();
+            await _connector.ConnectAsync(aToken);
 
             // TODO Handle Client/Server Handshake!
             /*
@@ -218,7 +218,7 @@ namespace Buttplug.Client
             }*/
         }
 
-        public async Task Disconnect()
+        public async Task DisconnectAsync()
         {
             if (!Connected)
             {
@@ -226,7 +226,7 @@ namespace Buttplug.Client
             }
 
             _connector.MessageReceived -= MessageReceivedHandler;
-            await _connector.Disconnect();
+            await _connector.DisconnectAsync();
             ServerDisconnect?.Invoke(this, new EventArgs());
         }
 
@@ -240,18 +240,19 @@ namespace Buttplug.Client
         {
             try
             {
-                var msg = await SendMessage(new Ping());
+                var msg = await SendMessageAsync(new Ping());
                 if (!(msg is Error))
                 {
                     return;
                 }
 
                 PingTimeout?.Invoke(this, new EventArgs());
+                // TODO This exception goes nowhere. Why is this even thrown.
                 throw new Exception((msg as Error).ErrorMessage);
             }
             catch
             {
-                await Disconnect();
+                await DisconnectAsync();
             }
         }
 
@@ -263,9 +264,9 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
-        public async Task StartScanning()
+        public async Task StartScanningAsync(CancellationToken aToken = default(CancellationToken))
         {
-            await SendMessageExpectOk(new StartScanning());
+            await SendMessageExpectOk(new StartScanning(), aToken);
         }
 
         /// <summary>
@@ -275,9 +276,9 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
-        public async Task StopScanning()
+        public async Task StopScanningAsync(CancellationToken aToken = default(CancellationToken))
         {
-            await SendMessageExpectOk(new StopScanning());
+            await SendMessageExpectOk(new StopScanning(), aToken);
         }
 
         /// <summary>
@@ -288,9 +289,9 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
-        public async Task RequestLog(string aLogLevel)
+        public async Task RequestLogAsync(string aLogLevel, CancellationToken aToken = default(CancellationToken))
         {
-            await SendMessageExpectOk(new RequestLog(aLogLevel));
+            await SendMessageExpectOk(new RequestLog(aLogLevel), aToken);
         }
 
         /// <summary>
@@ -302,7 +303,7 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
-        public async Task SendDeviceMessage(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg)
+        public async Task SendDeviceMessageAsync(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg, CancellationToken aToken = default(CancellationToken))
         {
             if (!_devices.TryGetValue(aDevice.Index, out ButtplugClientDevice dev))
             {
@@ -315,7 +316,7 @@ namespace Buttplug.Client
             }
 
             aDeviceMsg.DeviceIndex = aDevice.Index;
-            await SendMessageExpectOk(aDeviceMsg);
+            await SendMessageExpectOk(aDeviceMsg, aToken);
         }
 
         /// <summary>
@@ -323,9 +324,9 @@ namespace Buttplug.Client
         /// </summary>
         /// <param name="aMsg">Message to send.</param>
         /// <returns>True if successful.</returns>
-        private async Task SendMessageExpectOk(ButtplugMessage aMsg)
+        private async Task SendMessageExpectOk(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
-            var msg = await SendMessage(aMsg);
+            var msg = await SendMessageAsync(aMsg, aToken);
             if (!(msg is Ok))
             {
                 throw new ButtplugClientException(msg);
@@ -337,9 +338,9 @@ namespace Buttplug.Client
         /// </summary>
         /// <param name="aMsg">Message to send.</param>
         /// <returns>The response, which will derive from <see cref="ButtplugMessage"/>.</returns>
-        protected async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
+        protected async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
-            return await _connector.Send(aMsg);
+            return await _connector.SendAsync(aMsg, aToken);
         }
     }
 }

@@ -193,7 +193,7 @@ namespace Buttplug.Apps.ServerGUI
         {
             try
             {
-                _ws.StartServer(_bpFactory, (int)_port, _loopback, _secure, _hostname);
+                _ws.StartServer(_bpFactory, 1, (int)_port, _loopback, _secure, _hostname);
                 ConnToggleButton.Content = "Stop";
                 SecureCheckBox.IsEnabled = false;
                 PortTextBox.IsEnabled = false;

@@ -72,12 +72,14 @@ namespace Buttplug.Components.WebsocketServer
         {
             try
             {
+                var readTask = _ws.ReadStringAsync(_linkedCancelSource.Token);
+                var writeTask = _outgoingMessages.OutputAvailableAsync(_linkedCancelSource.Token);
                 while (_ws.IsConnected && !_linkedCancelSource.IsCancellationRequested)
                 {
                     var msgTasks = new Task[]
                     {
-                        _ws.ReadStringAsync(_linkedCancelSource.Token),
-                        _outgoingMessages.OutputAvailableAsync(_linkedCancelSource.Token),
+                        readTask,
+                        writeTask,
                     };
 
                     var completedTaskIndex = Task.WaitAny(msgTasks);
@@ -85,9 +87,12 @@ namespace Buttplug.Components.WebsocketServer
                     if (completedTaskIndex == 0)
                     {
                         var incomingMsg = ((Task<string>)msgTasks[0]).GetAwaiter().GetResult();
-                        var respMsgs = await _server.SendMessage(incomingMsg);
+                        if (incomingMsg != null)
+                        {
+                            await QueueMessage(await _server.SendMessage(incomingMsg));
+                        }
 
-                        await QueueMessage(respMsgs);
+                        readTask = _ws.ReadStringAsync(_linkedCancelSource.Token);
                     }
                     else
                     {
@@ -100,6 +105,8 @@ namespace Buttplug.Components.WebsocketServer
                             {
                                 await _ws.WriteStringAsync(outmsgs, _linkedCancelSource.Token);
                             }
+
+                            writeTask = _outgoingMessages.OutputAvailableAsync(_linkedCancelSource.Token);
                         }
                         catch (WebSocketException e)
                         {
@@ -123,7 +130,7 @@ namespace Buttplug.Components.WebsocketServer
         {
             try
             {
-                _ws.Close();
+                await _ws.CloseAsync();
             }
             catch
             {

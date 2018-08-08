@@ -14,7 +14,7 @@ namespace Buttplug.Client.Test
             _subtypeMgr = new TestDeviceSubtypeManager(new TestDevice(_logMgr, "Test Device"));
             _server = new TestServer();
             _server.AddDeviceSubtypeManager(_subtypeMgr);
-            _connector = new ButtplugEmbeddedConnector(_server, "Test Server", 100);
+            _connector = new ButtplugEmbeddedConnector(_server);
             _client = new ButtplugClient("Test Client", _connector);
         }
     }

@@ -1,42 +1,27 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Threading.Tasks;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using WebSocket4Net;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
+using vtortola.WebSockets;
+using vtortola.WebSockets.Rfc6455;
 
 namespace Buttplug.Client.Connectors.WebsocketConnector
 {
     public class ButtplugWebsocketConnector : ButtplugRemoteJSONConnector, IButtplugClientConnector
     {
         /// <summary>
-        /// Guards re-entrancy of websocket message sending function.
-        /// </summary>
-        [NotNull] private readonly object _sendLock = new object();
-
-        /// <summary>
         /// Websocket access object.
         /// </summary>
+        [CanBeNull] private WebSocketClient _wsClient;
+
         [CanBeNull] private WebSocket _ws;
 
-        /// <summary>
-        /// Signifies the end of the connection process.
-        /// </summary>
-        private TaskCompletionSource<object> _connectedOrFailed;
-
-        /// <summary>
-        /// Signifies the server disconnecting from the client.
-        /// </summary>
-        private TaskCompletionSource<object> _disconnected;
-
-        /// <summary>
-        /// Used for error handling during the connection process.
-        /// </summary>
-        private bool _connecting => _connectedOrFailed?.Task != null && !_connectedOrFailed.Task.IsCompleted;
-
-        public bool Connected => _ws != null && _ws.State != WebSocketState.Closed;
+        public bool Connected => _ws != null && _ws.IsConnected;
 
         public event EventHandler Disconnected;
 
@@ -47,10 +32,11 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
         private readonly Uri _uri;
 
-        private readonly bool _ignoreSSLErrors;
+        [NotNull] private readonly BufferBlock<string> _outgoingMessages = new BufferBlock<string>();
+
+        private Task _readTask;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="aURL">
         /// The URL for the Buttplug WebSocket Server, in the form of wss://address:port (wss:// is
@@ -59,156 +45,140 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         /// <param name="aIgnoreSSLErrors">
         /// When using SSL (wss://), prevents bad certificates from causing connection failures
         /// </param>
-        public ButtplugWebsocketConnector(Uri aUri, bool aIgnoreSSLErrors)
+        public ButtplugWebsocketConnector(Uri aUri)
         {
             _uri = aUri;
-            _ignoreSSLErrors = aIgnoreSSLErrors;
         }
 
         /// <summary>
         /// Creates the connection to the Buttplug Server and performs the protocol handshake.
         /// </summary>
         /// <returns>Nothing (Task used for async/await)</returns>
-        [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Embedded acronyms")]
-        public async Task Connect()
+        public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
-            if (_ws != null && (_ws.State == WebSocketState.Connecting || _ws.State == WebSocketState.Open))
+            if (_ws != null)
             {
-                throw new InvalidOperationException("Already connected!");
+                throw new ButtplugClientConnectorException("Already connected!");
             }
 
-            _ws = new WebSocket(_uri.ToString());
-
-            _connectedOrFailed = new TaskCompletionSource<object>();
-            _disconnected = new TaskCompletionSource<object>();
-
-            _ws.Opened += OpenedHandler;
-            _ws.Closed += ClosedHandler;
-            _ws.Error += ErrorHandler;
-
-            if (_ignoreSSLErrors)
+            const int bufferSize = 1024 * 8; // 8KiB
+            const int bufferPoolSize = 100 * bufferSize; // 800KiB pool
+            var options = new WebSocketListenerOptions
             {
-                _ws.Security.AllowNameMismatchCertificate = true;
-                _ws.Security.AllowUnstrustedCertificate = true;
-                _ws.Security.AllowCertificateChainErrors = true;
+                // set send buffer size (optional but recommended)
+                SendBufferSize = bufferSize,
+
+                // set buffer manager for buffers re-use (optional but recommended)
+                BufferManager = BufferManager.CreateBufferManager(bufferPoolSize, bufferSize),
+            };
+
+            // register RFC6455 protocol implementation (required)
+            options.Standards.RegisterRfc6455();
+            _wsClient = new WebSocketClient(options);
+
+            try
+            {
+                _ws = await _wsClient.ConnectAsync(_uri, aToken);
+            }
+            catch (Exception e)
+            {
+                // Rethrow for now? Possibly wrap?
+                throw new ButtplugClientConnectorException("Websocket Connection Exception! See Inner Exception", e);
             }
 
-            _ws.Open();
-
-            await _connectedOrFailed.Task;
-
-            if (_ws.State != WebSocketState.Open)
-            {
-                throw new Exception("Connection failed!");
-            }
-
-            _ws.MessageReceived += MessageReceivedHandler;
-        }
-
-        /// <summary>
-        /// Websocket error event handler.
-        /// </summary>
-        /// <param name="aSender">Object sending the error.</param>
-        /// <param name="aEventArgs">Websocket error parameters, which contain info about the error.</param>
-        private void ErrorHandler(object aSender, SuperSocket.ClientEngine.ErrorEventArgs aEventArgs)
-        {
-            if (_connecting)
-            {
-                _connectedOrFailed.TrySetException(aEventArgs.Exception);
-            }
-
-            if (_ws?.State != WebSocketState.Open)
-            {
-                Disconnect().Wait();
-            }
-        }
-
-        /// <summary>
-        /// Websocket closed event handler.
-        /// </summary>
-        /// <param name="aSender">Object sending the closure event, unused.</param>
-        /// <param name="aEventArgs">Event parameters, unused.</param>
-        private void ClosedHandler(object aSender, EventArgs aEventArgs)
-        {
-            _disconnected.TrySetResult(null);
-            Disconnect().Wait();
-        }
-
-        /// <summary>
-        /// Websocket opened event handler.
-        /// </summary>
-        /// <param name="aSender">Object sending the open event, unused.</param>
-        /// <param name="aEventArgs">Event parameters, unused.</param>
-
-        private void OpenedHandler(object aSender, EventArgs aEventArgs)
-        {
-            _connectedOrFailed.TrySetResult(null);
+            _readTask = new Task(async () => { await RunClientLoop(aToken); },
+                aToken,
+                TaskCreationOptions.LongRunning);
+            _readTask.Start();
         }
 
         /// <summary>
         /// Closes the WebSocket Connection.
         /// </summary>
         /// <returns>Nothing (Task used for async/await)</returns>
-        public async Task Disconnect()
+        public async Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             try
             {
-                while (_ws != null && _ws.State != WebSocketState.Closed)
+                if (_ws != null)
                 {
-                    if (_ws.State == WebSocketState.Closing || _ws.State == WebSocketState.Closed)
-                    {
-                        continue;
-                    }
-
-                    _ws.Close("Client shutdown");
-                    await _disconnected.Task;
+                    await _ws.CloseAsync();
                 }
             }
             catch
             {
                 // noop - something went wrong closing the socket, but we're about to dispose of it anyway.
             }
-
+            _readTask.Wait();
+            _ws.Dispose();
             _ws = null;
             _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
         }
 
-        public async Task<ButtplugMessage> Send(ButtplugMessage aMsg)
+        public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken)
         {
             var (msgString, msgPromise) = PrepareMessage(aMsg);
+            await _outgoingMessages.SendAsync(msgString, aToken);
+            return await msgPromise;
+        }
+
+        private async Task RunClientLoop(CancellationToken aToken)
+        {
             try
             {
-                lock (_sendLock)
+                var readTask = _ws.ReadStringAsync(aToken);
+                var writeTask = _outgoingMessages.OutputAvailableAsync(aToken);
+                while (_ws.IsConnected && !aToken.IsCancellationRequested)
                 {
-                    if (_ws != null && _ws.State == WebSocketState.Open)
+                    var msgTasks = new Task[]
                     {
-                        _ws.Send(msgString);
+                        readTask,
+                        writeTask,
+                    };
+
+                    var completedTaskIndex = Task.WaitAny(msgTasks);
+
+                    if (completedTaskIndex == 0)
+                    {
+                        var incomingMsg = ((Task<string>)msgTasks[0]).GetAwaiter().GetResult();
+                        if (incomingMsg != null)
+                        {
+                            _owningDispatcher.Send(_ => ReceiveMessages(incomingMsg), null);
+                        }
+
+                        readTask = _ws.ReadStringAsync(aToken);
                     }
                     else
                     {
-                        return new Error("Bad WS state!", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
+                        try
+                        {
+                            IList<string> msgs = new List<string>();
+                            _outgoingMessages.TryReceiveAll(out msgs);
+                            string outmsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
+                            if (_ws != null && _ws.IsConnected)
+                            {
+                                await _ws.WriteStringAsync(outmsgs, aToken);
+                            }
+
+                            writeTask = _outgoingMessages.OutputAvailableAsync(aToken);
+                        }
+                        catch (WebSocketException e)
+                        {
+                            // Probably means we're replying to a message we received just before shutdown.
+                            //_logger.Error(e.Message, true);
+                            throw new ButtplugClientConnectorException("Websocket Client Read Error!", e);
+                        }
                     }
                 }
-
-                return await msgPromise;
             }
             catch (Exception e)
             {
-                // Noop - WS probably closed on us during read
-                return new Error(e.Message, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
+                //_logger.Error(e.Message, true);
             }
-        }
-
-        /// <summary>
-        /// Websocket Message Received event handler. Either tries to match incoming messages as
-        /// replies to messages we've sent, or fires an event related to an incoming event, like
-        /// device additions/removals, log messages, etc.
-        /// </summary>
-        /// <param name="aSender">Object sending the open event, unused.</param>
-        /// <param name="aArgs">Event parameters, including the data received.</param>
-        private void MessageReceivedHandler(object aSender, WebSocket4Net.MessageReceivedEventArgs aArgs)
-        {
-            _owningDispatcher.Send(_ => ReceiveMessages(aArgs.Message), null);
+            finally
+            {
+                //await ShutdownSession();
+            }
         }
     }
 }
