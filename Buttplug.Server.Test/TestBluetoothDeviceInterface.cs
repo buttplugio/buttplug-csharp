@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -65,12 +66,12 @@ namespace Buttplug.Server.Test
             ExpectedRead[aCharacteristicIndex].Add(aValue);
         }
 
-        public Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse = false)
+        public Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
-            return WriteValue(aMsgId, (uint)Chrs.Tx, aValue, aWriteWithResponse);
+            return WriteValue(aMsgId, (uint)Chrs.Tx, aValue, aWriteWithResponse, aToken);
         }
 
-        public Task<ButtplugMessage> WriteValue(uint aMsgId, uint aCharacteristic, byte[] aValue, bool aWriteWithResponse = false)
+        public Task<ButtplugMessage> WriteValue(uint aMsgId, uint aCharacteristic, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
             LastWritten.Add(new WriteData()
             {
@@ -83,7 +84,7 @@ namespace Buttplug.Server.Test
             return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
         }
 
-        public Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId)
+        public Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, CancellationToken aToken)
         {
             // Expect that we'll only have one entry in the dictionary at this point.
             Assert.AreEqual(ExpectedRead.Count(), 1);
@@ -92,7 +93,7 @@ namespace Buttplug.Server.Test
             return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), value));
         }
 
-        public Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, uint aIndex)
+        public Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, uint aIndex, CancellationToken aToken)
         {
             return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), new byte[] { }));
         }

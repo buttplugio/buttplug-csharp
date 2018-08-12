@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
@@ -50,6 +51,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private byte[] _vibratorSpeeds = NullSpeed;
         private readonly System.Timers.Timer _updateValueTimer = new System.Timers.Timer();
+        private CancellationTokenSource _stopUpdateCommandSource = new CancellationTokenSource();
 
         public MysteryVibe(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface,
@@ -65,12 +67,12 @@ namespace Buttplug.Server.Bluetooth.Devices
             _updateValueTimer.Enabled = false;
             aInterface.DeviceRemoved += OnDeviceRemoved;
 
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 6 }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 6 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
         }
 
-        public override async Task<ButtplugMessage> Initialize()
+        public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)
         {
             BpLogger.Trace($"Initializing {Name}");
 
@@ -78,7 +80,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             // create pattern mode.
             return await Interface.WriteValue(ButtplugConsts.SystemMsgId,
                 (uint)MysteryVibeBluetoothInfo.Chrs.ModeControl,
-                new byte[] { 0x43, 0x02, 0x00 }, true);
+                new byte[] { 0x43, 0x02, 0x00 }, true, aToken);
         }
 
         private void OnDeviceRemoved(object aEvent, EventArgs aArgs)
@@ -94,25 +96,27 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             if (_vibratorSpeeds.SequenceEqual(NullSpeed))
             {
+                _stopUpdateCommandSource.Cancel();
                 _updateValueTimer.Enabled = false;
             }
 
+            // We'll have to use an internal token here since this is timer triggered.
             if (await Interface.WriteValue(ButtplugConsts.DefaultMsgId,
                 (uint)MysteryVibeBluetoothInfo.Chrs.MotorControl,
-                _vibratorSpeeds) is Error errorMsg)
+                _vibratorSpeeds, false, _stopUpdateCommandSource.Token) is Error errorMsg)
             {
                 BpLogger.Error($"Cannot send update to {Name}, device may stop moving.");
                 _updateValueTimer.Enabled = false;
             }
         }
 
-        private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug($"Stopping Device {Name}");
-            return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id));
+            return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken);
         }
 
-        private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is SingleMotorVibrateCmd cmdMsg))
             {
@@ -120,22 +124,22 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await HandleVibrateCmd(
-                VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 6));
+                VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 6), aToken);
         }
 
-        private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is VibrateCmd cmdMsg))
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
+                return Task.FromResult(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler") as ButtplugMessage);
             }
 
             if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > 6)
             {
-                return new Error(
+                return Task.FromResult(new Error(
                     "VibrateCmd requires 1-6 commands for this device.",
                     Error.ErrorClass.ERROR_DEVICE,
-                    cmdMsg.Id);
+                    cmdMsg.Id) as ButtplugMessage);
             }
 
             var newVibratorSpeeds = (byte[])_vibratorSpeeds.Clone();
@@ -144,10 +148,10 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 if (v.Index > 5)
                 {
-                    return new Error(
+                    return Task.FromResult(new Error(
                         $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
                         Error.ErrorClass.ERROR_DEVICE,
-                        cmdMsg.Id);
+                        cmdMsg.Id) as ButtplugMessage);
                 }
 
                 newVibratorSpeeds[v.Index] = (byte)(v.Speed * MaxSpeed);
@@ -155,13 +159,16 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             if (newVibratorSpeeds.SequenceEqual(_vibratorSpeeds))
             {
-                return new Ok(aMsg.Id);
+                return Task.FromResult(new Ok(aMsg.Id) as ButtplugMessage);
             }
 
             _vibratorSpeeds = newVibratorSpeeds;
 
             if (!_updateValueTimer.Enabled)
             {
+                // Make a new stop token
+                _stopUpdateCommandSource = new CancellationTokenSource();
+
                 // Run the update handler once to start the command
                 MysteryVibeUpdateHandler(null, null);
 
@@ -169,7 +176,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 _updateValueTimer.Enabled = true;
             }
 
-            return new Ok(aMsg.Id);
+            return Task.FromResult(new Ok(aMsg.Id) as ButtplugMessage);
         }
     }
 }

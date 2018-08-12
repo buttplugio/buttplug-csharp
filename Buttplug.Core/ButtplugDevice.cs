@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
@@ -38,41 +39,13 @@ namespace Buttplug.Core
         /// Gets the message handler functions
         /// </summary>
         [NotNull]
-        protected readonly Dictionary<Type, ButtplugDeviceWrapper> MsgFuncs;
+        protected readonly Dictionary<Type, ButtplugDeviceMessageHandler> MsgFuncs;
 
         private bool _isDisconnected;
 
         /// <inheritdoc />
         [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> MessageEmitted;
-
-        /// <summary>
-        /// A container class for message functions and attributes
-        /// </summary>
-        public class ButtplugDeviceWrapper
-        {
-            /// <summary>
-            /// The function to call when a message of the particular type is received
-            /// </summary>
-            public Func<ButtplugDeviceMessage, Task<ButtplugMessage>> Function;
-
-            /// <summary>
-            /// A list of attributes ascoiated with the message
-            /// </summary>
-            public MessageAttributes Attrs;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ButtplugDeviceWrapper"/> class.
-            /// </summary>
-            /// <param name="aFunction">The method to call for the message</param>
-            /// <param name="aAttrs">The message attributes</param>
-            public ButtplugDeviceWrapper(Func<ButtplugDeviceMessage, Task<ButtplugMessage>> aFunction,
-                                         MessageAttributes aAttrs = null)
-            {
-                Function = aFunction;
-                Attrs = aAttrs ?? new MessageAttributes();
-            }
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugDevice"/> class.
@@ -85,7 +58,7 @@ namespace Buttplug.Core
             [NotNull] string aIdentifier)
         {
             BpLogger = aLogManager.GetLogger(GetType());
-            MsgFuncs = new Dictionary<Type, ButtplugDeviceWrapper>();
+            MsgFuncs = new Dictionary<Type, ButtplugDeviceMessageHandler>();
             Name = aName;
             Identifier = aIdentifier;
         }
@@ -119,7 +92,7 @@ namespace Buttplug.Core
         }
 
         /// <inheritdoc />
-        public async Task<ButtplugMessage> ParseMessage([NotNull] ButtplugDeviceMessage aMsg)
+        public async Task<ButtplugMessage> ParseMessage([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (_isDisconnected)
             {
@@ -135,11 +108,11 @@ namespace Buttplug.Core
 
             // We just checked whether the key exists above, so we're ok.
             // ReSharper disable once PossibleNullReferenceException
-            return await MsgFuncs[aMsg.GetType()].Function.Invoke(aMsg);
+            return await MsgFuncs[aMsg.GetType()].Function.Invoke(aMsg, aToken);
         }
 
         /// <inheritdoc />
-        public virtual Task<ButtplugMessage> Initialize()
+        public virtual Task<ButtplugMessage> Initialize(CancellationToken aToken)
         {
             return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SystemMsgId));
         }

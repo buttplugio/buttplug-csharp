@@ -40,7 +40,7 @@ namespace Buttplug.Server.Managers.HidManager
 
                     _logger?.GetLogger(GetType()).Trace("Found HID device (" +
                         hid.Attributes.VendorHexId + ":" + hid.Attributes.ProductHexId +
-                        "): " + vend + " - " + prod );
+                        "): " + vend + " - " + prod);
 
                     var factories = _deviceFactories.Where(x =>
                         x.MayBeDevice(hid.Attributes.VendorId, hid.Attributes.ProductId));
@@ -74,7 +74,7 @@ namespace Buttplug.Server.Managers.HidManager
 
             _scanning = false;
             InvokeScanningFinished();
-            }
+        }
 
         public override void StopScanning()
         {

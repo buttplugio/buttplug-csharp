@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -10,6 +11,7 @@ using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
+using Windows.Security.Authentication.Web.Provider;
 using Windows.Security.Cryptography;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
@@ -25,13 +27,16 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         private readonly Dictionary<uint, GattCharacteristic> _indexedChars;
 
         [NotNull]
+        private CancellationTokenSource _internalTokenSource = new CancellationTokenSource();
+
+        [CanBeNull]
+        private CancellationTokenSource _currentWriteTokenSource;
+
+        [NotNull]
         private readonly IButtplugLog _bpLogger;
 
         [CanBeNull]
         private BluetoothLEDevice _bleDevice;
-
-        [CanBeNull]
-        private IAsyncOperation<GattCommunicationStatus> _currentTask;
 
         [CanBeNull]
         public event EventHandler DeviceRemoved;
@@ -139,7 +144,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             return _bleDevice.BluetoothAddress;
         }
 
-        public async Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse = false)
+        public async Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
             if (_txChar == null)
             {
@@ -147,14 +152,15 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     $"WriteValue using txChar called with no txChar available");
             }
 
-            return await WriteValue(aMsgId, _txChar, aValue, aWriteWithResponse);
+            return await WriteValue(aMsgId, _txChar, aValue, aWriteWithResponse, aToken);
         }
 
         [ItemNotNull]
         public async Task<ButtplugMessage> WriteValue(uint aMsgId,
             uint aIndex,
             byte[] aValue,
-            bool aWriteWithResponse = false)
+            bool aWriteWithResponse,
+            CancellationToken aToken)
         {
             if (_indexedChars == null)
             {
@@ -168,28 +174,29 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     $"WriteValue using indexed characteristics called with invalid index");
             }
 
-            // We need the GattCharacteristic cast, otherwise the parameters are ambiguous. I have no
-            // idea how GattCharacteristic implicitly casts to Guid but here we are.
-            return await WriteValue(aMsgId, _indexedChars[aIndex], aValue, aWriteWithResponse);
+            return await WriteValue(aMsgId, _indexedChars[aIndex], aValue, aWriteWithResponse, aToken);
         }
 
         private async Task<ButtplugMessage> WriteValue(uint aMsgId,
             GattCharacteristic aChar,
             byte[] aValue,
-            bool aWriteWithResponse = false)
+            bool aWriteWithResponse,
+            CancellationToken aToken)
         {
-            if (!(_currentTask is null))
+            if (!(_currentWriteTokenSource is null))
             {
-                _currentTask.Cancel();
+                _internalTokenSource.Cancel();
                 _bpLogger.Error("Cancelling device transfer in progress for new transfer.");
             }
 
             try
             {
-                _currentTask = aChar.WriteValueAsync(aValue.AsBuffer(),
-                    aWriteWithResponse ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse);
-                var status = await _currentTask;
-                _currentTask = null;
+                _internalTokenSource = new CancellationTokenSource();
+                _currentWriteTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_internalTokenSource.Token, aToken);
+                var writeTask = aChar.WriteValueAsync(aValue.AsBuffer(),
+                    aWriteWithResponse ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse).AsTask(_currentWriteTokenSource.Token);
+                var status = await writeTask;
+                _currentWriteTokenSource = null;
                 if (status != GattCommunicationStatus.Success)
                 {
                     return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
@@ -214,7 +221,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             return new Ok(aMsgId);
         }
 
-        public async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId)
+        public async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, CancellationToken aToken)
         {
             if (_rxChar == null)
             {
@@ -222,10 +229,10 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     $"ReadValue using rxChar called with no rxChar available"), new byte[] { });
             }
 
-            return await ReadValue(aMsgId, _rxChar);
+            return await ReadValue(aMsgId, _rxChar, aToken);
         }
 
-        public async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, uint aIndex)
+        public async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, uint aIndex, CancellationToken aToken)
         {
             if (_indexedChars == null)
             {
@@ -239,12 +246,12 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     $"ReadValue using indexed characteristics called with invalid index"), new byte[] { });
             }
 
-            return await ReadValue(aMsgId, _indexedChars[aIndex]);
+            return await ReadValue(aMsgId, _indexedChars[aIndex], aToken);
         }
 
-        private async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, GattCharacteristic aChar)
+        private async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, GattCharacteristic aChar, CancellationToken aToken)
         {
-            var result = await aChar.ReadValueAsync();
+            var result = await aChar.ReadValueAsync().AsTask(aToken);
             if (result?.Value == null)
             {
                 return (_bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"Got null read from {Name}"), null);

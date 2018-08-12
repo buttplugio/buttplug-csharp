@@ -73,7 +73,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         }
 
         private async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher aObj,
-                                                  BluetoothLEAdvertisementReceivedEventArgs aEvent)
+                                                   BluetoothLEAdvertisementReceivedEventArgs aEvent)
         {
             if (aEvent?.Advertisement == null)
             {

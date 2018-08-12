@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
@@ -59,7 +60,7 @@ namespace Buttplug.Core
         /// <param name="aMsg">Device message to handle</param>
         /// <returns>Response, usually <see cref="Ok"/> or <see cref="Error"/>, but can be other types.</returns>
         [NotNull]
-        Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg);
+        Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken));
 
         /// <summary>
         /// Initializes a device. Required for devices that may require connection handshakes or
@@ -67,7 +68,7 @@ namespace Buttplug.Core
         /// </summary>
         /// <returns>Response, usually <see cref="Ok"/> or <see cref="Error"/>.</returns>
         [NotNull]
-        Task<ButtplugMessage> Initialize();
+        Task<ButtplugMessage> Initialize(CancellationToken aToken = default(CancellationToken));
 
         /// <summary>
         /// Disconnect device.

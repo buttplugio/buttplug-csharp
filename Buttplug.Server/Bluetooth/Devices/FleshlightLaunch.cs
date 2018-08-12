@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -101,12 +102,12 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             // Setup message function array
-            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchRawCmd));
-            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
+            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceMessageHandler(HandleFleshlightLaunchRawCmd));
+            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceMessageHandler(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
         }
 
-        public override async Task<ButtplugMessage> Initialize()
+        public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)
         {
             BpLogger.Trace($"Initializing {Name}");
             var chr = (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd;
@@ -119,10 +120,10 @@ namespace Buttplug.Server.Bluetooth.Devices
             return await Interface.WriteValue(ButtplugConsts.SystemMsgId,
                 chr,
                 new byte[] { 0 },
-                true);
+                true, aToken);
         }
 
-        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             // This probably shouldn't be a nop, but right now we don't have a good way to know
             // if the launch is moving or not, and surprisingly enough, setting speed to 0 does not
@@ -133,7 +134,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
-        private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = aMsg as LinearCmd;
             if (cmdMsg is null)
@@ -161,15 +162,14 @@ namespace Buttplug.Server.Bluetooth.Devices
 
                 return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
                     Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs(_lastPosition - v.Position), v.Duration) * 99),
-                    Convert.ToUInt32(v.Position * 99), cmdMsg.Id));
+                    Convert.ToUInt32(v.Position * 99), cmdMsg.Id), aToken);
             }
 
             return new Ok(aMsg.Id);
         }
 
-        private async Task<ButtplugMessage> HandleFleshlightLaunchRawCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleFleshlightLaunchRawCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            // TODO: Split into Command message and Control message? (Issue #17)
             if (!(aMsg is FleshlightLaunchFW12Cmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
@@ -179,7 +179,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             return await Interface.WriteValue(aMsg.Id,
                 (int)FleshlightLaunchBluetoothInfo.Chrs.Tx,
-                new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed });
+                new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }, false, aToken);
         }
     }
 }

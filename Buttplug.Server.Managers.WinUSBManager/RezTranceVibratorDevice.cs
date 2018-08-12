@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -16,22 +17,22 @@ namespace Buttplug.Server.Managers.WinUSBManager
             : base(aLogManager, "Trancevibrator " + aIndex, "Trancevibrator " + aIndex)
         {
             _device = aDevice;
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd));
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd));
         }
 
         public override void Disconnect()
         {
         }
 
-        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug("Stopping Device " + Name);
-            return HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id));
+            return HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken);
         }
 
-        private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is VibrateCmd cmdMsg))
             {
@@ -68,7 +69,7 @@ namespace Buttplug.Server.Managers.WinUSBManager
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
-        private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
             if (cmdMsg is null)
@@ -82,7 +83,7 @@ namespace Buttplug.Server.Managers.WinUSBManager
                 speeds.Add(new VibrateCmd.VibrateSubcommand(i, cmdMsg.Speed));
             }
 
-            return HandleVibrateCmd(new VibrateCmd(aMsg.DeviceIndex, speeds, aMsg.Id));
+            return HandleVibrateCmd(new VibrateCmd(aMsg.DeviceIndex, speeds, aMsg.Id), aToken);
         }
     }
 }

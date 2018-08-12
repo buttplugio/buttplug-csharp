@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -13,18 +14,18 @@ namespace Buttplug.Server.Test
         public TestDevice(IButtplugLogManager aLogManager, string aName, string aIdentifier = null)
             : base(aLogManager, aName, aIdentifier ?? aName)
         {
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 2 }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 2 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
         }
 
-        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             V1 = V2 = 0;
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
-        private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = aMsg as VibrateCmd;
             if (cmdMsg is null)
@@ -62,7 +63,7 @@ namespace Buttplug.Server.Test
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
         }
 
-        private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = aMsg as SingleMotorVibrateCmd;
 
@@ -77,7 +78,7 @@ namespace Buttplug.Server.Test
                 speeds.Add(new VibrateCmd.VibrateSubcommand(i, cmdMsg.Speed));
             }
 
-            return HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex, speeds, cmdMsg.Id));
+            return HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex, speeds, cmdMsg.Id), aToken);
         }
 
         public void RemoveDevice()

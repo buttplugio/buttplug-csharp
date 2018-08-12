@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO.Ports;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Util;
 using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;
+using Timer = System.Timers.Timer;
 
 namespace Buttplug.Server.Managers.ETSerialManager
 {
@@ -71,9 +73,9 @@ namespace Buttplug.Server.Managers.ETSerialManager
             }
 
             // We're now ready to receive events
-            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceWrapper(HandleFleshlightLaunchCmd));
-            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceWrapper(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
+            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceMessageHandler(HandleFleshlightLaunchCmd));
+            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceMessageHandler(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
 
             // Start update timer
             _updateInterval = 20;                        // <- Change this value to adjust box update frequency in ms
@@ -183,7 +185,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
             _fade = (_fade < 0) ? 0 : _fade;
         }
 
-        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             lock (_movementLock)
             {
@@ -212,7 +214,7 @@ namespace Buttplug.Server.Managers.ETSerialManager
             }
         }
 
-        private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is LinearCmd cmdMsg))
             {
@@ -239,13 +241,13 @@ namespace Buttplug.Server.Managers.ETSerialManager
 
                 return await HandleFleshlightLaunchCmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
                     Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs((_position / 100) - v.Position), v.Duration) * 99),
-                    Convert.ToUInt32(v.Position * 99), cmdMsg.Id));
+                    Convert.ToUInt32(v.Position * 99), cmdMsg.Id), aToken);
             }
 
             return new Ok(aMsg.Id);
         }
 
-        private Task<ButtplugMessage> HandleFleshlightLaunchCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleFleshlightLaunchCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is FleshlightLaunchFW12Cmd cmdMsg))
             {
