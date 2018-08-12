@@ -14,7 +14,7 @@ using NUnit.Framework;
 namespace Buttplug.Server.Test
 {
     [TestFixture]
-    public class ButtplugMessageTests
+    public class ButtplugServerMessageTests
     {
         [Test]
         public void RequestLogJsonTest()

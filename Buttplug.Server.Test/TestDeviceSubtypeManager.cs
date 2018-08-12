@@ -5,6 +5,7 @@
 // </copyright>
 
 using Buttplug.Core;
+using Buttplug.Core.Test;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server.Test

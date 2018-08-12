@@ -32,7 +32,7 @@ namespace Buttplug.Core
         /// Initializes a new instance of the <see cref="ButtplugJsonMessageParser"/> class.
         /// </summary>
         /// <param name="aLogManager">Log manager</param>
-        public ButtplugJsonMessageParser(IButtplugLogManager aLogManager = null)
+        public ButtplugJsonMessageParser([NotNull] IButtplugLogManager aLogManager)
         {
             _bpLogger = aLogManager.GetLogger(GetType());
             _bpLogger?.Info($"Setting up {GetType().Name}");
