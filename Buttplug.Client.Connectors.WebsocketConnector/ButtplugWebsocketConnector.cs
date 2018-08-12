@@ -170,7 +170,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //_logger.Error(e.Message, true);
             }

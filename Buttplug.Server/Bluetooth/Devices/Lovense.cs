@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -88,13 +89,13 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceWrapper(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(LovenseCmd), new ButtplugDeviceWrapper(HandleLovenseCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
+            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
+            MsgFuncs.Add(typeof(LovenseCmd), new ButtplugDeviceMessageHandler(HandleLovenseCmd));
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
         }
 
-        public override async Task<ButtplugMessage> Initialize()
+        public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)
         {
             BpLogger.Trace($"Initializing {Name}");
 
@@ -103,15 +104,15 @@ namespace Buttplug.Server.Bluetooth.Devices
             Interface.BluetoothNotifyReceived += NotifyReceived;
 
             // Retreiving device type info for identification.
-            var writeMsg = await Interface.WriteValue(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes($"DeviceType;"), true);
+            var writeMsg = await Interface.WriteValue(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes($"DeviceType;"), true, aToken);
             if (writeMsg is Error)
             {
                 BpLogger.Error($"Error requesting device info from Lovense {Name}");
                 return writeMsg;
             }
 
-            var (msg, result) = await Interface.ReadValue(ButtplugConsts.SystemMsgId);
-            string deviceInfoString = string.Empty;
+            var (msg, result) = await Interface.ReadValue(ButtplugConsts.SystemMsgId, aToken);
+            var deviceInfoString = string.Empty;
 
             if (msg is Ok)
             {
@@ -212,13 +213,13 @@ namespace Buttplug.Server.Bluetooth.Devices
                     // Edge has 2 vibrators
                     _vibratorCount++;
                     MsgFuncs.Remove(typeof(VibrateCmd));
-                    MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceWrapper(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
+                    MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
                     break;
 
                 case LovenseDeviceType.Nora:
 
                     // Nora has a rotator
-                    MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
+                    MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceMessageHandler(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
                     break;
             }
 
@@ -233,29 +234,29 @@ namespace Buttplug.Server.Bluetooth.Devices
             _lastNotifyReceived = data;
         }
 
-        private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug("Stopping Device " + Name);
 
             if (_deviceType == LovenseDeviceType.Nora)
             {
-                await HandleRotateCmd(RotateCmd.Create(aMsg.DeviceIndex, aMsg.Id, 0, _clockwise, 1));
+                await HandleRotateCmd(RotateCmd.Create(aMsg.DeviceIndex, aMsg.Id, 0, _clockwise, 1), aToken);
             }
 
-            return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id));
+            return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken);
         }
 
-        private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is SingleMotorVibrateCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, _vibratorCount));
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, _vibratorCount), aToken);
         }
 
-        private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is VibrateCmd cmdMsg))
             {
@@ -289,7 +290,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 _vibratorSpeeds[v.Index] = v.Speed;
                 var vId = _vibratorCount == 1 ? string.Empty : string.Empty + (v.Index + 1);
                 var res = await Interface.WriteValue(aMsg.Id,
-                    Encoding.ASCII.GetBytes($"Vibrate{vId}:{(int)(_vibratorSpeeds[v.Index] * 20)};"));
+                    Encoding.ASCII.GetBytes($"Vibrate{vId}:{(int)(_vibratorSpeeds[v.Index] * 20)};"), false, aToken);
 
                 if (!(res is Ok))
                 {
@@ -300,17 +301,17 @@ namespace Buttplug.Server.Bluetooth.Devices
             return new Ok(cmdMsg.Id);
         }
 
-        private async Task<ButtplugMessage> HandleLovenseCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleLovenseCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is LovenseCmd cmdMsg))
             {
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            return await Interface.WriteValue(aMsg.Id, Encoding.ASCII.GetBytes(cmdMsg.Command));
+            return await Interface.WriteValue(aMsg.Id, Encoding.ASCII.GetBytes(cmdMsg.Command), false, aToken);
         }
 
-        private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is RotateCmd cmdMsg))
             {
@@ -347,7 +348,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 _clockwise = !_clockwise;
                 await Interface.WriteValue(aMsg.Id,
-                   Encoding.ASCII.GetBytes($"RotateChange;"));
+                   Encoding.ASCII.GetBytes($"RotateChange;"), false, aToken);
             }
 
             if (!speedChange)
@@ -356,7 +357,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValue(aMsg.Id,
-                Encoding.ASCII.GetBytes($"Rotate:{(int)(_rotateSpeed * 20)};"));
+                Encoding.ASCII.GetBytes($"Rotate:{(int)(_rotateSpeed * 20)};"), false, aToken);
         }
     }
 }

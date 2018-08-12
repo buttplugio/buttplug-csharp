@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -30,9 +31,9 @@ namespace Buttplug.Server.Managers.HidManager.Devices
         public CycloneX10(IButtplugLogManager aLogManager, IHidDevice aHid, CycloneX10HidDeviceInfo aDeviceInfo)
             : base(aLogManager, aHid, aDeviceInfo)
         {
-            MsgFuncs.Add(typeof(VorzeA10CycloneCmd), new ButtplugDeviceWrapper(HandleVorzeA10CycloneCmd));
-            MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceWrapper(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceWrapper(HandleStopDeviceCmd));
+            MsgFuncs.Add(typeof(VorzeA10CycloneCmd), new ButtplugDeviceMessageHandler(HandleVorzeA10CycloneCmd));
+            MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceMessageHandler(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
             aHid.OpenDevice();
         }
 
@@ -42,13 +43,13 @@ namespace Buttplug.Server.Managers.HidManager.Devices
             return true;
         }
 
-        private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg)
+        private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug("Stopping Device " + Name);
-            return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, _clockwise, aMsg.Id));
+            return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, _clockwise, aMsg.Id), aToken);
         }
 
-        private Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is RotateCmd cmdMsg))
             {
@@ -100,7 +101,7 @@ namespace Buttplug.Server.Managers.HidManager.Devices
                     Error.ErrorClass.ERROR_DEVICE, aMsg.Id));
         }
 
-        private Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg)
+        private Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (!(aMsg is VorzeA10CycloneCmd cmdMsg))
             {
@@ -112,7 +113,7 @@ namespace Buttplug.Server.Managers.HidManager.Devices
                 {
                     new RotateCmd.RotateSubcommand(0, Convert.ToDouble(cmdMsg.Speed) / 99, cmdMsg.Clockwise),
                 },
-                cmdMsg.Id));
+                cmdMsg.Id), aToken);
         }
     }
 }

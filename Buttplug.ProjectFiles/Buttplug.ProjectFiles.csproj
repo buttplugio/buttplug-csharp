@@ -36,7 +36,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="ButtplugCodeAnalysisRules.ruleset" />
-    <None Include="packages.config" />
     <None Include="stylecop.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

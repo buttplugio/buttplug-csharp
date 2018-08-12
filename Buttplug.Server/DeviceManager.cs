@@ -144,7 +144,7 @@ namespace Buttplug.Server
             });
         }
 
-        public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg)
+        public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg, CancellationToken aToken)
         {
             var id = aMsg.Id;
             switch (aMsg)
@@ -170,7 +170,7 @@ namespace Buttplug.Server
                             continue;
                         }
 
-                        var r = await d.Value.ParseMessage(new StopDeviceCmd(d.Key, aMsg.Id));
+                        var r = await d.Value.ParseMessage(new StopDeviceCmd(d.Key, aMsg.Id), aToken);
                         if (r is Ok)
                         {
                             continue;
@@ -200,7 +200,7 @@ namespace Buttplug.Server
                     _bpLogger.Trace($"Sending {aMsg.GetType().Name} to device index {m.DeviceIndex}");
                     if (_devices.ContainsKey(m.DeviceIndex))
                     {
-                        return await _devices[m.DeviceIndex].ParseMessage(m);
+                        return await _devices[m.DeviceIndex].ParseMessage(m, aToken);
                     }
 
                     return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_DEVICE, $"Dropping message for unknown device index {m.DeviceIndex}");
