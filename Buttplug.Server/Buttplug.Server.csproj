@@ -5,7 +5,7 @@
     <PackageVersion>1.0.0-dev</PackageVersion>
     <RootNamespace>Buttplug.Server</RootNamespace>
     <AssemblyName>Buttplug.Server</AssemblyName>
-    <TargetFrameworks>net47;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>Buttplug Server Library</Product>
     <Authors>qdot</Authors>
@@ -21,18 +21,18 @@
 
     <!--Don't auto generate AssemblyInfo-->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <!--This isn't default as far as I'm aware (TODO: Check this)-->
     <DebugType>full</DebugType>
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net47' ">
-    <!-- StyleCop doesn't like .Net Standard 2.0 for some reason... -->
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="stylecop.json" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" version="2018.2.1" />
@@ -42,7 +42,7 @@
     <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net47' ">
+  <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
@@ -50,6 +50,11 @@
   <ItemGroup>
     <EmbeddedResource Include="..\LICENSE" />
     <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <AdditionalFiles Include="..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset" Link="ButtplugCodeAnalysisRules.ruleset" />
   </ItemGroup>
   
   <ItemGroup>
