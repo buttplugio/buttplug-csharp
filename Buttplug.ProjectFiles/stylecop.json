@@ -3,6 +3,14 @@
   "settings": {
     "orderingRules": {
       "usingDirectivesPlacement": "outsideNamespace"
+    },
+    "documentationRules": {
+      "companyName": "Nonpolynomial Labs LLC",
+      "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the project root for full license information.",
+      "variables": {
+        "licenseName": "BSD 3-Clause",
+        "licenseFile": "LICENSE"
+      }
     }
   }
 }

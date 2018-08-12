@@ -14,6 +14,7 @@ namespace Buttplug.Client.Test
         {
             _subtypeMgr = new TestDeviceSubtypeManager(new TestDevice(_logMgr, "Test Device"));
             _server = new TestServer();
+
             // This is a test, so just ignore the logger requirement for now.
             _server.AddDeviceSubtypeManager(aLog => _subtypeMgr);
             _connector = new ButtplugEmbeddedConnector(_server);

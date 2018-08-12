@@ -1,5 +1,5 @@
 ﻿using System;
-using Buttplug.Logging;
+using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 
 namespace Buttplug.Core

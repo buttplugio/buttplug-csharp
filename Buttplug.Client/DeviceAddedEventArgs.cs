@@ -15,7 +15,7 @@ namespace Buttplug.Client
         public readonly ButtplugClientDevice Device;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="DeviceAddedEventArgs"/> class.
         /// </summary>
         /// <param name="aDevice">Device being added</param>
         public DeviceAddedEventArgs(ButtplugClientDevice aDevice)
