@@ -6,7 +6,7 @@ namespace Buttplug.Core
     /// <summary>
     /// Extension methods for <see cref="IButtplugLog"/>.
     /// </summary>
-    public static class ButtugLogExtenions
+    public static class ButtplugLogExtensions
     {
         /// <summary>
         /// Logs an <see cref="Error"/> Buttplug message as an error level log message.
