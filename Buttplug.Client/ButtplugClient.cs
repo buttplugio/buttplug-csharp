@@ -261,6 +261,7 @@ namespace Buttplug.Client
         /// cref="DeviceAdded"/> events. When scanning completes, an <see cref="ScanningFinished"/>
         /// event will be triggered.
         /// </summary>
+        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
@@ -273,6 +274,7 @@ namespace Buttplug.Client
         /// Instructs the server to stop scanning for devices. If scanning was in progress, a <see
         /// cref="ScanningFinished"/> event will be sent when the server has stopped scanning.
         /// </summary>
+        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
@@ -286,6 +288,7 @@ namespace Buttplug.Client
         /// will be raised as <see cref="Log"/> events.
         /// </summary>
         /// <param name="aLogLevel">The maximum log level to send.</param>
+        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
@@ -300,6 +303,7 @@ namespace Buttplug.Client
         /// </summary>
         /// <param name="aDevice">The device to be controlled by the message.</param>
         /// <param name="aDeviceMsg">The device message (Id and DeviceIndex will be overriden).</param>
+        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
@@ -323,6 +327,7 @@ namespace Buttplug.Client
         /// Sends a message, expecting a response of message type <see cref="Ok"/>.
         /// </summary>
         /// <param name="aMsg">Message to send.</param>
+        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>True if successful.</returns>
         private async Task SendMessageExpectOk(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
@@ -337,6 +342,7 @@ namespace Buttplug.Client
         /// Sends a message to the server, and handles asynchronously waiting for the reply from the server.
         /// </summary>
         /// <param name="aMsg">Message to send.</param>
+        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>The response, which will derive from <see cref="ButtplugMessage"/>.</returns>
         protected async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {

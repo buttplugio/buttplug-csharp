@@ -10,9 +10,12 @@ namespace Buttplug.Client
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
+#pragma warning disable CS0067 // Unused event
+        /// <inheritdoc />
         public event EventHandler Disconnected;
+#pragma warning restore CS0067 // Unused event
 
-        public bool Connected { get; private set; } = false;
+        public bool Connected { get; private set; }
 
         public readonly ButtplugServer Server;
 

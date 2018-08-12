@@ -20,20 +20,20 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
     {
         public string Name => _bleDevice.Name;
 
+        private readonly Dictionary<uint, GattCharacteristic> _indexedChars;
+
+        [NotNull]
+        private readonly IButtplugLog _bpLogger;
+
         private GattCharacteristic _txChar;
 
         private GattCharacteristic _rxChar;
-
-        private readonly Dictionary<uint, GattCharacteristic> _indexedChars;
 
         [NotNull]
         private CancellationTokenSource _internalTokenSource = new CancellationTokenSource();
 
         [CanBeNull]
         private CancellationTokenSource _currentWriteTokenSource;
-
-        [NotNull]
-        private readonly IButtplugLog _bpLogger;
 
         [CanBeNull]
         private BluetoothLEDevice _bleDevice;

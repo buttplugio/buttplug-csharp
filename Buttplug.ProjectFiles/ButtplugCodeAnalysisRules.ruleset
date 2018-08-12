@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="Buttplug Global Rule Set" Description=" " ToolsVersion="15.0">
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
+    <Rule Id="CS1591" Action="Info" />
+  </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA0001" Action="Info" />
     <Rule Id="SA0002" Action="Error" />
@@ -8,6 +11,7 @@
     <Rule Id="SA1002" Action="Error" />
     <Rule Id="SA1003" Action="Error" />
     <Rule Id="SA1004" Action="Error" />
+    <Rule Id="SA1005" Action="None" />
     <Rule Id="SA1006" Action="Error" />
     <Rule Id="SA1007" Action="Error" />
     <Rule Id="SA1008" Action="Error" />
@@ -46,8 +50,8 @@
     <Rule Id="SA1500" Action="Error" />
     <Rule Id="SA1503" Action="Error" />
     <Rule Id="SA1505" Action="Error" />
-    <Rule Id="SA1507" Action="Error" />
     <Rule Id="SA1508" Action="Error" />
+    <Rule Id="SA1512" Action="None" />
     <Rule Id="SA1600" Action="Info" />
     <Rule Id="SA1601" Action="Info" />
     <Rule Id="SA1602" Action="Info" />

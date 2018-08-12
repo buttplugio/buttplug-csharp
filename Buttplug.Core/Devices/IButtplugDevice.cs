@@ -58,6 +58,7 @@ namespace Buttplug.Core
         /// interface. If the message is supported, executes the handler for that message.
         /// </summary>
         /// <param name="aMsg">Device message to handle</param>
+        /// <param name="aToken">Cancellation token to stop message parsing action externally.</param>
         /// <returns>Response, usually <see cref="Ok"/> or <see cref="Error"/>, but can be other types.</returns>
         [NotNull]
         Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken));

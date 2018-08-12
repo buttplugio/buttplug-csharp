@@ -78,7 +78,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
             // TODO Create internal token for cancellation and use link source with external key
             //_cancellationToken.Cancel();
             _pipeClient.Close();
-            _readTask.Wait();
+            await _readTask;
             _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
         }
 

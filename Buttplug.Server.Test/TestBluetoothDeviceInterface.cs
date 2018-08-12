@@ -44,7 +44,9 @@ namespace Buttplug.Server.Test
 
         public event EventHandler ValueWritten;
 
+#pragma warning disable CS0067 // Unused event (We'll use it once we have more notifications)
         public event EventHandler<BluetoothNotifyEventArgs> BluetoothNotifyReceived;
+#pragma warning restore CS0067
 
         public bool Removed;
 

@@ -49,8 +49,8 @@ namespace Buttplug.Server.Bluetooth.Devices
         // Approximate timing delay taken from watching packet timing and testing manually.
         internal static readonly uint DelayTimeMS = 93;
 
-        private byte[] _vibratorSpeeds = NullSpeed;
         private readonly System.Timers.Timer _updateValueTimer = new System.Timers.Timer();
+        private byte[] _vibratorSpeeds = NullSpeed;
         private CancellationTokenSource _stopUpdateCommandSource = new CancellationTokenSource();
 
         public MysteryVibe(IButtplugLogManager aLogManager,

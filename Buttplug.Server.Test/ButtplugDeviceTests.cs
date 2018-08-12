@@ -42,17 +42,17 @@ namespace Buttplug.Server.Test
 
             Assert.AreEqual(2, dev.Index);
 
-            Assert.True(dev.Initialize(new CancellationToken()).GetAwaiter().GetResult() is Ok);
+            Assert.True(dev.Initialize(default(CancellationToken)).GetAwaiter().GetResult() is Ok);
 
-            Assert.True(dev.ParseMessage(new StopDeviceCmd(2), new CancellationToken()).GetAwaiter().GetResult() is Ok);
+            Assert.True(dev.ParseMessage(new StopDeviceCmd(2), default(CancellationToken)).GetAwaiter().GetResult() is Ok);
 
-            var outMsg = dev.ParseMessage(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), new CancellationToken()).GetAwaiter().GetResult();
+            var outMsg = dev.ParseMessage(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken)).GetAwaiter().GetResult();
             Assert.True(outMsg is Error);
             Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
             Assert.True((outMsg as Error).ErrorMessage.Contains("cannot handle message of type"));
 
             dev.Disconnect();
-            outMsg = dev.ParseMessage(new StopDeviceCmd(2), new CancellationToken()).GetAwaiter().GetResult();
+            outMsg = dev.ParseMessage(new StopDeviceCmd(2), default(CancellationToken)).GetAwaiter().GetResult();
             Assert.True(outMsg is Error);
             Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
             Assert.True((outMsg as Error).ErrorMessage.Contains("has disconnected"));

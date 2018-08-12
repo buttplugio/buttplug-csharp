@@ -74,8 +74,8 @@ namespace Buttplug.Server.Bluetooth.Devices
             Unknown = 0,
         }
 
-        private uint _vibratorCount = 1;
         private readonly double[] _vibratorSpeeds = { 0, 0 };
+        private uint _vibratorCount = 1;
         private bool _clockwise = true;
         private double _rotateSpeed;
         private LovenseDeviceType _deviceType = LovenseDeviceType.Unknown;
@@ -226,9 +226,9 @@ namespace Buttplug.Server.Bluetooth.Devices
             return new Ok(ButtplugConsts.SystemMsgId);
         }
 
-        private async void NotifyReceived(object sender, BluetoothNotifyEventArgs args)
+        private void NotifyReceived(object sender, BluetoothNotifyEventArgs args)
         {
-            string data = Encoding.ASCII.GetString(args.bytes);
+            var data = Encoding.ASCII.GetString(args.bytes);
 
             //BpLogger.Trace(data);
             _lastNotifyReceived = data;
