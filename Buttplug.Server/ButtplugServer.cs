@@ -13,7 +13,7 @@ namespace Buttplug.Server
     public class ButtplugServer
     {
         [NotNull]
-        private readonly ButtplugJsonMessageParser _parser;
+        protected readonly ButtplugJsonMessageParser _parser;
 
         [NotNull]
         private readonly CancellationTokenSource _internalToken = new CancellationTokenSource();
@@ -34,7 +34,7 @@ namespace Buttplug.Server
         private readonly IButtplugLog _bpLogger;
 
         [NotNull]
-        private readonly DeviceManager _deviceManager;
+        protected readonly DeviceManager _deviceManager;
 
         public DeviceManager DeviceManager => _deviceManager;
 
@@ -224,27 +224,10 @@ namespace Buttplug.Server
             return _parser.Serialize(aMsgs, _clientMessageVersion);
         }
 
-        public ButtplugMessage[] Deserialize(string aMsg)
-        {
-            return _parser.Deserialize(aMsg);
-        }
-
         public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager, T> aCreateMgrFunc)
             where T : IDeviceSubtypeManager
         {
             _deviceManager.AddDeviceSubtypeManager(aCreateMgrFunc);
-        }
-
-        internal void AddDeviceSubtypeManager(IDeviceSubtypeManager aMgr)
-        {
-            _deviceManager.AddDeviceSubtypeManager(aMgr);
-        }
-
-        // ReSharper disable once UnusedMember.Global
-        [NotNull]
-        internal DeviceManager GetDeviceManager()
-        {
-            return _deviceManager;
         }
     }
 }

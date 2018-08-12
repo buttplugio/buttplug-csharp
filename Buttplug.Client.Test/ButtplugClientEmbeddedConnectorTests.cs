@@ -1,4 +1,5 @@
-﻿using Buttplug.Server;
+﻿using Buttplug.Core;
+using Buttplug.Server;
 using Buttplug.Server.Test;
 using NUnit.Framework;
 
@@ -13,7 +14,8 @@ namespace Buttplug.Client.Test
         {
             _subtypeMgr = new TestDeviceSubtypeManager(new TestDevice(_logMgr, "Test Device"));
             _server = new TestServer();
-            _server.AddDeviceSubtypeManager(_subtypeMgr);
+            // This is a test, so just ignore the logger requirement for now.
+            _server.AddDeviceSubtypeManager(aLog => _subtypeMgr);
             _connector = new ButtplugEmbeddedConnector(_server);
             _client = new ButtplugClient("Test Client", _connector);
         }

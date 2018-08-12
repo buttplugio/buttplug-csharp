@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using JetBrains.Annotations;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -35,9 +36,16 @@ namespace Buttplug.Server.Test
             OutgoingAsync.Add(Serialize(aEvent.Message));
         }
 
-        public IButtplugLogManager GetLogManager()
+        // ReSharper disable once UnusedMember.Global
+        [NotNull]
+        internal DeviceManager GetDeviceManager()
         {
-            return BpLogManager;
+            return _deviceManager;
+        }
+
+        internal ButtplugMessage[] Deserialize(string aMsg)
+        {
+            return _parser.Deserialize(aMsg);
         }
     }
 }
