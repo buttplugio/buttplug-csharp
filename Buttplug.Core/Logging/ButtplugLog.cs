@@ -1,4 +1,5 @@
 ﻿using System;
+using Buttplug.Core.Messages;
 using Buttplug.Logging;
 using JetBrains.Annotations;
 
