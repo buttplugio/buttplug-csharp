@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using Buttplug.Core.Test;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test

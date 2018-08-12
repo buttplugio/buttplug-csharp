@@ -7,10 +7,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core;
 using Buttplug.Core.Messages;
 
-namespace Buttplug.Server.Test
+namespace Buttplug.Core.Test
 {
     public class TestDevice : ButtplugDevice
     {

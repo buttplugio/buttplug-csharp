@@ -82,10 +82,8 @@
     <Compile Include="Bluetooth\Devices\LiBoTest.cs" />
     <Compile Include="Bluetooth\Devices\MysteryVibeTests.cs" />
     <Compile Include="Bluetooth\Devices\VorzeSATests.cs" />
-    <Compile Include="ButtplugDeviceTests.cs" />
-    <Compile Include="ButtplugJsonMessageParserTests.cs" />
-    <Compile Include="ButtplugMessagesTests.cs" />
-    <Compile Include="ButtplugMessageTests.cs" />
+    <Compile Include="ButtplugBluetoothDeviceTests.cs" />
+    <Compile Include="ButtplugServerMessageTests.cs" />
     <Compile Include="ButtplugServerTests.cs" />
     <Compile Include="Util\BluetoothDeviceTestUtils.cs" />
     <Compile Include="Util\FleshlightHelperTests.cs" />
@@ -93,7 +91,6 @@
     <Compile Include="Bluetooth\Devices\MagicMotionTests.cs" />
     <Compile Include="TestBluetoothDeviceInterface.cs" />
     <Compile Include="TestBluetoothSubtypeManager.cs" />
-    <Compile Include="TestDevice.cs" />
     <Compile Include="TestDeviceSubtypeManager.cs" />
     <Compile Include="TestServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -108,6 +105,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Buttplug.Core.Test\Buttplug.Core.Test.csproj">
+      <Project>{b0c9d3f2-6eae-48d2-8363-104a14cd50cd}</Project>
+      <Name>Buttplug.Core.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
       <Name>Buttplug.Core</Name>

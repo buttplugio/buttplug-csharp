@@ -2,6 +2,7 @@
 using Buttplug.Client.Test;
 using Buttplug.Components.WebsocketServer;
 using Buttplug.Core;
+using Buttplug.Core.Test;
 using Buttplug.Server.Test;
 using NUnit.Framework;
 

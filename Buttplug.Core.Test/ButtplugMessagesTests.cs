@@ -6,11 +6,10 @@
 
 using System;
 using System.Collections.Generic;
-using Buttplug.Core;
 using Buttplug.Core.Messages;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test
+namespace Buttplug.Core.Test
 {
     [TestFixture]
     public class ButtplugMessagesTests
