@@ -16,8 +16,6 @@ using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Foundation;
-using Windows.Security.Authentication.Web.Provider;
 using Windows.Security.Cryptography;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
