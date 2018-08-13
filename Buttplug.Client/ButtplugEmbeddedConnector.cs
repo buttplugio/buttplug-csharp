@@ -25,9 +25,9 @@ namespace Buttplug.Client
 
         public readonly ButtplugServer Server;
 
-        public ButtplugEmbeddedConnector(string aServerName, uint aMaxPingTime = 0)
+        public ButtplugEmbeddedConnector(string aServerName, uint aMaxPingTime = 0, DeviceManager aDeviceManager = null)
         {
-            Server = new ButtplugServer(aServerName, aMaxPingTime);
+            Server = new ButtplugServer(aServerName, aMaxPingTime, aDeviceManager);
             Server.MessageReceived += OnServerMessageReceived;
         }
 
