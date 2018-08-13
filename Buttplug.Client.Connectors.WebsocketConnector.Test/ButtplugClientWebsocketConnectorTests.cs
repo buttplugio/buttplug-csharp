@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Buttplug.Client.Test;
-using Buttplug.Components.WebsocketServer;
 using Buttplug.Core;
 using Buttplug.Core.Test;
+using Buttplug.Server.Connectors.WebsocketServer;
 using Buttplug.Server.Test;
 using NUnit.Framework;
 
@@ -14,12 +15,12 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
         private ButtplugWebsocketServer _websocketServer;
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public async Task OneTimeSetUp()
         {
             _logMgr = new ButtplugLogManager();
             _subtypeMgr = new TestDeviceSubtypeManager(new TestDevice(_logMgr, "Test Device"));
             _websocketServer = new ButtplugWebsocketServer();
-            _websocketServer.StartServer(new ButtplugClientConnectorTestServerFactory(_subtypeMgr));
+            await _websocketServer.StartServer(new ButtplugClientConnectorTestServerFactory(_subtypeMgr));
         }
 
         public override void SetUpConnector()

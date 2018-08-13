@@ -90,10 +90,6 @@
       <Project>{1592d845-8fe5-4f33-a665-d7675c9aaee4}</Project>
       <Name>Buttplug.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Components.WebsocketServer\Buttplug.Components.WebsocketServer.csproj">
-      <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
-      <Name>Buttplug.Components.WebsocketServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Buttplug.Core.Test\Buttplug.Core.Test.csproj">
       <Project>{b0c9d3f2-6eae-48d2-8363-104a14cd50cd}</Project>
       <Name>Buttplug.Core.Test</Name>

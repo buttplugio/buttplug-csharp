@@ -17,7 +17,7 @@ using Buttplug.Core.Messages;
 using Buttplug.Server;
 using JetBrains.Annotations;
 
-namespace Buttplug.Components.IPCServer
+namespace Buttplug.Server.Connectors.IPCServer
 {
     public class ButtplugIPCServer
     {

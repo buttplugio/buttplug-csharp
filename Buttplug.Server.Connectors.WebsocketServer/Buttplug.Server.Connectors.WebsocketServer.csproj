@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.2" />
+    <PackageReference Include="deniszykov.WebSocketListener" Version="4.2.4" />
+    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj" />
+    <ProjectReference Include="..\Buttplug.Server\Buttplug.Server.csproj" />
+  </ItemGroup>
+
+</Project>

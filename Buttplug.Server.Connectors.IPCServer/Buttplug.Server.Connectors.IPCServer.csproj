@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj" />
+    <ProjectReference Include="..\Buttplug.Server\Buttplug.Server.csproj" />
+  </ItemGroup>
+
+</Project>

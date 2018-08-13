@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.UW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.XInputGamepadManager", "Buttplug.Server.Managers.XInputGamepadManager\Buttplug.Server.Managers.XInputGamepadManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.WebsocketServer", "Buttplug.Components.WebsocketServer\Buttplug.Components.WebsocketServer.csproj", "{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.Controls", "Buttplug.Components.Controls\Buttplug.Components.Controls.csproj", "{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.ServerGUI", "Buttplug.Apps.ServerGUI\Buttplug.Apps.ServerGUI.csproj", "{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}"
@@ -45,11 +43,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client.Connectors.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client.Connectors.IPCConnector", "Buttplug.Client.Connectors.IPCConnector\Buttplug.Client.Connectors.IPCConnector.csproj", "{A7C3DF9C-D8BA-4C76-89F5-C13DFC3BD28F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.IPCServer", "Buttplug.Components.IPCServer\Buttplug.Components.IPCServer.csproj", "{A235B077-D870-49F0-9D6D-2A5D26726EFC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client.Connectors.IPCConnector.Test", "Buttplug.Client.Connectors.IPCConnector.Test\Buttplug.Client.Connectors.IPCConnector.Test.csproj", "{B4535163-1B5E-4864-BF40-6234BD38E00E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Core.Test", "Buttplug.Core.Test\Buttplug.Core.Test.csproj", "{B0C9D3F2-6EAE-48D2-8363-104A14CD50CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Connectors.WebsocketServer", "Buttplug.Server.Connectors.WebsocketServer\Buttplug.Server.Connectors.WebsocketServer.csproj", "{048D9ED5-6AD4-4BF7-A372-709F795D70FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Connectors.IPCServer", "Buttplug.Server.Connectors.IPCServer\Buttplug.Server.Connectors.IPCServer.csproj", "{7688D99B-D6CE-49A1-B3A2-03AC7640EB1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,10 +87,6 @@ Global
 		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Release|Any CPU.Build.0 = Release|Any CPU
-		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{301D7A68-634F-4A0E-BCF2-772F7DBB4B6E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -139,10 +135,6 @@ Global
 		{A7C3DF9C-D8BA-4C76-89F5-C13DFC3BD28F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7C3DF9C-D8BA-4C76-89F5-C13DFC3BD28F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7C3DF9C-D8BA-4C76-89F5-C13DFC3BD28F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A235B077-D870-49F0-9D6D-2A5D26726EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A235B077-D870-49F0-9D6D-2A5D26726EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A235B077-D870-49F0-9D6D-2A5D26726EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A235B077-D870-49F0-9D6D-2A5D26726EFC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B4535163-1B5E-4864-BF40-6234BD38E00E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4535163-1B5E-4864-BF40-6234BD38E00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4535163-1B5E-4864-BF40-6234BD38E00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -151,6 +143,14 @@ Global
 		{B0C9D3F2-6EAE-48D2-8363-104A14CD50CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0C9D3F2-6EAE-48D2-8363-104A14CD50CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0C9D3F2-6EAE-48D2-8363-104A14CD50CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{048D9ED5-6AD4-4BF7-A372-709F795D70FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{048D9ED5-6AD4-4BF7-A372-709F795D70FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{048D9ED5-6AD4-4BF7-A372-709F795D70FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{048D9ED5-6AD4-4BF7-A372-709F795D70FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7688D99B-D6CE-49A1-B3A2-03AC7640EB1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7688D99B-D6CE-49A1-B3A2-03AC7640EB1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7688D99B-D6CE-49A1-B3A2-03AC7640EB1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7688D99B-D6CE-49A1-B3A2-03AC7640EB1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

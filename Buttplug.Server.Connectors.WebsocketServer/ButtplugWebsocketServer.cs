@@ -16,7 +16,7 @@ using vtortola.WebSockets;
 using vtortola.WebSockets.Rfc6455;
 using static Buttplug.Core.Messages.Error;
 
-namespace Buttplug.Components.WebsocketServer
+namespace Buttplug.Server.Connectors.WebsocketServer
 {
     public class ButtplugWebsocketServer
     {
@@ -52,6 +52,9 @@ namespace Buttplug.Components.WebsocketServer
         [NotNull]
         private CancellationTokenSource _cancellation;
 
+        [CanBeNull]
+        private Task _websocketTask;
+
         public bool IsConnected => _server != null;
 
         public async Task StartServer([NotNull] IButtplugServerFactory aFactory, uint maxConnections = 1, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
@@ -77,7 +80,7 @@ namespace Buttplug.Components.WebsocketServer
             _server = new WebSocketListener(endpoint, options);
             await _server.StartAsync();
 
-            await Task.Run(() => AcceptWebSocketClientsAsync(_server, _cancellation.Token));
+            _websocketTask = Task.Run(() => AcceptWebSocketClientsAsync(_server, _cancellation.Token));
         }
 
         private async Task AcceptWebSocketClientsAsync(WebSocketListener aServer, CancellationToken aToken)
@@ -131,9 +134,14 @@ namespace Buttplug.Components.WebsocketServer
             _connections.TryRemove(remoteId, out var closews);
         }
 
-        public void StopServer()
+        public async void StopServer()
         {
+            if (_websocketTask == null)
+            {
+                return;
+            }
             _cancellation.Cancel();
+            await _websocketTask;
         }
 
         public async Task Disconnect(string remoteId = null)

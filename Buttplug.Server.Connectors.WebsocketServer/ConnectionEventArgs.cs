@@ -6,15 +6,19 @@
 
 using JetBrains.Annotations;
 
-namespace Buttplug.Components.IPCServer
+namespace Buttplug.Server.Connectors.WebsocketServer
 {
-    public class IPCConnectionEventArgs
+    public class ConnectionEventArgs
     {
+        [NotNull]
+        public string ConnId;
+
         [NotNull]
         public string ClientName;
 
-        public IPCConnectionEventArgs(string aClientName = "Unknown Client")
+        public ConnectionEventArgs(string aConnId, string aClientName = "Unknown Client")
         {
+            ConnId = aConnId;
             ClientName = aClientName;
         }
     }

@@ -75,10 +75,6 @@
       <Project>{1592d845-8fe5-4f33-a665-d7675c9aaee4}</Project>
       <Name>Buttplug.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Components.WebsocketServer\Buttplug.Components.WebsocketServer.csproj">
-      <Project>{301d7a68-634f-4a0e-bcf2-772f7dbb4b6e}</Project>
-      <Name>Buttplug.Components.WebsocketServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Buttplug.Core.Test\Buttplug.Core.Test.csproj">
       <Project>{b0c9d3f2-6eae-48d2-8363-104a14cd50cd}</Project>
       <Name>Buttplug.Core.Test</Name>
@@ -86,6 +82,10 @@
     <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
       <Name>Buttplug.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Connectors.WebsocketServer\Buttplug.Server.Connectors.WebsocketServer.csproj">
+      <Project>{048d9ed5-6ad4-4bf7-a372-709f795d70fd}</Project>
+      <Name>Buttplug.Server.Connectors.WebsocketServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Server.Test\Buttplug.Server.Test.csproj">
       <Project>{caddb981-1f47-4baf-8718-9970e46c3018}</Project>
