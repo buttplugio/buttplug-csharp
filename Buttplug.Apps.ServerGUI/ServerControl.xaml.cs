@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,21 +34,21 @@ namespace Buttplug.Apps.ServerGUI
         private readonly ButtplugConfig _config;
         private readonly ButtplugLogManager _logManager;
         private readonly IButtplugLog _log;
+        private readonly string _hostname;
+        private readonly ConnUrlList _connUrls;
+        private readonly Timer _toastTimer;
         private uint _port;
         private bool _secure;
         private bool _loopback;
-        private string _hostname;
-        private ConnUrlList _connUrls;
-        private Timer _toastTimer;
         private string _currentExceptionMessage;
 
-        public ServerControl(IButtplugServerFactory bpFactory)
+        public ServerControl(IButtplugServerFactory aFactory)
         {
             InitializeComponent();
             _logManager = new ButtplugLogManager();
             _log = _logManager.GetLogger(GetType());
             _ws = new ButtplugWebsocketServer();
-            _bpFactory = bpFactory;
+            _bpFactory = aFactory;
             _config = new ButtplugConfig("Buttplug");
             _connUrls = new ConnUrlList();
             _port = 12345;
@@ -243,9 +244,9 @@ namespace Buttplug.Apps.ServerGUI
             }
         }
 
-        public void StopServer()
+        public async Task StopServer()
         {
-            _ws?.StopServer();
+            await _ws?.StopServer();
             ConnToggleButton.Content = "Start";
             SecureCheckBox.IsEnabled = true;
             PortTextBox.IsEnabled = true;
@@ -253,7 +254,7 @@ namespace Buttplug.Apps.ServerGUI
             ConnInfo.IsEnabled = false;
         }
 
-        private void ConnToggleButton_Click(object aObj, RoutedEventArgs aEvent)
+        private async void ConnToggleButton_Click(object aObj, RoutedEventArgs aEvent)
         {
             if (ConnToggleButton.Content.Equals("Start"))
             {
@@ -264,7 +265,7 @@ namespace Buttplug.Apps.ServerGUI
             }
             else
             {
-                StopServer();
+                await StopServer();
             }
         }
 

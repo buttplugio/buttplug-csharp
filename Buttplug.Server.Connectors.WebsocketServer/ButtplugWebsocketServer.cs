@@ -10,7 +10,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Server;
 using JetBrains.Annotations;
 using vtortola.WebSockets;
 using vtortola.WebSockets.Rfc6455;
@@ -134,7 +133,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             _connections.TryRemove(remoteId, out var closews);
         }
 
-        public async void StopServer()
+        public async Task StopServer()
         {
             if (_websocketTask == null)
             {
