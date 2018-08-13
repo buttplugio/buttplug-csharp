@@ -43,11 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <EmbeddedResource Include="..\LICENSE" />
     <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
     <AdditionalFiles Include="stylecop.json" />
