@@ -1,14 +1,9 @@
 // <copyright file="CertUtils.cs" company="Nonpolynomial Labs LLC">
-// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
-// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
-// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+//     Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+//     Copyright (c) Nonpolynomial Labs LLC. All rights reserved. Licensed under the BSD 3-Clause
+//     license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Asn1.X509;
@@ -22,12 +17,19 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.X509;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
-namespace Buttplug.Components.WebsocketServer
+namespace Buttplug.Server.Connectors.WebsocketServer
 {
     internal static class CertUtils
     {
-        /// <exception cref="CryptographicException">Sometimes thrown due to issues generating keys.</exception>
+        /// <exception cref="CryptographicException">
+        /// Sometimes thrown due to issues generating keys.
+        /// </exception>
         public static X509Certificate2 GetCert(string app, string hostname = "localhost")
         {
             var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), app);
@@ -66,13 +68,19 @@ namespace Buttplug.Components.WebsocketServer
         }
 
         /// Note: Much of this code comes from https://stackoverflow.com/a/22247129
-        /// <exception cref="CryptographicException">Sometimes thrown due to issues generating keys.</exception>
+        /// <exception cref="CryptographicException">
+        /// Sometimes thrown due to issues generating keys.
+        /// </exception>
         private static X509Certificate2 GenerateSelfSignedCertificate(string subject)
         {
             const int keyStrength = 2048;
 
             // Generating Random Numbers
-            var randomGenerator = new CryptoApiRandomGenerator();
+            //
+            // For some reason the CryptoAPI wrapper doesn't come with the
+            // .Net Core/Standard version of BouncyCastle, guessing this is most likely due to
+            // platform compat issues. Use VMPC.
+            var randomGenerator = new VmpcRandomGenerator();
             var random = new SecureRandom(randomGenerator);
 
             // The Certificate Generator

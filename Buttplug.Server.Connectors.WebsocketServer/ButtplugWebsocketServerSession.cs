@@ -12,11 +12,10 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using Buttplug.Server;
 using JetBrains.Annotations;
 using vtortola.WebSockets;
 
-namespace Buttplug.Components.WebsocketServer
+namespace Buttplug.Server.Connectors.WebsocketServer
 {
     public class ButtplugWebsocketServerSession
     {

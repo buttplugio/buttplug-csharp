@@ -76,6 +76,10 @@
       <Project>{FC4AF8FE-8C21-4E07-8D24-7FB7791149D0}</Project>
       <Name>Buttplug.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Connectors.WebsocketServer\Buttplug.Server.Connectors.WebsocketServer.csproj">
+      <Project>{048d9ed5-6ad4-4bf7-a372-709f795d70fd}</Project>
+      <Name>Buttplug.Server.Connectors.WebsocketServer</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
