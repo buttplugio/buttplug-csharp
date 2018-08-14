@@ -6,7 +6,9 @@ configuration:
   - Debug
   - Release
 
-image: Visual Studio 2017
+image:
+  - Visual Studio 2017
+  - Ubuntu
 
 skip_branch_with_pr: true
   
@@ -20,11 +22,15 @@ environment:
   
 # Taken from https://boblokerse.github.io/2015/11/03/GitVersion-versioning-made-easy-and-dry/
 install:
-  - ver
-  - set
-  - ps: get-childitem c:\tools\nunit3 -rec | where {!$_.PSIsContainer} | select-object FullName
-  - ps: choco install -y -r --no-progress resharper-clt.portable
-  - ps: choco install -y -r --no-progress InnoSetup
+  - cmd: ver
+  - cmd: set
+  - ps: |
+      if ($isWindows) {
+        get-childitem c:\tools\nunit3 -rec | where {!$_.PSIsContainer} | select-object FullName
+        choco install -y -r --no-progress resharper-clt.portable
+        choco install -y -r --no-progress InnoSetup
+        (Get-Content Buttplug.Components.Controls\ButtplugTabControl.xaml.cs).replace('SENTRY_API_URL', $env:sentry_api_url) | Set-Content Buttplug.Components.Controls\ButtplugTabControl.xaml.cs
+      }
   - ps: |
       function gitVersion() {
         $env:newhash=git rev-parse HEAD
@@ -51,9 +57,6 @@ install:
         write-host "Update appveyor info version to: $env:appveyor_info_version"
       }
       gitVersion
-  - ps: |
-      (Get-Content Buttplug.Components.Controls\ButtplugTabControl.xaml.cs).replace('SENTRY_API_URL', $env:sentry_api_url) | Set-Content Buttplug.Components.Controls\ButtplugTabControl.xaml.cs
-      
       
 # patch the assembly version, but only in our own directories
 assembly_info:
@@ -82,29 +85,54 @@ build:
   project: Buttplug.sln
   publish_nuget: true
 
+for:
+  -
+    matrix:
+      only:
+        - image: Ubuntu
+          configuration: Debug
+    build_script:
+      - dotnet build --configuration DebugStandard
+  -
+    matrix:
+      only:
+        - image: Ubuntu
+          configuration: Release
+    build_script:
+      - dotnet build --configuration ReleaseStandard
+  
 after_build:
-  - cmd: InspectCode.exe -o=resharper-clt-output.xml --project=Buttplug* Buttplug.sln
-  - ps: $result = [xml](Get-Content .\resharper-clt-output.xml)
-  - ps: $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
+  - ps: |
+      if ($isWindows) {
+        InspectCode.exe -o=resharper-clt-output.xml --project="Buttplug*" Buttplug.sln
+        $result = [xml](Get-Content .\resharper-clt-output.xml)
+        $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
+      }
+
 test_script:
-  - ps: .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"$env:SYSTEMDRIVE\Tools\NUnit3\nunit3-console.exe" -targetargs:"Buttplug.Core.Test\bin\$env:CONFIGURATION\Buttplug.Core.Test.dll Buttplug.Server.Test\bin\$env:CONFIGURATION\Buttplug.Server.Test.dll Buttplug.Client.Test\bin\$env:CONFIGURATION\Buttplug.Client.Test.dll Buttplug.Client.Connectors.IPCConnector.Test\bin\$env:CONFIGURATION\Buttplug.Client.Connectors.IPCConnector.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test\bin\$env:CONFIGURATION\Buttplug.Client.Connectors.WebsocketConnector.Test.dll Buttplug.Apps.ServerGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.ServerGUI.Test.dll --workers=1 --inprocess --result=myresults.xml;format=AppVeyor" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
+  - ps: |
+      if ($isWindows) {
+        .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"$env:SYSTEMDRIVE\Tools\NUnit3\nunit3-console.exe" -targetargs:"Buttplug.Core.Test\bin\$env:CONFIGURATION\Buttplug.Core.Test.dll Buttplug.Server.Test\bin\$env:CONFIGURATION\Buttplug.Server.Test.dll Buttplug.Client.Test\bin\$env:CONFIGURATION\Buttplug.Client.Test.dll Buttplug.Client.Connectors.IPCConnector.Test\bin\$env:CONFIGURATION\Buttplug.Client.Connectors.IPCConnector.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test\bin\$env:CONFIGURATION\Buttplug.Client.Connectors.WebsocketConnector.Test.dll Buttplug.Apps.ServerGUI.Test\bin\$env:CONFIGURATION\Buttplug.Apps.ServerGUI.Test.dll --workers=1 --inprocess --result=myresults.xml;format=AppVeyor" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs"
+      }
+
 after_test:
   - ps: |
-      If (($env:CONFIGURATION -imatch "Debug")) {
+      If (($env:CONFIGURATION -imatch "Debug") -and $isWindows) {
         $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
         Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
         bash codecov.sh -f "coverage.xml" -X gcov
       }
-  - ps: set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
-  - ps: iscc buttplug-installer.iss   
-  - ps: installer\buttplug-installer.exe /VERYSILENT
-  # Test currently doesn't work, possibly because installer is blocked by access control dialog?
-  #- ps: test\check-registry.ps1
-  - ps: Push-AppveyorArtifact installer\buttplug-installer.exe -FileName Buttplug-$env:CONFIGURATION-$env:APPVEYOR_BUILD_VERSION-installer.exe
   - ps: |
-      Push-Location ./docs
-      ./build.ps1
-      Pop-Location
+      if ($isWindows) {
+        set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
+        iscc buttplug-installer.iss
+        installer\buttplug-installer.exe /VERYSILENT
+        Push-AppveyorArtifact installer\buttplug-installer.exe -FileName Buttplug-$env:CONFIGURATION-$env:APPVEYOR_BUILD_VERSION-installer.exe
+        Push-Location ./docs
+        ./build.ps1
+        Pop-Location
+      }
+
 cache:
   - packages -> **\packages.config
   # Cache chocolatey packages
@@ -118,6 +146,7 @@ deploy:
     skip_symbols: true
     artifact: /.*\.nupkg/
     on:
+      image: Visual Studio 2017
       branch: master
       configuration: release
       appveyor_repo_provider: github
