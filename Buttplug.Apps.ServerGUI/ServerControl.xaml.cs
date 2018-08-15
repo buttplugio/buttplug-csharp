@@ -30,7 +30,7 @@ namespace Buttplug.Apps.ServerGUI
     public partial class ServerControl
     {
         private readonly ButtplugWebsocketServer _ws;
-        private readonly IButtplugServerFactory _bpFactory;
+        private readonly Func<ButtplugServer> _bpFactory;
         private readonly ButtplugConfig _config;
         private readonly ButtplugLogManager _logManager;
         private readonly IButtplugLog _log;
@@ -42,7 +42,7 @@ namespace Buttplug.Apps.ServerGUI
         private bool _loopback;
         private string _currentExceptionMessage;
 
-        public ServerControl(IButtplugServerFactory aFactory)
+        public ServerControl(Func<ButtplugServer> aFactory)
         {
             InitializeComponent();
             _logManager = new ButtplugLogManager();

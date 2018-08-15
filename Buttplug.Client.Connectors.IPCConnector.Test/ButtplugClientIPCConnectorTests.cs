@@ -18,7 +18,12 @@ namespace Buttplug.Client.Connectors.IPCConnector.Test
             _logMgr = new ButtplugLogManager();
             _subtypeMgr = new TestDeviceSubtypeManager(new TestDevice(_logMgr, "Test Device"));
             _ipcServer = new ButtplugIPCServer();
-            _ipcServer.StartServer(new ButtplugClientConnectorTestServerFactory(_subtypeMgr));
+            _ipcServer.StartServer(() =>
+            {
+                var server = new TestServer();
+                server.AddDeviceSubtypeManager(aLogger => _subtypeMgr);
+                return server;
+            });
         }
 
         public override void SetUpConnector()
