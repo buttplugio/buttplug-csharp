@@ -29,6 +29,8 @@ namespace Buttplug.Server.Bluetooth
 
         Task SubscribeToUpdates();
 
+        Task SubscribeToUpdates(uint aIndex);
+
         ulong GetAddress();
 
         event EventHandler DeviceRemoved;

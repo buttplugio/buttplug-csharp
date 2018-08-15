@@ -1,19 +1,19 @@
 // <copyright file="UWPBluetoothDeviceInterface.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
-// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
-// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved. Licensed under the BSD 3-Clause
+// license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using Buttplug.Core;
+using Buttplug.Core.Messages;
+using Buttplug.Server.Bluetooth;
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core;
-using Buttplug.Core.Messages;
-using Buttplug.Server.Bluetooth;
-using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Security.Cryptography;
@@ -108,24 +108,50 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         public async Task SubscribeToUpdates()
         {
-            if (_rxChar != null && _rxChar.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
+            await SubscribeToUpdates(_rxChar);
+        }
+
+        public async Task SubscribeToUpdates(uint aIndex)
+        {
+            if (_indexedChars == null)
             {
-                GattCommunicationStatus status = await _rxChar.WriteClientCharacteristicConfigurationDescriptorAsync(
-                    GattClientCharacteristicConfigurationDescriptorValue.Notify);
-                if (status == GattCommunicationStatus.Success)
-                {
-                    // Server has been informed of clients interest.
-                    _rxChar.ValueChanged += BluetoothNotifyReceivedHandler;
-                }
-                else
-                {
-                    _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: Failed Request");
-                }
+                _bpLogger.Error("SubscribeToUpdates using indexed characteristics called with no indexed characteristics available");
+                return;
             }
-            else
+
+            if (!_indexedChars.ContainsKey(aIndex))
             {
-                _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: No Rx characteristic found.");
+                _bpLogger.Error("SubscribeToUpdates using indexed characteristics called with invalid index");
+                return;
             }
+
+            await SubscribeToUpdates(_indexedChars[aIndex]);
+        }
+
+        private async Task SubscribeToUpdates(GattCharacteristic aCharacteristic)
+        {
+            if (aCharacteristic == null)
+            {
+                _bpLogger.Error("Null characteristic passed to SubscribeToUpdates");
+                return;
+            }
+
+            if (!aCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
+            {
+                _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: No Notify characteristic found.");
+                return;
+            }
+
+            var status = await aCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                GattClientCharacteristicConfigurationDescriptorValue.Notify);
+            if (status != GattCommunicationStatus.Success)
+            {
+                _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: Failed Request");
+                return;
+            }
+
+            // Server has been informed of clients interest.
+            aCharacteristic.ValueChanged += BluetoothNotifyReceivedHandler;
         }
 
         private void ConnectionStatusChangedHandler([NotNull] BluetoothLEDevice aDevice, [NotNull] object aObj)
