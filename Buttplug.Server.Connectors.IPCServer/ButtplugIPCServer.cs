@@ -22,7 +22,7 @@ namespace Buttplug.Server.Connectors.IPCServer
     public class ButtplugIPCServer
     {
         [NotNull]
-        private IButtplugServerFactory _factory;
+        private Func<ButtplugServer> _serverFactory;
 
         [NotNull]
         private IButtplugLogManager _logManager;
@@ -51,12 +51,12 @@ namespace Buttplug.Server.Connectors.IPCServer
         [CanBeNull]
         private Task _acceptTask;
 
-        public bool IsConnected => _acceptTask?.Status == TaskStatus.Running;
+        public bool Connected => _acceptTask?.Status == TaskStatus.Running;
 
-        public void StartServer([NotNull] IButtplugServerFactory aFactory, string aPipeName = "ButtplugPipe")
+        public void StartServer([NotNull] Func<ButtplugServer> aFactory, string aPipeName = "ButtplugPipe")
         {
             _cancellation = new CancellationTokenSource();
-            _factory = aFactory;
+            _serverFactory = aFactory;
 
             _logManager = new ButtplugLogManager();
             _logger = _logManager.GetLogger(this.GetType());
@@ -79,7 +79,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                 var aServer = pipeServer;
                 ConnectionAccepted?.Invoke(this, new IPCConnectionEventArgs());
 
-                var buttplugServer = _factory.GetServer();
+                var buttplugServer = _serverFactory();
 
                 EventHandler<MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
                 {

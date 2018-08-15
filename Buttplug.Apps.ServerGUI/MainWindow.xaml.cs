@@ -38,7 +38,7 @@ namespace Buttplug.Apps.ServerGUI
             ButtplugTab.GetLogControl().MaxLogs = logLimit;
 
             ButtplugTab.SetServerDetails("Websocket Server", ping);
-            _wsTab = new ServerControl(ButtplugTab);
+            _wsTab = new ServerControl(ButtplugTab.GetServer);
             ButtplugTab.SetApplicationTab("Websocket Server", _wsTab);
 
             ButtplugTab.GetAboutControl().CheckUpdate(config, "buttplug-csharp");

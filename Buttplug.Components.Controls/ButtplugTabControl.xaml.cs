@@ -34,7 +34,7 @@ namespace Buttplug.Components.Controls
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ButtplugTabControl : IButtplugServerFactory
+    public partial class ButtplugTabControl
     {
         private readonly RavenClient _ravenClient;
 

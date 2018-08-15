@@ -70,7 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgsTests.cs" />
-    <Compile Include="ButtplugClientConnectorTestServerFactory.cs" />
     <Compile Include="ButtplugClientEmbeddedConnectorTests.cs" />
     <Compile Include="ButtplugClientConnectorTestBase.cs" />
     <Compile Include="ButtplugClientTests.cs" />

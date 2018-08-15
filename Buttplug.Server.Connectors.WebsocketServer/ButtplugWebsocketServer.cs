@@ -23,7 +23,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
         private WebSocketListener _server;
 
         [NotNull]
-        private IButtplugServerFactory _factory;
+        private Func<ButtplugServer> _serverFactory;
 
         [NotNull]
         private IButtplugLogManager _logManager;
@@ -54,12 +54,12 @@ namespace Buttplug.Server.Connectors.WebsocketServer
         [CanBeNull]
         private Task _websocketTask;
 
-        public bool IsConnected => _server != null;
+        public bool Connected => _server != null;
 
-        public async Task StartServer([NotNull] IButtplugServerFactory aFactory, uint maxConnections = 1, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
+        public async Task StartServer([NotNull] Func<ButtplugServer> aFactory, uint maxConnections = 1, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
         {
             _cancellation = new CancellationTokenSource();
-            _factory = aFactory;
+            _serverFactory = aFactory;
 
             _maxConnections = maxConnections;
 
@@ -128,7 +128,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             _connections.AddOrUpdate(remoteId, ws, (oldWs, newWs) => newWs);
             ConnectionAccepted?.Invoke(this, new ConnectionEventArgs(remoteId));
 
-            var session = new ButtplugWebsocketServerSession(_logManager, _factory.GetServer(), ws, _cancellation);
+            var session = new ButtplugWebsocketServerSession(_logManager, _serverFactory(), ws, _cancellation);
             await session.RunServerSession();
             _connections.TryRemove(remoteId, out var closews);
         }
