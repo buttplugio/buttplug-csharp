@@ -5,6 +5,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
@@ -20,10 +21,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         private BluetoothDeviceTestUtils<FleshlightLaunchBluetoothInfo> testUtil;
 
         [SetUp]
-        public void Init()
+        public async Task Init()
         {
             testUtil = new BluetoothDeviceTestUtils<FleshlightLaunchBluetoothInfo>();
-            testUtil.SetupTest("Launch");
+            await testUtil.SetupTest("Launch");
         }
 
         [Test]
@@ -38,9 +39,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public void TestInitialize()
+        public async Task TestInitialize()
         {
-            testUtil.TestDeviceInitialize(new List<(byte[], uint)>()
+            await testUtil.TestDeviceInitialize(new List<(byte[], uint)>()
             {
                 (new byte[1] { 0x0 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd),
             }, true);
@@ -50,9 +51,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
 
         // In all device message tests, expect WriteWithResponse to be false.
         [Test]
-        public void TestFleshlightLaunchFW12Cmd()
+        public async Task TestFleshlightLaunchFW12Cmd()
         {
-            testUtil.TestDeviceMessage(new FleshlightLaunchFW12Cmd(4, 50, 50),
+            await testUtil.TestDeviceMessage(new FleshlightLaunchFW12Cmd(4, 50, 50),
                 new List<(byte[], uint)>()
                 {
                     (new byte[2] { 50, 50 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
@@ -62,25 +63,25 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         // TODO Test currently fails because we will send repeated packets to the launch. See #402.
         /*
         [Test]
-        public void TestRepeatedFleshlightLaunchFW12Cmd()
+        public async Task TestRepeatedFleshlightLaunchFW12Cmd()
         {
-            testUtil.TestDeviceMessage(new FleshlightLaunchFW12Cmd(4, 50, 50),
+            await testUtil.TestDeviceMessage(new FleshlightLaunchFW12Cmd(4, 50, 50),
                 new List<byte[]>()
                 {
                     new byte[2] { 50, 50 },
                 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx, false);
-            testUtil.TestDeviceMessageNoop(new FleshlightLaunchFW12Cmd(4, 50, 50));
+            await testUtil.TestDeviceMessageNoop(new FleshlightLaunchFW12Cmd(4, 50, 50));
         }
         */
 
         [Test]
-        public void TestVectorCmd()
+        public async Task TestVectorCmd()
         {
             var msg = new LinearCmd(4, new List<LinearCmd.VectorSubcommand>
             {
                 new LinearCmd.VectorSubcommand(0, 500, 0.5),
             });
-            testUtil.TestDeviceMessage(msg,
+            await testUtil.TestDeviceMessage(msg,
                 new List<(byte[], uint)>()
                 {
                     (new byte[2] { 50, 20 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
@@ -88,28 +89,28 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public void TestInvalidVectorCmdTooManyFeatures()
+        public async Task TestInvalidVectorCmdTooManyFeatures()
         {
             var msg = LinearCmd.Create(4, 0, 500, 0.75, 2);
-            testUtil.TestInvalidDeviceMessage(msg);
+            await testUtil.TestInvalidDeviceMessage(msg);
         }
 
         [Test]
-        public void TestInvalidVectorCmdWrongFeatures()
+        public async Task TestInvalidVectorCmdWrongFeatures()
         {
             var msg = new LinearCmd(4,
                 new List<LinearCmd.VectorSubcommand>
                 {
                     new LinearCmd.VectorSubcommand(0xffffffff, 500, 0.75),
                 });
-            testUtil.TestInvalidDeviceMessage(msg);
+            await testUtil.TestInvalidDeviceMessage(msg);
         }
 
         [Test]
-        public void TestInvalidVectorNotEnoughFeatures()
+        public async Task TestInvalidVectorNotEnoughFeatures()
         {
             var msg = LinearCmd.Create(4, 0, 500, 0.75, 0);
-            testUtil.TestInvalidDeviceMessage(msg);
+            await testUtil.TestInvalidDeviceMessage(msg);
         }
     }
 }

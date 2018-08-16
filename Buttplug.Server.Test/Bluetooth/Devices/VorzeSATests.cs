@@ -5,6 +5,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
@@ -22,18 +23,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [NotNull]
         private BluetoothDeviceTestUtils<VorzeSABluetoothInfo> testUtil;
 
-        [SetUp]
-        public void Init()
-        {
-        }
-
         [Test]
-        public void TestAllowedMessages()
+        public async Task TestAllowedMessages()
         {
             foreach (var name in _deviceNames)
             {
                 testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-                testUtil.SetupTest(name);
+                await testUtil.SetupTest(name);
                 testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
                 {
                     { typeof(StopDeviceCmd), 0 },
@@ -46,16 +42,16 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         // StopDeviceCmd noop test handled in GeneralDeviceTests
 
         [Test]
-        public void TestStopDeviceCmd()
+        public async Task TestStopDeviceCmd()
         {
             byte deviceIndex = 1;
             foreach (var name in _deviceNames)
             {
                 testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-                testUtil.SetupTest(name);
+                await testUtil.SetupTest(name);
                 var expected = new byte[] { deviceIndex, 0x1, 50 };
 
-                testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
+                await testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
                     new List<(byte[], uint)>()
                     {
                         (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
@@ -63,7 +59,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
 
                 expected = new byte[] { deviceIndex, 0x1, 0 };
 
-                testUtil.TestDeviceMessage(new StopDeviceCmd(4),
+                await testUtil.TestDeviceMessage(new StopDeviceCmd(4),
                     new List<(byte[], uint)>()
                     {
                         (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
@@ -74,16 +70,16 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public void TestVorzeA10CycloneCmd()
+        public async Task TestVorzeA10CycloneCmd()
         {
             byte deviceIndex = 1;
             foreach (var name in _deviceNames)
             {
                 testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-                testUtil.SetupTest(name);
+                await testUtil.SetupTest(name);
                 var expected = new byte[] { deviceIndex, 0x1, 50 };
 
-                testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
+                await testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
                     new List<(byte[], uint)>()
                     {
                         (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
@@ -91,7 +87,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
 
                 expected = new byte[] { deviceIndex, 0x1, 50 + 128 };
 
-                testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, true),
+                await testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, true),
                     new List<(byte[], uint)>()
                     {
                     (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
@@ -102,16 +98,16 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public void TestRotateCmd()
+        public async Task TestRotateCmd()
         {
             byte deviceIndex = 1;
             foreach (var name in _deviceNames)
             {
                 testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-                testUtil.SetupTest(name);
+                await testUtil.SetupTest(name);
                 var expected = new byte[] { deviceIndex, 0x1, 50 };
 
-                testUtil.TestDeviceMessage(
+                await testUtil.TestDeviceMessage(
                     RotateCmd.Create(4, 1, 0.5, false, 1),
                     new List<(byte[], uint)>()
                     {
@@ -120,7 +116,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
 
                 expected = new byte[] { deviceIndex, 0x1, 50 + 128 };
 
-                testUtil.TestDeviceMessage(
+                await testUtil.TestDeviceMessage(
                     RotateCmd.Create(4, 1, 0.5, true, 1),
                     new List<(byte[], uint)>()
                     {
@@ -131,15 +127,15 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public void TestInvalidVibrateCmd()
+        public async Task TestInvalidCmds()
         {
             foreach (var name in _deviceNames)
             {
                 testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-                testUtil.SetupTest(name);
-                testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 0));
-                testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 2));
-                testUtil.TestInvalidDeviceMessage(
+                await testUtil.SetupTest(name);
+                await testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 0));
+                await testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 2));
+                await testUtil.TestInvalidDeviceMessage(
                     new RotateCmd(4, new List<RotateCmd.RotateSubcommand>()
                     {
                         new RotateCmd.RotateSubcommand(0xffffffff, 0.5, true),

@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
@@ -58,12 +59,12 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         // Test for existence of StopDeviceCmd on Device class, and that it noops if it's the first
         // thing sent (since we have nothing to stop).
         [Test]
-        public void TestStopDeviceCmd()
+        public async Task TestStopDeviceCmd()
         {
             var mgr = new TestBluetoothSubtypeManager(new ButtplugLogManager());
             foreach (var devInfo in mgr.GetDefaultDeviceInfoList())
             {
-                GetInterfaceObj(devInfo).TestDeviceMessageNoop(new StopDeviceCmd(1));
+                await GetInterfaceObj(devInfo).TestDeviceMessageNoop(new StopDeviceCmd(1));
             }
         }
     }

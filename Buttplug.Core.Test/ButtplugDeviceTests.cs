@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using NUnit.Framework;
 
@@ -15,7 +16,7 @@ namespace Buttplug.Core.Test
     public class ButtplugDeviceTests
     {
         [Test]
-        public void TestBaseDevice()
+        public async Task TestBaseDevice()
         {
             var log = new ButtplugLogManager();
             var dev = new TestDevice(log, "testDev")
@@ -25,17 +26,17 @@ namespace Buttplug.Core.Test
 
             Assert.AreEqual(2, dev.Index);
 
-            Assert.True(dev.Initialize(default(CancellationToken)).GetAwaiter().GetResult() is Ok);
+            Assert.True(await dev.Initialize(default(CancellationToken)) is Ok);
 
-            Assert.True(dev.ParseMessage(new StopDeviceCmd(2), default(CancellationToken)).GetAwaiter().GetResult() is Ok);
+            Assert.True(await dev.ParseMessage(new StopDeviceCmd(2), default(CancellationToken)) is Ok);
 
-            var outMsg = dev.ParseMessage(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken)).GetAwaiter().GetResult();
+            var outMsg = await dev.ParseMessage(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken));
             Assert.True(outMsg is Error);
             Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
             Assert.True((outMsg as Error).ErrorMessage.Contains("cannot handle message of type"));
 
             dev.Disconnect();
-            outMsg = dev.ParseMessage(new StopDeviceCmd(2), default(CancellationToken)).GetAwaiter().GetResult();
+            outMsg = await dev.ParseMessage(new StopDeviceCmd(2), default(CancellationToken));
             Assert.True(outMsg is Error);
             Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
             Assert.True((outMsg as Error).ErrorMessage.Contains("has disconnected"));

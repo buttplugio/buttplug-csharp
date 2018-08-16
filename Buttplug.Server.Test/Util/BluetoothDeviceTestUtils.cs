@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
@@ -18,11 +19,11 @@ namespace Buttplug.Server.Test.Util
 {
     public interface IBluetoothDeviceGeneralTestUtils
     {
-        void SetupTest(string aDeviceName, bool aShouldInitialize = false);
+        Task SetupTest(string aDeviceName, bool aShouldInitialize = false);
 
         void TestDeviceInfo();
 
-        void TestDeviceMessageNoop(ButtplugDeviceMessage aOutgoingMessage);
+        Task TestDeviceMessageNoop(ButtplugDeviceMessage aOutgoingMessage);
     }
 
     public class BluetoothDeviceTestUtils<T> : IBluetoothDeviceGeneralTestUtils
@@ -33,7 +34,7 @@ namespace Buttplug.Server.Test.Util
         private TestBluetoothDeviceInterface bleIface;
         private IButtplugDevice bleDevice;
 
-        public void SetupTest(string aDeviceName, bool aShouldInitialize = true)
+        public async Task SetupTest(string aDeviceName, bool aShouldInitialize = true)
         {
             bleInfo = new T();
 
@@ -48,12 +49,12 @@ namespace Buttplug.Server.Test.Util
                 return;
             }
 
-            Initialize();
+            await Initialize();
         }
 
-        public void Initialize()
+        public async Task Initialize()
         {
-            Assert.True(bleDevice.Initialize().GetAwaiter().GetResult() is Ok);
+            Assert.True(await bleDevice.Initialize() is Ok);
             bleIface.LastWritten.Clear();
         }
 
@@ -168,57 +169,57 @@ namespace Buttplug.Server.Test.Util
             }
         }
 
-        public void TestDeviceInitialize(IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse, bool aStrict = true)
+        public async Task TestDeviceInitialize(IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse, bool aStrict = true)
         {
             Clear();
-            Assert.True(bleDevice.Initialize().GetAwaiter().GetResult() is Ok);
+            Assert.True(await bleDevice.Initialize() is Ok);
 
             TestPacketMatching(aExpectedBytes, aWriteWithResponse, aStrict);
         }
 
         // Testing timing with delays is a great way to get inetermittents, but here we are. Sadness.
-        public void TestDeviceMessageOnWrite(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
+        public async Task TestDeviceMessageOnWrite(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
         {
             Clear();
-            Assert.True(bleDevice.ParseMessage(aOutgoingMessage).GetAwaiter().GetResult() is Ok);
+            Assert.True(await bleDevice.ParseMessage(aOutgoingMessage) is Ok);
             var resetEvent = new ManualResetEvent(false);
             bleIface.ValueWritten += (aObj, aArgs) => { resetEvent.Set(); };
             resetEvent.WaitOne(1000);
             TestPacketMatching(aExpectedBytes, aWriteWithResponse);
         }
 
-        public void TestDeviceMessage(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
+        public async Task TestDeviceMessage(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
         {
             Clear();
-            Assert.True(bleDevice.ParseMessage(aOutgoingMessage).GetAwaiter().GetResult() is Ok);
+            Assert.True(await bleDevice.ParseMessage(aOutgoingMessage) is Ok);
 
             TestPacketMatching(aExpectedBytes, aWriteWithResponse);
         }
 
-        public void TestDeviceMessageDelayed(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse, uint aMilliseconds)
+        public async Task TestDeviceMessageDelayed(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse, uint aMilliseconds)
         {
             Clear();
-            Assert.True(bleDevice.ParseMessage(aOutgoingMessage).GetAwaiter().GetResult() is Ok);
+            Assert.True(await bleDevice.ParseMessage(aOutgoingMessage) is Ok);
             Thread.Sleep(new TimeSpan(0, 0, 0, 0, (int)aMilliseconds));
             TestPacketMatching(aExpectedBytes, aWriteWithResponse, false);
         }
 
-        public void TestDeviceMessageNoop(ButtplugDeviceMessage aOutgoingMessage)
+        public async Task TestDeviceMessageNoop(ButtplugDeviceMessage aOutgoingMessage)
         {
-            TestDeviceMessage(aOutgoingMessage, new List<(byte[], uint)>(), false);
+            await TestDeviceMessage(aOutgoingMessage, new List<(byte[], uint)>(), false);
         }
 
-        public void TestInvalidDeviceMessage(ButtplugDeviceMessage aOutgoingMessage)
+        public async Task TestInvalidDeviceMessage(ButtplugDeviceMessage aOutgoingMessage)
         {
             Clear();
-            Assert.True(bleDevice.ParseMessage(aOutgoingMessage).GetAwaiter().GetResult() is Error);
+            Assert.True(await bleDevice.ParseMessage(aOutgoingMessage) is Error);
         }
 
-        public void TestInvalidVibrateCmd(uint aNumVibes)
+        public async Task TestInvalidVibrateCmd(uint aNumVibes)
         {
-            TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 0));
-            TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, aNumVibes + 1));
-            TestInvalidDeviceMessage(
+            await TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 0));
+            await TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, aNumVibes + 1));
+            await TestInvalidDeviceMessage(
                 new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
                 {
                     new VibrateCmd.VibrateSubcommand(0xffffffff, 0.5),
