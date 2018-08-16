@@ -1,6 +1,6 @@
 # Buttplug Protocol Implementation - C# .Net Standard/Framework
 
-[![Build status](https://ci.appveyor.com/api/projects/status/kcrobh9kvkpcjlqg?svg=true)](https://ci.appveyor.com/project/qdot/buttplug-csharp)
+[![Build status](https://ci.appveyor.com/api/projects/status/vf4qvxkp3o3p3we1/branch/master?svg=true)](https://ci.appveyor.com/project/qdot/buttplug-csharp/branch/master) 
 [![codecov](https://codecov.io/gh/buttplugio/buttplug-csharp/branch/master/graph/badge.svg)](https://codecov.io/gh/buttplugio/buttplug-csharp)
 
 [![Patreon donate button](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/qdot)
