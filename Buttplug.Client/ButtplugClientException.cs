@@ -13,9 +13,16 @@ namespace Buttplug.Client
     {
         public readonly ButtplugMessage ButtplugErrorMessage;
 
+        public readonly string ButtplugMessage;
+
         public ButtplugClientException(ButtplugMessage aMsg)
         {
             ButtplugErrorMessage = aMsg;
+        }
+
+        public ButtplugClientException(string aMessage)
+        {
+            ButtplugMessage = aMessage;
         }
     }
 }

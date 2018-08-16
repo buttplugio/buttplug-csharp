@@ -21,7 +21,7 @@ namespace Buttplug.Client
         /// Name of the client, used for server UI/permissions.
         /// </summary>
         [NotNull]
-        public readonly string ClientName;
+        public readonly string Name;
 
         /// <summary>
         /// Gets the connected Buttplug devices.
@@ -91,13 +91,23 @@ namespace Buttplug.Client
         private IButtplugClientConnector _connector;
 
         /// <summary>
+        /// Ping timer.
+        /// </summary>
+        /// <remarks>
+        /// Sends a ping message to the server whenever the timer triggers. Usually runs at
+        /// (requested ping interval / 2).
+        /// </remarks>
+        [CanBeNull]
+        private Timer _pingTimer;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClient"/> class.
         /// </summary>
         /// <param name="aClientName">The name of the client (used by the server for UI and permissions).</param>
         /// <param name="aConnector">Connector for the client</param>
         public ButtplugClient(string aClientName, IButtplugClientConnector aConnector)
         {
-            ClientName = aClientName;
+            Name = aClientName;
             _connector = aConnector;
             IButtplugLogManager bpLogManager = new ButtplugLogManager();
             _bpLogger = bpLogManager.GetLogger(GetType());
@@ -165,9 +175,7 @@ namespace Buttplug.Client
             _connector.MessageReceived += MessageReceivedHandler;
             await _connector.ConnectAsync(aToken);
 
-            // TODO Handle Client/Server Handshake!
-            /*
-            var res = await SendMessage(new RequestServerInfo(_clientName));
+            var res = await SendMessageAsync(new RequestServerInfo(Name), aToken);
             switch (res)
             {
                 case ServerInfo si:
@@ -179,19 +187,18 @@ namespace Buttplug.Client
 
                     if (si.MessageVersion < ButtplugMessage.CurrentSchemaVersion)
                     {
-                        throw new Exception("Buttplug Server's schema version (" + si.MessageVersion +
-                                            ") is less than the client's (" + ButtplugMessage.CurrentSchemaVersion +
-                                            "). A newer server is required.");
+                        throw new ButtplugClientException("Buttplug Server's schema version (" + si.MessageVersion +
+                                                          ") is less than the client's (" + ButtplugMessage.CurrentSchemaVersion +
+                                                          "). A newer server is required.");
                     }
 
                     // Get full device list and populate internal list
-                    var resp = await SendMessage(new RequestDeviceList());
+                    var resp = await SendMessageAsync(new RequestDeviceList());
                     if ((resp as DeviceList)?.Devices == null)
                     {
                         if (resp is Error)
                         {
-                            _owningDispatcher.Send(
-                                _ => { ErrorReceived?.Invoke(this, new ErrorEventArgs(resp as Error)); }, null);
+                            throw new ButtplugClientException(resp);
                         }
 
                         return;
@@ -205,22 +212,18 @@ namespace Buttplug.Client
                         }
 
                         var device = new ButtplugClientDevice(d);
-                        if (_devices.TryAdd(d.DeviceIndex, device))
-                        {
-                            _owningDispatcher.Send(
-                                _ => { DeviceAdded?.Invoke(this, new DeviceEventArgs(device, DeviceAction.ADDED)); },
-                                null);
-                        }
+                        _devices[d.DeviceIndex] = device;
+                        DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(device));
                     }
 
                     break;
 
                 case Error e:
-                    throw new Exception(e.ErrorMessage);
+                    throw new ButtplugClientException(e);
 
-                default:
-                    throw new Exception("Unexpecte message returned: " + res.GetType());
-            }*/
+                case ButtplugMessage e:
+                    throw new ButtplugClientException(e);
+            }
         }
 
         public async Task DisconnectAsync()
