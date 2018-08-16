@@ -45,7 +45,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public void TestInfo()
         {
-            TestBluetoothSubtypeManager mgr = new TestBluetoothSubtypeManager(new ButtplugLogManager());
+            var mgr = new TestBluetoothSubtypeManager(new ButtplugLogManager());
             foreach (var devInfo in mgr.GetDefaultDeviceInfoList())
             {
                 // If you fail on this, check any device types you've recently added to
@@ -60,7 +60,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public void TestStopDeviceCmd()
         {
-            TestBluetoothSubtypeManager mgr = new TestBluetoothSubtypeManager(new ButtplugLogManager());
+            var mgr = new TestBluetoothSubtypeManager(new ButtplugLogManager());
             foreach (var devInfo in mgr.GetDefaultDeviceInfoList())
             {
                 GetInterfaceObj(devInfo).TestDeviceMessageNoop(new StopDeviceCmd(1));
