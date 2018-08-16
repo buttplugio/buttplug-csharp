@@ -156,7 +156,7 @@ namespace Buttplug.Server.Test
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(d);
-            _server.AddDeviceSubtypeManager(aLogger => { return m; });
+            _server.AddDeviceSubtypeManager(aLogger => m);
             Assert.True(await _server.SendMessage(new StartScanning()) is Ok);
             Assert.True(await _server.SendMessage(new StopScanning()) is Ok);
             Assert.True(await _server.SendMessage(new SingleMotorVibrateCmd(1, .2)) is Ok);
@@ -167,7 +167,7 @@ namespace Buttplug.Server.Test
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(d);
-            _server.AddDeviceSubtypeManager(aLogger => { return m; });
+            _server.AddDeviceSubtypeManager(aLogger => m);
             Assert.True(await _server.SendMessage(new StartScanning()) is Ok);
             Assert.True(await _server.SendMessage(new StopScanning()) is Ok);
             Assert.True(await _server.SendMessage(new FleshlightLaunchFW12Cmd(1, 0, 0)) is Error);
@@ -178,7 +178,7 @@ namespace Buttplug.Server.Test
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(d);
-            _server.AddDeviceSubtypeManager(aLogger => { return m; });
+            _server.AddDeviceSubtypeManager(aLogger => m);
             var msgReceived = false;
             _server.MessageReceived += (aObj, aMsgArgs) =>
             {
