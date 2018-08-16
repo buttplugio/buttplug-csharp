@@ -7,6 +7,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
 using Buttplug.Core.Test;
@@ -17,18 +18,26 @@ namespace Buttplug.Server.Test
     [TestFixture]
     public class ButtplugServerTests
     {
-        [Test]
-        public void RejectOutgoingOnlyMessage()
+        private TestServer _server;
+
+        [SetUp]
+        public async Task ServerTestSetup()
         {
-            Assert.True(new TestServer().SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)).GetAwaiter().GetResult() is Error);
+            _server = new TestServer();
+            Assert.True(await _server.SendMessage(new RequestServerInfo("TestClient")) is ServerInfo);
         }
 
         [Test]
-        public void LoggerSettingsTest()
+        public async Task RejectOutgoingOnlyMessage()
+        {
+            Assert.True(await _server.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
+        }
+
+        [Test]
+        public async Task LoggerSettingsTest()
         {
             var gotMessage = false;
-            var s = new TestServer();
-            s.MessageReceived += (aObj, aMsg) =>
+            _server.MessageReceived += (aObj, aMsg) =>
             {
                 if (aMsg.Message.GetType() == typeof(Log))
                 {
@@ -37,29 +46,28 @@ namespace Buttplug.Server.Test
             };
 
             // Sending error messages will always cause an error, as they are outgoing, not incoming.
-            Assert.True(s.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)).GetAwaiter().GetResult() is Error);
+            Assert.True(await _server.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
             Assert.False(gotMessage);
-            Assert.True(s.SendMessage(new RequestLog("Trace")).GetAwaiter().GetResult() is Ok);
-            Assert.True(s.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)).GetAwaiter().GetResult() is Error);
+            Assert.True(await _server.SendMessage(new RequestLog("Trace")) is Ok);
+            Assert.True(await _server.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
             Assert.True(gotMessage);
-            s.SendMessage(new RequestLog("Off")).Wait();
+            await _server.SendMessage(new RequestLog("Off"));
             gotMessage = false;
-            s.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)).Wait();
+            await _server.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId));
             Assert.False(gotMessage);
         }
 
         [Test]
-        public void CheckMessageReturnId()
+        public async Task CheckMessageReturnId()
         {
-            var s = new TestServer();
-            s.MessageReceived += (aObj, aMsg) =>
+            _server.MessageReceived += (aObj, aMsg) =>
             {
                 Assert.True(aMsg.Message is RequestServerInfo);
                 Assert.True(aMsg.Message.Id == 12345);
             };
             var m = new RequestServerInfo("TestClient", 12345);
-            s.SendMessage(m).Wait();
-            s.SendMessage("{\"RequestServerInfo\":{\"Id\":12345}}").Wait();
+            await _server.SendMessage(m);
+            await _server.SendMessage("{\"RequestServerInfo\":{\"Id\":12345}}");
         }
 
         private void CheckDeviceMessages(ButtplugMessage aMsgArgs)
@@ -91,25 +99,24 @@ namespace Buttplug.Server.Test
             }
         }
 
-        private void CheckDeviceCount(ButtplugServer aServer, int aExpectedCount)
+        private async Task CheckDeviceCount(ButtplugServer aServer, int aExpectedCount)
         {
-            var deviceListMsg = aServer.SendMessage(new RequestDeviceList()).GetAwaiter().GetResult();
+            var deviceListMsg = await aServer.SendMessage(new RequestDeviceList());
             Assert.True(deviceListMsg is DeviceList);
             Assert.AreEqual(((DeviceList)deviceListMsg).Devices.Length, aExpectedCount);
         }
 
         [Test]
-        public void TestAddListRemoveDevices()
+        public async Task TestAddListRemoveDevices()
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var msgarray = d.GetAllowedMessageTypes();
             var enumerable = msgarray as Type[] ?? msgarray.ToArray();
             Assert.True(enumerable.Length == 3);
             Assert.True(enumerable.Contains(typeof(SingleMotorVibrateCmd)));
-            var s = new TestServer();
-            s.AddDeviceSubtypeManager(aLogger => new TestDeviceSubtypeManager(d));
+            _server.AddDeviceSubtypeManager(aLogger => new TestDeviceSubtypeManager(d));
             ButtplugMessage msgReceived = null;
-            s.MessageReceived += (aObj, aMsgArgs) =>
+            _server.MessageReceived += (aObj, aMsgArgs) =>
             {
                 if (!(aMsgArgs.Message is ScanningFinished))
                 {
@@ -118,67 +125,61 @@ namespace Buttplug.Server.Test
 
                 CheckDeviceMessages(msgReceived);
             };
-            CheckDeviceCount(s, 0);
-            Assert.True(s.SendMessage(new StartScanning()).GetAwaiter().GetResult() is Ok);
-            Assert.True(s.SendMessage(new StopScanning()).GetAwaiter().GetResult() is Ok);
+            await CheckDeviceCount(_server, 0);
+            Assert.True(await _server.SendMessage(new StartScanning()) is Ok);
+            Assert.True(await _server.SendMessage(new StopScanning()) is Ok);
             Assert.True(msgReceived is DeviceAdded);
-            CheckDeviceCount(s, 1);
-            msgReceived = s.SendMessage(new RequestDeviceList()).GetAwaiter().GetResult();
+            await CheckDeviceCount(_server, 1);
+            msgReceived = await _server.SendMessage(new RequestDeviceList());
             d.RemoveDevice();
             Assert.True(msgReceived is DeviceRemoved);
-            CheckDeviceCount(s, 0);
+            await CheckDeviceCount(_server, 0);
         }
 
         [Test]
-        public void TestIncomingSystemIdMessage()
+        public async Task TestIncomingSystemIdMessage()
         {
-            var s = new TestServer();
-
             // Test echos back a test message with the same string and id
-            Assert.True(s.SendMessage(new Core.Messages.Test("Right", 2)).GetAwaiter().GetResult() is Core.Messages.Test);
-            Assert.True(s.SendMessage(new Core.Messages.Test("Wrong", 0)).GetAwaiter().GetResult() is Error);
+            Assert.True(await _server.SendMessage(new Core.Messages.Test("Right", 2)) is Core.Messages.Test);
+            Assert.True(await _server.SendMessage(new Core.Messages.Test("Wrong", 0)) is Error);
         }
 
         [Test]
-        public void TestInvalidDeviceIdMessage()
+        public async Task TestInvalidDeviceIdMessage()
         {
-            var s = new TestServer();
-            Assert.True(s.SendMessage(new SingleMotorVibrateCmd(1, .2, 0)).GetAwaiter().GetResult() is Error);
+            Assert.True(await _server.SendMessage(new SingleMotorVibrateCmd(1, .2, 0)) is Error);
         }
 
         [Test]
-        public void TestValidDeviceMessage()
-        {
-            var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
-            var m = new TestDeviceSubtypeManager(d);
-            var s = new TestServer();
-            s.AddDeviceSubtypeManager(aLogger => { return m; });
-            Assert.True(s.SendMessage(new StartScanning()).GetAwaiter().GetResult() is Ok);
-            Assert.True(s.SendMessage(new StopScanning()).GetAwaiter().GetResult() is Ok);
-            Assert.True(s.SendMessage(new SingleMotorVibrateCmd(1, .2)).GetAwaiter().GetResult() is Ok);
-        }
-
-        [Test]
-        public void TestInvalidDeviceMessage()
+        public async Task TestValidDeviceMessage()
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(d);
-            var s = new TestServer();
-            s.AddDeviceSubtypeManager(aLogger => { return m; });
-            Assert.True(s.SendMessage(new StartScanning()).GetAwaiter().GetResult() is Ok);
-            Assert.True(s.SendMessage(new StopScanning()).GetAwaiter().GetResult() is Ok);
-            Assert.True(s.SendMessage(new FleshlightLaunchFW12Cmd(1, 0, 0)).GetAwaiter().GetResult() is Error);
+            _server.AddDeviceSubtypeManager(aLogger => { return m; });
+            Assert.True(await _server.SendMessage(new StartScanning()) is Ok);
+            Assert.True(await _server.SendMessage(new StopScanning()) is Ok);
+            Assert.True(await _server.SendMessage(new SingleMotorVibrateCmd(1, .2)) is Ok);
         }
 
         [Test]
-        public void TestDuplicateDeviceAdded()
+        public async Task TestInvalidDeviceMessage()
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(d);
-            var s = new TestServer();
-            s.AddDeviceSubtypeManager(aLogger => { return m; });
+            _server.AddDeviceSubtypeManager(aLogger => { return m; });
+            Assert.True(await _server.SendMessage(new StartScanning()) is Ok);
+            Assert.True(await _server.SendMessage(new StopScanning()) is Ok);
+            Assert.True(await _server.SendMessage(new FleshlightLaunchFW12Cmd(1, 0, 0)) is Error);
+        }
+
+        [Test]
+        public async Task TestDuplicateDeviceAdded()
+        {
+            var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
+            var m = new TestDeviceSubtypeManager(d);
+            _server.AddDeviceSubtypeManager(aLogger => { return m; });
             var msgReceived = false;
-            s.MessageReceived += (aObj, aMsgArgs) =>
+            _server.MessageReceived += (aObj, aMsgArgs) =>
             {
                 switch (aMsgArgs.Message)
                 {
@@ -200,9 +201,9 @@ namespace Buttplug.Server.Test
             };
             for (var i = 0; i < 2; ++i)
             {
-                Assert.True(s.SendMessage(new StartScanning()).GetAwaiter().GetResult() is Ok);
-                Assert.True(s.SendMessage(new StopScanning()).GetAwaiter().GetResult() is Ok);
-                var x = s.SendMessage(new RequestDeviceList()).GetAwaiter().GetResult();
+                Assert.True(await _server.SendMessage(new StartScanning()) is Ok);
+                Assert.True(await _server.SendMessage(new StopScanning()) is Ok);
+                var x = await _server.SendMessage(new RequestDeviceList());
                 Assert.True(x is DeviceList);
                 switch (x)
                 {
@@ -227,22 +228,23 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
-        public void TestPing()
+        public async Task TestPing()
         {
-            var s = new TestServer(100);
+            var server = new TestServer(100);
+            Assert.True(await server.SendMessage(new RequestServerInfo("TestClient")) is ServerInfo);
 
             // Timeout is set to 100ms
             for (int i = 0; i < 8; i++)
             {
                 Thread.Sleep(50);
-                Assert.True(s.SendMessage(new Ping()).GetAwaiter().GetResult() is Ok);
+                Assert.True(await server.SendMessage(new Ping()) is Ok);
             }
 
             // If we're still getting OK, we've suvived 400ms
 
             // Now lets ensure we can actually timeout
             Thread.Sleep(150);
-            Assert.True(s.SendMessage(new Ping()).GetAwaiter().GetResult() is Error);
+            Assert.True(await server.SendMessage(new Ping()) is Error);
         }
     }
 }

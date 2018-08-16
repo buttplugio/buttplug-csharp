@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
@@ -21,10 +22,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         private BluetoothDeviceTestUtils<MysteryVibeBluetoothInfo> testUtil;
 
         [SetUp]
-        public void Init()
+        public async Task Init()
         {
             testUtil = new BluetoothDeviceTestUtils<MysteryVibeBluetoothInfo>();
-            testUtil.SetupTest("MV Crescendo");
+            await testUtil.SetupTest("MV Crescendo");
         }
 
         [Test]
@@ -41,7 +42,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         // StopDeviceCmd noop test handled in GeneralDeviceTests
 
         [Test]
-        public void TestStopDeviceCmd()
+        public async Task TestStopDeviceCmd()
         {
             var expected =
                 new List<(byte[], uint)>()
@@ -49,7 +50,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     (Enumerable.Repeat((byte)(MysteryVibe.MaxSpeed * 0.5), 6).ToArray(), testUtil.NoCharacteristic),
                 };
 
-            testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
+            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
             expected =
                 new List<(byte[], uint)>()
@@ -57,11 +58,11 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     (MysteryVibe.NullSpeed, testUtil.NoCharacteristic),
                 };
 
-            testUtil.TestDeviceMessageOnWrite(new StopDeviceCmd(4), expected, false);
+            await testUtil.TestDeviceMessageOnWrite(new StopDeviceCmd(4), expected, false);
         }
 
         [Test]
-        public void TestSingleMotorVibrateCmd()
+        public async Task TestSingleMotorVibrateCmd()
         {
             var expected =
                 new List<(byte[], uint)>()
@@ -69,11 +70,11 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     (Enumerable.Repeat((byte)(MysteryVibe.MaxSpeed * 0.5), 6).ToArray(), testUtil.NoCharacteristic),
                 };
 
-            testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
+            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
         }
 
         [Test]
-        public void TestVibrateCmd()
+        public async Task TestVibrateCmd()
         {
             var expected =
                 new List<(byte[], uint)>()
@@ -81,13 +82,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     (Enumerable.Repeat((byte)(MysteryVibe.MaxSpeed * 0.5), 6).ToArray(), testUtil.NoCharacteristic),
                 };
 
-            testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 6), expected, false);
+            await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 6), expected, false);
         }
 
         [Test]
-        public void TestInvalidVibrateCmd()
+        public async Task TestInvalidVibrateCmd()
         {
-            testUtil.TestInvalidVibrateCmd(6);
+            await testUtil.TestInvalidVibrateCmd(6);
         }
     }
 }

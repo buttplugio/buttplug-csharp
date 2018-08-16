@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
@@ -20,12 +21,12 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class KiirooGen2VibeTests
     {
         [Test]
-        public void TestAllowedMessages()
+        public async Task TestAllowedMessages()
         {
             foreach (var item in KiirooGen2Vibe.DevInfos)
             {
                 var testUtil = new BluetoothDeviceTestUtils<KiirooGen2VibeBluetoothInfo>();
-                testUtil.SetupTest(item.Key);
+                await testUtil.SetupTest(item.Key);
                 testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
                 {
                     { typeof(StopDeviceCmd), 0 },
@@ -38,12 +39,12 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         // StopDeviceCmd test handled in GeneralDeviceTests
 
         [Test]
-        public void TestSingleMotorVibrateCmd()
+        public async Task TestSingleMotorVibrateCmd()
         {
             foreach (var item in KiirooGen2Vibe.DevInfos)
             {
                 var testUtil = new BluetoothDeviceTestUtils<KiirooGen2VibeBluetoothInfo>();
-                testUtil.SetupTest(item.Key);
+                await testUtil.SetupTest(item.Key);
                 var expected = new byte[] { 0, 0, 0 };
                 for (var i = 0u; i < item.Value.VibeCount; ++i)
                 {
@@ -51,7 +52,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     expected[Array.IndexOf(item.Value.VibeOrder, i)] = 50;
                 }
 
-                testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5),
+                await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5),
                     new List<(byte[], uint)>()
                     {
                         (expected, (uint)KiirooGen2VibeBluetoothInfo.Chrs.Tx),
@@ -60,12 +61,12 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public void TestVibrateCmd()
+        public async Task TestVibrateCmd()
         {
             foreach (var item in KiirooGen2Vibe.DevInfos)
             {
                 var testUtil = new BluetoothDeviceTestUtils<KiirooGen2VibeBluetoothInfo>();
-                testUtil.SetupTest(item.Key);
+                await testUtil.SetupTest(item.Key);
                 var speeds = new[] { 0.25, 0.5, 0.75 };
                 var features = new List<VibrateCmd.VibrateSubcommand>();
                 for (var i = 0u; i < item.Value.VibeCount; ++i)
@@ -80,7 +81,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     expected[Array.IndexOf(item.Value.VibeOrder, i)] = (byte)(speeds[i] * 100);
                 }
 
-                testUtil.TestDeviceMessage(new VibrateCmd(4, features),
+                await testUtil.TestDeviceMessage(new VibrateCmd(4, features),
                     new List<(byte[], uint)>()
                     {
                         (expected, (uint)KiirooGen2VibeBluetoothInfo.Chrs.Tx),
@@ -89,13 +90,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public void TestInvalidVibrateCmd()
+        public async Task TestInvalidCmds()
         {
             foreach (var item in KiirooGen2Vibe.DevInfos)
             {
                 var testUtil = new BluetoothDeviceTestUtils<KiirooGen2VibeBluetoothInfo>();
-                testUtil.SetupTest(item.Key);
-                testUtil.TestInvalidVibrateCmd(item.Value.VibeCount);
+                await testUtil.SetupTest(item.Key);
+                await testUtil.TestInvalidVibrateCmd(item.Value.VibeCount);
             }
         }
     }
