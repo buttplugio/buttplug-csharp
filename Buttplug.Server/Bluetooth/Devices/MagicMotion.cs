@@ -21,14 +21,9 @@ namespace Buttplug.Server.Bluetooth.Devices
         }
 
         /*
-         * This has 6 services! Not sure what does what yet
-         *
-         * 78667579-7b48-43db-b8c5-7928a6b0a335  // Magic Motion's primary
-         * 00001800-0000-1000-8000-00805f9b34fb
-         * 00001801-0000-1000-8000-00805f9b34fb
-         * 3d3cbc0e-f76b-11e3-8fcd-b2227cce2b54  // Unknown service
-         * 0000180f-0000-1000-8000-00805f9b34fb
-         * 0000180a-0000-1000-8000-00805f9b34fb
+         * ToDo: Rx on other service
+         * Service UUID: 6f468792-f91f-11e3-a847-b2227cce2b54
+         * Char UUID: 6f468bfc-f91f-11e3-a847-b2227cce2b54
          */
 
         public Guid[] Services { get; } = { new Guid("78667579-7b48-43db-b8c5-7928a6b0a335") };
@@ -38,6 +33,10 @@ namespace Buttplug.Server.Bluetooth.Devices
         public string[] Names { get; } =
         {
             "Smart Mini Vibe",
+            "Flamingo",
+            "Eidolon",
+            "Smart Bean", // Kegel Master
+            "Magic Cell", // Dante/Candy
         };
 
         public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
@@ -55,18 +54,96 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class MagicMotion : ButtplugBluetoothDevice
     {
-        private double _vibratorSpeed;
+        private readonly double[] _vibratorSpeeds = { 0, 0 };
+
+        internal enum MagicMotionProtocol
+        {
+            Protocol1,
+            Protocol2,
+        }
+
+        internal struct MagicMotionType
+        {
+            public string Name;
+            public uint VibeCount;
+            public MagicMotionProtocol Protocol;
+        }
+
+        internal static readonly Dictionary<string, MagicMotionType> DevInfos =
+            new Dictionary<string, MagicMotionType>()
+            {
+                {
+                    "Smart Mini Vibe",
+                    new MagicMotionType()
+                    {
+                        Name = "Smart Mini Vibe",
+                        VibeCount = 1,
+                        Protocol = MagicMotionProtocol.Protocol1,
+                    }
+                },
+                {
+                    "Flamingo",
+                    new MagicMotionType()
+                    {
+                        Name = "Flamingo",
+                        VibeCount = 1,
+                        Protocol = MagicMotionProtocol.Protocol1,
+                    }
+                },
+                {
+                    "Magic Cell",
+                    new MagicMotionType()
+                    {
+                        // ToDo: has accelerometer
+                        Name = "Dante/Candy",
+                        VibeCount = 1,
+                        Protocol = MagicMotionProtocol.Protocol1,
+                    }
+                },
+                {
+                    "Eidolon",
+                    new MagicMotionType()
+                    {
+                        Name = "Eidolon",
+                        VibeCount = 2,
+                        Protocol = MagicMotionProtocol.Protocol2,
+                    }
+                },
+                {
+                    "Smart Bean",
+                    new MagicMotionType()
+                    {
+                        // ToDo: has pressure sensor
+                        Name = "Kegel Master",
+                        VibeCount = 1,
+                        Protocol = MagicMotionProtocol.Protocol1,
+                    }
+                },
+            };
+
+        private readonly MagicMotionType _devInfo;
 
         public MagicMotion(IButtplugLogManager aLogManager,
                            IBluetoothDeviceInterface aInterface,
                            IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"MagicMotion Device ({aInterface.Name})",
+                   $"Unknown MagicMotion Device ({aInterface.Name})",
                    aInterface,
                    aInfo)
         {
+            if (DevInfos.ContainsKey(aInterface.Name))
+            {
+                Name = $"MagicMotion {DevInfos[aInterface.Name].Name}";
+                _devInfo = DevInfos[aInterface.Name];
+            }
+            else
+            {
+                BpLogger.Warn($"Cannot identify device {Name}, defaulting to Smart Mini Vibe settings.");
+                _devInfo = DevInfos["Smart Mini Vibe"];
+            }
+
             MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 }));
+            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _devInfo.VibeCount }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
         }
 
@@ -82,7 +159,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 1), aToken);
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, _devInfo.VibeCount), aToken);
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -92,17 +169,19 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            if (cmdMsg.Speeds.Count != 1)
+            if (cmdMsg.Speeds.Count == 0 || cmdMsg.Speeds.Count > _devInfo.VibeCount )
             {
                 return new Error(
-                    "VibrateCmd requires 1 vector for this device.",
+                    $"VibrateCmd requires between 1 and {_devInfo.VibeCount} vectors for this device.",
                     Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id);
             }
 
+            var changed = false;
+
             foreach (var v in cmdMsg.Speeds)
             {
-                if (v.Index != 0)
+                if (v.Index >= _devInfo.VibeCount)
                 {
                     return new Error(
                         $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
@@ -110,18 +189,44 @@ namespace Buttplug.Server.Bluetooth.Devices
                         cmdMsg.Id);
                 }
 
-                if (Math.Abs(v.Speed - _vibratorSpeed) < 0.001)
+                if (Math.Abs(v.Speed - _vibratorSpeeds[v.Index]) > 0.001)
                 {
-                    return new Ok(cmdMsg.Id);
+                    changed = true;
+                    _vibratorSpeeds[v.Index] = v.Speed;
                 }
-
-                _vibratorSpeed = v.Speed;
             }
 
-            var data = new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 };
-            data[9] = Convert.ToByte(_vibratorSpeed * byte.MaxValue);
+            if (!changed)
+            {
+                return new Ok(cmdMsg.Id);
+            }
 
-            // While there are 3 lovense revs right now, all of the characteristic arrays are the same.
+            byte[] data = null;
+            switch (_devInfo.Protocol)
+            {
+            case MagicMotionProtocol.Protocol1:
+                data = new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 };
+                data[9] = Convert.ToByte(_vibratorSpeeds[0] * byte.MaxValue);
+                break;
+
+            case MagicMotionProtocol.Protocol2:
+                data = new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00, 0x04, 0x08, 0x00, 0x64, 0x01 };
+                data[9] = Convert.ToByte(_vibratorSpeeds[0] * byte.MaxValue);
+
+                if (_devInfo.VibeCount >= 2)
+                {
+                    data[14] = Convert.ToByte(_vibratorSpeeds[1] * byte.MaxValue);
+                }
+
+                break;
+
+            default:
+                return new Error(
+                    "Unknown communication protocol.",
+                    Error.ErrorClass.ERROR_DEVICE,
+                    cmdMsg.Id);
+            }
+
             return await Interface.WriteValue(aMsg.Id,
                 (uint)MagicMotionBluetoothInfo.Chrs.Tx,
                 data, false, aToken);
