@@ -15,7 +15,7 @@ using NUnit.Framework;
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
     [TestFixture]
-    public class MagicMotionTests
+    public class MagicMotionSingleVibeTests
     {
         [NotNull]
         private BluetoothDeviceTestUtils<MagicMotionBluetoothInfo> testUtil;
@@ -88,6 +88,83 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestInvalidVibrateCmd()
         {
             await testUtil.TestInvalidVibrateCmd(1);
+        }
+    }
+
+    [TestFixture]
+    public class MagicMotionDualVibeTests
+    {
+        [NotNull]
+        private BluetoothDeviceTestUtils<MagicMotionBluetoothInfo> testUtil;
+
+        [SetUp]
+        public async Task Init()
+        {
+            testUtil = new BluetoothDeviceTestUtils<MagicMotionBluetoothInfo>();
+            await testUtil.SetupTest("Eidolon");
+        }
+
+        [Test]
+        public void TestAllowedMessages()
+        {
+            testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
+            {
+                { typeof(StopDeviceCmd), 0 },
+                { typeof(SingleMotorVibrateCmd), 0 },
+                { typeof(VibrateCmd), 2 },
+            });
+        }
+
+        // StopDeviceCmd noop test handled in GeneralDeviceTests
+
+        [Test]
+        public async Task TestStopDeviceCmd()
+        {
+            var expected =
+                new List<(byte[], uint)>()
+                {
+                    (new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x80, 0x64, 0x00, 0x04, 0x08, 0x80, 0x64, 0x01 }, (uint)MagicMotionBluetoothInfo.Chrs.Tx),
+                };
+
+            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
+
+            expected =
+                new List<(byte[], uint)>()
+                {
+                    (new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00, 0x04, 0x08, 0x00, 0x64, 0x01 }, (uint)MagicMotionBluetoothInfo.Chrs.Tx),
+                };
+
+            await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
+        }
+
+        [Test]
+        public async Task TestSingleMotorVibrateCmd()
+        {
+            var expected =
+                new List<(byte[], uint)>()
+                {
+                    (new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x80, 0x64, 0x00, 0x04, 0x08, 0x80, 0x64, 0x01 }, (uint)MagicMotionBluetoothInfo.Chrs.Tx),
+                };
+
+            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
+        }
+
+        [Test]
+        public async Task TestVibrateCmd()
+        {
+            var expected =
+                new List<(byte[], uint)>()
+                {
+                    (new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x80, 0x64, 0x00, 0x04, 0x08, 0x80, 0x64, 0x01 }, (uint)MagicMotionBluetoothInfo.Chrs.Tx),
+                };
+
+            await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 2), expected, false);
+        }
+
+        [Test]
+        public async Task TestInvalidVibrateCmd()
+        {
+            await testUtil.TestInvalidVibrateCmd(2);
         }
     }
 }
