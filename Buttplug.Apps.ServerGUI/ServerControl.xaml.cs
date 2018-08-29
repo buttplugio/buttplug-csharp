@@ -197,11 +197,11 @@ namespace Buttplug.Apps.ServerGUI
             Dispatcher.Invoke(() => { Window.GetWindow(this).Activate(); });
         }
 
-        public void StartServer()
+        public async void StartServer()
         {
             try
             {
-                _ws.StartServer(_bpFactory, 1, (int)_port, _loopback, _secure, _hostname);
+                await _ws.StartServer(_bpFactory, 1, (int)_port, _loopback, _secure, _hostname);
                 ConnToggleButton.Content = "Stop";
                 SecureCheckBox.IsEnabled = false;
                 PortTextBox.IsEnabled = false;
@@ -295,9 +295,9 @@ namespace Buttplug.Apps.ServerGUI
             System.Diagnostics.Process.Start(new Uri((_secure ? "https" : "http") + "://localhost:" + _port.ToString()).AbsoluteUri);
         }
 
-        private void DisconnectButton_Click(object sender, RoutedEventArgs e)
+        private async void DisconnectButton_Click(object sender, RoutedEventArgs e)
         {
-            _ws.Disconnect();
+            await _ws.Disconnect();
         }
 
         private void LoopbackCheckBox_Unchecked(object sender, RoutedEventArgs e)
