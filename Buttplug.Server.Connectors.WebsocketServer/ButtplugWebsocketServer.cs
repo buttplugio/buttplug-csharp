@@ -141,6 +141,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             }
             _cancellation.Cancel();
             await _websocketTask;
+            await _server.StopAsync();
             _server = null;
         }
 
