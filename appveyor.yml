@@ -6,9 +6,11 @@ configuration:
   - Debug
   - Release
 
+# Removing ubuntu builds for the time being because they slow things
+# down on Appveyor due to slow VM provisioning. Should move to Travis.
 image:
   - Visual Studio 2017
-  - Ubuntu
+# - Ubuntu
 
 skip_branch_with_pr: true
   
@@ -80,26 +82,27 @@ nuget:
 
 before_build:
   - nuget restore
+
 build:
   parallel: true
   project: Buttplug.sln
   publish_nuget: true
 
-for:
-  -
-    matrix:
-      only:
-        - image: Ubuntu
-          configuration: Debug
-    build_script:
-      - dotnet build --configuration DebugStandard
-  -
-    matrix:
-      only:
-        - image: Ubuntu
-          configuration: Release
-    build_script:
-      - dotnet build --configuration ReleaseStandard
+# for:
+#   -
+#     matrix:
+#       only:
+#         - image: Ubuntu
+#           configuration: Debug
+#     build_script:
+#       - dotnet build --configuration DebugStandard
+#   -
+#     matrix:
+#       only:
+#         - image: Ubuntu
+#           configuration: Release
+#     build_script:
+#       - dotnet build --configuration ReleaseStandard
   
 after_build:
   - ps: |
