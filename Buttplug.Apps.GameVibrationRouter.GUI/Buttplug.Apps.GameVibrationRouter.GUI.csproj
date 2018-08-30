@@ -162,9 +162,21 @@
       <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
       <Name>Buttplug.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.ETSerialManager\Buttplug.Server.Managers.ETSerialManager.csproj">
+      <Project>{436cf4ff-ae10-45da-8909-9aacf1ed6425}</Project>
+      <Name>Buttplug.Server.Managers.ETSerialManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.HidManager\Buttplug.Server.Managers.HidManager.csproj">
+      <Project>{83574729-6eb4-43e9-b7cc-ac5725380038}</Project>
+      <Name>Buttplug.Server.Managers.HidManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Buttplug.Server.Managers.UWPBluetoothManager\Buttplug.Server.Managers.UWPBluetoothManager.csproj">
       <Project>{223ea194-8318-4189-bec8-73734c3f4a78}</Project>
       <Name>Buttplug.Server.Managers.UWPBluetoothManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.WinUSBManager\Buttplug.Server.Managers.WinUSBManager.csproj">
+      <Project>{0f5dab4b-184b-4b7e-9f40-339c7f5e216f}</Project>
+      <Name>Buttplug.Server.Managers.WinUSBManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Server.Managers.XInputGamepadManager\Buttplug.Server.Managers.XInputGamepadManager.csproj">
       <Project>{c7d040e1-e18e-4f51-859f-cff8aa57bd64}</Project>
