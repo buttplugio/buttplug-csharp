@@ -104,7 +104,7 @@ for:
 after_build:
   - ps: |
       if ($isWindows) {
-        InspectCode.exe -o=resharper-clt-output.xml --project="Buttplug*" Buttplug.sln
+        InspectCode.exe --output=resharper-clt-output.xml --project="Buttplug*" Buttplug.sln;
         $result = [xml](Get-Content .\resharper-clt-output.xml)
         $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
       }
@@ -150,7 +150,7 @@ deploy:
       branch: master
       configuration: release
       appveyor_repo_provider: github
-      appveyor_repo_name: metafetish/buttplug-csharp
+      appveyor_repo_name: buttplugio/buttplug-csharp
 notifications:
   - provider: Slack
     auth_token:
