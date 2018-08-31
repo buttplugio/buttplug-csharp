@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Logging
 {
     /// <summary>
     /// Interface for log managers. See <see cref="ButtplugLogManager"/> implementation for more info.

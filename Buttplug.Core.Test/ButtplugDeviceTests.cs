@@ -7,6 +7,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using NUnit.Framework;
 

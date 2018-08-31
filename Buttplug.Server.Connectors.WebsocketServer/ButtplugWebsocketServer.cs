@@ -10,6 +10,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 using vtortola.WebSockets;
 using vtortola.WebSockets.Rfc6455;

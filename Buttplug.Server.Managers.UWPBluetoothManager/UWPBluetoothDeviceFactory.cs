@@ -14,6 +14,8 @@ using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Buttplug.Core.Devices;
+using Buttplug.Core.Logging;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {

@@ -32,9 +32,9 @@ namespace Buttplug.Client.Test
         [Test]
         public void LogEventArgsTest()
         {
-            var arg = new LogEventArgs(new Core.Messages.Log(Core.ButtplugLogLevel.Debug, "test"));
+            var arg = new LogEventArgs(new Core.Messages.Log(Core.Logging.ButtplugLogLevel.Debug, "test"));
             Assert.AreEqual("test", arg.Message.LogMessage);
-            Assert.AreEqual(Core.ButtplugLogLevel.Debug, arg.Message.LogLevel);
+            Assert.AreEqual(Core.Logging.ButtplugLogLevel.Debug, arg.Message.LogLevel);
         }
     }
 }

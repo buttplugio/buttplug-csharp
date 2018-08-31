@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using vtortola.WebSockets;

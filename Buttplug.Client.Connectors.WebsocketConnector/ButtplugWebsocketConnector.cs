@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using Buttplug.Core.Messages;
 using vtortola.WebSockets;
 using vtortola.WebSockets.Rfc6455;
 

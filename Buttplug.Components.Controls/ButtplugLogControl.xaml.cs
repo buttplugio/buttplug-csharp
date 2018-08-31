@@ -13,10 +13,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Microsoft.Win32;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using LogLevel = NLog.LogLevel;
 
 namespace Buttplug.Components.Controls
 {

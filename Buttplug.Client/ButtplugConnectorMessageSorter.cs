@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
 namespace Buttplug.Client

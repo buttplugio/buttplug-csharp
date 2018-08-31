@@ -5,10 +5,13 @@
 // </copyright>
 
 using Buttplug.Core;
+using Buttplug.Core.Logging;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
+    // ReSharper disable once InconsistentNaming
     public class ButtplugConnectorJSONParser
     {
         /// <summary>

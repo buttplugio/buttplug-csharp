@@ -7,6 +7,7 @@
 using System;
 using System.Threading.Tasks;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
 using Buttplug.Server.Test.Util;

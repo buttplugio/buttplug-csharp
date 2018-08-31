@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Buttplug.Client.Test;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Test;
 using Buttplug.Server.Connectors.WebsocketServer;
 using Buttplug.Server.Test;

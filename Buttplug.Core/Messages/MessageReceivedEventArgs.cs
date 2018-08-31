@@ -1,6 +1,6 @@
 using System;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Messages
 {
     /// <summary>
     /// Event fired when a new <see cref="ButtplugMessage"/> is received.

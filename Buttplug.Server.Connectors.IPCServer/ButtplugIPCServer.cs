@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
 using JetBrains.Annotations;

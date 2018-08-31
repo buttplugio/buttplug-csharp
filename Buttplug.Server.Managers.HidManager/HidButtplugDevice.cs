@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
+using Buttplug.Core.Devices;
+using Buttplug.Core.Logging;
 using HidLibrary;
 
 namespace Buttplug.Server.Managers.HidManager

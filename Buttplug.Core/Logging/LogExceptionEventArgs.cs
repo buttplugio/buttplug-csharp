@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Logging
 {
     /// <summary>
     /// Event wrapper for an exception log message

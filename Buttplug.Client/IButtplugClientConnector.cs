@@ -8,6 +8,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
+using Buttplug.Core.Messages;
 
 namespace Buttplug.Client
 {

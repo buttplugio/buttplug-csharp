@@ -1,5 +1,6 @@
 ﻿using Buttplug.Client.Test;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Test;
 using Buttplug.Server.Connectors.IPCServer;
 using Buttplug.Server.Test;
