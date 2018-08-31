@@ -15,6 +15,8 @@ image:
 skip_branch_with_pr: true
   
 environment:
+  APPVEYOR_RDP_PASSWORD:
+    secure: KX70K2KIJ5SYhEBZ6ROtjg==
   sentry_api_url:
     secure: grqYfjT9kMwONAdl/iwYcI7NOEd8ounzFFehZIWX3I3y1oiIa7F4GrZJKNqWcucEhyyn9SpAnXiheKAJU/kl0nFT7QUlnXplEE9c/krbWDEy0mSMy5DaFv1+MijZ5hjm
   git_access_token:
@@ -137,6 +139,9 @@ after_test:
         Pop-Location
       }
 
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+      
 cache:
   - packages -> **\packages.config
   # Cache chocolatey packages
