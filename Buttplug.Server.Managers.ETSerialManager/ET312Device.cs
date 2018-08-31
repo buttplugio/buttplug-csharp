@@ -11,6 +11,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
+using Buttplug.Core.Devices;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Util;
 using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;

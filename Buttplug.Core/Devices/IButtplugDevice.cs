@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Devices
 {
     /// <summary>
     /// Interface for representations of hardware devices.

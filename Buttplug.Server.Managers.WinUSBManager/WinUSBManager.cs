@@ -6,6 +6,7 @@
 
 using System;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using MadWizard.WinUSBNet;
 using Microsoft.Win32;
 

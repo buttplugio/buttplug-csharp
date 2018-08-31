@@ -7,6 +7,7 @@
 using System;
 using System.Linq;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Server.Bluetooth;
 using NUnit.Framework;
 

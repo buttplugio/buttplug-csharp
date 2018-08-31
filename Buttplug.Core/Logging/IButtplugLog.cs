@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Logging
 {
     /// <summary>
     /// Sets up a common interface for log message events.

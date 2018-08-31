@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using static Buttplug.Core.Messages.Error;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Devices
 {
     /// <summary>
     /// Abstract representation of a device

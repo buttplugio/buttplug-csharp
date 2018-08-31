@@ -1,7 +1,7 @@
 ﻿using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Logging
 {
     /// <summary>
     /// Extension methods for <see cref="IButtplugLog"/>.

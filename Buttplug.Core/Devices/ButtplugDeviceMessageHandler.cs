@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Devices
 {
     /// <summary>
     /// A container class for message functions and attributes

@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using Application = System.Windows.Application;

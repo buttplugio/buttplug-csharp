@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using NUnit.Framework;
 

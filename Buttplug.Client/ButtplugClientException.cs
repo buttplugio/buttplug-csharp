@@ -6,6 +6,7 @@
 
 using System;
 using Buttplug.Core;
+using Buttplug.Core.Messages;
 
 namespace Buttplug.Client
 {

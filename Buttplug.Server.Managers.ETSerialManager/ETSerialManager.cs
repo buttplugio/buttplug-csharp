@@ -9,6 +9,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;
 
 // ReSharper disable once CheckNamespace

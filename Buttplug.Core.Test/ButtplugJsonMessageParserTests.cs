@@ -4,6 +4,7 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using NUnit.Framework;
 

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Buttplug.Core.Messages;
 using Newtonsoft.Json;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Messages
 {
     /// <summary>
     /// Base class for Buttplug protocol messages.

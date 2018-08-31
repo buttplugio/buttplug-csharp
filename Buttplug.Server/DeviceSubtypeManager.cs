@@ -6,6 +6,7 @@
 
 using System;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server

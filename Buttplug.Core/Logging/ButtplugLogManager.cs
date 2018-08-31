@@ -1,8 +1,7 @@
 ﻿using System;
-using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Logging
 {
     /// <summary>
     /// Handles receiving log messages and reporting any that match requested granuarlity levels

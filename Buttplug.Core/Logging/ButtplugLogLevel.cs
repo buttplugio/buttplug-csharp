@@ -1,4 +1,4 @@
-﻿namespace Buttplug.Core
+﻿namespace Buttplug.Core.Logging
 {
     /// <summary>
     /// Logging levels used by the <see cref="ButtplugLog"/>

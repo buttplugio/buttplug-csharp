@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
+using Buttplug.Core.Devices;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 
 namespace Buttplug.Server.Bluetooth.Devices

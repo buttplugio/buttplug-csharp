@@ -2,7 +2,7 @@
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Logging
 {
     /// <summary>
     /// Event wrapper for log message events.

@@ -2,7 +2,7 @@
 using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 
-namespace Buttplug.Core
+namespace Buttplug.Core.Logging
 {
     internal class ButtplugLog : IButtplugLog
     {

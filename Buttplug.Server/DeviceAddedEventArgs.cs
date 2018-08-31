@@ -6,6 +6,7 @@
 
 using System;
 using Buttplug.Core;
+using Buttplug.Core.Devices;
 
 namespace Buttplug.Server
 {
