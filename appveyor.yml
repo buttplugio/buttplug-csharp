@@ -86,7 +86,8 @@ before_build:
 build:
   project: Buttplug.sln
   publish_nuget: true
-  # parallel: true
+  parallel: true
+  verbosity: minimal
 
 # for:
 #   -
