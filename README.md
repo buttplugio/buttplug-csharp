@@ -1,4 +1,4 @@
-# Buttplug - Windows C# Server Implementation
+# Buttplug Protocol Implementation - C# .Net Standard/Framework
 
 [![Build status](https://ci.appveyor.com/api/projects/status/kcrobh9kvkpcjlqg?svg=true)](https://ci.appveyor.com/project/qdot/buttplug-csharp)
 [![codecov](https://codecov.io/gh/buttplugio/buttplug-csharp/branch/master/graph/badge.svg)](https://codecov.io/gh/buttplugio/buttplug-csharp)
@@ -13,8 +13,8 @@ hardware usually means sex toys, but could honestly be just about
 anything. It's basically a userland HID manager for things that may
 not specifically be HID.
 
-If you're looking for the installer for the Websocket Server, Game
-Vibration Router, or Kiiroo Emulator, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
+If you're looking for the installer for the Buttplug Server or Game
+Vibration Router software, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
 
 ## Table Of Contents
 
@@ -44,7 +44,7 @@ API documentation for the current release is available at
 Buttplug implementations are available in multiple languages (rust,
 javascript, etc)/frameworks/platforms. For a full
 list of documentation, libraries, and applications,
-[see the README in the main buttplug repo](http://github.com/buttplugio/buttplug).
+[see the buttplug.io website](https://buttplug.io).
 
 ## Hardware Support
 
@@ -93,7 +93,7 @@ Packages and libraries from the buttplug-csharp repo are available via
 [nuget](http://nuget.org). Simply run a search for "buttplug", or
 [follow this link to the nuget "buttplug" search](https://www.nuget.org/packages?q=buttplug).
 
-### Client Software
+### Client Software (Server, Game Vibration Router)
 
 The Buttplug C# Repo hosts the Buttplug C# Development Libraries, as
 well as the following applications, known as the Buttplug Application Suite:
@@ -103,7 +103,7 @@ well as the following applications, known as the Buttplug Application Suite:
 
 To download the installer for these applications, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
 
-### Special Installation Steps When Building Buttplug Applications
+### Special Installation Steps When Developing Buttplug Applications
 
 Due to a bug in the Windows 15063 SDK, applications using the BLE APIs
 need to have an AppId in the registry with a special SDDL access
