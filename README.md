@@ -1,7 +1,7 @@
 # Buttplug - Windows C# Server Implementation
 
-[![Build status](https://ci.appveyor.com/api/projects/status/vf4qvxkp3o3p3we1/branch/master?svg=true)](https://ci.appveyor.com/project/qdot/buttplug-csharp/branch/master) 
-[![codecov](https://codecov.io/gh/metafetish/buttplug-csharp/branch/master/graph/badge.svg)](https://codecov.io/gh/metafetish/buttplug-csharp)
+[![Build status](https://ci.appveyor.com/api/projects/status/kcrobh9kvkpcjlqg?svg=true)](https://ci.appveyor.com/project/qdot/buttplug-csharp)
+[![codecov](https://codecov.io/gh/buttplugio/buttplug-csharp/branch/master/graph/badge.svg)](https://codecov.io/gh/buttplugio/buttplug-csharp)
 
 [![Patreon donate button](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/qdot)
 [![Discourse Forum](https://img.shields.io/badge/discourse-forum-blue.svg)](https://metafetish.club)
@@ -81,22 +81,27 @@ Buttplug C# Supports the following platforms:
   - Other Devices
     - Xbox Compatible Gamepads (XInput, Vibration Control Only)
 
+Check [https://buttplug.io](https://buttplug.io) for a list a fully
+up-to-date list of supported hardware, as well as planned hardware
+support.
+
 ## Installation
 
-The Buttplug C# Repo hosts the Buttplug C# Development Libraries, as
-well as the following applications:
-
-- Websocket Server
-- Game Vibration Router
-- Kiiroo Desktop Platform Emulator
-
-To download the installer for these applications, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
-
-## Development
+### Libraries for Development
 
 Packages and libraries from the buttplug-csharp repo are available via
 [nuget](http://nuget.org). Simply run a search for "buttplug", or
 [follow this link to the nuget "buttplug" search](https://www.nuget.org/packages?q=buttplug).
+
+### Client Software
+
+The Buttplug C# Repo hosts the Buttplug C# Development Libraries, as
+well as the following applications, known as the Buttplug Application Suite:
+
+- Buttplug Server
+- Game Vibration Router
+
+To download the installer for these applications, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
 
 ### Special Installation Steps When Building Buttplug Applications
 
@@ -106,11 +111,14 @@ string. For more info on this bug,
 see
 [this msdn forums post](https://social.msdn.microsoft.com/Forums/en-US/58da3fdb-a0e1-4161-8af3-778b6839f4e1/bluetooth-bluetoothledevicefromidasync-does-not-complete-on-10015063?forum=wdk#ef927009-676c-47bb-8201-8a80d2323a7f).
 
-For those using the installer, this step should be taken care of by
-InnoSetup. If you are building the project locally, start regedit,
-then choose File > Import, and select the app.reg file in this repo.
-This will set permissions for all executables named Buttplug.exe,
-ButtplugCLI.exe, and ButtplugGUI.exe
+This bug has been fixed as of Windows 10 Build 16053, so this note is
+only relevant if you have users still running on Windows 10 Build
+15063 or earlier. To get the build number of a Windows installation,
+run the "winver" command.
+
+To fix this issue, we add a registry key in the installer for the
+Buttplug Application Suite. Check out the buttplug-installer.ino file
+to see how it works.
 
 ## Third Party Applications Using Buttplug C#
 
