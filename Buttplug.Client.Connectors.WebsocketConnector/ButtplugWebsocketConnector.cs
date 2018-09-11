@@ -100,7 +100,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         {
             try
             {
-                if (_ws != null)
+                if (_ws != null && _ws.IsConnected)
                 {
                     await _ws.CloseAsync();
                 }
