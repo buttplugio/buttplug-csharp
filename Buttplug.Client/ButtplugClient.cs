@@ -100,6 +100,7 @@ namespace Buttplug.Client
         /// (requested ping interval / 2).
         /// </remarks>
         [CanBeNull]
+        [UsedImplicitly]
         private Timer _pingTimer;
 
         /// <summary>
@@ -257,6 +258,8 @@ namespace Buttplug.Client
                 }
 
                 PingTimeout?.Invoke(this, new EventArgs());
+                _pingTimer.Dispose();
+                _pingTimer = null;
 
                 // TODO This exception goes nowhere. Why is this even thrown.
                 throw new Exception((msg as Error).ErrorMessage);
