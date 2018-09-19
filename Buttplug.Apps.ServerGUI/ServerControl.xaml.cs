@@ -15,13 +15,12 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using Buttplug.Components.Controls;
-using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Server;
 using Buttplug.Server.Connectors.WebsocketServer;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Windows.UI.Notifications;
-using Buttplug.Core.Logging;
 
 namespace Buttplug.Apps.ServerGUI
 {
