@@ -42,6 +42,8 @@ namespace Buttplug.Client
         [NotNull]
         public readonly Dictionary<string, MessageAttributes> AllowedMessages;
 
+        private readonly ButtplugClient _owningClient;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
         /// information received via a DeviceList, DeviceAdded, or DeviceRemoved message from the server.
@@ -49,8 +51,8 @@ namespace Buttplug.Client
         /// <param name="aDevInfo">
         /// A Buttplug protocol message implementing the IButtplugDeviceInfoMessage interface.
         /// </param>
-        public ButtplugClientDevice(IButtplugDeviceInfoMessage aDevInfo)
-           : this(aDevInfo.DeviceIndex, aDevInfo.DeviceName, aDevInfo.DeviceMessages)
+        public ButtplugClientDevice(ButtplugClient aOwningClient, IButtplugDeviceInfoMessage aDevInfo)
+           : this(aOwningClient, aDevInfo.DeviceIndex, aDevInfo.DeviceName, aDevInfo.DeviceMessages)
         {
         }
 
@@ -61,16 +63,33 @@ namespace Buttplug.Client
         /// <param name="aIndex">The device index.</param>
         /// <param name="aName">The device name.</param>
         /// <param name="aMessages">The device allowed message list, with corresponding attributes.</param>
-        public ButtplugClientDevice(uint aIndex, string aName, Dictionary<string, MessageAttributes> aMessages)
+        public ButtplugClientDevice(ButtplugClient aOwningClient, uint aIndex, string aName, Dictionary<string, MessageAttributes> aMessages)
         {
+            _owningClient = aOwningClient;
             Index = aIndex;
             Name = aName;
             AllowedMessages = aMessages;
         }
 
+        public async Task SendMessage(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        {
+            if (!_owningClient.Connected)
+            {
+                throw new ButtplugClientException("Client that owns device is not connected");
+            }
+
+            if (!_owningClient.Devices.Contains(this))
+            {
+                throw new ButtplugClientException("Device no longer connected or valid");
+            }
+
+            await _owningClient.SendDeviceMessageAsync(this, aMsg, aToken);
+        }
+
         public bool Equals(ButtplugClientDevice aDevice)
         {
-            if (Index != aDevice.Index ||
+            if (_owningClient != aDevice._owningClient ||
+                Index != aDevice.Index ||
                 Name != aDevice.Name ||
                 AllowedMessages.Count != aDevice.AllowedMessages.Count ||
                 !AllowedMessages.Keys.SequenceEqual(aDevice.AllowedMessages.Keys))

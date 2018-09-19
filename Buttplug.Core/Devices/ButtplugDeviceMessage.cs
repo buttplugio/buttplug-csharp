@@ -22,7 +22,7 @@ namespace Buttplug.Core.Devices
         /// <param name="aDeviceIndex">Device index</param>
         /// <param name="aSchemaVersion">Version of the schema where the message was introduced. Required for cross-version schema support.</param>
         /// <param name="aPreviousType">Previous version type of the message, or null. This is used to downgrade messages when communicating with older clients.</param>
-        public ButtplugDeviceMessage(uint aId, uint aDeviceIndex, uint aSchemaVersion = 0, Type aPreviousType = null)
+        public ButtplugDeviceMessage(uint aId = ButtplugConsts.DefaultMsgId, uint aDeviceIndex = UInt32.MaxValue, uint aSchemaVersion = 0, Type aPreviousType = null)
             : base(aId, aSchemaVersion, aPreviousType)
         {
             DeviceIndex = aDeviceIndex;

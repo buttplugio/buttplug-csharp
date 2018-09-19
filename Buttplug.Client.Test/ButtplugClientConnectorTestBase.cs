@@ -67,7 +67,7 @@ namespace Buttplug.Client.Test
         [Test]
         public async Task TestDeviceScanning()
         {
-            var testDevice = new ButtplugClientDevice(1, "Test Device", new Dictionary<string, MessageAttributes>()
+            var testDevice = new ButtplugClientDevice(_client, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
@@ -99,7 +99,7 @@ namespace Buttplug.Client.Test
             await _client.StartScanningAsync();
             await _client.StopScanningAsync();
             Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessageAsync(_client.Devices[0], new FleshlightLaunchFW12Cmd(0, 0, 0)));
-            var testDevice = new ButtplugClientDevice(2, "Test Device 2", new Dictionary<string, MessageAttributes>()
+            var testDevice = new ButtplugClientDevice(_client, 2, "Test Device 2", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
