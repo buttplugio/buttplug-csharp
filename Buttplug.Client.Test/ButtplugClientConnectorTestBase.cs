@@ -130,6 +130,24 @@ namespace Buttplug.Client.Test
         }
 
         // TODO Add Log Tests
+        [Test]
+        public async Task TestLogEvent()
+        {
+            var signal = new SemaphoreSlim(1, 1);
+            await _client.ConnectAsync();
+            _client.Log += (aObj, aLogEvent) =>
+            {
+                if (signal.CurrentCount == 0)
+                {
+                    signal.Release(1);
+                }
+            };
+            await _client.RequestLogAsync(ButtplugLogLevel.Debug);
+            await _client.StartScanningAsync();
+            await _client.StopScanningAsync();
+
+            await signal.WaitAsync();
+        }
 
         // TODO Add Ping Timeout Tests
 

@@ -56,12 +56,12 @@ namespace Buttplug.Server.Test
         {
             _server.MessageReceived += _server.OnMessageReceived;
             var res = await _server.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}]");
-            Assert.True(res.Length == 1);
+            Assert.AreEqual(res.Length, 1);
             Assert.True(res[0] is Ok);
             res = await _server.SendMessage("[{\"Test\": {\"TestString\":\"Echo\",\"Id\":2}}]");
-            Assert.True(res.Length == 1);
+            Assert.AreEqual(res.Length, 1);
             Assert.True(res[0] is Core.Messages.Test);
-            Assert.True(_server.OutgoingAsync.Count == 3);
+            Assert.AreEqual(_server.OutgoingAsync.Count, 4);
         }
 
         [Test]

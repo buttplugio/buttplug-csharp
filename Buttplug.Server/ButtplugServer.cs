@@ -176,6 +176,7 @@ namespace Buttplug.Server
                     return new ServerInfo(_serverName, 1, _maxPingTime, id);
 
                 case Test m:
+                    _bpLogger.Debug("Got Test Message");
                     return new Test(m.TestString, id);
             }
 

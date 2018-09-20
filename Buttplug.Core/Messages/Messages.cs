@@ -6,6 +6,7 @@ using System.Reflection;
 using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 // Namespace containing all Buttplug messages, as specified by the Buttplug Message Spec at
 // https://docs.buttplug.io/buttplug. For consistency sake, all message descriptions are stated in
@@ -531,35 +532,12 @@ namespace Buttplug.Core.Messages
         /// Level of log detail that should be relayed.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ButtplugLogLevel LogLevel;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestLog"/> class.
-        /// </summary>
-        /// <param name="aLogLevel">Log level the server should sent</param>
-        /// <param name="aId">Message ID</param>
-        public RequestLog(string aLogLevel, uint aId = ButtplugConsts.DefaultMsgId)
-            : base(aId)
-        {
-            if (!Enum.TryParse(aLogLevel, out ButtplugLogLevel level))
-            {
-                throw new ArgumentException("Invalid log level");
-            }
-
-            LogLevel = level;
-        }
-
         /// <inheritdoc />
-        public RequestLog(uint aId = ButtplugConsts.DefaultMsgId)
-            : base(aId) => LogLevel = ButtplugLogLevel.Off;
-
-        /// <inheritdoc />
-        public RequestLog()
-            : base(ButtplugConsts.DefaultMsgId)
-        {
-            Id = ButtplugConsts.DefaultMsgId;
-            LogLevel = ButtplugLogLevel.Off;
-        }
+        public RequestLog(ButtplugLogLevel aLogLevel = ButtplugLogLevel.Off, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId) => LogLevel = aLogLevel;
     }
 
     /// <summary>
@@ -571,6 +549,7 @@ namespace Buttplug.Core.Messages
         /// Log level of message.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ButtplugLogLevel LogLevel;
 
         /// <summary>
@@ -585,11 +564,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aLogLevel">Log level</param>
         /// <param name="aLogMessage">Log message</param>
         public Log(ButtplugLogLevel aLogLevel, string aLogMessage)
-            : base(ButtplugConsts.SystemMsgId)
-        {
-            LogLevel = aLogLevel;
-            LogMessage = aLogMessage;
-        }
+            : base(ButtplugConsts.SystemMsgId) => (LogLevel, LogMessage) = (aLogLevel, aLogMessage);
     }
 
     #endregion
