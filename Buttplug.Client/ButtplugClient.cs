@@ -144,7 +144,7 @@ namespace Buttplug.Client
                     break;
 
                 case DeviceAdded d:
-                    var dev = new ButtplugClientDevice(this, d);
+                    var dev = new ButtplugClientDevice(this, SendDeviceMessageAsync, d);
                     _devices.Add(d.DeviceIndex, dev);
                     DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(dev));
                     break;
@@ -214,7 +214,7 @@ namespace Buttplug.Client
                             continue;
                         }
 
-                        var device = new ButtplugClientDevice(this, d);
+                        var device = new ButtplugClientDevice(this, SendDeviceMessageAsync, d);
                         _devices[d.DeviceIndex] = device;
                         DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(device));
                     }
@@ -306,7 +306,7 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
-        public async Task RequestLogAsync(string aLogLevel, CancellationToken aToken = default(CancellationToken))
+        public async Task RequestLogAsync(ButtplugLogLevel aLogLevel, CancellationToken aToken = default(CancellationToken))
         {
             await SendMessageExpectOk(new RequestLog(aLogLevel), aToken);
         }
@@ -321,7 +321,7 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
-        public async Task SendDeviceMessageAsync(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg, CancellationToken aToken = default(CancellationToken))
+        protected async Task SendDeviceMessageAsync(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg, CancellationToken aToken = default(CancellationToken))
         {
             if (!_devices.TryGetValue(aDevice.Index, out ButtplugClientDevice dev))
             {

@@ -44,6 +44,8 @@ namespace Buttplug.Client
 
         private readonly ButtplugClient _owningClient;
 
+        private readonly Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> _sendClosure;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
         /// information received via a DeviceList, DeviceAdded, or DeviceRemoved message from the server.
@@ -51,8 +53,8 @@ namespace Buttplug.Client
         /// <param name="aDevInfo">
         /// A Buttplug protocol message implementing the IButtplugDeviceInfoMessage interface.
         /// </param>
-        public ButtplugClientDevice(ButtplugClient aOwningClient, IButtplugDeviceInfoMessage aDevInfo)
-           : this(aOwningClient, aDevInfo.DeviceIndex, aDevInfo.DeviceName, aDevInfo.DeviceMessages)
+        public ButtplugClientDevice(ButtplugClient aOwningClient, Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure, IButtplugDeviceInfoMessage aDevInfo)
+           : this(aOwningClient, aSendClosure, aDevInfo.DeviceIndex, aDevInfo.DeviceName, aDevInfo.DeviceMessages)
         {
         }
 
@@ -63,15 +65,16 @@ namespace Buttplug.Client
         /// <param name="aIndex">The device index.</param>
         /// <param name="aName">The device name.</param>
         /// <param name="aMessages">The device allowed message list, with corresponding attributes.</param>
-        public ButtplugClientDevice(ButtplugClient aOwningClient, uint aIndex, string aName, Dictionary<string, MessageAttributes> aMessages)
+        public ButtplugClientDevice(ButtplugClient aOwningClient, Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure, uint aIndex, string aName, Dictionary<string, MessageAttributes> aMessages)
         {
             _owningClient = aOwningClient;
+            _sendClosure = aSendClosure;
             Index = aIndex;
             Name = aName;
             AllowedMessages = aMessages;
         }
 
-        public async Task SendMessage(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        public async Task SendMessageAsync(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
             if (!_owningClient.Connected)
             {
@@ -83,7 +86,7 @@ namespace Buttplug.Client
                 throw new ButtplugClientException("Device no longer connected or valid");
             }
 
-            await _owningClient.SendDeviceMessageAsync(this, aMsg, aToken);
+            await _sendClosure(this, aMsg, aToken);
         }
 
         public bool Equals(ButtplugClientDevice aDevice)

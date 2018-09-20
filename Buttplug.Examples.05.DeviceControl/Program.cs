@@ -115,18 +115,13 @@ namespace Buttplug.Examples._05.DeviceControl
 
             // We can create the message manually and send it over through the device object.
             var vibrateCmdMsg = new VibrateCmd(new List<VibrateCmd.VibrateSubcommand> { new VibrateCmd.VibrateSubcommand(0, 1.0) });
-            await testClientDevice.SendMessage(vibrateCmdMsg);
-
-            // We can also send it using the Client object.
-            //
-            // TODO Should this just be removed altogether? I'm not sure why someone would want to use this versus going directly through the device object.
-            await client.SendDeviceMessageAsync(testClientDevice, vibrateCmdMsg);
+            await testClientDevice.SendMessageAsync(vibrateCmdMsg);
 
             // We can also use the .Create() function on Generic messages to make life a bit easier.
             // For instance, with VibrateCmd, the create function just makes a VibrateCmd message for
             // us and sets all vibration motors to the same speed in that message.
             var createVibrateCmdMsg = VibrateCmd.Create(1.0, vibratorCount ?? 0);
-            await testClientDevice.SendMessage(createVibrateCmdMsg);
+            await testClientDevice.SendMessageAsync(createVibrateCmdMsg);
 
             await WaitForKey();
 
@@ -137,7 +132,7 @@ namespace Buttplug.Examples._05.DeviceControl
             // an exception thrown.
             try
             {
-                await testClientDevice.SendMessage(createVibrateCmdMsg);
+                await testClientDevice.SendMessageAsync(createVibrateCmdMsg);
             }
             catch (Exception e)
             {
