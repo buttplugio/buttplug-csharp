@@ -44,10 +44,6 @@ namespace Buttplug.Client.Connectors.IPCConnector
             _ipcSocketName = aIPCSocketName;
         }
 
-        /// <summary>
-        /// Creates the connection to the Buttplug Server and performs the protocol handshake.
-        /// </summary>
-        /// <returns>Nothing (Task used for async/await)</returns>
         public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             if (Connected)
@@ -68,18 +64,12 @@ namespace Buttplug.Client.Connectors.IPCConnector
             _readTask.Start();
         }
 
-        /// <summary>
-        /// Closes the WebSocket Connection.
-        /// </summary>
-        /// <returns>Nothing (Task used for async/await)</returns>
         public async Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
         {
-
             // TODO Create internal token for cancellation and use link source with external key
             //_cancellationToken.Cancel();
             _pipeClient.Close();
             await _readTask;
-            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
         }
 
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
@@ -114,21 +104,19 @@ namespace Buttplug.Client.Connectors.IPCConnector
             while (!aCancellationToken.IsCancellationRequested && _pipeClient != null && _pipeClient.IsConnected)
             {
                 var buffer = new byte[4096];
-                string msg = string.Empty;
+                var msg = string.Empty;
                 var len = -1;
                 while (len < 0 || (len == buffer.Length && buffer[4095] != '\0'))
                 {
                     try
                     {
                         len = await _pipeClient.ReadAsync(buffer, 0, buffer.Length, aCancellationToken);
-
-                        // TODO Why do we need this sleep? Shouldn't this block until we receive data?
-                        Thread.Sleep(10);
                     }
                     catch
                     {
                         if (!Connected)
                         {
+                            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
                             return;
                         }
                         continue;
@@ -141,6 +129,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
                 }
                 ReceiveMessages(msg);
             }
+            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
         }
     }
 }
