@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Client.Test;
 using Buttplug.Core;
@@ -36,7 +37,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
         }
 
         [Test]
-        public void WrongURITest()
+        public void TestWrongURI()
         {
             var wrongconnector = new ButtplugWebsocketConnector(new Uri("w://invalid:12345/buttplug"));
             var wrongclient = new ButtplugClient("Websocket Client", wrongconnector);
@@ -44,11 +45,28 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
         }
 
         [Test]
-        public void WrongAddressTest()
+        public void TestWrongAddress()
         {
             var wrongconnector = new ButtplugWebsocketConnector(new Uri("ws://invalid:12345/buttplug"));
             var wrongclient = new ButtplugClient("Websocket Client", wrongconnector);
             Assert.ThrowsAsync<ButtplugClientConnectorException>(async () => await wrongclient.ConnectAsync());
+        }
+
+        [Test]
+        public async Task TestServerDisconnect()
+        {
+            SetUpConnector();
+            var signal = new SemaphoreSlim(0, 1);
+            _client.ServerDisconnect += (aObj, aEventArgs) =>
+            {
+                if (signal.CurrentCount == 0)
+                {
+                    signal.Release(1);
+                }
+            };
+            await _client.ConnectAsync();
+            await _websocketServer.Disconnect();
+            await signal.WaitAsync();
         }
     }
 }

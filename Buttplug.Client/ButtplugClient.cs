@@ -112,6 +112,10 @@ namespace Buttplug.Client
         {
             Name = aClientName;
             _connector = aConnector;
+            _connector.Disconnected += (aObj, aEventArgs) =>
+            {
+                ServerDisconnect?.Invoke(aObj, aEventArgs);
+            };
             IButtplugLogManager bpLogManager = new ButtplugLogManager();
             _bpLogger = bpLogManager.GetLogger(GetType());
             _bpLogger.Info("Finished setting up ButtplugClient");

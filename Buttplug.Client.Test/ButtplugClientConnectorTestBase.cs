@@ -147,7 +147,5 @@ namespace Buttplug.Client.Test
 
             await signal.WaitAsync();
         }
-
-        // TODO Add connector (server) disconnect event test
     }
 }

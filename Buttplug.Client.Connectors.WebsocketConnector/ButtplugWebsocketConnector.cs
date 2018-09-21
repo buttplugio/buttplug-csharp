@@ -109,10 +109,9 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             {
                 // noop - something went wrong closing the socket, but we're about to dispose of it anyway.
             }
-            _readTask.Wait();
-            _ws.Dispose();
-            _ws = null;
-            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
+
+            // If we have a live task, wait for it to shut down and fire the disconnection event
+            await _readTask;
         }
 
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken)
@@ -177,7 +176,10 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             }
             finally
             {
-                //await ShutdownSession();
+                // Clean up the websocket and fire the disconnection event.
+                _ws.Dispose();
+                _ws = null;
+                _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
             }
         }
     }
