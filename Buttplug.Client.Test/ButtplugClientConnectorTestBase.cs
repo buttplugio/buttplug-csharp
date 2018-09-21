@@ -129,7 +129,6 @@ namespace Buttplug.Client.Test
             Assert.AreEqual(_client.Devices.Length, 0);
         }
 
-        // TODO Add Log Tests
         [Test]
         public async Task TestLogEvent()
         {
@@ -148,8 +147,6 @@ namespace Buttplug.Client.Test
 
             await signal.WaitAsync();
         }
-
-        // TODO Add Ping Timeout Tests
 
         // TODO Add connector (server) disconnect event test
     }

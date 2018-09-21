@@ -101,7 +101,7 @@ namespace Buttplug.Client
         /// </remarks>
         [CanBeNull]
         [UsedImplicitly]
-        private Timer _pingTimer;
+        protected Timer _pingTimer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClient"/> class.
@@ -133,7 +133,7 @@ namespace Buttplug.Client
         /// </summary>
         /// <param name="aSender">Object sending the open event, unused.</param>
         /// <param name="aArgs">Event parameters, including the data received.</param>
-        private void MessageReceivedHandler(object aSender, MessageReceivedEventArgs aArgs)
+        private async void MessageReceivedHandler(object aSender, MessageReceivedEventArgs aArgs)
         {
             var msg = aArgs.Message;
 
@@ -164,6 +164,23 @@ namespace Buttplug.Client
                 case ScanningFinished sf:
                     // The scanning finished event is self explanatory and doesn't require extra arguments.
                     ScanningFinished?.Invoke(this, new EventArgs());
+                    break;
+
+                case Error e:
+                    if (e.ErrorCode == Error.ErrorClass.ERROR_PING)
+                    {
+                        _bpLogger.Error($"Ping timeout received from server: {e.ErrorMessage}");
+                        PingTimeout?.Invoke(this, new EventArgs());
+                        await DisconnectAsync();
+                        return;
+                    }
+
+                    _bpLogger.Error($"Got error message: {e.ErrorMessage}");
+
+                    break;
+
+                default:
+                    _bpLogger.Error($"Got unhandled message: {msg}");
                     break;
             }
         }
@@ -252,20 +269,16 @@ namespace Buttplug.Client
             try
             {
                 var msg = await SendMessageAsync(new Ping());
-                if (!(msg is Error))
+                if (msg is Error e)
                 {
-                    return;
+                    _bpLogger.Error($"Error sending ping message: {e.ErrorMessage}");
                 }
 
-                PingTimeout?.Invoke(this, new EventArgs());
-                _pingTimer.Dispose();
-                _pingTimer = null;
-
-                // TODO This exception goes nowhere. Why is this even thrown.
-                throw new Exception((msg as Error).ErrorMessage);
+                // If this fails, we'll get a non-bound error message in MessageReceivedHandler, which will take care of shutdown.
             }
             catch
             {
+                // If SendMessageAsync throws, we're probably already disconnected, but just make sure.
                 await DisconnectAsync();
             }
         }
