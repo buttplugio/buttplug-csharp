@@ -123,10 +123,11 @@ namespace Buttplug.Server.Connectors.IPCServer
 
                 try
                 {
+                    _connections.Enqueue(aServer);
                     while (!aToken.IsCancellationRequested && aServer.IsConnected)
                     {
                         var buffer = new byte[4096];
-                        string msg = string.Empty;
+                        var msg = string.Empty;
                         var len = -1;
                         while (len < 0 || (len == buffer.Length && buffer[4095] != '\0'))
                         {

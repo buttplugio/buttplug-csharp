@@ -103,17 +103,17 @@ namespace Buttplug.Server
 
         private void LogMessageReceivedHandler([NotNull] object aObj, [NotNull] ButtplugLogMessageEventArgs aEvent)
         {
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(aEvent.LogMessage));
+            MessageReceived?.Invoke(aObj, new MessageReceivedEventArgs(aEvent.LogMessage));
         }
 
         private void ScanningFinishedHandler([NotNull] object aObj, EventArgs aEvent)
         {
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new ScanningFinished()));
+            MessageReceived?.Invoke(aObj, new MessageReceivedEventArgs(new ScanningFinished()));
         }
 
         private void PingTimeoutHandler([NotNull] object aObj)
         {
-            // Stop the timer by specifying an infinate due period (See: https://msdn.microsoft.com/en-us/library/yz1c7148(v=vs.110).aspx)
+            // Stop the timer by specifying an infinite due period (See: https://msdn.microsoft.com/en-us/library/yz1c7148(v=vs.110).aspx)
             _pingTimer?.Change(Timeout.Infinite, (int)_maxPingTime);
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
                 Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
@@ -176,6 +176,7 @@ namespace Buttplug.Server
                     return new ServerInfo(_serverName, 1, _maxPingTime, id);
 
                 case Test m:
+                    _bpLogger.Debug("Got Test Message");
                     return new Test(m.TestString, id);
             }
 

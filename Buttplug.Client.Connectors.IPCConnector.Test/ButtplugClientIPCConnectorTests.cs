@@ -1,4 +1,6 @@
-﻿using Buttplug.Client.Test;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Buttplug.Client.Test;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Test;
@@ -31,6 +33,24 @@ namespace Buttplug.Client.Connectors.IPCConnector.Test
         {
             _connector = new ButtplugClientIPCConnector();
             _client = new ButtplugClient("Websocket Client", _connector);
+        }
+
+
+        [Test]
+        public async Task TestServerDisconnect()
+        {
+            SetUpConnector();
+            var signal = new SemaphoreSlim(0, 1);
+            _client.ServerDisconnect += (aObj, aEventArgs) =>
+            {
+                if (signal.CurrentCount == 0)
+                {
+                    signal.Release(1);
+                }
+            };
+            await _client.ConnectAsync();
+            _ipcServer.Disconnect();
+            await signal.WaitAsync();
         }
     }
 }

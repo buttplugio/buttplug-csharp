@@ -49,10 +49,10 @@ namespace Buttplug.Server.Test
             // Sending error messages will always cause an error, as they are outgoing, not incoming.
             Assert.True(await _server.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
             Assert.False(gotMessage);
-            Assert.True(await _server.SendMessage(new RequestLog("Trace")) is Ok);
+            Assert.True(await _server.SendMessage(new RequestLog(ButtplugLogLevel.Trace)) is Ok);
             Assert.True(await _server.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
             Assert.True(gotMessage);
-            await _server.SendMessage(new RequestLog("Off"));
+            await _server.SendMessage(new RequestLog(ButtplugLogLevel.Off));
             gotMessage = false;
             await _server.SendMessage(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId));
             Assert.False(gotMessage);

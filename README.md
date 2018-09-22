@@ -10,8 +10,8 @@
 
 Buttplug is a framework for hooking up hardware to interfaces, where
 hardware usually means sex toys, but could honestly be just about
-anything. It's basically a userland HID manager for things that may
-not specifically be HID.
+anything. Think of it as a userland HID manager for things that may
+not specifically be HID, but may go in your butt.
 
 If you're looking for the installer for the Buttplug Server or Game
 Vibration Router software, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
@@ -19,6 +19,7 @@ Vibration Router software, [visit our releases page.](https://github.com/buttplu
 ## Table Of Contents
 
 - [Support The Project](#support-the-project)
+- [Usage Examples](#examples)
 - [API Documentation](#api-documentation)
 - [Buttplug Spec and Documentation](#buttplug-spec-and-documentation)
 - [Hardware Support](#hardware-support)
@@ -33,6 +34,17 @@ Vibration Router software, [visit our releases page.](https://github.com/buttplu
 If you find this project helpful, you can [support us via
 Patreon](http://patreon.com/qdot)! Every donation helps us afford more
 hardware to reverse, document, and write code for!
+
+## Usage Examples
+
+Want to know what using the library looks like in code? The project
+includes some heavily commented examples!
+
+- [Part 1 - Embedded Connectors](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.01.EmbeddedClientSetup/Program.cs)
+- [Part 2 - Remote Connectors](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.02.WebsocketClientSetup/Program.cs)
+- [Part 3 - Connection Lifetimes and Ping Timers](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.03.ConnectionLifetimesAndPingTimers/Program.cs)
+- [Part 4 - Device Enumeration](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.04.DeviceEnumeration/Program.cs)
+- [Part 5 - Device Control](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.05.DeviceControl/Program.cs)
 
 ## API Documentation
 

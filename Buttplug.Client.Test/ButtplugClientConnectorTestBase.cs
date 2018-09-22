@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
@@ -67,7 +68,8 @@ namespace Buttplug.Client.Test
         [Test]
         public async Task TestDeviceScanning()
         {
-            var testDevice = new ButtplugClientDevice(1, "Test Device", new Dictionary<string, MessageAttributes>()
+            Task SendFunc(ButtplugClientDevice device, ButtplugMessage msg, CancellationToken token) => Task.CompletedTask;
+            var testDevice = new ButtplugClientDevice(_client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
@@ -98,16 +100,13 @@ namespace Buttplug.Client.Test
             await _client.ConnectAsync();
             await _client.StartScanningAsync();
             await _client.StopScanningAsync();
-            Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessageAsync(_client.Devices[0], new FleshlightLaunchFW12Cmd(0, 0, 0)));
-            var testDevice = new ButtplugClientDevice(2, "Test Device 2", new Dictionary<string, MessageAttributes>()
-            {
-                { "SingleMotorVibrateCmd", new MessageAttributes() },
-                { "VibrateCmd", new MessageAttributes(2) },
-            });
-            Assert.ThrowsAsync<ButtplugClientException>(async () => await _client.SendDeviceMessageAsync(testDevice, new FleshlightLaunchFW12Cmd(0, 0, 0)));
+            var device = _client.Devices[0];
+
+            // Test device only takes vibration commands
+            Assert.ThrowsAsync<ButtplugClientException>(async () => await device.SendMessageAsync(new FleshlightLaunchFW12Cmd(0, 0, 0)));
 
             // Shouldn't throw.
-            await _client.SendDeviceMessageAsync(_client.Devices[0], new SingleMotorVibrateCmd(0, 0.5));
+            await _client.Devices[0].SendMessageAsync(new SingleMotorVibrateCmd(0, 0.5));
             Assert.AreEqual(_subtypeMgr.Device.V1, 0.5);
             Assert.AreEqual(_subtypeMgr.Device.V2, 0.5);
         }
@@ -130,10 +129,23 @@ namespace Buttplug.Client.Test
             Assert.AreEqual(_client.Devices.Length, 0);
         }
 
-        // TODO Add Log Tests
+        [Test]
+        public async Task TestLogEvent()
+        {
+            var signal = new SemaphoreSlim(1, 1);
+            await _client.ConnectAsync();
+            _client.Log += (aObj, aLogEvent) =>
+            {
+                if (signal.CurrentCount == 0)
+                {
+                    signal.Release(1);
+                }
+            };
+            await _client.RequestLogAsync(ButtplugLogLevel.Debug);
+            await _client.StartScanningAsync();
+            await _client.StopScanningAsync();
 
-        // TODO Add Ping Timeout Tests
-
-        // TODO Add connector (server) disconnect event test
+            await signal.WaitAsync();
+        }
     }
 }

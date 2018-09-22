@@ -8,14 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Buttplug.Core;
+using Buttplug.Core.Devices;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Buttplug.Core.Devices;
-using Buttplug.Core.Logging;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {

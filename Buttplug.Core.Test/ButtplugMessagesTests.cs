@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Core.Test
@@ -262,6 +263,18 @@ namespace Buttplug.Core.Test
             Assert.AreEqual(4, msg.Id);
             Assert.AreEqual(50, msg.Speed);
             Assert.True(msg.Clockwise);
+        }
+
+        [Test]
+        public void TestRequestLog()
+        {
+            const string requestLogMsgStr = "[{\"RequestLog\":{\"LogLevel\":\"Debug\",\"Id\":1}}]";
+            var requestLogMsg = new RequestLog(ButtplugLogLevel.Debug);
+            var requestLogMsgJson = _parser.Serialize(requestLogMsg, 1);
+            Assert.AreEqual(requestLogMsgStr, requestLogMsgJson);
+
+            var requestLogMsgParsed = _parser.Deserialize(requestLogMsgStr);
+            requestLogMsg.Should().BeEquivalentTo(requestLogMsgParsed[0]);
         }
     }
 }
