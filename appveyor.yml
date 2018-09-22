@@ -33,8 +33,6 @@ install:
       if ($isWindows) {
         get-childitem c:\tools\nunit3 -rec | where {!$_.PSIsContainer} | select-object FullName
         choco install -y -r --no-progress resharper-clt.portable
-        choco install -y -r --no-progress InnoSetup
-        (Get-Content Buttplug.Components.Controls\ButtplugTabControl.xaml.cs).replace('SENTRY_API_URL', $env:sentry_api_url) | Set-Content Buttplug.Components.Controls\ButtplugTabControl.xaml.cs
       }
   - ps: |
       function gitVersion() {
@@ -92,6 +90,7 @@ build:
   parallel: true
   verbosity: minimal
 
+# Turn off ubuntu builds for now, as they're WAY too slow on appveyor.
 # for:
 #   -
 #     matrix:
@@ -128,16 +127,6 @@ after_test:
         $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
         Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
         bash codecov.sh -f "coverage.xml" -X gcov
-      }
-  - ps: |
-      if ($isWindows) {
-        set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
-        iscc buttplug-installer.iss
-        installer\buttplug-installer.exe /VERYSILENT
-        Push-AppveyorArtifact installer\buttplug-installer.exe -FileName Buttplug-$env:CONFIGURATION-$env:APPVEYOR_BUILD_VERSION-installer.exe
-        Push-Location ./docs
-        ./build.ps1
-        Pop-Location
       }
 
 # Enable for RDP connections to failing build VMs
