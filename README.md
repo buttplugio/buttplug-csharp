@@ -14,7 +14,8 @@ anything. Think of it as a userland HID manager for things that may
 not specifically be HID, but may go in your butt.
 
 If you're looking for the installer for the Buttplug Server or Game
-Vibration Router software, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
+Vibration Router software, [visit the buttplug-windows-suite releases
+page.](https://github.com/buttplugio/buttplug-windows-suite/releases/)
 
 ## Table Of Contents
 
@@ -24,8 +25,7 @@ Vibration Router software, [visit our releases page.](https://github.com/buttplu
 - [Buttplug Spec and Documentation](#buttplug-spec-and-documentation)
 - [Hardware Support](#hardware-support)
 - [Installation](#installation)
-- [Development](#development)
-  - [Special Installation Steps When Building Buttplug Applications](#special-installation-steps-when-building-buttplug-applications)
+- [Client Software (Buttplug Server, Game Vibration Router)](#client-software)
 - [Third Party Applications Using Buttplug-C#](#third-party-applications-using-buttplug-c)
 - [License]()
 
@@ -99,41 +99,24 @@ support.
 
 ## Installation
 
-### Libraries for Development
-
 Packages and libraries from the buttplug-csharp repo are available via
 [nuget](http://nuget.org). Simply run a search for "buttplug", or
 [follow this link to the nuget "buttplug" search](https://www.nuget.org/packages?q=buttplug).
 
-### Client Software (Server, Game Vibration Router)
+## Client Software
 
-The Buttplug C# Repo hosts the Buttplug C# Development Libraries, as
-well as the following applications, known as the Buttplug Application Suite:
+Buttplug programs including
 
 - Buttplug Server
 - Game Vibration Router
 
-To download the installer for these applications, [visit our releases page.](https://github.com/buttplugio/buttplug-csharp/releases/)
-
-### Special Installation Steps When Developing Buttplug Applications
-
-Due to a bug in the Windows 15063 SDK, applications using the BLE APIs
-need to have an AppId in the registry with a special SDDL access
-string. For more info on this bug,
-see
-[this msdn forums post](https://social.msdn.microsoft.com/Forums/en-US/58da3fdb-a0e1-4161-8af3-778b6839f4e1/bluetooth-bluetoothledevicefromidasync-does-not-complete-on-10015063?forum=wdk#ef927009-676c-47bb-8201-8a80d2323a7f).
-
-This bug has been fixed as of Windows 10 Build 16053, so this note is
-only relevant if you have users still running on Windows 10 Build
-15063 or earlier. To get the build number of a Windows installation,
-run the "winver" command.
-
-To fix this issue, we add a registry key in the installer for the
-Buttplug Application Suite. Check out the buttplug-installer.ino file
-to see how it works.
+have moved to the Buttplug Windows Suite Repo. To download the
+installer for these applications, [visit the releases
+page for that repo.](https://github.com/buttplugio/buttplug-windows-suite/releases/)
 
 ## Third Party Applications Using Buttplug C#
 
+- [Buttplug Windows Suite](https://github.com/buttplugio/buttplug-windows-suite) - Buttplug Server and Buttplug Game Vibration Router
 - [ScriptPlayer](https://github.com/FredTungsten/ScriptPlayer) - Native hardware synced movie player for Windows.
 - [Caveman BIOS Teaches Typing](https://curiousjp.itch.io/caveman-bios-teaches-erotic-typing) - Typing Training Game
 
