@@ -19,18 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.UW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.XInputGamepadManager", "Buttplug.Server.Managers.XInputGamepadManager\Buttplug.Server.Managers.XInputGamepadManager.csproj", "{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Components.Controls", "Buttplug.Components.Controls\Buttplug.Components.Controls.csproj", "{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.ServerGUI", "Buttplug.Apps.ServerGUI\Buttplug.Apps.ServerGUI.csproj", "{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.ServerGUI.Test", "Buttplug.Apps.ServerGUI.Test\Buttplug.Apps.ServerGUI.Test.csproj", "{DA1D2401-38BB-4822-BBCB-69873CB78394}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.GUI", "Buttplug.Apps.GameVibrationRouter.GUI\Buttplug.Apps.GameVibrationRouter.GUI.csproj", "{C5244A21-A2F0-4505-BE96-431F045D8163}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.Interface", "Buttplug.Apps.GameVibrationRouter.Interface\Buttplug.Apps.GameVibrationRouter.Interface.csproj", "{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Apps.GameVibrationRouter.Payload", "Buttplug.Apps.GameVibrationRouter.Payload\Buttplug.Apps.GameVibrationRouter.Payload.csproj", "{DACAECFE-B190-4584-B50E-0BAAD557F0CE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.ETSerialManager", "Buttplug.Server.Managers.ETSerialManager\Buttplug.Server.Managers.ETSerialManager.csproj", "{436CF4FF-AE10-45DA-8909-9AACF1ED6425}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.WinUSBManager", "Buttplug.Server.Managers.WinUSBManager\Buttplug.Server.Managers.WinUSBManager.csproj", "{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}"
@@ -123,42 +111,6 @@ Global
 		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C7D040E1-E18E-4F51-859F-CFF8AA57BD64}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E0D1E27-9EFD-4A07-B6AA-BB556205C002}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F1DEE23B-7608-4AD6-B894-ED5E1EDA65D1}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78394}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78394}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA1D2401-38BB-4822-BBCB-69873CB78394}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{C5244A21-A2F0-4505-BE96-431F045D8163}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5244A21-A2F0-4505-BE96-431F045D8163}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5244A21-A2F0-4505-BE96-431F045D8163}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5244A21-A2F0-4505-BE96-431F045D8163}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5244A21-A2F0-4505-BE96-431F045D8163}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C5244A21-A2F0-4505-BE96-431F045D8163}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D0DC1A1-BFB6-4B97-88C6-7FB7A31533DC}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DACAECFE-B190-4584-B50E-0BAAD557F0CE}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
