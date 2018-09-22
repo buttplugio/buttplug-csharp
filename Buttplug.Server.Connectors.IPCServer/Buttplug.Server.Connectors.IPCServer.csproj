@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Nonpolynomial Labs LLC</Authors>
+    <Company>Nonpolynomial Labs LLCNonpolynomial Labs LLC</Company>
+    <Product />
+    <Description>IPC Connection capabilities for Buttplug Servers</Description>
+    <Copyright>Copyright Nonpolynomial Labs LLC 2017-2018</Copyright>
+    <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
+    <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
+    <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp/</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

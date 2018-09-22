@@ -3,14 +3,14 @@
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
-    <title>Buttplug Server UWP Bluetooth Manager Library</title>
+    <title>Buttplug Server HID Manager Library</title>
     <authors>Nonpolynomial Labs LLC</authors>
     <owners>Nonpolynomial Labs LLC</owners>
     <licenseUrl>https://opensource.org/licenses/BSD-3-Clause</licenseUrl>
     <projectUrl>http://www.github.com/buttplugio/buttplug-csharp</projectUrl>
     <iconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>UWP Bluetooth (Windows 10 15063 Creators Update or Later) device support for Buttplug Servers</description>
+    <description>HID Device support (Rends Cyclone X, RealTouch, etc) for Buttplug Servers.</description>
     <copyright>Copyright 2017-2018 Nonpolynomial Labs LLC</copyright>
     <dependencies>
       <dependency id="Buttplug.Core" version="0.2" />

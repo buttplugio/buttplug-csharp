@@ -7,11 +7,11 @@ using Buttplug.Core;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ButtplugShared")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Core Library for the Buttplug Sex Toy Control Protocol. Contains base classes for message creation, abstract devices/transports, and utilities for Client/Server creation.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ButtplugShared")]
-[assembly: AssemblyCopyright("Copyright Metafetish 2017")]
+[assembly: AssemblyCompany("Nonpolynomial Labs LLC")]
+[assembly: AssemblyProduct("Buttplug")]
+[assembly: AssemblyCopyright("Copyright Nonpolynomial Labs LLC 2017-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

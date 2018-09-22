@@ -4,17 +4,17 @@
     <id>$id$</id>
     <version>$version$</version>
     <title>Buttplug Server XInput Manager Library</title>
-    <authors>qdot</authors>
-    <owners>qdot</owners>
+    <authors>Nonpolynomial Labs LLC</authors>
+    <owners>Nonpolynomial Labs LLC</owners>
     <licenseUrl>https://opensource.org/licenses/BSD-3-Clause</licenseUrl>
-    <projectUrl>http://www.github.com/metafetish/buttplug-csharp</projectUrl>
-    <iconUrl>https://github.com/metafetish/buttplug-csharp/blob/master/Buttplug.Components.Controls/Resources/buttplug-logo-1.png?raw=true</iconUrl>
+    <projectUrl>http://www.github.com/buttplugio/buttplug-csharp</projectUrl>
+    <iconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Library for adding XInput Gamepad (Windows 7 or Later) support to Buttplug Servers.</description>
-    <copyright>Copyright 2017 Nonpolynomial Labs, LLC</copyright>
+    <description>XInput Gamepad (Windows 7 or Later) support for Buttplug Servers.</description>
+    <copyright>Copyright 2017-2018 Nonpolynomial Labs LLC</copyright>
     <dependencies>
-      <dependency id="Buttplug.Core" version="0.0.0" />
-      <dependency id="Buttplug.Server" version="0.0.0" />
+      <dependency id="Buttplug.Core" version="0.2" />
+      <dependency id="Buttplug.Server" version="0.2" />
     </dependencies>
   </metadata>
 </package>

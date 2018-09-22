@@ -8,11 +8,11 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>Buttplug Server Library</Product>
-    <Authors>qdot</Authors>
+    <Authors>Nonpolynomial Labs LLC</Authors>
     <Copyright>Copyright 2017 Nonpolynomial Labs, LLC</Copyright>
     <Description>Base Server Library for the Buttplug Sex Toy Control Protocol. Manages device classes and connection states.</Description>
-    <PackageIconUrl>https://github.com/metafetish/buttplug-csharp/blob/master/Buttplug.Components.Controls/Resources/buttplug-logo-1.png?raw=true</PackageIconUrl>
-    <PackageProjectUrl>http://www.github.com/metafetish/buttplug-csharp</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
+    <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
     <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
 
     <!--Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps-->
@@ -58,6 +58,8 @@
   
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   
 </Project>
