@@ -9,7 +9,7 @@
     <Company>Nonpolynomial Labs LLC</Company>
     <Authors>Nonpolynomial Labs LLC</Authors>
     <Copyright>Copyright Nonpolynomial Labs LLC 2017-2018</Copyright>
-    <Description>IPC Connection Capabilities for Buttplug Clients.</Description>
+    <Description>IPC Connection Capabilities for Buttplug Clients. (.Net Framework 4.7+/.Net Standard 2.0)</Description>
     
     <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
