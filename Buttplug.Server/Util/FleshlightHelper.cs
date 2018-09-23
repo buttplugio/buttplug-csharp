@@ -9,18 +9,18 @@ using System;
 namespace Buttplug.Server.Util
 {
     /// <summary>
-    /// Fleshlight speed calculation utilities
+    /// Fleshlight speed calculation utilities.
     /// </summary>
     public class FleshlightHelper
     {
         /// <summary>
         /// Speed returns the distance (in percent) moved given speed (in percent)
         /// in the given duration (milliseconds).
-        /// Thanks to @funjack - https://github.com/funjack/launchcontrol/blob/master/protocol/funscript/functions.go
+        /// Thanks to @funjack (https://github.com/funjack/launchcontrol/blob/master/protocol/funscript/functions.go).
         /// </summary>
-        /// <param name="aDuration">The time to move in milliseconds</param>
-        /// <param name="aSpeed">The speed as a percentage (0.0-1.0)</param>
-        /// <returns>The distance as a percentage (0.0-1.0)</returns>
+        /// <param name="aDuration">The time to move in milliseconds.</param>
+        /// <param name="aSpeed">The speed as a percentage (0.0-1.0).</param>
+        /// <returns>The distance as a percentage (0.0-1.0).</returns>
         public static double GetDistance(uint aDuration, double aSpeed)
         {
             if (aSpeed <= 0)
@@ -41,11 +41,11 @@ namespace Buttplug.Server.Util
         /// <summary>
         /// Speed returns the speed (in percent) to move the given distance (in percent)
         /// in the given duration (milliseconds).
-        /// Thanks to @funjack - https://github.com/funjack/launchcontrol/blob/master/protocol/funscript/functions.go
+        /// Thanks to @funjack (https://github.com/funjack/launchcontrol/blob/master/protocol/funscript/functions.go).
         /// </summary>
-        /// <param name="aDistance">The distance as a percentage (0.0-1.0)</param>
-        /// <param name="aDuration">The time to move in milliseconds</param>
-        /// <returns>The speed as a percentage (0.0-1.0)</returns>
+        /// <param name="aDistance">The distance as a percentage (0.0-1.0).</param>
+        /// <param name="aDuration">The time to move in milliseconds.</param>
+        /// <returns>The speed as a percentage (0.0-1.0).</returns>
         public static double GetSpeed(double aDistance, uint aDuration)
         {
             if (aDistance <= 0)
@@ -64,9 +64,9 @@ namespace Buttplug.Server.Util
         /// Duration returns the time it will take to move the given distance (in
         /// percent) at the given speed (in percent).
         /// </summary>
-        /// <param name="aDistance">The distance as a percentage (0.0-1.0)</param>
-        /// <param name="aSpeed">The speed as a percentage (0.0-1.0)</param>
-        /// <returns>The time it will take to move in milliseconds</returns>
+        /// <param name="aDistance">The distance as a percentage (0.0-1.0).</param>
+        /// <param name="aSpeed">The speed as a percentage (0.0-1.0).</param>
+        /// <returns>The time it will take to move in milliseconds.</returns>
         public static double GetDuration(double aDistance, double aSpeed)
         {
             if (aDistance <= 0)
