@@ -11,6 +11,7 @@
     <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
     <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Version>1.0.0.0-dev</Version>
 
     <!--Don't auto generate AssemblyInfo-->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
