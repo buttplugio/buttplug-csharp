@@ -2,27 +2,38 @@
 
   <PropertyGroup>
     <PackageId />
-    <PackageVersion>1.0.0-dev</PackageVersion>
     <RootNamespace>Buttplug.Server</RootNamespace>
     <AssemblyName>Buttplug.Server</AssemblyName>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+
     <Product>Buttplug Server Library</Product>
+    <Company>Nonpolynomial Labs LLC</Company>
     <Authors>Nonpolynomial Labs LLC</Authors>
-    <Copyright>Copyright 2017 Nonpolynomial Labs, LLC</Copyright>
+    <Copyright>Copyright Nonpolynomial Labs LLC 2017-2018</Copyright>
     <Description>Base Server Library for the Buttplug Sex Toy Control Protocol. Manages device classes and connection states.</Description>
+
+    <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
     <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
     <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
 
+    <Version>1.0.0.0-dev</Version>
+    <PackageVersion>1.0.0.0-dev</PackageVersion>
+    <InformationalVersion>1.0.0.0-dev</InformationalVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+
+    <!-- Generate nuget packages and assembly files -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    
     <!--Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps-->
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
 
-    <!--Don't auto generate AssemblyInfo-->
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-
     <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -52,11 +63,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj" />
   </ItemGroup>
-  
-  <PropertyGroup>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-  </PropertyGroup>
-  
+    
 </Project>

@@ -1,38 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId />
+    <RootNamespace>Buttplug.Client.Connectors.IPCConnector</RootNamespace>
+    <AssemblyName>Buttplug.Client.Connectors.IPCConnector</AssemblyName>
+    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+
+    <Product>Buttplug Client IPC Connector Library</Product>
+    <Company>Nonpolynomial Labs LLC</Company>
     <Authors>Nonpolynomial Labs LLC</Authors>
-    <Product>Buttplug</Product>
+    <Copyright>Copyright Nonpolynomial Labs LLC 2017-2018 </Copyright>
     <Description>IPC Connection Capabilities for Buttplug Clients.</Description>
-    <Copyright>Copyright Nonpolynomial Labs LLC 2017-2018</Copyright>
-    <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
-    <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
-    <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
+
     <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
+    <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
+    <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
+
     <Version>1.0.0.0-dev</Version>
     <PackageVersion>1.0.0.0-dev</PackageVersion>
     <InformationalVersion>1.0.0.0-dev</InformationalVersion>
-    <FileVersion>1.0.0.0-dev</FileVersion>
-    <AssemblyVersion>1.0.0.0-dev</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
 
-    <!--Generate Nuget -->
+    <!-- Generate nuget packages and assembly files -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 
-    <!--Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps-->
+    <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
+
+    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <!-- This isn't default as far as I'm aware (TODO: Check this) -->
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\Buttplug.Client\Buttplug.Client.csproj" />
     <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
 
 </Project>
