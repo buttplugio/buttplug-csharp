@@ -146,7 +146,6 @@ deploy:
     skip_symbols: true
     artifact: /.*\.nupkg/
     on:
-      image: Visual Studio 2017
       branch: master
       configuration: release
       appveyor_repo_provider: github
