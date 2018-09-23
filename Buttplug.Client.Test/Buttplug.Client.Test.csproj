@@ -82,10 +82,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Client.Connectors.WebsocketConnector\Buttplug.Client.Connectors.WebsocketConnector.csproj">
-      <Project>{b2c07152-347f-449e-84e7-2a13d69cfb10}</Project>
-      <Name>Buttplug.Client.Connectors.WebsocketConnector</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Buttplug.Client\Buttplug.Client.csproj">
       <Project>{1592d845-8fe5-4f33-a665-d7675c9aaee4}</Project>
       <Name>Buttplug.Client</Name>

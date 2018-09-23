@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Buttplug.Client.Connectors.IPCConnector")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("IPC Connection Capabilities for Buttplug Clients.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Buttplug.Client.Connectors.IPCConnector")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCompany("Nonpolynomial Labs LLC")]
+[assembly: AssemblyProduct("Buttplug")]
+[assembly: AssemblyCopyright("Copyright Nonpolynomial Labs LLC 2017-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -13,6 +13,7 @@
     <AssemblyName>Buttplug.Client.Connectors.WebsocketConnector.Test</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -65,7 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Buttplug.Client.Connectors.WebsocketConnector\Buttplug.Client.Connectors.WebsocketConnector.csproj">
-      <Project>{b2c07152-347f-449e-84e7-2a13d69cfb10}</Project>
+      <Project>{0d71ed9e-7dd6-4b64-a7c9-be38759ac6ea}</Project>
       <Name>Buttplug.Client.Connectors.WebsocketConnector</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Client.Test\Buttplug.Client.Test.csproj">

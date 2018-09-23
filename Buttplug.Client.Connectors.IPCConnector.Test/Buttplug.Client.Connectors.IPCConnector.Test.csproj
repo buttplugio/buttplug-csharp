@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Buttplug.Client.Connectors.IPCConnector\Buttplug.Client.Connectors.IPCConnector.csproj">
-      <Project>{a7c3df9c-d8ba-4c76-89f5-c13dfc3bd28f}</Project>
+      <Project>{4235058b-b217-4bef-9b84-aedaa5b3c734}</Project>
       <Name>Buttplug.Client.Connectors.IPCConnector</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Client.Test\Buttplug.Client.Test.csproj">
