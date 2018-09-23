@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -13,6 +13,17 @@
     <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Version>1.0.0.0-dev</Version>
+    <PackageVersion>1.0.0.0-dev</PackageVersion>
+    <InformationalVersion>1.0.0.0-dev</InformationalVersion>
+    <FileVersion>1.0.0.0-dev</FileVersion>
+    <AssemblyVersion>1.0.0.0-dev</AssemblyVersion>
+
+    <!--Generate Nuget -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <!--Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps-->
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>
