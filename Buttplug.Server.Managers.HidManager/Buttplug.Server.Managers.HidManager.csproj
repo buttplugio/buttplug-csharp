@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Devices\CycloneX10.cs" />
+    <Compile Include="Devices\NintendoJoyCon.cs" />
     <Compile Include="HidButtplugDevice.cs" />
     <Compile Include="HidDeviceFactory.cs" />
     <Compile Include="HidManager.cs" />

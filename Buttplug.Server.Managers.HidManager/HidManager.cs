@@ -27,7 +27,11 @@ namespace Buttplug.Server.Managers.HidManager
             : base(aLogger)
         {
             _logger = aLogger;
-            _deviceFactories = new List<HidDeviceFactory>() { new HidDeviceFactory(aLogger, new CycloneX10HidDeviceInfo()) };
+            _deviceFactories = new List<HidDeviceFactory>()
+            {
+                new HidDeviceFactory(aLogger, new CycloneX10HidDeviceInfo()),
+                new HidDeviceFactory(aLogger, new NintendoJoyConHidDeviceInfo()),
+            };
         }
 
         public override void StartScanning()
@@ -76,6 +80,8 @@ namespace Buttplug.Server.Managers.HidManager
                 catch (Exception e)
                 {
                     _logger?.GetLogger(GetType()).LogException(e);
+                    // TODO Rethrow for now, but fix this to actually throw when running in debug, otherwise it's impossible to know if something went wrong.
+                    throw e;
                 }
             }
 

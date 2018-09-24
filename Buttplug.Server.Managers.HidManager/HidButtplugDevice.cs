@@ -73,7 +73,7 @@ namespace Buttplug.Server.Managers.HidManager
             }
         }
 
-        public List<byte> ReadData()
+        public byte[] ReadData()
         {
             if (_disposed || !_hid.IsOpen)
             {
@@ -81,7 +81,7 @@ namespace Buttplug.Server.Managers.HidManager
             }
 
             var data = _hid.Read(100);
-            return data.Status != HidDeviceData.ReadStatus.Success ? null : data.Data.ToList();
+            return data.Status != HidDeviceData.ReadStatus.Success ? null : data.Data;
         }
 
         public bool WriteData(byte[] aData)

@@ -42,6 +42,8 @@ namespace Buttplug.Server.Managers.HidManager.Devices
             MsgFuncs.Add(typeof(VorzeA10CycloneCmd), new ButtplugDeviceMessageHandler(HandleVorzeA10CycloneCmd));
             MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceMessageHandler(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
             MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+
+            // TODO Why is this attaching in a constructor, where nothing can throw?!
             aHid.OpenDevice();
         }
 
