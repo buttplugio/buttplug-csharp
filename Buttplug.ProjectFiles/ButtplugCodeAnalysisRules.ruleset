@@ -2,6 +2,7 @@
 <RuleSet Name="Buttplug Global Rule Set" Description=" " ToolsVersion="15.0">
   <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
     <Rule Id="CS1591" Action="Info" />
+    <Rule Id="CS4014" Action="Error" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA0001" Action="Info" />
