@@ -7,7 +7,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Buttplug.Server.Managers.ETSerialManager
+// ReSharper disable once CheckNamespace
+namespace Buttplug.Server.Managers.SerialPortManager
 {
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Based on 3rd party documentation.")]
     [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Based on 3rd party documentation.")]

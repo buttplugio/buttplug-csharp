@@ -6,7 +6,8 @@
 
 using System;
 
-namespace Buttplug.Server.Managers.ETSerialManager
+// ReSharper disable once CheckNamespace
+namespace Buttplug.Server.Managers.SerialPortManager
 {
     // ReSharper disable once InconsistentNaming
     public class ET312HandshakeException : Exception

@@ -10,10 +10,9 @@ using System.IO.Ports;
 using System.Threading;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
-using static Buttplug.Server.Managers.ETSerialManager.ET312Protocol;
 
 // ReSharper disable once CheckNamespace
-namespace Buttplug.Server.Managers.ETSerialManager
+namespace Buttplug.Server.Managers.SerialPortManager
 {
     // ReSharper disable once InconsistentNaming
     public class ETSerialManager : DeviceSubtypeManager
