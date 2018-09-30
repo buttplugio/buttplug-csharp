@@ -1,4 +1,4 @@
-﻿// <copyright file="ET312Protocol.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="ErostekET312Consts.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -7,12 +7,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-// ReSharper disable once CheckNamespace
 namespace Buttplug.Server.Managers.SerialPortManager
 {
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Based on 3rd party documentation.")]
     [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Based on 3rd party documentation.")]
-    public static class ET312Protocol
+    public static class ET312Consts
     {
         /// <summary>
         ///  Range 0x0000 - 0x00ff - Last page of Flash ROM (read only)

@@ -1,37 +1,45 @@
-﻿// <copyright file="ETSerialManager.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="SerialPortManager.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using System;
-using System.IO;
-using System.IO.Ports;
-using System.Threading;
-using Buttplug.Core;
+using System.Collections.Generic;
 using Buttplug.Core.Logging;
 
-// ReSharper disable once CheckNamespace
 namespace Buttplug.Server.Managers.SerialPortManager
 {
-    // ReSharper disable once InconsistentNaming
-    public class ETSerialManager : DeviceSubtypeManager
+    public class SerialPortManager : DeviceSubtypeManager
     {
+        private Dictionary<string, ButtplugSerialDeviceFactory> _portDeviceTypeMap = new Dictionary<string, ButtplugSerialDeviceFactory>();
         private bool _isScanning;
-        private Thread _scanThread;
 
-        public ETSerialManager(IButtplugLogManager aLogManager)
+        public SerialPortManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
         {
             BpLogger.Info("Loading ErosTek Serial Port Manager");
+        }
+
+        public void AddPortProtocolMapping(string aPortName, ButtplugSerialDeviceFactory aDeviceType)
+        {
+            _portDeviceTypeMap.Add(aPortName, aDeviceType);
         }
 
         public override void StartScanning()
         {
             BpLogger.Info("Starting Scanning Serial Ports for ErosTek Devices");
             _isScanning = true;
-            _scanThread = new Thread(() => ScanSerialPorts(null));
-            _scanThread.Start();
+            foreach (var entry in _portDeviceTypeMap)
+            {
+                var device = entry.Value.CreateDevice(LogManager, entry.Key);
+                if (device == null)
+                {
+                    BpLogger.Error($"Cannot open device on port {entry.Key}.");
+                    continue;
+                }
+
+                device.Initialize().Wait();
+            }
         }
 
         public override void StopScanning()
@@ -43,144 +51,6 @@ namespace Buttplug.Server.Managers.SerialPortManager
         public override bool IsScanning()
         {
             return _isScanning;
-        }
-
-        private void ScanSerialPorts(string[] selectedComPorts)
-        {
-            _isScanning = true;
-            var count = 5;
-
-            while (_isScanning && count-- > 0)
-            {
-                // Enumerate Ports
-                string[] comPortsToScan;
-                if (selectedComPorts == null || selectedComPorts.Length == 0)
-                {
-                    comPortsToScan = SerialPort.GetPortNames();
-                }
-                else
-                {
-                    comPortsToScan = selectedComPorts;
-                }
-
-                // try to detect devices on all port
-                foreach (var port in comPortsToScan)
-                {
-                    BpLogger.Info("Scanning " + port);
-
-                    SerialPort serialPort = new SerialPort(port)
-                    {
-                        ReadTimeout = 200,
-                        WriteTimeout = 200,
-                        BaudRate = 19200,
-                        Parity = Parity.None,
-                        StopBits = StopBits.One,
-                        DataBits = 8,
-                        Handshake = Handshake.None,
-                    };
-
-                    try
-                    {
-                        serialPort.Open();
-                    }
-                    catch (Exception ex)
-                    {
-                        if (ex is UnauthorizedAccessException
-                            || ex is ArgumentOutOfRangeException
-                            || ex is IOException)
-                        {
-                            // This port is inaccessible.
-                            // Possibly because a device detected earlier is already using it,
-                            // or because our required parameters are not supported
-                            continue;
-                        }
-
-                        throw;
-                    }
-
-                    // We send 0x00 up to 11 times until we get 0x07 back.
-                    // Why 11? See et312-protocol.org
-                    var detected = false;
-
-                    for (var i = 0; i < 11; i++)
-                    {
-                        try
-                        {
-                            serialPort.Write(new[] { (byte)SerialCommand.Sync }, 0, 1);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex is TimeoutException
-                                || ex is UnauthorizedAccessException
-                                || ex is IOException)
-                            {
-                                // Can't write to this port? Skip to the next one.
-                                break;
-                            }
-
-                            throw;
-                        }
-
-                        try
-                        {
-                            if (serialPort.ReadByte() != (byte)SerialResponse.Error)
-                            {
-                                continue;
-                            }
-
-                            detected = true;
-                            break;
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex is TimeoutException
-                                || ex is UnauthorizedAccessException
-                                || ex is IOException)
-                            {
-                                // Can't write to this port? Skip to the next one.
-                                continue;
-                            }
-
-                            throw;
-                        }
-                    }
-
-                    if (detected)
-                    {
-                        // This seems to be an ET312! Let's try to create the device.
-                        try
-                        {
-                            var device = new ET312Device(serialPort, LogManager, "Erostek ET-312", port);
-
-                            BpLogger.Info("Found device at port " + port);
-
-                            // Device succesfully created!
-                            InvokeDeviceAdded(new DeviceAddedEventArgs(device));
-                            continue;
-                        }
-                        catch (ET312HandshakeException)
-                        {
-                            // Sync Failed. Not the device we were expecting or comms garbled.
-                        }
-                    }
-
-                    // No useful device detected on this port. Close the port.
-                    serialPort.Close();
-                    serialPort.Dispose();
-                }
-
-                Thread.Sleep(3000);
-
-                // _isScanning = false; // Uncomment to disable continuuous serial port scanning
-            }
-
-            if (count < 0)
-            {
-                BpLogger.Info("Automatically Stopping Scanning Serial Ports for ErosTek Devices");
-            }
-
-            _isScanning = false;
-            InvokeScanningFinished();
         }
     }
 }

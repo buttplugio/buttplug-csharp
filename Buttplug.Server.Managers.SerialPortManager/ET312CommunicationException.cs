@@ -6,7 +6,6 @@
 
 using System;
 
-// ReSharper disable once CheckNamespace
 namespace Buttplug.Server.Managers.SerialPortManager
 {
     // ReSharper disable once InconsistentNaming
