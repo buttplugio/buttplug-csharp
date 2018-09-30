@@ -46,8 +46,8 @@
     <Compile Include="ButtplugSerialDeviceFactory.cs" />
     <Compile Include="ErostekET312Consts.cs" />
     <Compile Include="ErostekET312Device.cs" />
-    <Compile Include="ET312CommunicationException.cs" />
-    <Compile Include="ET312HandshakeException.cs" />
+    <Compile Include="ErostekET312CommunicationException.cs" />
+    <Compile Include="ErostekET312HandshakeException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerialPortManager.cs" />
   </ItemGroup>
