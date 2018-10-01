@@ -25,9 +25,9 @@ namespace Buttplug.Server.Managers.WinUSBManager
             : base(aLogManager, "Trancevibrator " + aIndex, "Trancevibrator " + aIndex)
         {
             _device = aDevice;
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd));
+            AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
+            AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
+            AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes { FeatureCount = 1 });
         }
 
         public override void Disconnect()

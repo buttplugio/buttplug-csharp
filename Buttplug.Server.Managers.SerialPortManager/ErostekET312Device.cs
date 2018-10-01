@@ -124,9 +124,9 @@ namespace Buttplug.Server.Managers.SerialPortManager
                 await WriteLCD("----------------", 64);
 
                 // We're now ready to receive events
-                MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceMessageHandler(HandleFleshlightLaunchCmd));
-                MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceMessageHandler(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
-                MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+                AddMessageHandler<FleshlightLaunchFW12Cmd>(HandleFleshlightLaunchCmd);
+                AddMessageHandler<LinearCmd>(HandleLinearCmd, new MessageAttributes { FeatureCount = 1 });
+                AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
 
                 // Start update timer
                 _updateTimer = new Timer()
