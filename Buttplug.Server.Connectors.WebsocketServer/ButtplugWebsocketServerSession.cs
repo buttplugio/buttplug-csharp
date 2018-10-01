@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
@@ -28,7 +27,13 @@ namespace Buttplug.Server.Connectors.WebsocketServer
 
         private readonly CancellationTokenSource _linkedCancelSource;
 
-        private IButtplugLog _logger;
+        [CanBeNull]
+        public EventHandler<ConnectionEventArgs> ConnectionAccepted;
+
+        [CanBeNull]
+        public EventHandler<ConnectionEventArgs> ConnectionClosed;
+
+        private readonly IButtplugLog _logger;
 
         [NotNull]
         private BufferBlock<string> _outgoingMessages = new BufferBlock<string>();
@@ -51,7 +56,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             var msg = aEvent.Message as RequestServerInfo;
             var clientName = msg?.ClientName ?? "Unknown client";
 
-            //ConnectionUpdated?.Invoke(this, new ConnectionEventArgs(remoteId, clientName));
+            ConnectionAccepted?.Invoke(this, new ConnectionEventArgs(_ws.RemoteEndpoint.ToString(), clientName));
         }
 
         private void PingTimeoutHandler(object aObject, EventArgs aEvent)
@@ -135,6 +140,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
 
         private async Task ShutdownSession()
         {
+            var remoteId = _ws.RemoteEndpoint.ToString();
             try
             {
                 await _ws.CloseAsync();
@@ -148,7 +154,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             await _server.Shutdown();
             _ws.Dispose();
 
-            //ConnectionClosed?.Invoke(this, new ConnectionEventArgs(remoteId));
+            ConnectionClosed?.Invoke(this, new ConnectionEventArgs(remoteId));
         }
     }
 }

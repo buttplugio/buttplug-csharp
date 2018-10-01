@@ -39,13 +39,10 @@ namespace Buttplug.Server.Connectors.WebsocketServer
         public EventHandler<ConnectionEventArgs> ConnectionAccepted;
 
         [CanBeNull]
-        public EventHandler<ConnectionEventArgs> ConnectionUpdated;
-
-        [CanBeNull]
         public EventHandler<ConnectionEventArgs> ConnectionClosed;
 
         [NotNull]
-        private ConcurrentDictionary<string, WebSocket> _connections = new ConcurrentDictionary<string, WebSocket>();
+        private readonly ConcurrentDictionary<string, WebSocket> _connections = new ConcurrentDictionary<string, WebSocket>();
 
         private uint _maxConnections = 1;
 
@@ -127,9 +124,16 @@ namespace Buttplug.Server.Connectors.WebsocketServer
 
             var remoteId = ws.RemoteEndpoint.ToString();
             _connections.AddOrUpdate(remoteId, ws, (oldWs, newWs) => newWs);
-            ConnectionAccepted?.Invoke(this, new ConnectionEventArgs(remoteId));
 
             var session = new ButtplugWebsocketServerSession(_logManager, _serverFactory(), ws, _cancellation);
+            session.ConnectionAccepted += (aObj, aEventArgs) =>
+            {
+                ConnectionAccepted?.Invoke(this, aEventArgs);
+            };
+            session.ConnectionClosed += (aObj, aEventArgs) =>
+            {
+                ConnectionClosed?.Invoke(this, aEventArgs);
+            };
             await session.RunServerSession();
             _connections.TryRemove(remoteId, out var closews);
         }
