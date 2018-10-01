@@ -97,7 +97,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+            AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
         public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)
@@ -224,7 +224,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 case LovenseDeviceType.Nora:
 
                     // Nora has a rotator
-                    MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceMessageHandler(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
+                    AddMessageHandler<RotateCmd>(HandleRotateCmd, new MessageAttributes { FeatureCount = 1 });
                     break;
             }
 
@@ -236,11 +236,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private void AddCommonMessages()
         {
-            MsgFuncs.Add(typeof(LovenseCmd), new ButtplugDeviceMessageHandler(HandleLovenseCmd));
+            AddMessageHandler<LovenseCmd>(HandleLovenseCmd);
 
             // At present there are no Lovense devices that do not have at least one vibrator.
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount }));
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
+            AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes { FeatureCount = _vibratorCount });
+            AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
         }
 
         private void NotifyReceived(object sender, BluetoothNotifyEventArgs args)

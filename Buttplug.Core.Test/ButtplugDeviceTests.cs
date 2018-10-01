@@ -4,11 +4,14 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Core.Test
@@ -19,13 +22,10 @@ namespace Buttplug.Core.Test
         [Test]
         public async Task TestBaseDevice()
         {
-            var log = new ButtplugLogManager();
-            var dev = new TestDevice(log, "testDev")
+            var dev = new TestDevice(new ButtplugLogManager(), "testDev")
             {
                 Index = 2,
             };
-
-            Assert.AreEqual(2, dev.Index);
 
             Assert.True(await dev.Initialize(default(CancellationToken)) is Ok);
 
@@ -41,6 +41,34 @@ namespace Buttplug.Core.Test
             Assert.True(outMsg is Error);
             Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
             Assert.True((outMsg as Error).ErrorMessage.Contains("has disconnected"));
+        }
+
+        protected class TestDeviceDoubleAdd : TestDevice
+        {
+            public TestDeviceDoubleAdd(ButtplugLogManager aLogger)
+                : base(aLogger, "DoubleAdd")
+            {
+            }
+
+            public void DoubleAdd()
+            {
+                // Add HandleRotateCmd twice, should throw
+                AddMessageHandler<RotateCmd>(HandleRotateCmd);
+                AddMessageHandler<RotateCmd>(HandleRotateCmd);
+            }
+
+            public async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+            {
+                return new Ok(ButtplugConsts.SystemMsgId);
+            }
+        }
+
+        [Test]
+        public void TestFunctionDoubleAdd()
+        {
+            var device = new TestDeviceDoubleAdd(new ButtplugLogManager());
+            Action act = () => device.DoubleAdd();
+            act.Should().Throw<ArgumentException>();
         }
     }
 }

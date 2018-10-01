@@ -37,10 +37,14 @@ namespace Buttplug.Core.Devices
         protected readonly IButtplugLog BpLogger;
 
         /// <summary>
-        /// Gets the message handler functions
+        /// Gets the message handler functions.
         /// </summary>
+        /// <remarks>
+        /// This is kept private so that we can regulate keys being added. Otherwise it's easy to
+        /// accidentally copy/paste duplicate keys when adding new functions, and that is hell to debug.
+        /// </remarks>
         [NotNull]
-        protected readonly Dictionary<Type, ButtplugDeviceMessageHandler> MsgFuncs;
+        private readonly Dictionary<Type, (Func<ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> Function, MessageAttributes Attrs)> MsgFuncs;
 
         private bool _isDisconnected;
 
@@ -59,7 +63,9 @@ namespace Buttplug.Core.Devices
             [NotNull] string aIdentifier)
         {
             BpLogger = aLogManager.GetLogger(GetType());
-            MsgFuncs = new Dictionary<Type, ButtplugDeviceMessageHandler>();
+            MsgFuncs =
+                new Dictionary<Type, (Func<ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> Function,
+                    MessageAttributes Attrs)>();
             Name = aName;
             Identifier = aIdentifier;
         }
@@ -80,16 +86,6 @@ namespace Buttplug.Core.Devices
             }
 
             return new MessageAttributes();
-        }
-
-        /// <summary>
-        /// Invokes the DeviceRemoved event handler.
-        /// Required to disconnect devices from the lower levels.
-        /// </summary>
-        protected void InvokeDeviceRemoved()
-        {
-            _isDisconnected = true;
-            DeviceRemoved?.Invoke(this, new EventArgs());
         }
 
         /// <inheritdoc />
@@ -129,6 +125,33 @@ namespace Buttplug.Core.Devices
         protected void EmitMessage(ButtplugMessage aMsg)
         {
             MessageEmitted?.Invoke(this, new MessageReceivedEventArgs(aMsg));
+        }
+
+        /// <summary>
+        /// Invokes the DeviceRemoved event handler.
+        /// Required to disconnect devices from the lower levels.
+        /// </summary>
+        protected void InvokeDeviceRemoved()
+        {
+            _isDisconnected = true;
+            DeviceRemoved?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Used by deriving classes to add ButtplugDeviceMessage handlers to the handler map. Checks
+        /// to make sure duplicate entries are not being added.
+        /// </summary>
+        /// <remarks>
+        /// Having this as a generic with a type constraint rather than a type parameter means we get
+        /// type checking at compile/roslyn time.
+        /// </remarks>
+        /// <typeparam name="T">ButtplugDeviceMsg deriving type</typeparam>
+        /// <param name="aFunction">Handler for the message type</param>
+        /// <param name="aAttrs">MessageAttribute parameters, assuming the message type has any.</param>
+        protected void AddMessageHandler<T>(Func<ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> aFunction,
+            MessageAttributes aAttrs = null) where T : ButtplugDeviceMessage
+        {
+            MsgFuncs.Add(typeof(T), (aFunction, aAttrs ?? new MessageAttributes()));
         }
     }
 }

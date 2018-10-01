@@ -21,9 +21,9 @@ namespace Buttplug.Core.Test
         public TestDevice(IButtplugLogManager aLogManager, string aName, string aIdentifier = null)
             : base(aLogManager, aName, aIdentifier ?? aName)
         {
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 2 }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+            AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
+            AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 2 });
+            AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
         private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)

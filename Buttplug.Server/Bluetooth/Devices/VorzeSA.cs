@@ -77,9 +77,9 @@ namespace Buttplug.Server.Bluetooth.Devices
                 BpLogger.Warn($"Vorze product with unrecognized name ({Name}) found. This product may not work with Buttplug. Contact the developers for more info.");
             }
 
-            MsgFuncs.Add(typeof(VorzeA10CycloneCmd), new ButtplugDeviceMessageHandler(HandleVorzeA10CycloneCmd));
-            MsgFuncs.Add(typeof(RotateCmd), new ButtplugDeviceMessageHandler(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+            AddMessageHandler<VorzeA10CycloneCmd>(HandleVorzeA10CycloneCmd);
+            AddMessageHandler<RotateCmd>(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 });
+            AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)

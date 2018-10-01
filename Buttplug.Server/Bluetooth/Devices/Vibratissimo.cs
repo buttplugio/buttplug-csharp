@@ -61,9 +61,9 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
-            MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
-            MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+            AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
+            AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes { FeatureCount = 1 });
+            AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)

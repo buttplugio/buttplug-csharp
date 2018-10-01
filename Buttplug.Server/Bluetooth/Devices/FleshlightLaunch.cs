@@ -110,9 +110,9 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             // Setup message function array
-            MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd), new ButtplugDeviceMessageHandler(HandleFleshlightLaunchRawCmd));
-            MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceMessageHandler(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 }));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+            AddMessageHandler<FleshlightLaunchFW12Cmd>(HandleFleshlightLaunchRawCmd);
+            AddMessageHandler<LinearCmd>(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 });
+            AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
         public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)

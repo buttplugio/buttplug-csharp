@@ -74,22 +74,19 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
-            MsgFuncs.Add(typeof(KiirooCmd), new ButtplugDeviceMessageHandler(HandleKiirooRawCmd));
-            MsgFuncs.Add(typeof(StopDeviceCmd), new ButtplugDeviceMessageHandler(HandleStopDeviceCmd));
+            AddMessageHandler<KiirooCmd>(HandleKiirooRawCmd);
+            AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
 
             // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (aInterface.Name == "PEARL")
             {
-                MsgFuncs.Add(typeof(VibrateCmd), new ButtplugDeviceMessageHandler(HandleVibrateCmd,
-                    new MessageAttributes() { FeatureCount = 1 }));
-                MsgFuncs.Add(typeof(SingleMotorVibrateCmd), new ButtplugDeviceMessageHandler(HandleSingleMotorVibrateCmd));
+                AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 });
+                AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
             }
             else if (aInterface.Name == "ONYX")
             {
-                MsgFuncs.Add(typeof(LinearCmd), new ButtplugDeviceMessageHandler(HandleLinearCmd,
-                    new MessageAttributes() { FeatureCount = 1 }));
-                MsgFuncs.Add(typeof(FleshlightLaunchFW12Cmd),
-                    new ButtplugDeviceMessageHandler(HandleFleshlightLaunchFW12Cmd));
+                AddMessageHandler<LinearCmd>(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 });
+                AddMessageHandler<FleshlightLaunchFW12Cmd>(HandleFleshlightLaunchFW12Cmd);
             }
         }
 
