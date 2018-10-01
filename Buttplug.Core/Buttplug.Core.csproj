@@ -45,7 +45,7 @@
     <PackageReference Include="JetBrains.Annotations" version="2018.2.1" />
     <PackageReference Include="LibLog" Version="5.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NJsonSchema" version="9.10.75" />
+    <PackageReference Include="NJsonSchema" version="9.11.0" />
     <!-- <PackageReference Include="StyleCop.Analyzers" version="1.1.0-beta004" PrivateAssets="All" /> -->
   </ItemGroup>
 
