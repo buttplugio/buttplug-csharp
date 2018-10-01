@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Client.Connectors.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.SerialPortManager", "Buttplug.Server.Managers.SerialPortManager\Buttplug.Server.Managers.SerialPortManager.csproj", "{436CF4FF-AE10-45DA-8909-9AACF1ED6425}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Connectors.WebsocketServer.Test", "Buttplug.Server.Connectors.WebsocketServer.Test\Buttplug.Server.Connectors.WebsocketServer.Test.csproj", "{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -221,6 +223,14 @@ Global
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.Release|Any CPU.Build.0 = Release|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{436CF4FF-AE10-45DA-8909-9AACF1ED6425}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
+		{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
+		{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
+		{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
