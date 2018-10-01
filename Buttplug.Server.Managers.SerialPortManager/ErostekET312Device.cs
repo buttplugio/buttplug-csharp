@@ -338,7 +338,9 @@ namespace Buttplug.Server.Managers.SerialPortManager
                     (byte)(address & 0x00ff), // address low byte
             });
 
-            // byte 0 - return code byte 1 - content of requested address byte 2 - checksum
+            // byte 0 - return code
+            // byte 1 - content of requested address
+            // byte 2 - checksum
             var recBuffer = await ReadAsync(3);
 
             // If the response is not of the expected type or Checksum doesn't match consider
