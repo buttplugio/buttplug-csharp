@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Server.Bluetooth;
@@ -73,6 +74,19 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             {
                 BpLogger.Warn("Bluetooth adapter available but does not support Bluetooth Low Energy.");
                 return;
+            }
+
+            // Log all bluetooth radios on the system, in case we need the information from the user later.
+            var objSearcher = new ManagementObjectSearcher("Select * from Win32_PnPSignedDriver where DeviceName like '%Bluetooth%'");
+
+            var objCollection = objSearcher.Get();
+
+            BpLogger.Info("Bluetooth Radio Information:");
+            foreach (var obj in objCollection)
+            {
+                var info =
+                    $"Device='{obj["DeviceName"]}',Manufacturer='{obj["Manufacturer"]}',DriverVersion='{obj["DriverVersion"]}' ";
+                BpLogger.Info(info);
             }
 
             BpLogger.Debug("UWP Manager found working Bluetooth LE Adapter");
