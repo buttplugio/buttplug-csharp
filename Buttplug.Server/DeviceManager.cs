@@ -48,6 +48,11 @@ namespace Buttplug.Server
             _managers = new List<IDeviceSubtypeManager>();
         }
 
+        ~DeviceManager()
+        {
+            RemoveAllDevices();
+        }
+
         private static Dictionary<string, MessageAttributes>
             GetAllowedMessageTypesAsDictionary([NotNull] IButtplugDevice aDevice)
         {
