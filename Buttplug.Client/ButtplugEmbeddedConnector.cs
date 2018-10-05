@@ -49,7 +49,7 @@ namespace Buttplug.Client
 
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
-            return await Server.SendMessage(aMsg);
+            return await Server.SendMessageAsync(aMsg);
         }
 
         private void OnServerMessageReceived(object e, MessageReceivedEventArgs aMsgEvent)

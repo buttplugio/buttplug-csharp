@@ -98,9 +98,9 @@ namespace Buttplug.Server
             DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
 
-        private void MessageEmittedHandler(object sender, MessageReceivedEventArgs e)
+        private void MessageEmittedHandler(object aSender, MessageReceivedEventArgs aEvent)
         {
-            DeviceMessageReceived?.Invoke(this, e);
+            DeviceMessageReceived?.Invoke(this, aEvent);
         }
 
         private void DeviceRemovedHandler(object aObj, EventArgs aEvent)
@@ -157,7 +157,7 @@ namespace Buttplug.Server
             });
         }
 
-        public async Task<ButtplugMessage> SendMessage(ButtplugMessage aMsg, CancellationToken aToken)
+        public async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage aMsg, CancellationToken aToken)
         {
             var id = aMsg.Id;
             switch (aMsg)
@@ -183,7 +183,7 @@ namespace Buttplug.Server
                             continue;
                         }
 
-                        var r = await d.Value.ParseMessage(new StopDeviceCmd(d.Key, aMsg.Id), aToken);
+                        var r = await d.Value.ParseMessageAsync(new StopDeviceCmd(d.Key, aMsg.Id), aToken);
                         if (r is Ok)
                         {
                             continue;
@@ -213,7 +213,7 @@ namespace Buttplug.Server
                     _bpLogger.Trace($"Sending {aMsg.GetType().Name} to device index {m.DeviceIndex}");
                     if (_devices.ContainsKey(m.DeviceIndex))
                     {
-                        return await _devices[m.DeviceIndex].ParseMessage(m, aToken);
+                        return await _devices[m.DeviceIndex].ParseMessageAsync(m, aToken);
                     }
 
                     return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_DEVICE, $"Dropping message for unknown device index {m.DeviceIndex}");

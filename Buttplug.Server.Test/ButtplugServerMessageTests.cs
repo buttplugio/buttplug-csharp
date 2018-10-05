@@ -24,13 +24,13 @@ namespace Buttplug.Server.Test
         public async Task ServerTestSetup()
         {
             _server = new TestServer();
-            Assert.True(await _server.SendMessage(new RequestServerInfo("TestClient")) is ServerInfo);
+            Assert.True(await _server.SendMessageAsync(new RequestServerInfo("TestClient")) is ServerInfo);
         }
 
         [Test]
         public async Task RequestLogJsonTest()
         {
-            var res = await _server.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}]");
+            var res = await _server.SendMessageAsync("[{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}]");
             Assert.True(res.Length == 1);
             Assert.True(res[0] is Ok);
         }
@@ -38,7 +38,7 @@ namespace Buttplug.Server.Test
         [Test]
         public async Task RequestLogWrongLevelTest()
         {
-            var res = await _server.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}]");
+            var res = await _server.SendMessageAsync("[{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}]");
             Assert.True(res.Length == 1);
             Assert.True(res[0] is Error);
         }
@@ -46,7 +46,7 @@ namespace Buttplug.Server.Test
         [Test]
         public async Task RequestLogWithoutArrayWrapperTest()
         {
-            var res = await _server.SendMessage("{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}");
+            var res = await _server.SendMessageAsync("{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}");
             Assert.True(res.Length == 1);
             Assert.True(res[0] is Error);
         }
@@ -55,10 +55,10 @@ namespace Buttplug.Server.Test
         public async Task RequestLogTraceLevelTest()
         {
             _server.MessageReceived += _server.OnMessageReceived;
-            var res = await _server.SendMessage("[{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}]");
+            var res = await _server.SendMessageAsync("[{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}]");
             Assert.AreEqual(res.Length, 1);
             Assert.True(res[0] is Ok);
-            res = await _server.SendMessage("[{\"Test\": {\"TestString\":\"Echo\",\"Id\":2}}]");
+            res = await _server.SendMessageAsync("[{\"Test\": {\"TestString\":\"Echo\",\"Id\":2}}]");
             Assert.AreEqual(res.Length, 1);
             Assert.True(res[0] is Core.Messages.Test);
             Assert.AreEqual(_server.OutgoingAsync.Count, 4);
@@ -67,7 +67,7 @@ namespace Buttplug.Server.Test
         [Test]
         public async Task RequestNothingTest()
         {
-            var res = await _server.SendMessage("[]");
+            var res = await _server.SendMessageAsync("[]");
             Assert.True(res[0] is Error);
         }
 
@@ -76,7 +76,7 @@ namespace Buttplug.Server.Test
         {
             var dm = new TestDeviceSubtypeManager();
             _server.AddDeviceSubtypeManager(aLogger => { return dm; });
-            var r = await _server.SendMessage(new StartScanning());
+            var r = await _server.SendMessageAsync(new StartScanning());
             Assert.True(r is Ok);
             Assert.True(dm.StartScanningCalled);
         }
@@ -92,7 +92,7 @@ namespace Buttplug.Server.Test
         [Test]
         public async Task SendUnhandledMessage()
         {
-            var r = await _server.SendMessage(new FakeMessage(1));
+            var r = await _server.SendMessageAsync(new FakeMessage(1));
             Assert.True(r is Error);
         }
 
@@ -106,7 +106,7 @@ namespace Buttplug.Server.Test
             Assert.True(r.Length > 0);
 
             // However it shouldn't be taken by the server.
-            var e = await _server.SendMessage(r);
+            var e = await _server.SendMessageAsync(r);
             Assert.True(e.Length == 1);
             Assert.True(e[0] is Error);
         }
@@ -116,7 +116,7 @@ namespace Buttplug.Server.Test
         {
             var dm = new TestDeviceSubtypeManager();
             _server.AddDeviceSubtypeManager(aLogger => dm);
-            var r = await _server.SendMessage(new StopScanning());
+            var r = await _server.SendMessageAsync(new StopScanning());
             Assert.True(r is Ok);
             Assert.True(dm.StopScanningCalled);
         }
@@ -125,7 +125,7 @@ namespace Buttplug.Server.Test
         public async Task RequestServerInfoTest()
         {
             var s = new ButtplugServer("TestServer", 100);
-            var results = new List<ButtplugMessage> { await s.SendMessage(new RequestServerInfo("TestClient")) };
+            var results = new List<ButtplugMessage> { await s.SendMessageAsync(new RequestServerInfo("TestClient")) };
 
             foreach (var reply in results)
             {
@@ -150,9 +150,9 @@ namespace Buttplug.Server.Test
         public async Task NonRequestServerInfoFirstTest()
         {
             var s = new ButtplugServer("TestServer", 0);
-            Assert.True(await s.SendMessage(new Core.Messages.Test("Test")) is Error);
-            Assert.True(await s.SendMessage(new RequestServerInfo("TestClient")) is ServerInfo);
-            Assert.True(await s.SendMessage(new Core.Messages.Test("Test")) is Core.Messages.Test);
+            Assert.True(await s.SendMessageAsync(new Core.Messages.Test("Test")) is Error);
+            Assert.True(await s.SendMessageAsync(new RequestServerInfo("TestClient")) is ServerInfo);
+            Assert.True(await s.SendMessageAsync(new Core.Messages.Test("Test")) is Core.Messages.Test);
         }
     }
 }

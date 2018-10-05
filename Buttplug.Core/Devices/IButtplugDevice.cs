@@ -61,7 +61,7 @@ namespace Buttplug.Core.Devices
         /// <param name="aToken">Cancellation token to stop message parsing action externally.</param>
         /// <returns>Response, usually <see cref="Ok"/> or <see cref="Error"/>, but can be other types.</returns>
         [NotNull]
-        Task<ButtplugMessage> ParseMessage(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken));
+        Task<ButtplugMessage> ParseMessageAsync(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken));
 
         /// <summary>
         /// Initializes a device. Required for devices that may require connection handshakes or
@@ -69,7 +69,7 @@ namespace Buttplug.Core.Devices
         /// </summary>
         /// <returns>Response, usually <see cref="Ok"/> or <see cref="Error"/>.</returns>
         [NotNull]
-        Task<ButtplugMessage> Initialize(CancellationToken aToken = default(CancellationToken));
+        Task<ButtplugMessage> InitializeAsync(CancellationToken aToken = default(CancellationToken));
 
         /// <summary>
         /// Disconnect device.

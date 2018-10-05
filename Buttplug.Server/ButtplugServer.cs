@@ -117,13 +117,13 @@ namespace Buttplug.Server
             _pingTimer?.Change(Timeout.Infinite, (int)_maxPingTime);
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
                 Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
-            await SendMessage(new StopAllDevices());
+            await SendMessageAsync(new StopAllDevices());
             _pingTimedOut = true;
             PingTimeout?.Invoke(this, new EventArgs());
         }
 
         [NotNull]
-        public async Task<ButtplugMessage> SendMessage([NotNull] ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        public async Task<ButtplugMessage> SendMessageAsync([NotNull] ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
             var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(_internalToken.Token, aToken);
             _bpLogger.Trace($"Got Message {aMsg.Id} of type {aMsg.GetType().Name} to send");
@@ -180,15 +180,15 @@ namespace Buttplug.Server
                     return new Test(m.TestString, id);
             }
 
-            return await _deviceManager.SendMessage(aMsg, combinedToken.Token);
+            return await _deviceManager.SendMessageAsync(aMsg, combinedToken.Token);
         }
 
-        public async Task Shutdown(CancellationToken aToken = default(CancellationToken))
+        public async Task ShutdownAsync(CancellationToken aToken = default(CancellationToken))
         {
             // Don't disconnect devices on shutdown, as they won't actually close.
             // Uncomment this once we figure out how to close bluetooth devices.
             // _deviceManager.RemoveAllDevices();
-            var msg = await _deviceManager.SendMessage(new StopAllDevices(), aToken);
+            var msg = await _deviceManager.SendMessageAsync(new StopAllDevices(), aToken);
             if (msg is Error error)
             {
                 _bpLogger.Error("An error occured while stopping devices on shutdown.");
@@ -202,7 +202,7 @@ namespace Buttplug.Server
         }
 
         [ItemNotNull]
-        public async Task<ButtplugMessage[]> SendMessage(string aJsonMsgs, CancellationToken aToken = default(CancellationToken))
+        public async Task<ButtplugMessage[]> SendMessageAsync(string aJsonMsgs, CancellationToken aToken = default(CancellationToken))
         {
             var msgs = _parser.Deserialize(aJsonMsgs);
             var res = new List<ButtplugMessage>();
@@ -214,7 +214,7 @@ namespace Buttplug.Server
                         res.Add(errorMsg);
                         break;
                     default:
-                        res.Add(await SendMessage(msg, aToken));
+                        res.Add(await SendMessageAsync(msg, aToken));
                         break;
                 }
             }

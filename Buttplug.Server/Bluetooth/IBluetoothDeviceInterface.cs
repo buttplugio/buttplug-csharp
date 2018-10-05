@@ -18,24 +18,22 @@ namespace Buttplug.Server.Bluetooth
 
         event EventHandler<BluetoothNotifyEventArgs> BluetoothNotifyReceived;
 
-        Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
-
-        Task<ButtplugMessage> WriteValue(uint aMsgId, uint aCharactieristicIndex, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
-
-        // TODO If Unity requires < 4.7, this may need to be changed to use out params instead of tuple returns.
-        Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, CancellationToken aToken);
-
-        // TODO If Unity requires < 4.7, this may need to be changed to use out params instead of tuple returns.
-        Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, uint aCharacteristicIndex, CancellationToken aToken);
-
-        Task SubscribeToUpdates();
-
-        Task SubscribeToUpdates(uint aIndex);
-
-        ulong GetAddress();
-
         event EventHandler DeviceRemoved;
 
+        ulong Address { get; }
+
         void Disconnect();
+
+        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
+
+        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharactieristicIndex, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
+
+        Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken);
+
+        Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, uint aCharacteristicIndex, CancellationToken aToken);
+
+        Task SubscribeToUpdatesAsync();
+
+        Task SubscribeToUpdatesAsync(uint aIndex);
     }
 }

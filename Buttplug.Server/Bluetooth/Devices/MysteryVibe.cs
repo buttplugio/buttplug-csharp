@@ -80,13 +80,13 @@ namespace Buttplug.Server.Bluetooth.Devices
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
-        public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)
+        public override async Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
         {
             BpLogger.Trace($"Initializing {Name}");
 
             // Kick Vibrator into motor control mode, just copying what the app sends when you go to
             // create pattern mode.
-            return await Interface.WriteValue(ButtplugConsts.SystemMsgId,
+            return await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
                 (uint)MysteryVibeBluetoothInfo.Chrs.ModeControl,
                 new byte[] { 0x43, 0x02, 0x00 }, true, aToken);
         }
@@ -109,7 +109,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             // We'll have to use an internal token here since this is timer triggered.
-            if (await Interface.WriteValue(ButtplugConsts.DefaultMsgId,
+            if (await Interface.WriteValueAsync(ButtplugConsts.DefaultMsgId,
                 (uint)MysteryVibeBluetoothInfo.Chrs.MotorControl,
                 _vibratorSpeeds, false, _stopUpdateCommandSource.Token) is Error errorMsg)
             {

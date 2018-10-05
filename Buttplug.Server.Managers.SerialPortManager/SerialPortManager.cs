@@ -38,7 +38,7 @@ namespace Buttplug.Server.Managers.SerialPortManager
                     continue;
                 }
 
-                device.Initialize().Wait();
+                device.InitializeAsync().Wait();
             }
         }
 

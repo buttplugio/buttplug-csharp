@@ -95,19 +95,19 @@ namespace Buttplug.Server.Bluetooth.Devices
             // no-op, but required for the Onyx to work
         }
 
-        public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)
+        public override async Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
         {
             // Start listening for incoming
             Interface.BluetoothNotifyReceived += OnBluetoothMessageReceived;
-            await Interface.SubscribeToUpdates((uint)KiirooBluetoothInfo.Chrs.Rx);
+            await Interface.SubscribeToUpdatesAsync((uint)KiirooBluetoothInfo.Chrs.Rx);
 
             // Mode select
-            await Interface.WriteValue(ButtplugConsts.SystemMsgId,
+            await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
                 (uint)KiirooBluetoothInfo.Chrs.Cmd,
                 new byte[] { 0x01, 0x00 }, true, aToken);
 
             // Set to start position
-            await Interface.WriteValue(ButtplugConsts.SystemMsgId,
+            await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
                 (uint)KiirooBluetoothInfo.Chrs.Tx,
                 new byte[] { 0x30, 0x2c }, true, aToken);
 
@@ -210,7 +210,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
             }
 
-            return await Interface.WriteValue(cmdMsg.Id, (uint)KiirooBluetoothInfo.Chrs.Tx,
+            return await Interface.WriteValueAsync(cmdMsg.Id, (uint)KiirooBluetoothInfo.Chrs.Tx,
                 Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"), false, aToken);
         }
 

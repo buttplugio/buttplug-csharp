@@ -56,7 +56,7 @@ namespace Buttplug.Server.Test.Util
 
         public async Task Initialize()
         {
-            Assert.True(await bleDevice.Initialize() is Ok);
+            Assert.True(await bleDevice.InitializeAsync() is Ok);
             bleIface.LastWritten.Clear();
         }
 
@@ -174,7 +174,7 @@ namespace Buttplug.Server.Test.Util
         public async Task TestDeviceInitialize(IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse, bool aStrict = true)
         {
             Clear();
-            Assert.True(await bleDevice.Initialize() is Ok);
+            Assert.True(await bleDevice.InitializeAsync() is Ok);
 
             TestPacketMatching(aExpectedBytes, aWriteWithResponse, aStrict);
         }
@@ -183,7 +183,7 @@ namespace Buttplug.Server.Test.Util
         public async Task TestDeviceMessageOnWrite(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
         {
             Clear();
-            Assert.True(await bleDevice.ParseMessage(aOutgoingMessage) is Ok);
+            Assert.True(await bleDevice.ParseMessageAsync(aOutgoingMessage) is Ok);
             var resetEvent = new ManualResetEvent(false);
             bleIface.ValueWritten += (aObj, aArgs) => { resetEvent.Set(); };
             resetEvent.WaitOne(1000);
@@ -193,7 +193,7 @@ namespace Buttplug.Server.Test.Util
         public async Task TestDeviceMessage(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
         {
             Clear();
-            Assert.True(await bleDevice.ParseMessage(aOutgoingMessage) is Ok);
+            Assert.True(await bleDevice.ParseMessageAsync(aOutgoingMessage) is Ok);
 
             TestPacketMatching(aExpectedBytes, aWriteWithResponse);
         }
@@ -201,7 +201,7 @@ namespace Buttplug.Server.Test.Util
         public async Task TestDeviceMessageDelayed(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse, uint aMilliseconds)
         {
             Clear();
-            Assert.True(await bleDevice.ParseMessage(aOutgoingMessage) is Ok);
+            Assert.True(await bleDevice.ParseMessageAsync(aOutgoingMessage) is Ok);
             Thread.Sleep(new TimeSpan(0, 0, 0, 0, (int)aMilliseconds));
             TestPacketMatching(aExpectedBytes, aWriteWithResponse, false);
         }
@@ -214,7 +214,7 @@ namespace Buttplug.Server.Test.Util
         public async Task TestInvalidDeviceMessage(ButtplugDeviceMessage aOutgoingMessage)
         {
             Clear();
-            Assert.True(await bleDevice.ParseMessage(aOutgoingMessage) is Error);
+            Assert.True(await bleDevice.ParseMessageAsync(aOutgoingMessage) is Error);
         }
 
         public async Task TestInvalidVibrateCmd(uint aNumVibes)

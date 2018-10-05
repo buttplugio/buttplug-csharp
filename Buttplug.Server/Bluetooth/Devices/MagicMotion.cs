@@ -229,7 +229,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                     cmdMsg.Id);
             }
 
-            return await Interface.WriteValue(aMsg.Id,
+            return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)MagicMotionBluetoothInfo.Chrs.Tx,
                 data, false, aToken);
         }

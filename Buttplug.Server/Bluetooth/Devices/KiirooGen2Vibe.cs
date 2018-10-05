@@ -192,7 +192,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 (byte)Convert.ToUInt16(_vibratorSpeeds[_devInfo.VibeOrder[2]] * 100),
             };
 
-            return await Interface.WriteValue(aMsg.Id,
+            return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx,
                 data, false, aToken);
         }

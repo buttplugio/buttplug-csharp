@@ -89,7 +89,7 @@ namespace Buttplug.Core.Devices
         }
 
         /// <inheritdoc />
-        public async Task<ButtplugMessage> ParseMessage([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
+        public async Task<ButtplugMessage> ParseMessageAsync([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             if (_isDisconnected)
             {
@@ -109,7 +109,7 @@ namespace Buttplug.Core.Devices
         }
 
         /// <inheritdoc />
-        public virtual Task<ButtplugMessage> Initialize(CancellationToken aToken)
+        public virtual Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
         {
             return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SystemMsgId));
         }

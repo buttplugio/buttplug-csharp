@@ -121,7 +121,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 _vibratorSpeed = v.Speed;
             }
 
-            return await Interface.WriteValue(aMsg.Id,
+            return await Interface.WriteValueAsync(aMsg.Id,
                 Encoding.ASCII.GetBytes($"$SYS,{(int)(_vibratorSpeed * 8),1}?"), false, aToken);
         }
     }
