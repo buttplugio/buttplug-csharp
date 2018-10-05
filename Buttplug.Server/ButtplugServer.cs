@@ -111,13 +111,13 @@ namespace Buttplug.Server
             MessageReceived?.Invoke(aObj, new MessageReceivedEventArgs(new ScanningFinished()));
         }
 
-        private void PingTimeoutHandler([NotNull] object aObj)
+        private async void PingTimeoutHandler([NotNull] object aObj)
         {
             // Stop the timer by specifying an infinite due period (See: https://msdn.microsoft.com/en-us/library/yz1c7148(v=vs.110).aspx)
             _pingTimer?.Change(Timeout.Infinite, (int)_maxPingTime);
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
                 Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
-            SendMessage(new StopAllDevices()).Wait();
+            await SendMessage(new StopAllDevices());
             _pingTimedOut = true;
             PingTimeout?.Invoke(this, new EventArgs());
         }
