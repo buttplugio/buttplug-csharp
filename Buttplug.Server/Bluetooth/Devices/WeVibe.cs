@@ -169,7 +169,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 data[5] = 0x00;
             }
 
-            return await Interface.WriteValue(aMsg.Id, (uint)WeVibeBluetoothInfo.Chrs.Tx, data, false, aToken);
+            return await Interface.WriteValueAsync(aMsg.Id, (uint)WeVibeBluetoothInfo.Chrs.Tx, data, false, aToken);
         }
     }
 }

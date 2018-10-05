@@ -54,7 +54,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
 
         public bool Connected => _server != null;
 
-        public async Task StartServer([NotNull] Func<ButtplugServer> aFactory, uint maxConnections = 1, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
+        public async Task StartServerAsync([NotNull] Func<ButtplugServer> aFactory, uint maxConnections = 1, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
         {
             _cancellation = new CancellationTokenSource();
             _serverFactory = aFactory;
@@ -138,7 +138,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             _connections.TryRemove(remoteId, out var closews);
         }
 
-        public async Task StopServer()
+        public async Task StopServerAsync()
         {
             if (_websocketTask == null)
             {
@@ -150,7 +150,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             _server = null;
         }
 
-        public async Task Disconnect(string remoteId = null)
+        public async Task DisconnectAsync(string remoteId = null)
         {
             if (remoteId == null)
             {

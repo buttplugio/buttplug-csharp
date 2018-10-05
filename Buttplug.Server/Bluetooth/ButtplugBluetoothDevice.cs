@@ -26,7 +26,7 @@ namespace Buttplug.Server.Bluetooth
             [NotNull] IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
                    aName,
-                   aInterface.GetAddress().ToString())
+                   aInterface.Address.ToString())
         {
             Interface = aInterface;
             Info = aInfo;

@@ -22,7 +22,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
             _logMgr = new ButtplugLogManager();
             _subtypeMgr = new TestDeviceSubtypeManager(new TestDevice(_logMgr, "Test Device"));
             _websocketServer = new ButtplugWebsocketServer();
-            await _websocketServer.StartServer(() =>
+            await _websocketServer.StartServerAsync(() =>
             {
                 var server = new TestServer();
                 server.AddDeviceSubtypeManager(aLogger => _subtypeMgr);
@@ -65,7 +65,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
                 }
             };
             await _client.ConnectAsync();
-            await _websocketServer.Disconnect();
+            await _websocketServer.DisconnectAsync();
             await signal.WaitAsync();
         }
     }

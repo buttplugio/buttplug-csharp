@@ -141,7 +141,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var data = new byte[] { Convert.ToByte(mode) };
 
-            return await Interface.WriteValue(aMsg.Id,
+            return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)LiBoBluetoothInfo.Chrs.WriteVibrate,
                 data, false, aToken);
         }

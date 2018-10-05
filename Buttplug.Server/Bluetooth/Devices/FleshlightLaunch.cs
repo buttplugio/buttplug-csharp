@@ -115,7 +115,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
-        public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)
+        public override async Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
         {
             BpLogger.Trace($"Initializing {Name}");
             var chr = (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd;
@@ -125,7 +125,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 chr = (uint)KiirooOnyx2BluetoothInfo.Chrs.Cmd;
             }
 
-            return await Interface.WriteValue(ButtplugConsts.SystemMsgId,
+            return await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
                 chr,
                 new byte[] { 0 },
                 true, aToken);
@@ -185,7 +185,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             _lastPosition = Convert.ToDouble(cmdMsg.Position) / 99;
 
-            return await Interface.WriteValue(aMsg.Id,
+            return await Interface.WriteValueAsync(aMsg.Id,
                 (int)FleshlightLaunchBluetoothInfo.Chrs.Tx,
                 new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }, false, aToken);
         }

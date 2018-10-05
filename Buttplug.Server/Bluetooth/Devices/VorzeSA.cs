@@ -136,7 +136,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             _speed = cmdMsg.Speed;
 
             var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
-            return await Interface.WriteValue(aMsg.Id,
+            return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)VorzeSABluetoothInfo.Chrs.Tx,
                 new byte[] { (byte)_deviceType, 0x01, rawSpeed }, false, aToken);
         }

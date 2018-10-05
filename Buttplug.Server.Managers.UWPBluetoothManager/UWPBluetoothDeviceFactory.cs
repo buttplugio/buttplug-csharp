@@ -141,7 +141,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
             // If initialization fails, don't actually send the message back. Just return null, we'll
             // have the info in the logs.
-            return await device.Initialize() is Ok ? device : null;
+            return await device.InitializeAsync() is Ok ? device : null;
         }
     }
 }

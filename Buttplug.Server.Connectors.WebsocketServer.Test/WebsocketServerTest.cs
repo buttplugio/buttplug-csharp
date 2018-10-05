@@ -26,7 +26,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer.Test
         [TearDown]
         public async Task TearDown()
         {
-            await _server.StopServer();
+            await _server.StopServerAsync();
         }
 
         // Test that ConnectionAccepted is fired after client finished handshake.
@@ -37,7 +37,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer.Test
             // ConnectAsync(), but using a semaphor means we'll pass even if its out of sync.
             var sem = new SemaphoreSlim(0, 1);
             _server.ConnectionAccepted += (aObject, aEventArgs) => { sem.Release(); };
-            await _server.StartServer(() => new ButtplugServer("Test Server", 0));
+            await _server.StartServerAsync(() => new ButtplugServer("Test Server", 0));
             sem.CurrentCount.Should().Be(0);
             await _client.ConnectAsync();
             await sem.WaitAsync();
@@ -52,7 +52,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer.Test
             // on that.
             var sem = new SemaphoreSlim(0, 1);
             _server.ConnectionClosed += (aObject, aEventArgs) => { sem.Release(); };
-            await _server.StartServer(() => new ButtplugServer("Test Server", 0));
+            await _server.StartServerAsync(() => new ButtplugServer("Test Server", 0));
             await _client.ConnectAsync();
             // Make sure nothing got fired after connect
             sem.CurrentCount.Should().Be(0);

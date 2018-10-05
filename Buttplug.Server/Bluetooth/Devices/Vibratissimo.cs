@@ -116,13 +116,13 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             var data = new byte[] { 0x03, 0xff };
-            await Interface.WriteValue(aMsg.Id,
+            await Interface.WriteValueAsync(aMsg.Id,
                 (uint)VibratissimoBluetoothInfo.Chrs.TxMode,
                 data, false, aToken);
 
             data[0] = Convert.ToByte(_vibratorSpeed * byte.MaxValue);
             data[1] = 0x00;
-            return await Interface.WriteValue(aMsg.Id,
+            return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)VibratissimoBluetoothInfo.Chrs.TxSpeed,
                 data, false, aToken);
         }

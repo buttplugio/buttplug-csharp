@@ -147,7 +147,7 @@ namespace Buttplug.Server.Connectors.IPCServer
 
                         if (msg.Length > 0)
                         {
-                            var respMsgs = await buttplugServer.SendMessage(msg);
+                            var respMsgs = await buttplugServer.SendMessageAsync(msg);
                             var respMsg = buttplugServer.Serialize(respMsgs);
                             if (respMsg == null)
                             {
@@ -182,7 +182,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                 finally
                 {
                     buttplugServer.MessageReceived -= msgReceived;
-                    await buttplugServer.Shutdown();
+                    await buttplugServer.ShutdownAsync();
                     buttplugServer = null;
                     _connections.TryDequeue(out var stashed);
                     while (stashed != aServer && _connections.Any())

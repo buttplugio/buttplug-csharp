@@ -101,7 +101,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
                         var incomingMsg = ((Task<string>)msgTasks[0]).GetAwaiter().GetResult();
                         if (incomingMsg != null)
                         {
-                            await QueueMessage(await _server.SendMessage(incomingMsg));
+                            await QueueMessage(await _server.SendMessageAsync(incomingMsg));
                         }
 
                         readTask = _ws.ReadStringAsync(_linkedCancelSource.Token);
@@ -151,7 +151,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             }
 
             _server.MessageReceived -= ReceiveMessageFromServerHandler;
-            await _server.Shutdown();
+            await _server.ShutdownAsync();
             _ws.Dispose();
 
             ConnectionClosed?.Invoke(this, new ConnectionEventArgs(remoteId));

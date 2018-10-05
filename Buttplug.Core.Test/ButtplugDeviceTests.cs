@@ -27,17 +27,17 @@ namespace Buttplug.Core.Test
                 Index = 2,
             };
 
-            Assert.True(await dev.Initialize(default(CancellationToken)) is Ok);
+            Assert.True(await dev.InitializeAsync(default(CancellationToken)) is Ok);
 
-            Assert.True(await dev.ParseMessage(new StopDeviceCmd(2), default(CancellationToken)) is Ok);
+            Assert.True(await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken)) is Ok);
 
-            var outMsg = await dev.ParseMessage(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken));
+            var outMsg = await dev.ParseMessageAsync(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken));
             Assert.True(outMsg is Error);
             Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
             Assert.True((outMsg as Error).ErrorMessage.Contains("cannot handle message of type"));
 
             dev.Disconnect();
-            outMsg = await dev.ParseMessage(new StopDeviceCmd(2), default(CancellationToken));
+            outMsg = await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken));
             Assert.True(outMsg is Error);
             Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
             Assert.True((outMsg as Error).ErrorMessage.Contains("has disconnected"));
@@ -57,9 +57,9 @@ namespace Buttplug.Core.Test
                 AddMessageHandler<RotateCmd>(HandleRotateCmd);
             }
 
-            public async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+            public Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
             {
-                return new Ok(ButtplugConsts.SystemMsgId);
+                return Task.FromResult(new Ok(ButtplugConsts.SystemMsgId) as ButtplugMessage);
             }
         }
 

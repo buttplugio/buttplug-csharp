@@ -43,6 +43,8 @@ namespace Buttplug.Server.Test
             public byte[] Value;
         }
 
+        public ulong Address => _address;
+
         public List<WriteData> LastWritten = new List<WriteData>();
         public Dictionary<uint, List<byte[]>> ExpectedRead = new Dictionary<uint, List<byte[]>>();
 
@@ -74,12 +76,12 @@ namespace Buttplug.Server.Test
             ExpectedRead[aCharacteristicIndex].Add(aValue);
         }
 
-        public Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
+        public Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
-            return WriteValue(aMsgId, (uint)Chrs.Tx, aValue, aWriteWithResponse, aToken);
+            return WriteValueAsync(aMsgId, (uint)Chrs.Tx, aValue, aWriteWithResponse, aToken);
         }
 
-        public Task<ButtplugMessage> WriteValue(uint aMsgId, uint aCharacteristic, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
+        public Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharacteristic, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
             LastWritten.Add(new WriteData()
             {
@@ -92,7 +94,7 @@ namespace Buttplug.Server.Test
             return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
         }
 
-        public Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, CancellationToken aToken)
+        public Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken)
         {
             // Expect that we'll only have one entry in the dictionary at this point.
             Assert.AreEqual(ExpectedRead.Count, 1);
@@ -101,26 +103,21 @@ namespace Buttplug.Server.Test
             return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), value));
         }
 
-        public Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, uint aIndex, CancellationToken aToken)
+        public Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, uint aIndex, CancellationToken aToken)
         {
             return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), new byte[] { }));
         }
 
         // noop for tests
-        public Task SubscribeToUpdates()
+        public Task SubscribeToUpdatesAsync()
         {
             return Task.CompletedTask;
         }
 
         // noop for tests
-        public Task SubscribeToUpdates(uint aIndex)
+        public Task SubscribeToUpdatesAsync(uint aIndex)
         {
             return Task.CompletedTask;
-        }
-
-        public ulong GetAddress()
-        {
-            return _address;
         }
 
         public void Disconnect()

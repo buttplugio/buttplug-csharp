@@ -74,7 +74,7 @@ namespace Buttplug.Server.Managers.SerialPortManager
         {
         }
 
-        public override async Task<ButtplugMessage> Initialize(CancellationToken aToken)
+        public override async Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
         {
             BpLogger.Info("Attempting Synch");
             _boxKey = 0;

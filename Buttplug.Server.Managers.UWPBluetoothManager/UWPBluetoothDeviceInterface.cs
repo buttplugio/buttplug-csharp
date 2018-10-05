@@ -45,6 +45,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         [CanBeNull]
         public event EventHandler DeviceRemoved;
 
+        public ulong Address => _bleDevice.BluetoothAddress;
+
         [CanBeNull]
         public event EventHandler<BluetoothNotifyEventArgs> BluetoothNotifyReceived;
 
@@ -106,12 +108,12 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             _bleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
         }
 
-        public async Task SubscribeToUpdates()
+        public async Task SubscribeToUpdatesAsync()
         {
-            await SubscribeToUpdates(_rxChar);
+            await SubscribeToUpdatesAsync(_rxChar);
         }
 
-        public async Task SubscribeToUpdates(uint aIndex)
+        public async Task SubscribeToUpdatesAsync(uint aIndex)
         {
             if (_indexedChars == null)
             {
@@ -125,10 +127,10 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 return;
             }
 
-            await SubscribeToUpdates(_indexedChars[aIndex]);
+            await SubscribeToUpdatesAsync(_indexedChars[aIndex]);
         }
 
-        private async Task SubscribeToUpdates(GattCharacteristic aCharacteristic)
+        private async Task SubscribeToUpdatesAsync(GattCharacteristic aCharacteristic)
         {
             if (aCharacteristic == null)
             {
@@ -169,12 +171,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             BluetoothNotifyReceived?.Invoke(this, new BluetoothNotifyEventArgs(bytes));
         }
 
-        public ulong GetAddress()
-        {
-            return _bleDevice.BluetoothAddress;
-        }
-
-        public async Task<ButtplugMessage> WriteValue(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
+        public async Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
             if (_txChar == null)
             {
@@ -182,11 +179,11 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     $"WriteValue using txChar called with no txChar available");
             }
 
-            return await WriteValue(aMsgId, _txChar, aValue, aWriteWithResponse, aToken);
+            return await WriteValueAsync(aMsgId, _txChar, aValue, aWriteWithResponse, aToken);
         }
 
         [ItemNotNull]
-        public async Task<ButtplugMessage> WriteValue(uint aMsgId,
+        public async Task<ButtplugMessage> WriteValueAsync(uint aMsgId,
             uint aIndex,
             byte[] aValue,
             bool aWriteWithResponse,
@@ -204,10 +201,10 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     $"WriteValue using indexed characteristics called with invalid index");
             }
 
-            return await WriteValue(aMsgId, _indexedChars[aIndex], aValue, aWriteWithResponse, aToken);
+            return await WriteValueAsync(aMsgId, _indexedChars[aIndex], aValue, aWriteWithResponse, aToken);
         }
 
-        private async Task<ButtplugMessage> WriteValue(uint aMsgId,
+        private async Task<ButtplugMessage> WriteValueAsync(uint aMsgId,
             GattCharacteristic aChar,
             byte[] aValue,
             bool aWriteWithResponse,
@@ -251,7 +248,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             return new Ok(aMsgId);
         }
 
-        public async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, CancellationToken aToken)
+        public async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken)
         {
             if (_rxChar == null)
             {
@@ -259,10 +256,10 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     $"ReadValue using rxChar called with no rxChar available"), new byte[] { });
             }
 
-            return await ReadValue(aMsgId, _rxChar, aToken);
+            return await ReadValueAsync(aMsgId, _rxChar, aToken);
         }
 
-        public async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, uint aIndex, CancellationToken aToken)
+        public async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, uint aIndex, CancellationToken aToken)
         {
             if (_indexedChars == null)
             {
@@ -276,10 +273,10 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     $"ReadValue using indexed characteristics called with invalid index"), new byte[] { });
             }
 
-            return await ReadValue(aMsgId, _indexedChars[aIndex], aToken);
+            return await ReadValueAsync(aMsgId, _indexedChars[aIndex], aToken);
         }
 
-        private async Task<(ButtplugMessage, byte[])> ReadValue(uint aMsgId, GattCharacteristic aChar, CancellationToken aToken)
+        private async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, GattCharacteristic aChar, CancellationToken aToken)
         {
             var result = await aChar.ReadValueAsync().AsTask(aToken);
             if (result?.Value == null)
