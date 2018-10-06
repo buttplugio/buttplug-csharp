@@ -38,7 +38,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
         /// <summary>
         /// </summary>
-        /// <param name="aURL">
+        /// <param name="aUri">
         /// The URL for the Buttplug WebSocket Server, in the form of wss://address:port (wss:// is
         /// to ws:// as https:// is to http://)
         /// </param>
