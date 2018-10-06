@@ -107,7 +107,7 @@ namespace Buttplug.Client
         /// Initializes a new instance of the <see cref="ButtplugClient"/> class.
         /// </summary>
         /// <param name="aClientName">The name of the client (used by the server for UI and permissions).</param>
-        /// <param name="aConnector">Connector for the client</param>
+        /// <param name="aConnector">Connector for the client.</param>
         public ButtplugClient(string aClientName, IButtplugClientConnector aConnector)
         {
             Name = aClientName;

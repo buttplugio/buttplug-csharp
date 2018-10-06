@@ -6,10 +6,11 @@ namespace Buttplug.Core
     /// An Assembly Attribute for storing extended Git versions strings (commit SHAs)
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly)]
+    // ReSharper disable once InheritdocConsiderUsage
     public class AssemblyGitVersion : Attribute
     {
         /// <summary>
-        /// Git Version (includes commit SHA)
+        /// Gets the Git Version (includes commit SHA)
         /// </summary>
         public string Value { get; }
 
@@ -24,10 +25,10 @@ namespace Buttplug.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="AssemblyGitVersion"/> class.
         /// </summary>
-        /// <param name="value">Git Version (includes commit SHA)</param>
-        public AssemblyGitVersion(string value)
+        /// <param name="aValue">Git Version (includes commit SHA)</param>
+        public AssemblyGitVersion(string aValue)
         {
-            Value = value;
+            Value = aValue;
         }
     }
 }
