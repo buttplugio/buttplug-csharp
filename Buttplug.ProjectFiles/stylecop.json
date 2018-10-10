@@ -4,6 +4,9 @@
     "orderingRules": {
       "usingDirectivesPlacement": "outsideNamespace"
     },
+    "namingRules": {
+      "allowedHungarianPrefixes": [ "a" ]
+    },
     "documentationRules": {
       "companyName": "Nonpolynomial Labs LLC",
       "copyrightText": "Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.\nCopyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the project root for full license information.",
