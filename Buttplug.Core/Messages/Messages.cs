@@ -285,6 +285,9 @@ namespace Buttplug.Core.Messages
     /// </summary>
     public class DeviceListVersion0 : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
+        [JsonIgnore]
+        public new string Name => "DeviceList";
+
         /// <summary>
         /// List of connected devices.
         /// </summary>
@@ -382,6 +385,9 @@ namespace Buttplug.Core.Messages
     /// </summary>
     public class DeviceAddedVersion0 : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
     {
+        [JsonIgnore]
+        public override string Name => "DeviceAdded";
+
         /// <summary>
         /// Device name.
         /// </summary>

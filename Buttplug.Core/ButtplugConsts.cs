@@ -1,7 +1,7 @@
 ﻿namespace Buttplug.Core
 {
     /// <summary>
-    /// Constants for Buttplug
+    /// Buttplug library constants
     /// </summary>
     public static class ButtplugConsts
     {
@@ -13,7 +13,7 @@
         /// <summary>
         /// Default message ID for messages not originating from the server. In remote client/server
         /// environments, message IDs should be unique (usually monotonically increasing), to prevent
-        /// responses from clashing.
+        /// responses from colliding.
         /// </summary>
         public const uint DefaultMsgId = 1;
     }

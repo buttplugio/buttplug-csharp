@@ -4,8 +4,11 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using System.Linq;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using FluentAssertions;
+using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace Buttplug.Core.Test
@@ -13,7 +16,9 @@ namespace Buttplug.Core.Test
     [TestFixture]
     public class ButtplugJsonMessageParserTests
     {
+        [NotNull]
         private ButtplugLogManager _logManager;
+        [NotNull]
         private ButtplugJsonMessageParser _parser;
 
         [OneTimeSetUp]
@@ -68,50 +73,43 @@ namespace Buttplug.Core.Test
         [Theory]
         public void DeserializeIncorrectMessages(string aMsgStr)
         {
-            var res = _parser.Deserialize(aMsgStr);
-            Assert.True(res.Length == 1);
-            Assert.True(res[0] is Error);
+            _parser.Invoking(aParser => aParser.Deserialize(aMsgStr)).Should().Throw<ButtplugParserException>();
+        }
+
+        private void CheckValidTestMessage([NotNull] ButtplugMessage aMsg)
+        {
+            aMsg.Should().BeOfType<Messages.Test>();
+            (aMsg as Messages.Test).TestString.Should().Be("Test");
+        }
+
+        [Test]
+        public void DeserializePartiallyInvalidMessageArray()
+        {
+            _parser
+                .Invoking(aParser =>
+                    aParser.Deserialize(
+                        "[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}},{\"Test\":{\"TestString\":\"Error\",\"Id\":1}},{\"Test\":{\"TestString\":\"Test\",\"Id\":1}}]"))
+                .Should()
+                .Throw<ButtplugParserException>();
         }
 
         [Test]
         public void DeserializeConcatenatedMessages()
         {
-            var m = _parser.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}][{\"Test\":{\"TestString\":\"Test\",\"Id\":1}}]");
-            Assert.True(m.Length == 2);
-            foreach (var msg in m)
+            var msgs = _parser.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}][{\"Test\":{\"TestString\":\"Test\",\"Id\":1}}]").ToArray();
+            msgs.Length.Should().Be(2);
+            foreach (var msg in msgs)
             {
-                switch (msg)
-                {
-                    case Error e:
-                        Assert.True(false, $"Got Error: {e.ErrorMessage}");
-                        break;
-                    case Messages.Test tm:
-                        Assert.True(tm.TestString == "Test");
-                        break;
-                    default:
-                        Assert.True(false, $"Got wrong message type {msg.GetType().Name}");
-                        break;
-                }
+                CheckValidTestMessage(msg);
             }
         }
 
         [Test]
         public void DeserializeCorrectMessage()
         {
-            var m = _parser.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}]");
-            Assert.True(m.Length == 1);
-            switch (m[0])
-            {
-                case Error e:
-                    Assert.True(false, $"Got Error: {e.ErrorMessage}");
-                    break;
-                case Messages.Test tm:
-                    Assert.True(tm.TestString == "Test");
-                    break;
-                default:
-                    Assert.True(false, $"Got wrong message type {m.GetType().Name}");
-                    break;
-            }
+            var msgs = _parser.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}]").ToArray();
+            msgs.Length.Should().Be(1);
+            CheckValidTestMessage(msgs[0]);
         }
     }
 }

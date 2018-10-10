@@ -43,7 +43,7 @@ namespace Buttplug.Server.Test
             return _deviceManager;
         }
 
-        internal ButtplugMessage[] Deserialize(string aMsg)
+        internal IEnumerable<ButtplugMessage> Deserialize(string aMsg)
         {
             return _parser.Deserialize(aMsg);
         }

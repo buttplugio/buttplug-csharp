@@ -68,7 +68,6 @@ namespace Buttplug.Server.Test
             };
             var m = new RequestServerInfo("TestClient", 12345);
             await _server.SendMessageAsync(m);
-            await _server.SendMessageAsync("{\"RequestServerInfo\":{\"Id\":12345}}");
         }
 
         private void CheckDeviceMessages(ButtplugMessage aMsgArgs)

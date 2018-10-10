@@ -13,7 +13,7 @@ namespace Buttplug.Core.Logging
 
         public ButtplugLog([NotNull] ILog aLogger)
         {
-            _log = aLogger;
+            _log = aLogger ?? throw new ArgumentNullException(nameof(aLogger));
         }
 
         public void Trace(string aMsg, bool aLocalOnly)
