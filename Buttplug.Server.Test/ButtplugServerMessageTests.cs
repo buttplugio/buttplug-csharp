@@ -36,22 +36,6 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
-        public async Task RequestLogWrongLevelTest()
-        {
-            var res = await _server.SendMessageAsync("[{\"RequestLog\": {\"LogLevel\":\"NotALevel\",\"Id\":1}}]");
-            Assert.True(res.Length == 1);
-            Assert.True(res[0] is Error);
-        }
-
-        [Test]
-        public async Task RequestLogWithoutArrayWrapperTest()
-        {
-            var res = await _server.SendMessageAsync("{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}");
-            Assert.True(res.Length == 1);
-            Assert.True(res[0] is Error);
-        }
-
-        [Test]
         public async Task RequestLogTraceLevelTest()
         {
             _server.MessageReceived += _server.OnMessageReceived;
@@ -62,13 +46,6 @@ namespace Buttplug.Server.Test
             Assert.AreEqual(res.Length, 1);
             Assert.True(res[0] is Core.Messages.Test);
             Assert.AreEqual(_server.OutgoingAsync.Count, 4);
-        }
-
-        [Test]
-        public async Task RequestNothingTest()
-        {
-            var res = await _server.SendMessageAsync("[]");
-            Assert.True(res[0] is Error);
         }
 
         [Test]
@@ -94,21 +71,6 @@ namespace Buttplug.Server.Test
         {
             var r = await _server.SendMessageAsync(new FakeMessage(1));
             Assert.True(r is Error);
-        }
-
-        [Test]
-        public async Task SerializeUnhandledMessage()
-        {
-            var logger = new ButtplugLogManager();
-            var r = new ButtplugJsonMessageParser(logger).Serialize(new FakeMessage(1), 0);
-
-            // Even though the message is defined outside the core library, it should at least serialize
-            Assert.True(r.Length > 0);
-
-            // However it shouldn't be taken by the server.
-            var e = await _server.SendMessageAsync(r);
-            Assert.True(e.Length == 1);
-            Assert.True(e[0] is Error);
         }
 
         [Test]

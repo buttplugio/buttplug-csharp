@@ -3,25 +3,21 @@ using JetBrains.Annotations;
 
 namespace Buttplug.Core.Logging
 {
-    /// <summary>
-    /// Handles receiving log messages and reporting any that match requested granuarlity levels
-    /// to be sent to clients.
-    /// </summary>
+    /// <inheritdoc cref="IButtplugLogManager"/>
+    // ReSharper disable once InheritdocConsiderUsage
     public class ButtplugLogManager : IButtplugLogManager
     {
-        /// <summary>
-        /// Called when a log message has been received.
-        /// </summary>
+        /// <inheritdoc cref="IButtplugLogManager"/>>
         [CanBeNull]
         public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
 
-        /// <summary>
-        /// Log level to report and store.
-        /// </summary>
+        /// <inheritdoc cref="IButtplugLogManager"/>>
         public ButtplugLogLevel Level { private get; set; }
 
         private void LogMessageHandler([NotNull] object aObject, [NotNull] ButtplugLogMessageEventArgs aMsg)
         {
+            if (aObject == null) throw new ArgumentNullException(nameof(aObject));
+            if (aMsg == null) throw new ArgumentNullException(nameof(aMsg));
             if (aMsg.LogMessage.LogLevel <= Level)
             {
                 LogMessageReceived?.Invoke(aObject, aMsg);
@@ -31,6 +27,7 @@ namespace Buttplug.Core.Logging
         /// <inheritdoc cref="IButtplugLogManager"/>
         public IButtplugLog GetLogger([NotNull] Type aType)
         {
+            if (aType == null) throw new ArgumentNullException(nameof(aType));
             // Just pass the type in instead of traversing the stack to find it.
             var logger = new ButtplugLog(LogProvider.GetLogger(aType.Name));
             logger.LogMessageReceived += LogMessageHandler;

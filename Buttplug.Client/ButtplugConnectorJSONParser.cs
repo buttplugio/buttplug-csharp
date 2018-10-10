@@ -4,6 +4,7 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using System.Collections.Generic;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
@@ -45,7 +46,7 @@ namespace Buttplug.Client
         /// </summary>
         /// <param name="aMsg">A JSON string representing one or more messages.</param>
         /// <returns>An array of <see cref="ButtplugMessage"/>.</returns>
-        public ButtplugMessage[] Deserialize(string aMsg)
+        public IEnumerable<ButtplugMessage> Deserialize(string aMsg)
         {
             return _parser.Deserialize(aMsg);
         }

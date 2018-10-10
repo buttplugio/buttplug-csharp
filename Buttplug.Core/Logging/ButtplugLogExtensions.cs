@@ -1,4 +1,5 @@
-﻿using Buttplug.Core.Messages;
+﻿using System;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
 namespace Buttplug.Core.Logging
@@ -11,36 +12,41 @@ namespace Buttplug.Core.Logging
         /// <summary>
         /// Logs an <see cref="Error"/> Buttplug message as an error level log message.
         /// </summary>
-        /// <param name="logger">Logger to use for message</param>
-        /// <param name="error">Error Buttplug message</param>
-        public static void LogErrorMsg(this IButtplugLog logger, Error error)
+        /// <param name="aLogger">Logger to use for message</param>
+        /// <param name="aErrorMsg">Error Buttplug message</param>
+        public static void LogErrorMsg([NotNull] this IButtplugLog aLogger, [NotNull] Error aErrorMsg)
         {
-            logger.Error(error.ErrorMessage);
+            if (aLogger == null) throw new ArgumentNullException(nameof(aLogger));
+            if (aErrorMsg == null) throw new ArgumentNullException(nameof(aErrorMsg));
+            aLogger.Error(aErrorMsg.ErrorMessage);
         }
 
         /// <summary>
         /// Logs an error level log message, creates a Buttplug Error Message with the error description, and returns it.
         /// </summary>
-        /// <param name="logger">Logger to use for message</param>
+        /// <param name="aLogger">Logger to use for message</param>
         /// <param name="aId">Message ID for created message</param>
         /// <param name="aCode">Error class for message</param>
         /// <param name="aMsg">Error description for message</param>
         /// <returns>A new Error Buttplug message</returns>
         [NotNull]
-        public static Error LogErrorMsg(this IButtplugLog logger, uint aId, Error.ErrorClass aCode, string aMsg)
+        public static Error LogErrorMsg([NotNull] this IButtplugLog aLogger, uint aId, Error.ErrorClass aCode, string aMsg)
         {
-            logger.Error(aMsg);
+            if (aLogger == null) throw new ArgumentNullException(nameof(aLogger));
+            aLogger.Error(aMsg);
             return new Error(aMsg, aCode, aId);
         }
 
         /// <summary>
         /// Logs an Error Buttplug message as a warning level log message.
         /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="warning"></param>
-        public static void LogWarnMsg(this IButtplugLog logger, Error warning)
+        /// <param name="aLogger"></param>
+        /// <param name="aErrorMsg"></param>
+        public static void LogWarnMsg([NotNull] this IButtplugLog aLogger, [NotNull] Error aErrorMsg)
         {
-            logger.Warn(warning.ErrorMessage);
+            if (aLogger == null) throw new ArgumentNullException(nameof(aLogger));
+            if (aErrorMsg == null) throw new ArgumentNullException(nameof(aErrorMsg));
+            aLogger.Warn(aErrorMsg.ErrorMessage);
         }
 
         /// <summary>
@@ -52,8 +58,9 @@ namespace Buttplug.Core.Logging
         /// <param name="aMsg">Error description for message</param>
         /// <returns>A new Error Buttplug message</returns>
         [NotNull]
-        public static Error LogWarnMsg(this IButtplugLog logger, uint aId, Error.ErrorClass aCode, string aMsg)
+        public static Error LogWarnMsg([NotNull] this IButtplugLog logger, uint aId, Error.ErrorClass aCode, string aMsg)
         {
+            if (logger == null) throw new ArgumentNullException(nameof(logger));
             logger.Warn(aMsg);
             return new Error(aMsg, aCode, aId);
         }

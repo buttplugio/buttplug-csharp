@@ -43,6 +43,9 @@ namespace Buttplug.Core.Messages
             protected set => _previousType = value;
         }
 
+        [JsonIgnore]
+        public virtual string Name => GetType().Name;
+
         // Storage for the schema version.
         [JsonIgnore]
         private uint _schemaVersion;
