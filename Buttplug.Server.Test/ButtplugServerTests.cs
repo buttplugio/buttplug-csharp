@@ -110,7 +110,7 @@ namespace Buttplug.Server.Test
         public async Task TestAddListRemoveDevices()
         {
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
-            var msgarray = d.GetAllowedMessageTypes();
+            var msgarray = d.AllowedMessageTypes;
             var enumerable = msgarray as Type[] ?? msgarray.ToArray();
             Assert.True(enumerable.Length == 3);
             Assert.True(enumerable.Contains(typeof(SingleMotorVibrateCmd)));

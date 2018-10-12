@@ -95,10 +95,10 @@ namespace Buttplug.Server.Test.Util
             Clear();
 
             // If we've updated a class with new messages, but haven't updated the device, fail.
-            Assert.AreEqual(aExpectedMessageArgs.Count, bleDevice.GetAllowedMessageTypes().Count());
+            Assert.AreEqual(aExpectedMessageArgs.Count, bleDevice.AllowedMessageTypes.Count());
             foreach (var item in aExpectedMessageArgs)
             {
-                Assert.True(bleDevice.GetAllowedMessageTypes().Contains(item.Key));
+                Assert.True(bleDevice.AllowedMessageTypes.Contains(item.Key));
                 Assert.NotNull(bleDevice.GetMessageAttrs(item.Key));
                 if (item.Value == 0)
                 {

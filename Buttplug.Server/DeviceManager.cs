@@ -57,7 +57,7 @@ namespace Buttplug.Server
             GetAllowedMessageTypesAsDictionary([NotNull] IButtplugDevice aDevice)
         {
             Dictionary<string, MessageAttributes> msgs = new Dictionary<string, MessageAttributes>();
-            foreach (var msg in aDevice.GetAllowedMessageTypes())
+            foreach (var msg in aDevice.AllowedMessageTypes)
             {
                 msgs.Add(msg.Name, aDevice.GetMessageAttrs(msg));
             }

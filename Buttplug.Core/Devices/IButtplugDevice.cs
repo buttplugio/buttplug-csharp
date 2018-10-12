@@ -35,6 +35,11 @@ namespace Buttplug.Core.Devices
         bool IsConnected { get; }
 
         /// <summary>
+        /// Allowed message types for this device.
+        /// </summary>
+        IEnumerable<Type> AllowedMessageTypes { get;  }
+
+        /// <summary>
         /// Event handler for device removal.
         /// </summary>
         [CanBeNull]
@@ -45,13 +50,6 @@ namespace Buttplug.Core.Devices
         /// </summary>
         [CanBeNull]
         event EventHandler<MessageReceivedEventArgs> MessageEmitted;
-
-        /// <summary>
-        /// Allowed message types for this device.
-        /// </summary>
-        /// <returns>Enumerable of message types</returns>
-        [NotNull]
-        IEnumerable<Type> GetAllowedMessageTypes();
 
         /// <summary>
         /// Checks to see whether a message is supported by the device that implements this

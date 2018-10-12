@@ -30,6 +30,9 @@ namespace Buttplug.Core.Devices
         [CanBeNull]
         public event EventHandler DeviceRemoved;
 
+        /// <inheritdoc />
+        public IEnumerable<Type> AllowedMessageTypes => MsgFuncs.Keys;
+
         /// <summary>
         /// Gets the logger
         /// </summary>
@@ -68,13 +71,6 @@ namespace Buttplug.Core.Devices
                     MessageAttributes Attrs)>();
             Name = aName;
             Identifier = aIdentifier;
-        }
-
-        /// <inheritdoc />
-        /// TODO: This should be a getter.
-        public IEnumerable<Type> GetAllowedMessageTypes()
-        {
-            return MsgFuncs.Keys;
         }
 
         /// <inheritdoc />
