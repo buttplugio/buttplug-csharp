@@ -4,6 +4,9 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -27,20 +30,18 @@ namespace Buttplug.Core.Test
                 Index = 2,
             };
 
-            Assert.True(await dev.InitializeAsync(default(CancellationToken)) is Ok);
+            (await dev.InitializeAsync(default(CancellationToken))).Should().BeOfType<Ok>();
 
-            Assert.True(await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken)) is Ok);
+            (await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken))).Should().BeOfType<Ok>();
 
             var outMsg = await dev.ParseMessageAsync(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken));
-            Assert.True(outMsg is Error);
-            Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
-            Assert.True((outMsg as Error).ErrorMessage.Contains("cannot handle message of type"));
+            outMsg.Should().BeOfType<Error>();
+            (outMsg as Error).ErrorCode.Should().Be(Error.ErrorClass.ERROR_DEVICE);
 
             dev.Disconnect();
             outMsg = await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken));
-            Assert.True(outMsg is Error);
-            Assert.AreEqual(Error.ErrorClass.ERROR_DEVICE, (outMsg as Error).ErrorCode);
-            Assert.True((outMsg as Error).ErrorMessage.Contains("has disconnected"));
+            outMsg.Should().BeOfType<Error>();
+            (outMsg as Error).ErrorCode.Should().Be(Error.ErrorClass.ERROR_DEVICE);
         }
 
         protected class TestDeviceDoubleAdd : TestDevice

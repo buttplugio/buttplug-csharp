@@ -34,12 +34,12 @@ namespace Buttplug.Core.Test
             var m1 = new Messages.Test("ThisIsATest", ButtplugConsts.SystemMsgId);
             var m2 = new Messages.Test("ThisIsAnotherTest", ButtplugConsts.SystemMsgId);
             var msg = _parser.Serialize(m1, 0);
-            Assert.True(msg.Length > 0);
-            Assert.AreEqual("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}]", msg);
+            msg.Length.Should().BeGreaterThan(0);
+            msg.Should().Be("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}}]");
             ButtplugMessage[] msgs = { m1, m2 };
             msg = _parser.Serialize(msgs, 0);
-            Assert.True(msg.Length > 0);
-            Assert.AreEqual("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}},{\"Test\":{\"TestString\":\"ThisIsAnotherTest\",\"Id\":0}}]", msg);
+            msg.Length.Should().BeGreaterThan(0);
+            msg.Should().Be("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}},{\"Test\":{\"TestString\":\"ThisIsAnotherTest\",\"Id\":0}}]");
         }
 
         [Datapoints]
