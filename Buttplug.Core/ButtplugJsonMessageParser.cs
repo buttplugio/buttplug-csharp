@@ -82,6 +82,12 @@ namespace Buttplug.Core
                 _messageTypes.Add(aMessageType.Name, aMessageType);
             });
 
+            // If we can't find any message types in our assembly, the system is basically useless.
+            if (!_messageTypes.Any())
+            {
+                throw new ButtplugParserException("No message types available.", ButtplugConsts.SystemMsgId);
+            }
+
             // Load the schema for validation. Schema file is an embedded resource in the library.
             var assembly = Assembly.GetExecutingAssembly();
             const string resourceName = "Buttplug.Core.buttplug-schema.json";
@@ -162,13 +168,8 @@ namespace Buttplug.Core
 
                 foreach (var jsonObj in msgArray.Children<JObject>())
                 {
-                    if (!jsonObj.Properties().Any())
-                    {
-                        throw new ButtplugParserException(_bpLogger, $"No message name available - {jsonObj}", ButtplugConsts.SystemMsgId);
-                    }
-
                     var msgName = jsonObj.Properties().First().Name;
-                    if (!_messageTypes.Any() || !_messageTypes.ContainsKey(msgName))
+                    if (!_messageTypes.ContainsKey(msgName))
                     {
                         throw new ButtplugParserException(_bpLogger, $"{msgName} is not a valid message class", ButtplugConsts.SystemMsgId);
                     }
@@ -184,9 +185,10 @@ namespace Buttplug.Core
         /// <summary>
         /// Take a JObject and turn it into a message type.
         /// </summary>
-        /// <param name="aObject">JSON Object</param>
-        /// <param name="aMsgType">Type of message we want to convert the JSON object to</param>
-        /// <returns></returns>
+        /// <param name="aObject">JSON Object to convert to a <see cref="ButtplugMessage"/>.</param>
+        /// <param name="aMsgType">Type of message we want to convert the JSON object to.</param>
+        /// <param name="aMsgName">String name of the message type to be deserialized to.</param>
+        /// <returns>Returns a deserialized <see cref="ButtplugMessage"/>, as the requested type.</returns>
         private ButtplugMessage DeserializeAs(JObject aObject, Type aMsgType, string aMsgName)
         {
             if (!aMsgType.IsSubclassOf(typeof(ButtplugMessage)))
@@ -253,7 +255,12 @@ namespace Buttplug.Core
             var a = new JArray();
             foreach (var msg in aMsgs)
             {
-                a.Add(ButtplugMessageToJObject(msg, aClientSchemaVersion));
+                var obj = ButtplugMessageToJObject(msg, aClientSchemaVersion);
+                if (obj == null)
+                {
+                    continue;
+                }
+                a.Add(obj);
             }
 
             if (!a.Any())
@@ -266,6 +273,19 @@ namespace Buttplug.Core
             return a.ToString(Formatting.None);
         }
 
+        /// <summary>
+        /// Given a Buttplug message and a schema version, turn the message into a JSON.Net JObject.
+        /// This method can return null in some cases, which should be checked for by callers.
+        /// </summary>
+        /// <param name="aMsg">Message to convert to JSON.</param>
+        /// <param name="aClientSchemaVersion">
+        /// Schema version of the client the message will be sent to.
+        /// </param>
+        /// <exception cref="ButtplugParserException">
+        /// Throws when no backward compatible non-system message can be found, or when a default
+        /// constructor for a message is not available.
+        /// </exception>
+        /// <returns>JObject on success, but can return null in cases where a system message is not compatible with a client schema.</returns>
         private JObject ButtplugMessageToJObject([NotNull] ButtplugMessage aMsg, uint aClientSchemaVersion)
         {
             // Support downgrading messages
