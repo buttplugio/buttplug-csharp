@@ -103,31 +103,26 @@ namespace Buttplug.Core.Test
             CheckMsg(msgSchemaV0);
         }
 
-        /*
         [Test]
-        public void TestDeviceListCmd()
+        public void TestDeviceListCmdVersion1()
         {
             void CheckMsg(DeviceList aMsg)
             {
                 aMsg.Id.Should().Be(6);
                 aMsg.Devices.Length.Should().Be(2);
                 aMsg.Devices[0].DeviceName.Should().Be("testDev0");
-                Assert.AreEqual(6, msg.Id);
-                Assert.AreEqual(2, msg.Devices.Length);
-                Assert.AreEqual("testDev0", msg.Devices[0].DeviceName);
-                Assert.AreEqual(2, msg.Devices[0].DeviceIndex);
-                Assert.AreEqual(2, msg.Devices[0].DeviceMessages.Count);
-                Assert.Contains("StopDeviceCmd", msg.Devices[0].DeviceMessages.Keys);
-                Assert.Null(msg.Devices[0].DeviceMessages["StopDeviceCmd"].FeatureCount);
-                Assert.Contains("VibrateCmd", msg.Devices[0].DeviceMessages.Keys);
-                Assert.AreEqual(1, msg.Devices[0].DeviceMessages["VibrateCmd"].FeatureCount);
-                Assert.AreEqual("testDev1", msg.Devices[1].DeviceName);
-                Assert.AreEqual(5, msg.Devices[1].DeviceIndex);
-                Assert.AreEqual(2, msg.Devices[1].DeviceMessages.Count);
-                Assert.Contains("StopDeviceCmd", msg.Devices[1].DeviceMessages.Keys);
-                Assert.Null(msg.Devices[1].DeviceMessages["StopDeviceCmd"].FeatureCount);
-                Assert.Contains("RotateCmd", msg.Devices[1].DeviceMessages.Keys);
-                Assert.AreEqual(2, msg.Devices[1].DeviceMessages["RotateCmd"].FeatureCount);
+                aMsg.Devices[0].DeviceIndex.Should().Be(2);
+                aMsg.Devices[0].DeviceMessages.Count.Should().Be(2);
+                aMsg.Devices[0].DeviceMessages.Should().ContainKeys("StopDeviceCmd", "VibrateCmd");
+                aMsg.Devices[0].DeviceMessages["StopDeviceCmd"].FeatureCount.Should().BeNull();
+                aMsg.Devices[0].DeviceMessages["VibrateCmd"].FeatureCount.Should().Be(1);
+
+                aMsg.Devices[1].DeviceName.Should().Be("testDev1");
+                aMsg.Devices[1].DeviceIndex.Should().Be(5);
+                aMsg.Devices[1].DeviceMessages.Count.Should().Be(2);
+                aMsg.Devices[1].DeviceMessages.Should().ContainKeys("StopDeviceCmd", "RotateCmd");
+                aMsg.Devices[1].DeviceMessages["StopDeviceCmd"].FeatureCount.Should().BeNull();
+                aMsg.Devices[1].DeviceMessages["RotateCmd"].FeatureCount.Should().Be(2);
             }
 
             var msg = new DeviceList(new[]
@@ -144,159 +139,96 @@ namespace Buttplug.Core.Test
                 }),
             }, 6);
 
-            Assert.AreEqual(6, msg.Id);
-            Assert.AreEqual(2, msg.Devices.Length);
-            Assert.AreEqual("testDev0", msg.Devices[0].DeviceName);
-            Assert.AreEqual(2, msg.Devices[0].DeviceIndex);
-            Assert.AreEqual(2, msg.Devices[0].DeviceMessages.Count);
-            Assert.Contains("StopDeviceCmd", msg.Devices[0].DeviceMessages.Keys);
-            Assert.Null(msg.Devices[0].DeviceMessages["StopDeviceCmd"].FeatureCount);
-            Assert.Contains("VibrateCmd", msg.Devices[0].DeviceMessages.Keys);
-            Assert.AreEqual(1, msg.Devices[0].DeviceMessages["VibrateCmd"].FeatureCount);
-            Assert.AreEqual("testDev1", msg.Devices[1].DeviceName);
-            Assert.AreEqual(5, msg.Devices[1].DeviceIndex);
-            Assert.AreEqual(2, msg.Devices[1].DeviceMessages.Count);
-            Assert.Contains("StopDeviceCmd", msg.Devices[1].DeviceMessages.Keys);
-            Assert.Null(msg.Devices[1].DeviceMessages["StopDeviceCmd"].FeatureCount);
-            Assert.Contains("RotateCmd", msg.Devices[1].DeviceMessages.Keys);
-            Assert.AreEqual(2, msg.Devices[1].DeviceMessages["RotateCmd"].FeatureCount);
+            CheckMsg(msg);
 
-            var str1 = _parser.Serialize(msg, 1);
-            Assert.AreEqual(
-                "[{\"DeviceList\":{\"Devices\":[{\"DeviceName\":\"testDev0\",\"DeviceIndex\":2,\"DeviceMessages\":{\"StopDeviceCmd\":{},\"VibrateCmd\":{\"FeatureCount\":1}}},{\"DeviceName\":\"testDev1\",\"DeviceIndex\":5,\"DeviceMessages\":{\"StopDeviceCmd\":{},\"RotateCmd\":{\"FeatureCount\":2}}}],\"Id\":6}}]",
-                str1);
+            var newMsg = CheckParsedVersion<DeviceList>(msg, 1,
+                "[{\"DeviceList\":{\"Devices\":[{\"DeviceName\":\"testDev0\",\"DeviceIndex\":2,\"DeviceMessages\":{\"StopDeviceCmd\":{},\"VibrateCmd\":{\"FeatureCount\":1}}},{\"DeviceName\":\"testDev1\",\"DeviceIndex\":5,\"DeviceMessages\":{\"StopDeviceCmd\":{},\"RotateCmd\":{\"FeatureCount\":2}}}],\"Id\":6}}]"
+            );
 
-            var msgs = _parser.Deserialize(str1);
-            Assert.AreEqual(1, msgs.Length);
-            Assert.True(msgs[0] is DeviceList);
-            var msg1 = (DeviceList)msgs[0];
-            Assert.AreEqual(6, msg1.Id);
-            Assert.AreEqual(2, msg1.Devices.Length);
-            Assert.AreEqual("testDev0", msg1.Devices[0].DeviceName);
-            Assert.AreEqual(2, msg1.Devices[0].DeviceIndex);
-            Assert.AreEqual(2, msg1.Devices[0].DeviceMessages.Count);
-            Assert.Contains("StopDeviceCmd", msg1.Devices[0].DeviceMessages.Keys);
-            Assert.Null(msg1.Devices[0].DeviceMessages["StopDeviceCmd"].FeatureCount);
-            Assert.Contains("VibrateCmd", msg1.Devices[0].DeviceMessages.Keys);
-            Assert.AreEqual(1, msg1.Devices[0].DeviceMessages["VibrateCmd"].FeatureCount);
-            Assert.AreEqual("testDev1", msg1.Devices[1].DeviceName);
-            Assert.AreEqual(5, msg1.Devices[1].DeviceIndex);
-            Assert.AreEqual(2, msg1.Devices[1].DeviceMessages.Count);
-            Assert.Contains("StopDeviceCmd", msg1.Devices[1].DeviceMessages.Keys);
-            Assert.Null(msg1.Devices[1].DeviceMessages["StopDeviceCmd"].FeatureCount);
-            Assert.Contains("RotateCmd", msg1.Devices[1].DeviceMessages.Keys);
-            Assert.AreEqual(2, msg1.Devices[1].DeviceMessages["RotateCmd"].FeatureCount);
+            CheckMsg(newMsg);
+        }
 
-            var str0 = _parser.Serialize(msg, 0);
-            Assert.AreEqual(
-                "[{\"DeviceList\":{\"Devices\":[{\"DeviceName\":\"testDev0\",\"DeviceIndex\":2,\"DeviceMessages\":[\"StopDeviceCmd\",\"VibrateCmd\"]},{\"DeviceName\":\"testDev1\",\"DeviceIndex\":5,\"DeviceMessages\":[\"StopDeviceCmd\",\"RotateCmd\"]}],\"Id\":6}}]",
-                str0);
+        [Test]
+        public void TestDeviceListCmdVersion0()
+        {
+            void CheckMsg(DeviceListVersion0 aMsg)
+            {
+                aMsg.Id.Should().Be(6);
+                aMsg.Devices.Length.Should().Be(2);
+                aMsg.Devices[0].DeviceName.Should().Be("testDev0");
+                aMsg.Devices[0].DeviceIndex.Should().Be(2);
+                aMsg.Devices[0].DeviceMessages.Length.Should().Be(2);
+                aMsg.Devices[0].DeviceMessages.Should().Contain("StopDeviceCmd", "VibrateCmd");
 
-            msgs = _parser.Deserialize(str0);
-            Assert.AreEqual(1, msgs.Length);
-            Assert.True(msgs[0] is DeviceListVersion0);
-            var msg0 = (DeviceListVersion0)msgs[0];
-            Assert.AreEqual(6, msg0.Id);
-            Assert.AreEqual(2, msg0.Devices.Length);
-            Assert.AreEqual("testDev0", msg0.Devices[0].DeviceName);
-            Assert.AreEqual(2, msg0.Devices[0].DeviceIndex);
-            Assert.AreEqual(2, msg0.Devices[0].DeviceMessages.Length);
-            Assert.Contains("StopDeviceCmd", msg0.Devices[0].DeviceMessages);
-            Assert.Contains("VibrateCmd", msg0.Devices[0].DeviceMessages);
-            Assert.AreEqual("testDev1", msg0.Devices[1].DeviceName);
-            Assert.AreEqual(5, msg0.Devices[1].DeviceIndex);
-            Assert.AreEqual(2, msg0.Devices[1].DeviceMessages.Length);
-            Assert.Contains("StopDeviceCmd", msg0.Devices[1].DeviceMessages);
-            Assert.Contains("RotateCmd", msg0.Devices[1].DeviceMessages);
+                aMsg.Devices[1].DeviceName.Should().Be("testDev1");
+                aMsg.Devices[1].DeviceIndex.Should().Be(5);
+                aMsg.Devices[1].DeviceMessages.Length.Should().Be(2);
+                aMsg.Devices[1].DeviceMessages.Should().Contain("StopDeviceCmd", "RotateCmd");
+            }
 
-            msg0 = new DeviceListVersion0(new[]
+            var msg = new DeviceListVersion0(new[]
             {
                 new DeviceMessageInfoVersion0(2, "testDev0", new[] { "StopDeviceCmd", "VibrateCmd" }),
                 new DeviceMessageInfoVersion0(5, "testDev1", new[] { "StopDeviceCmd", "RotateCmd" }),
             }, 6);
-            Assert.AreEqual(6, msg0.Id);
-            Assert.AreEqual(2, msg0.Devices.Length);
-            Assert.AreEqual("testDev0", msg0.Devices[0].DeviceName);
-            Assert.AreEqual(2, msg0.Devices[0].DeviceIndex);
-            Assert.AreEqual(2, msg0.Devices[0].DeviceMessages.Length);
-            Assert.Contains("StopDeviceCmd", msg0.Devices[0].DeviceMessages);
-            Assert.Contains("VibrateCmd", msg0.Devices[0].DeviceMessages);
-            Assert.AreEqual("testDev1", msg0.Devices[1].DeviceName);
-            Assert.AreEqual(5, msg0.Devices[1].DeviceIndex);
-            Assert.AreEqual(2, msg0.Devices[1].DeviceMessages.Length);
-            Assert.Contains("StopDeviceCmd", msg0.Devices[1].DeviceMessages);
-            Assert.Contains("RotateCmd", msg0.Devices[1].DeviceMessages);
+
+            CheckMsg(msg);
+
+            var newMsg = CheckParsedVersion<DeviceListVersion0>(msg, 0,
+                "[{\"DeviceList\":{\"Devices\":[{\"DeviceName\":\"testDev0\",\"DeviceIndex\":2,\"DeviceMessages\":[\"StopDeviceCmd\",\"VibrateCmd\"]},{\"DeviceName\":\"testDev1\",\"DeviceIndex\":5,\"DeviceMessages\":[\"StopDeviceCmd\",\"RotateCmd\"]}],\"Id\":6}}]"
+            );
+
+            CheckMsg(newMsg);
         }
 
         [Test]
         public void TestRotateCmd()
         {
+            void CheckMsg(RotateCmd aMsg)
+            {
+                aMsg.Id.Should().Be(4);
+                aMsg.DeviceIndex.Should().Be(2);
+                aMsg.Rotations.Count.Should().Be(1);
+                aMsg.Rotations[0].Index.Should().Be(0);
+                aMsg.Rotations[0].Speed.Should().Be(0.5);
+                aMsg.Rotations[0].Clockwise.Should().Be(true);
+            }
+
             var msg = new RotateCmd(2, new List<RotateCmd.RotateSubcommand> { new RotateCmd.RotateSubcommand(0, 0.5, true) }, 4);
-            Assert.AreEqual(2, msg.DeviceIndex);
-            Assert.AreEqual(4, msg.Id);
-            Assert.AreEqual(1, msg.Rotations.Count);
-            Assert.AreEqual(0, msg.Rotations[0].Index);
-            Assert.AreEqual(0.5, msg.Rotations[0].Speed);
-            Assert.True(msg.Rotations[0].Clockwise);
+            CheckMsg(msg);
 
-            var str1 = _parser.Serialize(msg, 1);
-            Assert.AreEqual(
-                "[{\"RotateCmd\":{\"Rotations\":[{\"Index\":0,\"Clockwise\":true,\"Speed\":0.5}],\"DeviceIndex\":2,\"Id\":4}}]", str1);
+            var newMsg = CheckParsedVersion<RotateCmd>(msg, 1,
+                "[{\"RotateCmd\":{\"Rotations\":[{\"Index\":0,\"Clockwise\":true,\"Speed\":0.5}],\"DeviceIndex\":2,\"Id\":4}}]");
 
-            var msgs = _parser.Deserialize(str1);
-            Assert.AreEqual(1, msgs.Length);
-            Assert.True(msgs[0] is RotateCmd);
-            msg = (RotateCmd)msgs[0];
-            Assert.AreEqual(2, msg.DeviceIndex);
-            Assert.AreEqual(4, msg.Id);
-            Assert.AreEqual(1, msg.Rotations.Count);
-            Assert.AreEqual(0, msg.Rotations[0].Index);
-            Assert.AreEqual(0.5, msg.Rotations[0].Speed);
-            Assert.True(msg.Rotations[0].Clockwise);
+            CheckMsg(newMsg);
 
-            var str0 = _parser.Serialize(msg, 0);
-            Assert.AreEqual("[{\"Error\":{\"ErrorCode\":3,\"ErrorMessage\":\"No backwards compatible version for message #RotateCmd!\",\"Id\":4}}]", str0);
+            _parser.Invoking(x => x.Serialize(msg, 0)).Should().Throw<ButtplugParserException>();
         }
 
         [Test]
         public void TestVorzeA10CycloneCmd()
         {
+            void CheckMsg(VorzeA10CycloneCmd aMsg)
+            {
+                aMsg.Id.Should().Be(4);
+                aMsg.DeviceIndex.Should().Be(2);
+                aMsg.Speed.Should().Be(50);
+                aMsg.Clockwise.Should().Be(true);
+            }
+
             var msg = new VorzeA10CycloneCmd(2, 50, true, 4);
-            Assert.AreEqual(2, msg.DeviceIndex);
-            Assert.AreEqual(4, msg.Id);
-            Assert.AreEqual(50, msg.Speed);
-            Assert.True(msg.Clockwise);
+            CheckMsg(msg);
+            var newMsg = CheckParsedVersion<VorzeA10CycloneCmd>(msg, 1,
+                "[{\"VorzeA10CycloneCmd\":{\"Clockwise\":true,\"Speed\":50,\"DeviceIndex\":2,\"Id\":4}}]");
+            CheckMsg(newMsg);
+            newMsg = CheckParsedVersion<VorzeA10CycloneCmd>(msg, 0,
+                "[{\"VorzeA10CycloneCmd\":{\"Clockwise\":true,\"Speed\":50,\"DeviceIndex\":2,\"Id\":4}}]");
+            CheckMsg(newMsg);
 
             Assert.Catch<ArgumentException>(() =>
             {
                 msg.Speed = 1000;
             });
-
-            var str1 = _parser.Serialize(msg, 1);
-            Assert.AreEqual(
-                "[{\"VorzeA10CycloneCmd\":{\"Clockwise\":true,\"Speed\":50,\"DeviceIndex\":2,\"Id\":4}}]", str1);
-
-            var msgs = _parser.Deserialize(str1);
-            Assert.AreEqual(1, msgs.Length);
-            Assert.True(msgs[0] is VorzeA10CycloneCmd);
-            msg = (VorzeA10CycloneCmd)msgs[0];
-            Assert.AreEqual(2, msg.DeviceIndex);
-            Assert.AreEqual(4, msg.Id);
-            Assert.AreEqual(50, msg.Speed);
-            Assert.True(msg.Clockwise);
-
-            var str0 = _parser.Serialize(msg, 0);
-            Assert.AreEqual(
-                "[{\"VorzeA10CycloneCmd\":{\"Clockwise\":true,\"Speed\":50,\"DeviceIndex\":2,\"Id\":4}}]", str1);
-
-            msgs = _parser.Deserialize(str1);
-            Assert.AreEqual(1, msgs.Length);
-            Assert.True(msgs[0] is VorzeA10CycloneCmd);
-            msg = (VorzeA10CycloneCmd)msgs[0];
-            Assert.AreEqual(2, msg.DeviceIndex);
-            Assert.AreEqual(4, msg.Id);
-            Assert.AreEqual(50, msg.Speed);
-            Assert.True(msg.Clockwise);
         }
 
         [Test]
@@ -304,12 +236,7 @@ namespace Buttplug.Core.Test
         {
             const string requestLogMsgStr = "[{\"RequestLog\":{\"LogLevel\":\"Debug\",\"Id\":1}}]";
             var requestLogMsg = new RequestLog(ButtplugLogLevel.Debug);
-            var requestLogMsgJson = _parser.Serialize(requestLogMsg, 1);
-            Assert.AreEqual(requestLogMsgStr, requestLogMsgJson);
-
-            var requestLogMsgParsed = _parser.Deserialize(requestLogMsgStr);
-            requestLogMsg.Should().BeEquivalentTo(requestLogMsgParsed[0]);
+            CheckParsedVersion<RequestLog>(requestLogMsg, 1, requestLogMsgStr);
         }
-        */
     }
 }
