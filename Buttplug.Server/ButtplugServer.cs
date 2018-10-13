@@ -6,8 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -19,61 +17,85 @@ namespace Buttplug.Server
 {
     public class ButtplugServer
     {
+        /// <summary>
+        /// Parser for Serializing/Deserializing JSON to ButtplugMessage objects.
+        /// </summary>
         [NotNull]
         protected readonly ButtplugJsonMessageParser _parser;
 
+        /// <summary>
+        /// Token used for internal cancellation of async functions. Combined with external
+        /// cancellation token to make sure we shut down when we expect.
+        /// </summary>
         [NotNull]
         private readonly CancellationTokenSource _internalToken = new CancellationTokenSource();
 
+        /// <summary>
+        /// Event handler for messages exiting the server.
+        /// </summary>
         [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
+        /// <summary>
+        /// Event handler that fires whenever a client connects to a server.
+        /// </summary>
         [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> ClientConnected;
 
+        /// <summary>
+        /// Event handler that fires on client ping timeouts.
+        /// </summary>
         [CanBeNull]
         public event EventHandler PingTimeout;
 
+        /// <summary>
+        /// Log manager that is passed to subclasses to make sure everything shares the same log object.
+        /// </summary>
         [NotNull]
         protected readonly IButtplugLogManager BpLogManager;
 
+        /// <summary>
+        /// Actual logger object, creates and stores log messages.
+        /// </summary>
         [NotNull]
         private readonly IButtplugLog _bpLogger;
 
+        /// <summary>
+        /// Manages device subtype managers (usb, bluetooth, gamepad, etc), and relays device info to the Server.
+        /// </summary>
         [NotNull]
         protected readonly DeviceManager _deviceManager;
 
-        public DeviceManager DeviceManager => _deviceManager;
-
+        /// <summary>
+        /// Timer that tracks ping updates from clients, if requested.
+        /// </summary>
+        [CanBeNull]
         private readonly Timer _pingTimer;
 
+        /// <summary>
+        /// The name of the server, as relayed to clients in <see cref="ServerInfo"/> messages.
+        /// </summary>
         private readonly string _serverName;
+
+        /// <summary>
+        /// Maximum ping time for clients to send <see cref="Ping"/> messages in.
+        /// </summary>
         private readonly uint _maxPingTime;
+
         private bool _pingTimedOut;
+
+        /// <summary>
+        /// True if client/server have successfully completed the <see cref="RequestServerInfo"/>/
+        /// <see cref="ServerInfo"/> handshake.
+        /// </summary>
         private bool _receivedRequestServerInfo;
+
+        /// <summary>
+        /// Spec version expected by the client. Used for stepping back on message versions.
+        /// </summary>
         private uint _clientSpecVersion;
 
-        public static string GetLicense()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            const string resourceName = "Buttplug.Server.LICENSE";
-            Stream stream = null;
-            try
-            {
-                stream = assembly.GetManifestResourceStream(resourceName);
-                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
-                {
-                    stream = null;
-                    return reader.ReadToEnd();
-                }
-            }
-            finally
-            {
-                stream?.Dispose();
-            }
-        }
-
-        public ButtplugServer([NotNull] string aServerName, uint aMaxPingTime, DeviceManager aDeviceManager = null)
+        public ButtplugServer(string aServerName, uint aMaxPingTime, DeviceManager aDeviceManager = null)
         {
             _serverName = aServerName;
             _maxPingTime = aMaxPingTime;
@@ -117,7 +139,7 @@ namespace Buttplug.Server
             _pingTimer?.Change(Timeout.Infinite, (int)_maxPingTime);
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
                 Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
-            await SendMessageAsync(new StopAllDevices());
+            await SendMessageAsync(new StopAllDevices()).ConfigureAwait(false);
             _pingTimedOut = true;
             PingTimeout?.Invoke(this, new EventArgs());
         }
@@ -128,34 +150,39 @@ namespace Buttplug.Server
             var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(_internalToken.Token, aToken);
             _bpLogger.Trace($"Got Message {aMsg.Id} of type {aMsg.GetType().Name} to send");
             var id = aMsg.Id;
+
+            ButtplugUtils.ArgumentNotNull(aMsg, nameof(aMsg));
+
             if (id == 0)
             {
-                return _bpLogger.LogWarnMsg(id, Error.ErrorClass.ERROR_MSG,
-                    "Message Id 0 is reserved for outgoing system messages. Please use another Id.");
+                throw new ButtplugServerException(_bpLogger, "Message Id 0 is reserved for outgoing system messages. Please use another Id.",
+                    id, Error.ErrorClass.ERROR_MSG);
             }
 
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
-                return _bpLogger.LogWarnMsg(id, Error.ErrorClass.ERROR_MSG,
-                    $"Message of type {aMsg.GetType().Name} cannot be sent to server");
+                throw new ButtplugServerException(_bpLogger, $"Message of type {aMsg.GetType().Name} cannot be sent to server",
+                    id, Error.ErrorClass.ERROR_MSG);
             }
 
             if (_pingTimedOut)
             {
-                return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_PING, "Ping timed out.");
+                throw new ButtplugServerException(_bpLogger, $"Ping timed out.",
+                    id, Error.ErrorClass.ERROR_PING);
             }
 
             // If we get a message that's not RequestServerInfo first, return an error.
             if (!_receivedRequestServerInfo && !(aMsg is RequestServerInfo))
             {
-                return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_INIT,
-                    "RequestServerInfo must be first message received by server!");
+                throw new ButtplugServerException("RequestServerInfo must be first message received by server!",
+                    id, Error.ErrorClass.ERROR_INIT);
             }
+
+            _bpLogger.Debug($"Got {aMsg.Name} message.");
 
             switch (aMsg)
             {
                 case RequestLog m:
-                    _bpLogger.Debug("Got RequestLog Message");
                     BpLogManager.Level = m.LogLevel;
                     return new Ok(id);
 
@@ -166,7 +193,12 @@ namespace Buttplug.Server
                     return new Ok(id);
 
                 case RequestServerInfo rsi:
-                    _bpLogger.Debug("Got RequestServerInfo Message");
+                    if (_receivedRequestServerInfo)
+                    {
+                        throw new ButtplugServerException("Already received RequestServerInfo, cannot be sent twice.",
+                            id, Error.ErrorClass.ERROR_INIT);
+                    }
+
                     _receivedRequestServerInfo = true;
                     _clientSpecVersion = rsi.MessageVersion;
                     _deviceManager.SpecVersion = _clientSpecVersion;
@@ -177,11 +209,10 @@ namespace Buttplug.Server
                     return new ServerInfo(_serverName, 1, _maxPingTime, id);
 
                 case Test m:
-                    _bpLogger.Debug("Got Test Message");
                     return new Test(m.TestString, id);
             }
 
-            return await _deviceManager.SendMessageAsync(aMsg, combinedToken.Token);
+            return await _deviceManager.SendMessageAsync(aMsg, combinedToken.Token).ConfigureAwait(false);
         }
 
         public async Task ShutdownAsync(CancellationToken aToken = default(CancellationToken))
@@ -189,7 +220,7 @@ namespace Buttplug.Server
             // Don't disconnect devices on shutdown, as they won't actually close.
             // Uncomment this once we figure out how to close bluetooth devices.
             // _deviceManager.RemoveAllDevices();
-            var msg = await _deviceManager.SendMessageAsync(new StopAllDevices(), aToken);
+            var msg = await _deviceManager.SendMessageAsync(new StopAllDevices(), aToken).ConfigureAwait(false);
             if (msg is Error error)
             {
                 _bpLogger.Error("An error occured while stopping devices on shutdown.");
@@ -215,7 +246,7 @@ namespace Buttplug.Server
                         res.Add(errorMsg);
                         break;
                     default:
-                        res.Add(await SendMessageAsync(msg, aToken));
+                        res.Add(await SendMessageAsync(msg, aToken).ConfigureAwait(false));
                         break;
                 }
             }
@@ -225,17 +256,23 @@ namespace Buttplug.Server
 
         public string Serialize(ButtplugMessage aMsg)
         {
+            ButtplugUtils.ArgumentNotNull(aMsg, nameof(aMsg));
+
             return _parser.Serialize(aMsg, _clientSpecVersion);
         }
 
         public string Serialize(ButtplugMessage[] aMsgs)
         {
+            ButtplugUtils.ArgumentNotNull(aMsgs, nameof(aMsgs));
+
             return _parser.Serialize(aMsgs, _clientSpecVersion);
         }
 
         public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager, T> aCreateMgrFunc)
             where T : IDeviceSubtypeManager
         {
+            ButtplugUtils.ArgumentNotNull(aCreateMgrFunc, nameof(aCreateMgrFunc));
+
             _deviceManager.AddDeviceSubtypeManager(aCreateMgrFunc);
         }
     }

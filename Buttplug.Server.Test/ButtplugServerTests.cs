@@ -4,14 +4,19 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Core.Test;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test
@@ -25,17 +30,28 @@ namespace Buttplug.Server.Test
         public async Task ServerTestSetup()
         {
             _server = new TestServer();
-            Assert.True(await _server.SendMessageAsync(new RequestServerInfo("TestClient")) is ServerInfo);
+            var msg = await _server.SendMessageAsync(new RequestServerInfo("TestClient"));
+            msg.Should().BeOfType<ServerInfo>();
         }
 
-        [Test]
-        public async Task RejectOutgoingOnlyMessage()
+        private async Task SendOutgoingMessageToServer()
         {
-            Assert.True(await _server.SendMessageAsync(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
+            // Sending error messages will always cause an error, as they are outgoing, not incoming.
+            _server
+                .Awaiting(s =>
+                    s.SendMessageAsync(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)))
+                .Should()
+                .Throw<ButtplugServerException>();
         }
 
         [Test]
-        public async Task LoggerSettingsTest()
+        public async Task TestRejectOutgoingOnlyMessage()
+        {
+            await SendOutgoingMessageToServer();
+        }
+
+        [Test]
+        public async Task TestLoggerSettings()
         {
             var gotMessage = false;
             _server.MessageReceived += (aObj, aMsg) =>
@@ -46,16 +62,17 @@ namespace Buttplug.Server.Test
                 }
             };
 
-            // Sending error messages will always cause an error, as they are outgoing, not incoming.
-            Assert.True(await _server.SendMessageAsync(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
-            Assert.False(gotMessage);
-            Assert.True(await _server.SendMessageAsync(new RequestLog(ButtplugLogLevel.Trace)) is Ok);
-            Assert.True(await _server.SendMessageAsync(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)) is Error);
+            await SendOutgoingMessageToServer();
+            gotMessage.Should().BeFalse();
+            var msg = await _server.SendMessageAsync(new RequestLog(ButtplugLogLevel.Trace));
+            msg.Should().BeOfType<Ok>();
+            await SendOutgoingMessageToServer();
             Assert.True(gotMessage);
-            await _server.SendMessageAsync(new RequestLog(ButtplugLogLevel.Off));
+            msg = await _server.SendMessageAsync(new RequestLog(ButtplugLogLevel.Off));
+            msg.Should().BeOfType<Ok>();
             gotMessage = false;
-            await _server.SendMessageAsync(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId));
-            Assert.False(gotMessage);
+            await SendOutgoingMessageToServer();
+            gotMessage.Should().BeFalse();
         }
 
         [Test]
@@ -63,11 +80,10 @@ namespace Buttplug.Server.Test
         {
             _server.MessageReceived += (aObj, aMsg) =>
             {
-                Assert.True(aMsg.Message is RequestServerInfo);
-                Assert.True(aMsg.Message.Id == 12345);
+                aMsg.Message.Should().BeOfType<Core.Messages.Test>();
+                aMsg.Message.Id.Should().Be(12345);
             };
-            var m = new RequestServerInfo("TestClient", 12345);
-            await _server.SendMessageAsync(m);
+            await _server.SendMessageAsync(new Core.Messages.Test("Test", 12345));
         }
 
         private void CheckDeviceMessages(ButtplugMessage aMsgArgs)
@@ -140,14 +156,15 @@ namespace Buttplug.Server.Test
         public async Task TestIncomingSystemIdMessage()
         {
             // Test echos back a test message with the same string and id
-            Assert.True(await _server.SendMessageAsync(new Core.Messages.Test("Right", 2)) is Core.Messages.Test);
-            Assert.True(await _server.SendMessageAsync(new Core.Messages.Test("Wrong", 0)) is Error);
+            _server.Awaiting(s => s.SendMessageAsync(new Core.Messages.Test("Right", 2))).Should().NotThrow();
+            _server.Awaiting(s => s.SendMessageAsync(new Core.Messages.Test("Wrong", 0))).Should()
+                .Throw<ButtplugServerException>();
         }
 
         [Test]
         public async Task TestInvalidDeviceIdMessage()
         {
-            Assert.True(await _server.SendMessageAsync(new SingleMotorVibrateCmd(1, .2, 0)) is Error);
+            _server.Awaiting(s => s.SendMessageAsync(new SingleMotorVibrateCmd(1, .2, 0))).Should().Throw<ButtplugServerException>();
         }
 
         [Test]
@@ -220,31 +237,33 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
-        public void TestLicenseFileLoading()
+        public void TestServerLicenseFileLoading()
         {
-            var license = ButtplugServer.GetLicense();
-            Assert.True(license.Contains("Buttplug is covered under the following BSD 3-Clause License"));
-            Assert.True(license.Contains("NJsonSchema (https://github.com/RSuter/NJsonSchema) is covered under the"));
+            var license = ButtplugUtils.GetLicense(Assembly.GetAssembly(typeof(ButtplugServer)), "Buttplug.Server.LICENSE");
+            license.Should().Contain("Buttplug is covered under the following BSD 3-Clause License");
+            license.Should().Contain("NJsonSchema (https://github.com/RSuter/NJsonSchema) is covered under the");
         }
 
         [Test]
         public async Task TestPing()
         {
             var server = new TestServer(100);
-            Assert.True(await server.SendMessageAsync(new RequestServerInfo("TestClient")) is ServerInfo);
+            var msg = await server.SendMessageAsync(new RequestServerInfo("TestClient"));
+            msg.Should().BeOfType<ServerInfo>();
 
             // Timeout is set to 100ms
             for (int i = 0; i < 8; i++)
             {
                 Thread.Sleep(50);
-                Assert.True(await server.SendMessageAsync(new Ping()) is Ok);
+                msg = await server.SendMessageAsync(new Ping());
+                msg.Should().BeOfType<Ok>();
             }
 
-            // If we're still getting OK, we've suvived 400ms
+            // If we're still getting OK, we've survived 400ms
 
             // Now lets ensure we can actually timeout
             Thread.Sleep(150);
-            Assert.True(await server.SendMessageAsync(new Ping()) is Error);
+            server.Awaiting(s => s.SendMessageAsync(new Ping())).Should().Throw<ButtplugServerException>();
         }
 
         [Test]
@@ -267,6 +286,7 @@ namespace Buttplug.Server.Test
                         msgReceived = true;
                         Assert.True(da.DeviceMessages.Keys.Contains("StopDeviceCmd"));
                         Assert.True(da.DeviceMessages.Keys.Contains("SingleMotorVibrateCmd"));
+
                         // Should not contain VibrateCmd, even though it is part of the device otherwise.
                         Assert.False(da.DeviceMessages.Keys.Contains("VibrateCmd"));
                         break;

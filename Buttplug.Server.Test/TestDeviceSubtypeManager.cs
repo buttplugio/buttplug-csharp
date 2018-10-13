@@ -4,6 +4,9 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Test;

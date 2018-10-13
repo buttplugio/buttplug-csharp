@@ -4,13 +4,16 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test
@@ -21,43 +24,39 @@ namespace Buttplug.Server.Test
         private TestServer _server;
 
         [SetUp]
-        public async Task ServerTestSetup()
+        public async Task TestServer()
         {
             _server = new TestServer();
-            Assert.True(await _server.SendMessageAsync(new RequestServerInfo("TestClient")) is ServerInfo);
+            var msg = await _server.SendMessageAsync(new RequestServerInfo("TestClient"));
+            msg.Should().BeOfType<ServerInfo>();
         }
 
         [Test]
-        public async Task RequestLogJsonTest()
+        public async Task TestRepeatedHandshake()
         {
-            var res = await _server.SendMessageAsync("[{\"RequestLog\": {\"LogLevel\":\"Off\",\"Id\":1}}]");
-            Assert.True(res.Length == 1);
-            Assert.True(res[0] is Ok);
+            // Sending RequestServerInfo twice should throw, otherwise weird things like Spec version changes could happen.
+            Func<Task> act = async () => await _server.SendMessageAsync(new RequestServerInfo("TestClient"));
+            act.Should().Throw<ButtplugServerException>();
         }
 
         [Test]
-        public async Task RequestLogTraceLevelTest()
+        public async Task TestRequestLog()
         {
-            _server.MessageReceived += _server.OnMessageReceived;
-            var res = await _server.SendMessageAsync("[{\"RequestLog\": {\"LogLevel\":\"Trace\",\"Id\":1}}]");
-            Assert.AreEqual(res.Length, 1);
-            Assert.True(res[0] is Ok);
-            res = await _server.SendMessageAsync("[{\"Test\": {\"TestString\":\"Echo\",\"Id\":2}}]");
-            Assert.AreEqual(res.Length, 1);
-            Assert.True(res[0] is Core.Messages.Test);
-            Assert.AreEqual(_server.OutgoingAsync.Count, 4);
+            var res = await _server.SendMessageAsync(new RequestLog(ButtplugLogLevel.Debug));
+            res.Should().BeOfType<Ok>();
         }
 
         [Test]
-        public async Task CallStartScanning()
+        public async Task TestCallStartScanning()
         {
             var dm = new TestDeviceSubtypeManager();
             _server.AddDeviceSubtypeManager(aLogger => { return dm; });
             var r = await _server.SendMessageAsync(new StartScanning());
-            Assert.True(r is Ok);
-            Assert.True(dm.StartScanningCalled);
+            r.Should().BeOfType<Ok>();
+            dm.StartScanningCalled.Should().BeTrue();
         }
 
+        [ButtplugMessageMetadata("FakeMessage", 0)]
         private class FakeMessage : ButtplugMessage
         {
             public FakeMessage(uint aId)
@@ -67,54 +66,47 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
-        public async Task SendUnhandledMessage()
+        public async Task TestSendUnhandledMessage()
         {
-            var r = await _server.SendMessageAsync(new FakeMessage(1));
-            Assert.True(r is Error);
+            Func<Task> r = async () => await _server.SendMessageAsync(new FakeMessage(1));
+            r.Should().Throw<ButtplugServerException>();
         }
 
         [Test]
-        public async Task CallStopScanning()
+        public async Task TestStopScanning()
         {
             var dm = new TestDeviceSubtypeManager();
             _server.AddDeviceSubtypeManager(aLogger => dm);
             var r = await _server.SendMessageAsync(new StopScanning());
-            Assert.True(r is Ok);
-            Assert.True(dm.StopScanningCalled);
+            r.Should().BeOfType<Ok>();
+            dm.StopScanningCalled.Should().BeTrue();
         }
 
         [Test]
-        public async Task RequestServerInfoTest()
+        public async Task TestRequestServerInfo()
         {
             var s = new ButtplugServer("TestServer", 100);
-            var results = new List<ButtplugMessage> { await s.SendMessageAsync(new RequestServerInfo("TestClient")) };
+            var r = await s.SendMessageAsync(new RequestServerInfo("TestClient"));
 
-            foreach (var reply in results)
-            {
-                ServerInfo r;
-                try
-                {
-                    r = (ServerInfo)reply;
-                }
-                catch (InvalidCastException)
-                {
-                    Assert.True(reply is ServerInfo);
-                    continue;
-                }
-
-                Assert.True(r.MajorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major);
-                Assert.True(r.MinorVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor);
-                Assert.True(r.BuildVersion == Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build);
-            }
+            r.Should().BeOfType<ServerInfo>();
+            var info = r as ServerInfo;
+            info.MajorVersion.Should().Be(Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Major);
+            info.MinorVersion.Should().Be(Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Minor);
+            info.BuildVersion.Should().Be(Assembly.GetAssembly(typeof(ServerInfo)).GetName().Version.Build);
         }
 
         [Test]
-        public async Task NonRequestServerInfoFirstTest()
+        public async Task TestDoNotRequestServerInfoFirst()
         {
             var s = new ButtplugServer("TestServer", 0);
-            Assert.True(await s.SendMessageAsync(new Core.Messages.Test("Test")) is Error);
-            Assert.True(await s.SendMessageAsync(new RequestServerInfo("TestClient")) is ServerInfo);
-            Assert.True(await s.SendMessageAsync(new Core.Messages.Test("Test")) is Core.Messages.Test);
+            Func<Task> act = async () => await s.SendMessageAsync(new Core.Messages.Test("Test"));
+            act.Should().Throw<ButtplugServerException>();
+
+            var msg = await s.SendMessageAsync(new RequestServerInfo("TestClient"));
+            msg.Should().BeOfType<ServerInfo>();
+
+            msg = await s.SendMessageAsync(new Core.Messages.Test("Test"));
+            msg.Should().BeOfType<Core.Messages.Test>();
         }
     }
 }

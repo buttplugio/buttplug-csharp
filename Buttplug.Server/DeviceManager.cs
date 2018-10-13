@@ -20,33 +20,29 @@ namespace Buttplug.Server
 {
     public class DeviceManager
     {
+        public event EventHandler<MessageReceivedEventArgs> DeviceMessageReceived;
+
+        public event EventHandler<EventArgs> ScanningFinished;
+
         private readonly List<IDeviceSubtypeManager> _managers;
+
+        [NotNull]
+        private readonly IButtplugLog _bpLogger;
+        private readonly IButtplugLogManager _bpLogManager;
+        private readonly object _scanLock;
+
+        private long _deviceIndexCounter;
+        private bool _sentFinished;
 
         // Needs to be internal for tests.
         // ReSharper disable once MemberCanBePrivate.Global
         internal Dictionary<uint, IButtplugDevice> _devices { get; }
 
-        private readonly IButtplugLog _bpLogger;
-        private readonly IButtplugLogManager _bpLogManager;
-        private long _deviceIndexCounter;
-        private bool _sentFinished;
-        private object _scanLock;
-
-        private uint _specVersion;
-
-        public uint SpecVersion
-        {
-            get => _specVersion;
-
-            set => _specVersion = value;
-        }
-
-        public event EventHandler<MessageReceivedEventArgs> DeviceMessageReceived;
-
-        public event EventHandler<EventArgs> ScanningFinished;
+        public uint SpecVersion { get; set; }
 
         public DeviceManager(IButtplugLogManager aLogManager)
         {
+            ButtplugUtils.ArgumentNotNull(aLogManager, nameof(aLogManager));
             _bpLogManager = aLogManager;
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Info("Setting up DeviceManager");
@@ -64,22 +60,15 @@ namespace Buttplug.Server
         }
 
         private static Dictionary<string, MessageAttributes>
-            GetAllowedMessageTypesAsDictionary([NotNull] IButtplugDevice aDevice, uint aSchemaVersion)
+            GetAllowedMessageTypesAsDictionary(IButtplugDevice aDevice, uint aSchemaVersion)
         {
-            Dictionary<string, MessageAttributes> msgs = new Dictionary<string, MessageAttributes>();
-            foreach (var msg in aDevice.AllowedMessageTypes)
-            {
-                // TODO This is so gross. Passing around types is handy but this is getting really out of hand.
-                var msgVersion = ButtplugMessage.GetSpecVersion(msg);
-                if (msgVersion > aSchemaVersion)
-                {
-                    continue;
-                }
+            ButtplugUtils.ArgumentNotNull(aDevice, nameof(aDevice));
 
-                msgs.Add(msg.Name, aDevice.GetMessageAttrs(msg));
-            }
-
-            return msgs;
+            return (from msg in aDevice.AllowedMessageTypes
+                let msgVersion = ButtplugMessage.GetSpecVersion(msg)
+                where msgVersion <= aSchemaVersion
+                select msg)
+                .ToDictionary(aMsg => aMsg.Name, aDevice.GetMessageAttrs);
         }
 
         private void DeviceAddedHandler(object aObj, DeviceAddedEventArgs aEvent)
@@ -110,7 +99,7 @@ namespace Buttplug.Server
             var msg = new DeviceAdded(
                 deviceIndex,
                 aEvent.Device.Name,
-                GetAllowedMessageTypesAsDictionary(aEvent.Device, _specVersion));
+                GetAllowedMessageTypesAsDictionary(aEvent.Device, SpecVersion));
 
             DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
@@ -174,8 +163,9 @@ namespace Buttplug.Server
             });
         }
 
-        public async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage aMsg, CancellationToken aToken)
+        public async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
+            ButtplugUtils.ArgumentNotNull(aMsg, nameof(aMsg));
             var id = aMsg.Id;
             switch (aMsg)
             {
@@ -200,7 +190,7 @@ namespace Buttplug.Server
                             continue;
                         }
 
-                        var r = await d.Value.ParseMessageAsync(new StopDeviceCmd(d.Key, aMsg.Id), aToken);
+                        var r = await d.Value.ParseMessageAsync(new StopDeviceCmd(d.Key, aMsg.Id), aToken).ConfigureAwait(false);
                         if (r is Ok)
                         {
                             continue;
@@ -222,7 +212,7 @@ namespace Buttplug.Server
                         .Select(aDevice => new DeviceMessageInfo(
                             aDevice.Key,
                             aDevice.Value.Name,
-                            GetAllowedMessageTypesAsDictionary(aDevice.Value, _specVersion))).ToList();
+                            GetAllowedMessageTypesAsDictionary(aDevice.Value, SpecVersion))).ToList();
                     return new DeviceList(msgDevices.ToArray(), id);
 
                 // If it's a device message, it's most likely not ours.
@@ -233,10 +223,11 @@ namespace Buttplug.Server
                         return await _devices[m.DeviceIndex].ParseMessageAsync(m, aToken);
                     }
 
-                    return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_DEVICE, $"Dropping message for unknown device index {m.DeviceIndex}");
+                    throw new ButtplugDeviceException(_bpLogger,
+                        $"Dropping message for unknown device index {m.DeviceIndex}", id);
             }
 
-            return _bpLogger.LogErrorMsg(id, Error.ErrorClass.ERROR_MSG, $"Message type {aMsg.GetType().Name} unhandled by this server.");
+            throw new ButtplugServerException(_bpLogger, $"Message type {aMsg.GetType().Name} unhandled by this server.", id, Error.ErrorClass.ERROR_MSG);
         }
 
         internal void RemoveAllDevices()
