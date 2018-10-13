@@ -4,10 +4,13 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using FluentAssertions;

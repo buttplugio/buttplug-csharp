@@ -215,9 +215,19 @@ namespace Buttplug.Core
                 throw new ButtplugParserException(_bpLogger,
                     "Message cannot be converted to JSON.", ButtplugConsts.SystemMsgId);
             }
-            var a = new JArray { jsonMsg };
+            var msgArray = new JArray { jsonMsg };
+
+            // Shove our JSON objects through the schema validator, just to make sure it'll be
+            // accepted on the other end.
+            var errors = _schema.Validate(msgArray);
+            if (errors.Any())
+            {
+                throw new ButtplugParserException(_bpLogger,
+                    "Message does not conform to schema: " + string.Join(", ",
+                        errors.Select(aErr => aErr?.ToString()).ToArray()), ButtplugConsts.SystemMsgId);
+            }
             _bpLogger?.Trace($"Message serialized to: {jsonMsg.ToString(Formatting.None)}", true);
-            return a.ToString(Formatting.None);
+            return msgArray.ToString(Formatting.None);
         }
 
         /// <summary>
@@ -230,7 +240,7 @@ namespace Buttplug.Core
         public string Serialize([NotNull] IEnumerable<ButtplugMessage> aMsgs, uint aClientSchemaVersion)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
-            var a = new JArray();
+            var msgArray = new JArray();
             foreach (var msg in aMsgs)
             {
                 var obj = ButtplugMessageToJObject(msg, aClientSchemaVersion);
@@ -238,19 +248,29 @@ namespace Buttplug.Core
                 {
                     continue;
                 }
-                a.Add(obj);
+                msgArray.Add(obj);
             }
 
             // If we somehow didn't encode anything, throw. Otherwise we'll try to pass a string full
             // of nothing through the schema verifier and it will throw.
-            if (!a.Any())
+            if (!msgArray.Any())
             {
                 throw new ButtplugParserException(_bpLogger,
                     "No messages serialized.", ButtplugConsts.SystemMsgId);
             }
 
-            _bpLogger?.Trace($"Message serialized to: {a.ToString(Formatting.None)}", true);
-            return a.ToString(Formatting.None);
+            // Shove our JSON objects through the schema validator, just to make sure it'll be
+            // accepted on the other end.
+            var errors = _schema.Validate(msgArray);
+            if (errors.Any())
+            {
+                throw new ButtplugParserException(_bpLogger,
+                    "Message does not conform to schema: " + string.Join(", ",
+                        errors.Select(aErr => aErr?.ToString()).ToArray()), ButtplugConsts.SystemMsgId);
+            }
+            
+            _bpLogger?.Trace($"Message serialized to: {msgArray.ToString(Formatting.None)}", true);
+            return msgArray.ToString(Formatting.None);
         }
 
         /// <summary>

@@ -6,7 +6,8 @@ using JetBrains.Annotations;
 namespace Buttplug.Core
 {
     /// <summary>
-    /// Exceptions related to message serialization and deserialization
+    /// Exceptions related to message serialization and deserialization. All Parser exceptions will
+    /// be of <see cref="Error"/> class ERROR_MSG.
     /// </summary>
     public class ButtplugParserException : ButtplugException
     {

@@ -4,6 +4,10 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
+using System;
 using System.Linq;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
@@ -110,6 +114,37 @@ namespace Buttplug.Core.Test
             var msgs = _parser.Deserialize("[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}}]").ToArray();
             msgs.Length.Should().Be(1);
             CheckValidTestMessage(msgs[0]);
+        }
+
+        [ButtplugMessageMetadata("FakeMessage", 0)]
+        private class FakeMessage : ButtplugMessage
+        {
+            public FakeMessage(uint aId)
+                : base(aId)
+            {
+            }
+        }
+
+        private class FakeMessageNoMetadata : ButtplugMessage
+        {
+            public FakeMessageNoMetadata(uint aId)
+                : base(aId)
+            {
+            }
+        }
+
+        [Test]
+        public void TestParseUnhandledMessage()
+        {
+            Action a = () => _parser.Serialize(new FakeMessage(0), ButtplugConsts.CurrentSpecVersion);
+            a.Should().Throw<ButtplugParserException>();
+        }
+
+        [Test]
+        public void TestParseUnhandledMessageWithNoMetadata()
+        {
+            Action a = () => _parser.Serialize(new FakeMessageNoMetadata(0), ButtplugConsts.CurrentSpecVersion);
+            a.Should().Throw<ArgumentException>();
         }
     }
 }
