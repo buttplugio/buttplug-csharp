@@ -13,12 +13,10 @@ using Newtonsoft.Json.Converters;
 // relation to the server, i.e. message are sent "(from client) to server" or "(to client) from server".
 namespace Buttplug.Core.Messages
 {
-
-    #region Base Messages
-    
     /// <summary>
     /// Signifies the success of the last message/query.
     /// </summary>
+    [ButtplugMessageMetadata("Ok", 0)]
     public class Ok : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -34,6 +32,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sends text to a server, expected to be echoed back.
     /// </summary>
+    [ButtplugMessageMetadata("Test", 0)]
     public class Test : ButtplugMessage
     {
         private string _testStringImpl;
@@ -72,6 +71,7 @@ namespace Buttplug.Core.Messages
     /// Indicator that there has been an error in the system, either due to the last message/query
     /// sent, or due to an internal error.
     /// </summary>
+    [ButtplugMessageMetadata("Error", 0)]
     public class Error : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -134,9 +134,6 @@ namespace Buttplug.Core.Messages
         }
     }
 
-    #endregion
-
-    #region Device Enumeration Messages
     /// <summary>
     /// Container class for device attributes.
     /// </summary>
@@ -253,6 +250,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// List of devices connected to the server.
     /// </summary>
+    [ButtplugMessageMetadata("DeviceList", 1, typeof(DeviceListVersion0))]
     public class DeviceList : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -267,14 +265,14 @@ namespace Buttplug.Core.Messages
         /// <param name="aDeviceList">List of devices currently connected</param>
         /// <param name="aId">Message ID</param>
         public DeviceList(DeviceMessageInfo[] aDeviceList, uint aId)
-            : base(aId, 1, typeof(DeviceListVersion0))
+            : base(aId)
         {
             Devices = aDeviceList;
         }
 
         /// <inheritdoc />
         internal DeviceList()
-            : base(0, 1, typeof(DeviceListVersion0))
+            : base(0)
         {
         }
     }
@@ -283,11 +281,9 @@ namespace Buttplug.Core.Messages
     /// List of devices connected to the server. Represents a prior spec version of the message, kept
     /// for downgrade support.
     /// </summary>
+    [ButtplugMessageMetadata("DeviceList", 0)]
     public class DeviceListVersion0 : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
-        [JsonIgnore]
-        public override string Name => "DeviceList";
-
         /// <summary>
         /// List of connected devices.
         /// </summary>
@@ -337,6 +333,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent from server when a new device is discoved.
     /// </summary>
+    [ButtplugMessageMetadata("DeviceAdded", 1, typeof(DeviceAddedVersion0))]
     public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
     {
         /// <summary>
@@ -360,7 +357,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aMessages">Commands supported by device</param>
         public DeviceAdded(uint aIndex, string aName,
             Dictionary<string, MessageAttributes> aMessages)
-            : base(ButtplugConsts.SystemMsgId, aIndex, 1, typeof(DeviceAddedVersion0))
+            : base(ButtplugConsts.SystemMsgId, aIndex)
         {
             DeviceName = aName;
             DeviceMessages = aMessages;
@@ -368,7 +365,7 @@ namespace Buttplug.Core.Messages
 
         /// <inheritdoc />
         internal DeviceAdded()
-            : base(0, 0, 1, typeof(DeviceAddedVersion0))
+            : base(0, 0)
         {
         }
 
@@ -383,11 +380,9 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent from server when a new device is discoved. Represents a prior spec version of the message, kept for downgrade support.
     /// </summary>
+    [ButtplugMessageMetadata("DeviceAdded", 0)]
     public class DeviceAddedVersion0 : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
     {
-        [JsonIgnore]
-        public override string Name => "DeviceAdded";
-
         /// <summary>
         /// Device name.
         /// </summary>
@@ -440,6 +435,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent from server when a device is disconnected.
     /// </summary>
+    [ButtplugMessageMetadata("DeviceRemoved", 0)]
     public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
     {
         /// <summary>
@@ -469,6 +465,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent to server to request a list of all connected devices.
     /// </summary>
+    [ButtplugMessageMetadata("RequestDeviceList", 0)]
     public class RequestDeviceList : ButtplugMessage
     {
         /// <summary>
@@ -484,6 +481,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent to server, to start scanning for devices across supported busses.
     /// </summary>
+    [ButtplugMessageMetadata("StartScanning", 0)]
     public class StartScanning : ButtplugMessage
     {
         /// <summary>
@@ -499,6 +497,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent to server, to stop scanning for devices across supported busses.
     /// </summary>
+    [ButtplugMessageMetadata("StopScanning", 0)]
     public class StopScanning : ButtplugMessage
     {
         /// <summary>
@@ -514,6 +513,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent from server when scanning has finished.
     /// </summary>
+    [ButtplugMessageMetadata("ScanningFinished", 0)]
     public class ScanningFinished : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -525,13 +525,10 @@ namespace Buttplug.Core.Messages
         }
     }
 
-    #endregion
-
-    #region Log Messages
-
     /// <summary>
     /// Sent to server to request log entries be relayed to client.
     /// </summary>
+    [ButtplugMessageMetadata("RequestLog", 0)]
     public class RequestLog : ButtplugMessage
     {
         /// <summary>
@@ -549,6 +546,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent from server when logs have been requested. Contains a single log entry.
     /// </summary>
+    [ButtplugMessageMetadata("Log", 0)]
     public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -573,14 +571,11 @@ namespace Buttplug.Core.Messages
             : base(ButtplugConsts.SystemMsgId) => (LogLevel, LogMessage) = (aLogLevel, aLogMessage);
     }
 
-    #endregion
-
-    #region Handshake and Keepalive Messages
-
     /// <summary>
     /// Sent to server to set up client information, including client name and schema version.
     /// Denotes the beginning of a conneciton handshake.
     /// </summary>
+    [ButtplugMessageMetadata("RequestServerInfo", 0)]
     public class RequestServerInfo : ButtplugMessage
     {
         /// <summary>
@@ -601,7 +596,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aClientName">Client name</param>
         /// <param name="aId">Message Id</param>
         /// <param name="aSchemaVersion">Message schema version</param>
-        public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId, uint aSchemaVersion = CurrentSchemaVersion)
+        public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId, uint aSchemaVersion = ButtplugConsts.CurrentSpecVersion)
             : base(aId)
         {
             ClientName = aClientName;
@@ -613,6 +608,7 @@ namespace Buttplug.Core.Messages
     /// Sent from server, in response to <see cref="RequestServerInfo"/>. Contains server name,
     /// message version, ping information, etc...
     /// </summary>
+    [ButtplugMessageMetadata("ServerInfo", 0)]
     public class ServerInfo : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -677,6 +673,7 @@ namespace Buttplug.Core.Messages
     /// </summary>
     // Resharper doesn't seem to be able to deduce that though.
     // ReSharper disable once ClassNeverInstantiated.Global
+    [ButtplugMessageMetadata("Ping", 0)]
     public class Ping : ButtplugMessage
     {
         /// <summary>
@@ -689,15 +686,12 @@ namespace Buttplug.Core.Messages
         }
     }
 
-    #endregion
-
-    #region Brand Specific Device Command Messages
-
     /// <summary>
     /// Sent to server, denotes commands for devices that can take Fleshlight Launch Firmware v1.2
     /// style messages. See https://docs.buttplug.io/stphikal for protocol info.
     /// </summary>
     // ReSharper disable once InconsistentNaming
+    [ButtplugMessageMetadata("FleshlightLaunchFW12Cmd", 0)]
     public class FleshlightLaunchFW12Cmd : ButtplugDeviceMessage
     {
         private uint _speedImpl;
@@ -772,6 +766,7 @@ namespace Buttplug.Core.Messages
     /// https://docs.buttplug.io/stphikal for protocol info.
     /// </summary>
     // ReSharper disable once UnusedMember.Global
+    [ButtplugMessageMetadata("LovenseCmd", 0)]
     public class LovenseCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -807,6 +802,7 @@ namespace Buttplug.Core.Messages
     /// Sent to server, denotes commands for devices that can take Kiiroo (Generation 1) style
     /// messages. See https://docs.buttplug.io/stphikal for protocol info.
     /// </summary>
+    [ButtplugMessageMetadata("KiirooCmd", 0)]
     public class KiirooCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -869,6 +865,7 @@ namespace Buttplug.Core.Messages
     /// Sent to server, denotes commands for devices that can take Vorze A10 Cyclone style messages.
     /// See https://docs.buttplug.io/stphikal for protocol info.
     /// </summary>
+    [ButtplugMessageMetadata("VorzeA10CycloneCmd", 0)]
     public class VorzeA10CycloneCmd : ButtplugDeviceMessage
     {
         private uint _speedImpl;
@@ -924,14 +921,12 @@ namespace Buttplug.Core.Messages
         }
     }
 
-    #endregion
-
-    #region Generic Device Command Messages
     /// <summary>
     /// Sent to server, generic message that can control any vibrating device. If sent to device with
     /// multiple vibrators, causes all vibrators to vibrate at same speed. This has been superceeded
     /// by <see cref="VibrateCmd"/>.
     /// </summary>
+    [ButtplugMessageMetadata("SingleMotorVibrateCmd", 0)]
     public class SingleMotorVibrateCmd : ButtplugDeviceMessage
     {
         private double _speedImpl;
@@ -987,6 +982,7 @@ namespace Buttplug.Core.Messages
     /// cref="SingleMotorVibrateCmd"/>, this message can take multiple commands for devices with
     /// multiple vibrators.
     /// </summary>
+    [ButtplugMessageMetadata("VibrateCmd", 1)]
     public class VibrateCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -1083,7 +1079,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aId">Message ID</param>
         [JsonConstructor]
         public VibrateCmd(uint aDeviceIndex, List<VibrateSubcommand> aSpeeds, uint aId = ButtplugConsts.DefaultMsgId)
-            : base(aId, aDeviceIndex, 1)
+            : base(aId, aDeviceIndex)
         {
             Speeds = aSpeeds;
         }
@@ -1102,6 +1098,7 @@ namespace Buttplug.Core.Messages
     /// Sent to server, generic message that can control any rotating device. This message can take
     /// multiple commands for devices with multiple rotators.
     /// </summary>
+    [ButtplugMessageMetadata("RotateCmd", 1)]
     public class RotateCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -1203,7 +1200,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aId">Message ID</param>
         [JsonConstructor]
         public RotateCmd(uint aDeviceIndex, List<RotateSubcommand> aRotations, uint aId = ButtplugConsts.DefaultMsgId)
-            : base(aId, aDeviceIndex, 1)
+            : base(aId, aDeviceIndex)
         {
             Rotations = aRotations;
         }
@@ -1222,6 +1219,7 @@ namespace Buttplug.Core.Messages
     /// Sent to server, generic message that can control any linear-actuated device. This message can
     /// take multiple commands for devices with multiple actuators.
     /// </summary>
+    [ButtplugMessageMetadata("LinearCmd", 1)]
     public class LinearCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -1324,7 +1322,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aId">Message ID</param>
         [JsonConstructor]
         public LinearCmd(uint aDeviceIndex, List<VectorSubcommand> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
-            : base(aId, aDeviceIndex, 1)
+            : base(aId, aDeviceIndex)
         {
             Vectors = aVectors;
         }
@@ -1335,12 +1333,10 @@ namespace Buttplug.Core.Messages
         }
     }
 
-    #endregion
-
-    #region Generic Stop Device Command Messages
     /// <summary>
     /// Sent to server, stops actions of a specific device.
     /// </summary>
+    [ButtplugMessageMetadata("StopDeviceCmd", 0)]
     public class StopDeviceCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -1357,6 +1353,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent to server, stops actions of all currently connected devices.
     /// </summary>
+    [ButtplugMessageMetadata("StopAllDevices", 0)]
     public class StopAllDevices : ButtplugMessage
     {
         /// <summary>
@@ -1368,5 +1365,4 @@ namespace Buttplug.Core.Messages
         {
         }
     }
-#endregion
 }

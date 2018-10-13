@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Buttplug.Core.Messages
@@ -10,61 +11,96 @@ namespace Buttplug.Core.Messages
     public abstract class ButtplugMessage
     {
         /// <summary>
-        /// Current message schema version. History of versions can be seen at https://github.com/metafetish/buttplug-schema.
-        /// </summary>
-        [JsonIgnore]
-        public const uint CurrentSchemaVersion = 1;
-
-        /// <summary>
         /// Message ID.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
         public uint Id { get; set; }
 
-        /// <summary>
-        /// Schema version message was introduced in.
-        /// </summary>
         [JsonIgnore]
-        public uint SchemaVersion
-        {
-            get => _schemaVersion;
-
-            protected set => _schemaVersion = value;
-        }
-
-        /// <summary>
-        /// Previous message type, if the message has changed between schema versions.
-        /// </summary>
-        [JsonIgnore]
-        public Type PreviousType
-        {
-            get => _previousType;
-
-            protected set => _previousType = value;
-        }
+        public string Name => GetName(GetType());
 
         [JsonIgnore]
-        public virtual string Name => GetType().Name;
+        public uint SpecVersion => GetSpecVersion(GetType());
 
-        // Storage for the schema version.
         [JsonIgnore]
-        private uint _schemaVersion;
-
-        // Storage of previous type. Will be null for base classes and messages without previous types.
-        [JsonIgnore]
-        private Type _previousType;
+        public Type PreviousType => GetPreviousType(GetType());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugMessage"/> class.
         /// </summary>
         /// <param name="aId">Message ID</param>
-        /// <param name="aSchemaVersion">Schema version where message was introduced</param>
-        /// <param name="aPreviousType">Type for previous version of message, if one exists.</param>
-        protected ButtplugMessage(uint aId, uint aSchemaVersion = 0, Type aPreviousType = null)
+        protected ButtplugMessage(uint aId)
         {
             Id = aId;
-            SchemaVersion = aSchemaVersion;
-            PreviousType = aPreviousType;
+        }
+
+        // TODO All queried ButtplugMessageMetadata attribute lookups should be cached.
+        //
+        // Message creation is extremely hot path, and these are queried a lot. All of
+        // these loops for lookups may get slow.
+
+        /// <summary>
+        /// Gets a certain ButtplugMessageMetadata attributes for a ButtplugMessage
+        /// </summary>
+        /// <typeparam name="T">Return type expected </typeparam>
+        /// <param name="aMsgType">Type to get attribute from</param>
+        /// <param name="aFunc">Lambda that returns the required attribute.</param>
+        /// <returns>Attribute requested.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if aMsgType or aFunc is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if aMsgType does not have ButtplugMessageMetadata Attributes.</exception>
+        private static T GetMessageAttribute<T>(Type aMsgType, Func<ButtplugMessageMetadata, T> aFunc)
+        {
+            if (aMsgType == null || aFunc == null)
+            {
+                throw new ArgumentNullException("Argument must not be null");
+            }
+            if (!aMsgType.IsSubclassOf(typeof(ButtplugMessage)))
+            {
+                throw new ArgumentException($"Argument {aMsgType.Name} must be a subclass of ButtplugMessage");
+            }
+ 
+            var attrs = Attribute.GetCustomAttributes(aMsgType);
+
+            // Displaying output.  
+            foreach (var attr in attrs)
+            {
+                if (attr is ButtplugMessageMetadata metadata)
+                {
+                    return aFunc(metadata);
+                }
+            }
+
+            throw new InvalidOperationException($"Type {aMsgType} does not have ButtplugMessageMetadata Attributes");
+        }
+
+        /// <summary>
+        /// Returns name of a ButtplugMessage with ButtplugMessageMetadata attributes.
+        /// </summary>
+        /// <param name="aMsgType">Type to get data from.</param>
+        /// <returns>Message name of ButtplugMessage class type.</returns>
+        public static string GetName(Type aMsgType)
+        {
+            return GetMessageAttribute<string>(aMsgType, (aMd) => aMd.Name);
+        }
+
+        /// <summary>
+        /// Returns spec version of a ButtplugMessage with ButtplugMessageMetadata attributes.
+        /// </summary>
+        /// <param name="aMsgType">Type to get data from.</param>
+        /// <returns>Spec version of ButtplugMessage class type.</returns>
+        public static uint GetSpecVersion(Type aMsgType)
+        {
+            return GetMessageAttribute<uint>(aMsgType, (aMd) => aMd.Version);
+        }
+
+        /// <summary>
+        /// Returns previous type of a ButtplugMessage with ButtplugMessageMetadata attributes, if it exists.
+        /// </summary>
+        /// <param name="aMsgType">Type to get data from.</param>
+        /// <returns>Previous message type version of ButtplugMessage class type, or null if no previous message type exists.</returns>
+        public static Type GetPreviousType(Type aMsgType)
+        {
+            return GetMessageAttribute<Type>(aMsgType, (aMd) => aMd.PreviousType);
         }
     }
 

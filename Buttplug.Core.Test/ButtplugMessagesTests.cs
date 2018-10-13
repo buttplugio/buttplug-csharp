@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using FluentAssertions;
@@ -37,6 +38,16 @@ namespace Buttplug.Core.Test
             var msg = msgs[0];
             msg.Should().BeOfType<T>();
             return msg as T;
+        }
+
+        [Test]
+        public void TestAllMessageClassesUseButtplugMessageMetadata()
+        {
+            foreach (var msgClass in ButtplugUtils.GetAllMessageTypes())
+            {
+                // This will throw if the ButtplugMessageMetadata attribute isn't present.
+                ButtplugMessage.GetName(msgClass);
+            }
         }
 
         [Test]

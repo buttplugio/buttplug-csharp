@@ -16,5 +16,10 @@
         /// responses from colliding.
         /// </summary>
         public const uint DefaultMsgId = 1;
+
+        /// <summary>
+        /// Spec version this Buttplug library is based on.
+        /// </summary>
+        public const uint CurrentSpecVersion = 1;
     }
 }

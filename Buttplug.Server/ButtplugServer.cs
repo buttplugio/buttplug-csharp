@@ -51,7 +51,7 @@ namespace Buttplug.Server
         private readonly uint _maxPingTime;
         private bool _pingTimedOut;
         private bool _receivedRequestServerInfo;
-        private uint _clientMessageVersion;
+        private uint _clientSpecVersion;
 
         public static string GetLicense()
         {
@@ -168,7 +168,8 @@ namespace Buttplug.Server
                 case RequestServerInfo rsi:
                     _bpLogger.Debug("Got RequestServerInfo Message");
                     _receivedRequestServerInfo = true;
-                    _clientMessageVersion = rsi.MessageVersion;
+                    _clientSpecVersion = rsi.MessageVersion;
+                    _deviceManager.SpecVersion = _clientSpecVersion;
 
                     // Start the timer
                     _pingTimer?.Change((int)_maxPingTime, (int)_maxPingTime);
@@ -224,12 +225,12 @@ namespace Buttplug.Server
 
         public string Serialize(ButtplugMessage aMsg)
         {
-            return _parser.Serialize(aMsg, _clientMessageVersion);
+            return _parser.Serialize(aMsg, _clientSpecVersion);
         }
 
         public string Serialize(ButtplugMessage[] aMsgs)
         {
-            return _parser.Serialize(aMsgs, _clientMessageVersion);
+            return _parser.Serialize(aMsgs, _clientSpecVersion);
         }
 
         public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager, T> aCreateMgrFunc)
