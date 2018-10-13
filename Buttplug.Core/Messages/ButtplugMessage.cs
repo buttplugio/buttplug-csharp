@@ -70,7 +70,7 @@ namespace Buttplug.Core.Messages
                 }
             }
 
-            throw new InvalidOperationException($"Type {aMsgType} does not have ButtplugMessageMetadata Attributes");
+            throw new ArgumentException($"Type {aMsgType} does not have ButtplugMessageMetadata Attributes");
         }
 
         /// <summary>
