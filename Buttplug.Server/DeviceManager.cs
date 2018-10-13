@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -31,6 +32,15 @@ namespace Buttplug.Server
         private bool _sentFinished;
         private object _scanLock;
 
+        private uint _specVersion;
+
+        public uint SpecVersion
+        {
+            get => _specVersion;
+
+            set => _specVersion = value;
+        }
+
         public event EventHandler<MessageReceivedEventArgs> DeviceMessageReceived;
 
         public event EventHandler<EventArgs> ScanningFinished;
@@ -54,11 +64,18 @@ namespace Buttplug.Server
         }
 
         private static Dictionary<string, MessageAttributes>
-            GetAllowedMessageTypesAsDictionary([NotNull] IButtplugDevice aDevice)
+            GetAllowedMessageTypesAsDictionary([NotNull] IButtplugDevice aDevice, uint aSchemaVersion)
         {
             Dictionary<string, MessageAttributes> msgs = new Dictionary<string, MessageAttributes>();
             foreach (var msg in aDevice.AllowedMessageTypes)
             {
+                // TODO This is so gross. Passing around types is handy but this is getting really out of hand.
+                var msgVersion = ButtplugMessage.GetSpecVersion(msg);
+                if (msgVersion > aSchemaVersion)
+                {
+                    continue;
+                }
+
                 msgs.Add(msg.Name, aDevice.GetMessageAttrs(msg));
             }
 
@@ -93,7 +110,7 @@ namespace Buttplug.Server
             var msg = new DeviceAdded(
                 deviceIndex,
                 aEvent.Device.Name,
-                GetAllowedMessageTypesAsDictionary(aEvent.Device));
+                GetAllowedMessageTypesAsDictionary(aEvent.Device, _specVersion));
 
             DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
@@ -205,7 +222,7 @@ namespace Buttplug.Server
                         .Select(aDevice => new DeviceMessageInfo(
                             aDevice.Key,
                             aDevice.Value.Name,
-                            GetAllowedMessageTypesAsDictionary(aDevice.Value))).ToList();
+                            GetAllowedMessageTypesAsDictionary(aDevice.Value, _specVersion))).ToList();
                     return new DeviceList(msgDevices.ToArray(), id);
 
                 // If it's a device message, it's most likely not ours.

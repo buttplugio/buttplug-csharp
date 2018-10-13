@@ -209,10 +209,10 @@ namespace Buttplug.Client
                             Convert.ToInt32(Math.Round(((double)si.MaxPingTime) / 2, 0)));
                     }
 
-                    if (si.MessageVersion < ButtplugMessage.CurrentSchemaVersion)
+                    if (si.MessageVersion < ButtplugConsts.CurrentSpecVersion)
                     {
                         throw new ButtplugClientException("Buttplug Server's schema version (" + si.MessageVersion +
-                                                          ") is less than the client's (" + ButtplugMessage.CurrentSchemaVersion +
+                                                          ") is less than the client's (" + ButtplugConsts.CurrentSpecVersion +
                                                           "). A newer server is required.");
                     }
 

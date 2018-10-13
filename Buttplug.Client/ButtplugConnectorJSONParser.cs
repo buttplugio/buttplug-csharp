@@ -28,7 +28,7 @@ namespace Buttplug.Client
         /// <returns>The JSON string representation of the message.</returns>
         public string Serialize(ButtplugMessage aMsg)
         {
-            return _parser.Serialize(aMsg, ButtplugMessage.CurrentSchemaVersion);
+            return _parser.Serialize(aMsg, ButtplugConsts.CurrentSpecVersion);
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Buttplug.Client
         /// <returns>The JSON string representation of the messages.</returns>
         public string Serialize(ButtplugMessage[] aMsgs)
         {
-            return _parser.Serialize(aMsgs, ButtplugMessage.CurrentSchemaVersion);
+            return _parser.Serialize(aMsgs, ButtplugConsts.CurrentSpecVersion);
         }
 
         /// <summary>
