@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Buttplug.Core.Devices;
 using Buttplug.Core.Messages;
+using JetBrains.Annotations;
 
 namespace Buttplug.Core
 {
@@ -34,5 +37,45 @@ namespace Buttplug.Core
                                     aType.IsSubclassOf(typeof(ButtplugMessage)) &&
                                     aType != typeof(ButtplugDeviceMessage));
         }
+
+        /// <summary>
+        /// Ensures that the specified argument is not null.
+        /// </summary>
+        /// <param name="argumentName">Name of the argument.</param>
+        /// <param name="argument">The argument.</param>
+        /// <remarks>https://stackoverflow.com/questions/29184887/best-way-to-check-for-null-parameters-guard-clauses</remarks>
+        [DebuggerStepThrough]
+        [ContractAnnotation("halt <= argument:null")]
+        public static void ArgumentNotNull(object aArgument, [InvokerParameterName] string aArgumentName)
+        {
+            if (aArgument == null)
+            {
+                throw new ArgumentNullException(aArgumentName);
+            }
+        }
+
+        /// <summary>
+        /// Gets embedded license files in assemblies.
+        /// </summary>
+        /// <param name="aResourceName">Resource to retrieve</param>
+        /// <returns>String of all licenses for assembly dependencies.</returns>
+        public static string GetLicense(Assembly aAssembly, string aResourceName)
+        {
+            Stream stream = null;
+            try
+            {
+                stream = aAssembly.GetManifestResourceStream(aResourceName);
+                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
+                {
+                    stream = null;
+                    return reader.ReadToEnd();
+                }
+            }
+            finally
+            {
+                stream?.Dispose();
+            }
+        }
+
     }
 }
