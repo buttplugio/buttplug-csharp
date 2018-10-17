@@ -162,7 +162,7 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
-        public async Task TestInvalidDeviceIdMessage()
+        public void TestInvalidDeviceIdMessage()
         {
             _server.Awaiting(s => s.SendMessageAsync(new SingleMotorVibrateCmd(1, .2, 0))).Should().Throw<ButtplugServerException>();
         }
