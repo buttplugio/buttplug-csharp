@@ -6,24 +6,45 @@
 
 using System;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
-    public class ButtplugClientException : Exception
+    public class ButtplugClientException : ButtplugException
     {
-        public readonly ButtplugMessage ButtplugErrorMessage;
-
-        public readonly string ButtplugMessage;
-
-        public ButtplugClientException(ButtplugMessage aMsg)
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a ButtplugClientException.
+        /// </summary>
+        /// <param name="aMessage">Exception message.</param>
+        /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. See https://buttplug-spec.docs.buttplug.io/status.html#error for more info.</param>
+        /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
+        /// <param name="aInner">Optional inner exception.</param>
+        public ButtplugClientException(string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null)
+            : base(aMessage, aClass, aId, aInner)
         {
-            ButtplugErrorMessage = aMsg;
         }
 
-        public ButtplugClientException(string aMessage)
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a ButtplugClientException.
+        /// </summary>
+        /// <param name="aLogger">Logger to log exception error message through (gives type context for the message).</param>
+        /// <param name="aMessage">Exception message.</param>
+        /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. See https://buttplug-spec.docs.buttplug.io/status.html#error for more info.</param>
+        /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
+        /// <param name="aInner">Optional inner exception.</param>
+        public ButtplugClientException(IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null)
+            : this(aMessage, aClass, aId, aInner)
         {
-            ButtplugMessage = aMessage;
+            aLogger?.Error(aMessage);
+        }
+
+        public ButtplugClientException(IButtplugLog aLogger, Error aMsg)
+            : this(aLogger, aMsg.ErrorMessage, aMsg.ErrorCode, aMsg.Id)
+        {
         }
     }
 }

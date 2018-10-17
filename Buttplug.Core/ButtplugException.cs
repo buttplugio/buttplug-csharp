@@ -20,8 +20,8 @@ namespace Buttplug.Core
         /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. (https://buttplug-spec.docs.buttplug.io/status.html#error)</param>
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugException(string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null) :
-            base(aMessage, aInner)
+        public ButtplugException(string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null) 
+            : base(aMessage, aInner)
         {
             ButtplugErrorMessage = new Error(aMessage, aClass, aId);
         }
@@ -35,8 +35,8 @@ namespace Buttplug.Core
         /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. (https://buttplug-spec.docs.buttplug.io/status.html#error)</param>
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugException([NotNull] IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null) :
-            this(aMessage, aClass, aId, aInner)
+        public ButtplugException([NotNull] IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null) 
+            : this(aMessage, aClass, aId, aInner)
         {
             if (aLogger == null)
             {

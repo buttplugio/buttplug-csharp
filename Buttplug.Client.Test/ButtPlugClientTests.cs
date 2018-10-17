@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using NUnit.Framework;
 
@@ -19,32 +20,33 @@ namespace Buttplug.Client.Test
         [Test]
         public void TestClientDeviceEquality()
         {
+            var logMgr = new ButtplugLogManager();
             var client = new ButtplugClient("Test Device Client", new ButtplugEmbeddedConnector("Test Device Server"));
             Task SendFunc(ButtplugClientDevice device, ButtplugMessage msg, CancellationToken token) => Task.CompletedTask;
-            var testDevice = new ButtplugClientDevice(client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
+            var testDevice = new ButtplugClientDevice(logMgr, client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
                 { "StopDeviceCmd", new MessageAttributes() },
             });
-            var testDevice2 = new ButtplugClientDevice(client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
+            var testDevice2 = new ButtplugClientDevice(logMgr, client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
                 { "StopDeviceCmd", new MessageAttributes() },
             });
-            var testDevice3 = new ButtplugClientDevice(client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
+            var testDevice3 = new ButtplugClientDevice(logMgr, client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
             });
-            var testDevice4 = new ButtplugClientDevice(client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
+            var testDevice4 = new ButtplugClientDevice(logMgr, client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
                 { "DifferentName", new MessageAttributes() },
             });
-            var testDevice5 = new ButtplugClientDevice(client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
+            var testDevice5 = new ButtplugClientDevice(logMgr, client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
@@ -53,7 +55,7 @@ namespace Buttplug.Client.Test
             });
 
             var newClient = new ButtplugClient("Other Test Device Client", new ButtplugEmbeddedConnector("Other Test Device Server"));
-            var otherTestDevice = new ButtplugClientDevice(newClient, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
+            var otherTestDevice = new ButtplugClientDevice(logMgr, newClient, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },

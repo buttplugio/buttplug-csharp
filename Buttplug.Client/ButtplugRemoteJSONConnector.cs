@@ -6,8 +6,9 @@
 
 using System;
 using System.Threading.Tasks;
-using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
@@ -15,6 +16,21 @@ namespace Buttplug.Client
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
+        public event EventHandler<ButtplugClientException> InvalidMessageReceived;
+        public IButtplugLogManager LogManager
+        {
+            set
+            {
+                _logManager = value;
+                _logger = _logManager.GetLogger(GetType());
+            }
+        }
+
+        [CanBeNull]
+        private IButtplugLogManager _logManager;
+
+        [CanBeNull]
+        private IButtplugLog _logger;
         private readonly ButtplugConnectorJSONParser _jsonSerializer = new ButtplugConnectorJSONParser();
         private readonly ButtplugConnectorMessageSorter _msgSorter = new ButtplugConnectorMessageSorter();
 
@@ -36,9 +52,13 @@ namespace Buttplug.Client
                     continue;
                 }
 
-                if (!_msgSorter.CheckMessage(msg))
+                try
                 {
-                    // TODO throw an error here?
+                    _msgSorter.CheckMessage(msg, _logger);
+                }
+                catch (ButtplugClientException e)
+                {
+                    InvalidMessageReceived?.Invoke(this, e);
                 }
             }
         }

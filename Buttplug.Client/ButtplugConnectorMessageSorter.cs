@@ -8,7 +8,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
@@ -33,12 +33,6 @@ namespace Buttplug.Client
         private readonly ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs =
             new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
 
-        /// <summary>
-        /// Used for dispatching events to the owning application context.
-        /// </summary>
-        [NotNull]
-        private readonly SynchronizationContext _owningDispatcher = SynchronizationContext.Current ?? new SynchronizationContext();
-
         public Task<ButtplugMessage> PrepareMessage(ButtplugMessage aMsg)
         {
             // The client always increments the IDs on outgoing messages
@@ -50,24 +44,22 @@ namespace Buttplug.Client
             return promise.Task;
         }
 
-        public bool CheckMessage(ButtplugMessage aMsg)
+        public void CheckMessage(ButtplugMessage aMsg, IButtplugLog aLog = null)
         {
             // We'll never match a system message, those are server -> client only.
             if (aMsg.Id == 0)
             {
-                return false;
+                throw new ButtplugClientException(aLog, "Cannot sort message with System ID", Error.ErrorClass.ERROR_MSG, aMsg.Id);
             }
 
             // If we haven't gotten a system message and we're not currently waiting for the message
             // id, return.
             if (!_waitingMsgs.TryRemove(aMsg.Id, out var queued))
             {
-                // TODO In what situation would we receive something we're not listening for? Should this error?
-                return false;
+                throw new ButtplugClientException(aLog, "Message with non-matching ID received.", Error.ErrorClass.ERROR_MSG, aMsg.Id);
             }
 
             queued.TrySetResult(aMsg);
-            return true;
         }
     }
 }

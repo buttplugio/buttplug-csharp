@@ -8,8 +8,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Server;
+using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
@@ -17,11 +19,28 @@ namespace Buttplug.Client
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
+        public event EventHandler<ButtplugClientException> InvalidMessageReceived;
+
         public event EventHandler Disconnected;
 
         public bool Connected { get; private set; }
 
         public readonly ButtplugServer Server;
+
+        public IButtplugLogManager LogManager
+        {
+            set
+            {
+                _logManager = value;
+                _logger = _logManager.GetLogger(GetType());
+            }
+        }
+
+        [CanBeNull]
+        private IButtplugLogManager _logManager;
+
+        [CanBeNull]
+        private IButtplugLog _logger;
 
         public ButtplugEmbeddedConnector(string aServerName, uint aMaxPingTime = 0, DeviceManager aDeviceManager = null)
         {

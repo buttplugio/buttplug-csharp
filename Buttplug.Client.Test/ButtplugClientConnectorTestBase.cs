@@ -69,7 +69,7 @@ namespace Buttplug.Client.Test
         public async Task TestDeviceScanning()
         {
             Task SendFunc(ButtplugClientDevice device, ButtplugMessage msg, CancellationToken token) => Task.CompletedTask;
-            var testDevice = new ButtplugClientDevice(_client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
+            var testDevice = new ButtplugClientDevice(_logMgr, _client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },

@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Devices;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
@@ -46,6 +47,10 @@ namespace Buttplug.Client
 
         private readonly Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> _sendClosure;
 
+        [NotNull]
+        private readonly IButtplugLog _bpLogger;
+        private readonly IButtplugLogManager _bpLogManager;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
         /// information received via a DeviceList, DeviceAdded, or DeviceRemoved message from the server.
@@ -53,9 +58,13 @@ namespace Buttplug.Client
         /// <param name="aDevInfo">
         /// A Buttplug protocol message implementing the IButtplugDeviceInfoMessage interface.
         /// </param>
-        public ButtplugClientDevice(ButtplugClient aOwningClient, Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure, IButtplugDeviceInfoMessage aDevInfo)
-           : this(aOwningClient, aSendClosure, aDevInfo.DeviceIndex, aDevInfo.DeviceName, aDevInfo.DeviceMessages)
+        public ButtplugClientDevice(IButtplugLogManager aLogManager,
+            ButtplugClient aOwningClient,
+            Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure,
+            IButtplugDeviceInfoMessage aDevInfo)
+           : this(aLogManager, aOwningClient, aSendClosure, aDevInfo.DeviceIndex, aDevInfo.DeviceName, aDevInfo.DeviceMessages)
         {
+            ButtplugUtils.ArgumentNotNull(aDevInfo, nameof(aDevInfo));
         }
 
         /// <summary>
@@ -65,8 +74,18 @@ namespace Buttplug.Client
         /// <param name="aIndex">The device index.</param>
         /// <param name="aName">The device name.</param>
         /// <param name="aMessages">The device allowed message list, with corresponding attributes.</param>
-        public ButtplugClientDevice(ButtplugClient aOwningClient, Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure, uint aIndex, string aName, Dictionary<string, MessageAttributes> aMessages)
+        public ButtplugClientDevice(IButtplugLogManager aLogManager,
+            ButtplugClient aOwningClient,
+            Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure,
+            uint aIndex,
+            string aName,
+            Dictionary<string, MessageAttributes> aMessages)
         {
+            ButtplugUtils.ArgumentNotNull(aLogManager, nameof(aLogManager));
+            ButtplugUtils.ArgumentNotNull(aOwningClient, nameof(aOwningClient));
+            ButtplugUtils.ArgumentNotNull(aSendClosure, nameof(aSendClosure));
+            _bpLogManager = aLogManager;
+            _bpLogger = _bpLogManager.GetLogger(GetType());
             _owningClient = aOwningClient;
             _sendClosure = aSendClosure;
             Index = aIndex;
@@ -78,12 +97,12 @@ namespace Buttplug.Client
         {
             if (!_owningClient.Connected)
             {
-                throw new ButtplugClientException("Client that owns device is not connected");
+                throw new ButtplugClientException(_bpLogger, "Client that owns device is not connected", Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId);
             }
 
             if (!_owningClient.Devices.Contains(this))
             {
-                throw new ButtplugClientException("Device no longer connected or valid");
+                throw new ButtplugClientException(_bpLogger, "Device no longer connected or valid", Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId);
             }
 
             await _sendClosure(this, aMsg, aToken);
