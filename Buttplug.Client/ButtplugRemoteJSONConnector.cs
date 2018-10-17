@@ -27,10 +27,10 @@ namespace Buttplug.Client
         }
 
         [CanBeNull]
-        private IButtplugLogManager _logManager;
+        protected IButtplugLogManager _logManager;
 
         [CanBeNull]
-        private IButtplugLog _logger;
+        protected IButtplugLog _logger;
         private readonly ButtplugConnectorJSONParser _jsonSerializer = new ButtplugConnectorJSONParser();
         private readonly ButtplugConnectorMessageSorter _msgSorter = new ButtplugConnectorMessageSorter();
 

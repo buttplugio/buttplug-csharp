@@ -58,7 +58,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         {
             if (_ws != null)
             {
-                throw new ButtplugClientConnectorException("Already connected!");
+                throw new ButtplugClientConnectorException(_logger, "Websocket connector is already connected.", Error.ErrorClass.ERROR_INIT, ButtplugConsts.SystemMsgId);
             }
 
             const int bufferSize = 1024 * 8; // 8KiB
@@ -82,8 +82,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             }
             catch (Exception e)
             {
-                // Rethrow for now? Possibly wrap?
-                throw new ButtplugClientConnectorException("Websocket Connection Exception! See Inner Exception", e);
+                throw new ButtplugClientConnectorException(_logger, "Websocket Connection Exception! See Inner Exception", Error.ErrorClass.ERROR_INIT, ButtplugConsts.SystemMsgId, e);
             }
 
             _readTask = new Task(async () => { await RunClientLoop(aToken); },
@@ -153,10 +152,10 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                         {
                             IList<string> msgs = new List<string>();
                             _outgoingMessages.TryReceiveAll(out msgs);
-                            string outmsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
+                            var outMsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
                             if (_ws != null && _ws.IsConnected)
                             {
-                                await _ws.WriteStringAsync(outmsgs, aToken);
+                                await _ws.WriteStringAsync(outMsgs, aToken);
                             }
 
                             writeTask = _outgoingMessages.OutputAvailableAsync(aToken);
@@ -164,8 +163,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                         catch (WebSocketException e)
                         {
                             // Probably means we're replying to a message we received just before shutdown.
-                            //_logger.Error(e.Message, true);
-                            throw new ButtplugClientConnectorException("Websocket Client Read Error!", e);
+                            throw new ButtplugClientConnectorException(_logger, "Websocket Client Read Error", Error.ErrorClass.ERROR_INIT, ButtplugConsts.SystemMsgId, e);
                         }
                     }
                 }

@@ -14,9 +14,9 @@ namespace Buttplug.Client
 {
     public class ButtplugClientException : ButtplugException
     {
-        /// <inheritdoc />
+        /// <inheritdoc cref="ButtplugException"/>
         /// <summary>
-        /// Creates a ButtplugClientException.
+        /// Initializes a new instance of the <see cref="ButtplugClientException"/> class.
         /// </summary>
         /// <param name="aMessage">Exception message.</param>
         /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. See https://buttplug-spec.docs.buttplug.io/status.html#error for more info.</param>
@@ -27,9 +27,9 @@ namespace Buttplug.Client
         {
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ButtplugException"/>
         /// <summary>
-        /// Creates a ButtplugClientException.
+        /// Initializes a new instance of the <see cref="ButtplugClientException"/> class.
         /// </summary>
         /// <param name="aLogger">Logger to log exception error message through (gives type context for the message).</param>
         /// <param name="aMessage">Exception message.</param>
