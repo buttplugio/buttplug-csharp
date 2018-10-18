@@ -4,14 +4,18 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Test;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Client.Test
@@ -63,6 +67,17 @@ namespace Buttplug.Client.Test
             Assert.True(_client.Connected);
             await _client.DisconnectAsync();
             Assert.False(_client.Connected);
+        }
+
+        [Test]
+        public async Task TestExceptionOnDoubleConnect()
+        {
+            _client.Connected.Should().BeFalse();
+            await _client.ConnectAsync();
+            _client.Connected.Should().BeTrue();
+            _client.Awaiting(async aClient => await aClient.ConnectAsync())
+                .Should().Throw<ButtplugClientException>()
+                .And.ButtplugErrorMessage.ErrorCode.Should().Be(Error.ErrorClass.ERROR_INIT);
         }
 
         [Test]

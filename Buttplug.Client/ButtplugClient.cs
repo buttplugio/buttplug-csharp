@@ -155,7 +155,7 @@ namespace Buttplug.Client
         {
             if (Connected)
             {
-                return;
+                throw new ButtplugClientException(_bpLogger, "Client already connected to a server.", Error.ErrorClass.ERROR_INIT, ButtplugConsts.SystemMsgId);
             }
 
             _connector.MessageReceived += MessageReceivedHandler;
