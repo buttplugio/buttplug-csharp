@@ -62,11 +62,11 @@ namespace Buttplug.Client.Test
         [Test]
         public async Task TestBasicConnectDisconnect()
         {
-            Assert.False(_client.Connected);
+            _client.Connected.Should().BeFalse();
             await _client.ConnectAsync();
-            Assert.True(_client.Connected);
+            _client.Connected.Should().BeTrue();
             await _client.DisconnectAsync();
-            Assert.False(_client.Connected);
+            _client.Connected.Should().BeFalse();
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace Buttplug.Client.Test
 
             _client.DeviceAdded += (aSender, aArg) =>
             {
-                Assert.AreEqual(testDevice, aArg.Device);
+                testDevice.Should().BeEquivalentTo(aArg.Device);
                 SetEvent();
             };
             await _client.StartScanningAsync();
@@ -118,12 +118,13 @@ namespace Buttplug.Client.Test
             var device = _client.Devices[0];
 
             // Test device only takes vibration commands
-            Assert.ThrowsAsync<ButtplugClientException>(async () => await device.SendMessageAsync(new FleshlightLaunchFW12Cmd(0, 0, 0)));
+            device.Awaiting(async aDevice => await aDevice.SendMessageAsync(new FleshlightLaunchFW12Cmd(0, 0, 0))).Should().Throw<ButtplugClientException>();
 
             // Shouldn't throw.
             await _client.Devices[0].SendMessageAsync(new SingleMotorVibrateCmd(0, 0.5));
-            Assert.AreEqual(_subtypeMgr.Device.V1, 0.5);
-            Assert.AreEqual(_subtypeMgr.Device.V2, 0.5);
+
+            _subtypeMgr.Device.V1.Should().Be(0.5);
+            _subtypeMgr.Device.V2.Should().Be(0.5);
         }
 
         [Test]
@@ -136,12 +137,12 @@ namespace Buttplug.Client.Test
             var testDevice = _client.Devices[0];
             _client.DeviceRemoved += (aSender, aArg) =>
             {
-                Assert.AreEqual(testDevice, aArg.Device);
+                testDevice.Should().BeEquivalentTo(aArg.Device);
                 SetEvent();
             };
             _subtypeMgr.Device.Disconnect();
             await WaitForEvent();
-            Assert.AreEqual(_client.Devices.Length, 0);
+            _client.Devices.Length.Should().Be(0);
         }
 
         [Test]

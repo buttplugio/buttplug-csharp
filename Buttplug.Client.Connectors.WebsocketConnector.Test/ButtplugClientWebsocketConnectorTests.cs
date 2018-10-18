@@ -1,12 +1,21 @@
-﻿using System;
+﻿// <copyright file="ButtplugClientConnectorTestBase.cs" company="Nonpolynomial Labs LLC">
+// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
+// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Client.Test;
-using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Test;
 using Buttplug.Server.Connectors.WebsocketServer;
 using Buttplug.Server.Test;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Client.Connectors.WebsocketConnector.Test
@@ -39,17 +48,19 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
         [Test]
         public void TestWrongURI()
         {
-            var wrongconnector = new ButtplugWebsocketConnector(new Uri("w://invalid:12345/buttplug"));
-            var wrongclient = new ButtplugClient("Websocket Client", wrongconnector);
-            Assert.ThrowsAsync<ButtplugClientConnectorException>(async () => await wrongclient.ConnectAsync());
+            var wrongConnector = new ButtplugWebsocketConnector(new Uri("w://invalid:12345/buttplug"));
+            var wrongClient = new ButtplugClient("Websocket Client", wrongConnector);
+            wrongClient.Awaiting(async aClient => await aClient.ConnectAsync()).Should()
+                .Throw<ButtplugClientConnectorException>();
         }
 
         [Test]
         public void TestWrongAddress()
         {
-            var wrongconnector = new ButtplugWebsocketConnector(new Uri("ws://invalid:12345/buttplug"));
-            var wrongclient = new ButtplugClient("Websocket Client", wrongconnector);
-            Assert.ThrowsAsync<ButtplugClientConnectorException>(async () => await wrongclient.ConnectAsync());
+            var wrongConnector = new ButtplugWebsocketConnector(new Uri("ws://invalid:12345/buttplug"));
+            var wrongClient = new ButtplugClient("Websocket Client", wrongConnector);
+            wrongClient.Awaiting(async aClient => await aClient.ConnectAsync()).Should()
+                .Throw<ButtplugClientConnectorException>();
         }
 
         [Test]

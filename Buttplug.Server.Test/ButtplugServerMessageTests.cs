@@ -32,11 +32,11 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
-        public async Task TestRepeatedHandshake()
+        public void TestRepeatedHandshake()
         {
             // Sending RequestServerInfo twice should throw, otherwise weird things like Spec version changes could happen.
-            Func<Task> act = async () => await _server.SendMessageAsync(new RequestServerInfo("TestClient"));
-            act.Should().Throw<ButtplugServerException>();
+            _server.Awaiting(async aServer => await aServer.SendMessageAsync(new RequestServerInfo("TestClient")))
+                .Should().Throw<ButtplugServerException>();
         }
 
         [Test]
@@ -66,10 +66,9 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
-        public async Task TestSendUnhandledMessage()
+        public void TestSendUnhandledMessage()
         {
-            Func<Task> r = async () => await _server.SendMessageAsync(new FakeMessage(1));
-            r.Should().Throw<ButtplugServerException>();
+            _server.Awaiting(async aServer => await aServer.SendMessageAsync(new FakeMessage(1))).Should().Throw<ButtplugServerException>();
         }
 
         [Test]
@@ -99,8 +98,8 @@ namespace Buttplug.Server.Test
         public async Task TestDoNotRequestServerInfoFirst()
         {
             var s = new ButtplugServer("TestServer", 0);
-            Func<Task> act = async () => await s.SendMessageAsync(new Core.Messages.Test("Test"));
-            act.Should().Throw<ButtplugServerException>();
+
+            s.Awaiting(async aServer => await s.SendMessageAsync(new Core.Messages.Test("Test"))).Should().Throw<ButtplugServerException>();
 
             var msg = await s.SendMessageAsync(new RequestServerInfo("TestClient"));
             msg.Should().BeOfType<ServerInfo>();
