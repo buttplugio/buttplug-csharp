@@ -9,7 +9,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;

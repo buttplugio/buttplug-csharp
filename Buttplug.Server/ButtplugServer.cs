@@ -206,7 +206,7 @@ namespace Buttplug.Server
                     // Start the timer
                     _pingTimer?.Change((int)_maxPingTime, (int)_maxPingTime);
                     ClientConnected?.Invoke(this, new MessageReceivedEventArgs(rsi));
-                    return new ServerInfo(_serverName, 1, _maxPingTime, id);
+                    return new ServerInfo(_serverName, ButtplugConsts.CurrentSpecVersion, _maxPingTime, id);
 
                 case Test m:
                     return new Test(m.TestString, id);

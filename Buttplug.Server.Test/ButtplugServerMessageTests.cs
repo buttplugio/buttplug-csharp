@@ -7,8 +7,6 @@
 // Test file, disable ConfigureAwait checking.
 // ReSharper disable ConsiderUsingConfigureAwait
 
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;

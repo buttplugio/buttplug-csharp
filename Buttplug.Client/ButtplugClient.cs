@@ -211,9 +211,11 @@ namespace Buttplug.Client
                     break;
 
                 case Error e:
+                    await DisconnectAsync();
                     throw new ButtplugClientException(_bpLogger, e);
 
                 default:
+                    await DisconnectAsync();
                     throw new ButtplugClientException(_bpLogger, $"Unrecognized message {res.Name} during handshake", Error.ErrorClass.ERROR_INIT, res.Id);
             }
         }
