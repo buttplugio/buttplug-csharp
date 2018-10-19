@@ -34,11 +34,6 @@ namespace Buttplug.Core.Messages
             Id = aId;
         }
 
-        // TODO All queried ButtplugMessageMetadata attribute lookups should be cached.
-        //
-        // Message creation is extremely hot path, and these are queried a lot. All of
-        // these loops for lookups may get slow.
-
         /// <summary>
         /// Gets a certain ButtplugMessageMetadata attributes for a ButtplugMessage
         /// </summary>
@@ -50,15 +45,18 @@ namespace Buttplug.Core.Messages
         /// <exception cref="InvalidOperationException">Thrown if aMsgType does not have ButtplugMessageMetadata Attributes.</exception>
         private static T GetMessageAttribute<T>(Type aMsgType, Func<ButtplugMessageMetadata, T> aFunc)
         {
-            if (aMsgType == null || aFunc == null)
-            {
-                throw new ArgumentNullException("Argument must not be null");
-            }
+            ButtplugUtils.ArgumentNotNull(aMsgType, nameof(aMsgType));
+            ButtplugUtils.ArgumentNotNull(aFunc, nameof(aFunc));
             if (!aMsgType.IsSubclassOf(typeof(ButtplugMessage)))
             {
                 throw new ArgumentException($"Argument {aMsgType.Name} must be a subclass of ButtplugMessage");
             }
- 
+
+
+            // TODO All queried ButtplugMessageMetadata attribute lookups should be cached.
+            //
+            // Message creation is extremely hot path, and these are queried a lot. All of
+            // these loops for lookups may get slow.
             var attrs = Attribute.GetCustomAttributes(aMsgType);
 
             // Displaying output.  

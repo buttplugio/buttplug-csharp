@@ -21,7 +21,7 @@ namespace Buttplug.Client
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
         public ButtplugClientConnectorException(string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null)
-            : base(aMessage, aClass, aId, aInner)
+            : this(null, aMessage, aClass, aId, aInner)
         {
         }
 
@@ -35,7 +35,7 @@ namespace Buttplug.Client
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
         public ButtplugClientConnectorException(IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null)
-            : base(aMessage, aClass, aId, aInner)
+            : base(aLogger, aMessage, aClass, aId, aInner)
         {
         }
     }

@@ -53,7 +53,7 @@ namespace Buttplug.Client
             }
 
             // If we haven't gotten a system message and we're not currently waiting for the message
-            // id, return.
+            // id, throw.
             if (!_waitingMsgs.TryRemove(aMsg.Id, out var queued))
             {
                 throw new ButtplugClientException(aLog, "Message with non-matching ID received.", Error.ErrorClass.ERROR_MSG, aMsg.Id);
