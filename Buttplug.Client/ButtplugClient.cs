@@ -364,7 +364,7 @@ namespace Buttplug.Client
 
                     if (e.ErrorCode == Error.ErrorClass.ERROR_PING)
                     {
-                        PingTimeout?.Invoke(this, new EventArgs());
+                        PingTimeout?.Invoke(this, EventArgs.Empty);
                         await DisconnectAsync();
                     }
 
@@ -390,17 +390,11 @@ namespace Buttplug.Client
         {
             try
             {
-                var msg = await SendMessageAsync(new Ping());
-                if (msg is Error e)
-                {
-                    ErrorReceived?.Invoke(_bpLogger, new ButtplugClientException($"Error sending ping message: {e.ErrorMessage}", Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId));
-                }
-
-                // If this fails, we'll get a non-bound error message in MessageReceivedHandler, which will take care of shutdown.
+                await SendMessageExpectOk(new Ping());
             }
             catch (Exception e)
             {
-                ErrorReceived?.Invoke(_bpLogger, new ButtplugClientException($"Exception thrown during ping update", Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId, e));
+                ErrorReceived?.Invoke(_bpLogger, new ButtplugClientException(_bpLogger, $"Exception thrown during ping update", Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId, e));
 
                 // If SendMessageAsync throws, we're probably already disconnected, but just make sure.
                 await DisconnectAsync();

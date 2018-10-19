@@ -22,8 +22,8 @@ namespace Buttplug.Client.Test
         public ButtplugClientTestJSONConnector()
         {
             _messageResponse = new Dictionary<Type, ButtplugMessage>();
-            _messageResponse.Add(typeof(RequestServerInfo), new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0));
-            _messageResponse.Add(typeof(RequestDeviceList), new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId));
+            SetMessageResponse<RequestServerInfo>(new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0));
+            SetMessageResponse<RequestDeviceList>(new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId));
         }
 
         public void SetMessageResponse<T>(ButtplugMessage aMsg)
