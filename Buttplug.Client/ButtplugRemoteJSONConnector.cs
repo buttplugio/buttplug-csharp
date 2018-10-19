@@ -5,18 +5,21 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
-    public abstract class ButtplugRemoteJSONConnector
+    public class ButtplugRemoteJSONConnector
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
         public event EventHandler<ButtplugClientException> InvalidMessageReceived;
+
         public IButtplugLogManager LogManager
         {
             set
@@ -43,7 +46,17 @@ namespace Buttplug.Client
 
         protected void ReceiveMessages(string aJSONMsg)
         {
-            var msgs = _jsonSerializer.Deserialize(aJSONMsg);
+            IEnumerable<ButtplugMessage> msgs;
+            try
+            {
+                msgs = _jsonSerializer.Deserialize(aJSONMsg);
+            }
+            catch (ButtplugParserException e)
+            {
+                InvalidMessageReceived?.Invoke(this, new ButtplugClientException(_logger, "Parser threw an error", Error.ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId, e));
+                return;
+            }
+
             foreach (var msg in msgs)
             {
                 if (msg.Id == 0)

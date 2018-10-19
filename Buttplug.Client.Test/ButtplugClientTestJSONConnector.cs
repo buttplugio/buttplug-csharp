@@ -9,15 +9,9 @@ using NUnit.Framework;
 
 namespace Buttplug.Client.Test
 {
-    public class ButtplugClientTestConnector : IButtplugClientConnector
+    public class ButtplugClientTestJSONConnector : ButtplugRemoteJSONConnector, IButtplugClientConnector
     {
-        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-
-        public event EventHandler<ButtplugClientException> InvalidMessageReceived;
-
         public event EventHandler Disconnected;
-
-        public IButtplugLogManager LogManager { private get; set; }
 
         public bool Connected => _connected;
 
@@ -25,7 +19,7 @@ namespace Buttplug.Client.Test
 
         private Dictionary<Type, ButtplugMessage> _messageResponse;
 
-        public ButtplugClientTestConnector()
+        public ButtplugClientTestJSONConnector()
         {
             _messageResponse = new Dictionary<Type, ButtplugMessage>();
             _messageResponse.Add(typeof(RequestServerInfo), new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0));
@@ -39,9 +33,9 @@ namespace Buttplug.Client.Test
             _messageResponse.Add(typeof(T), aMsg);
         }
 
-        public void SendServerMessage(ButtplugMessage aMsg)
+        public void SendServerMessage(string aMsgString)
         {
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(aMsg));
+            ReceiveMessages(aMsgString);
         }
 
         public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))

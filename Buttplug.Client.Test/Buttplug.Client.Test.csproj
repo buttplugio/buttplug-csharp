@@ -69,8 +69,10 @@
     <Compile Include="ArgsTests.cs" />
     <Compile Include="ButtplugClientEmbeddedConnectorTests.cs" />
     <Compile Include="ButtplugClientConnectorTestBase.cs" />
+    <Compile Include="ButtplugClientTestClientServerErrors.cs" />
     <Compile Include="ButtplugClientTests.cs" />
     <Compile Include="ButtplugClientTestConnector.cs" />
+    <Compile Include="ButtplugClientTestJSONConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

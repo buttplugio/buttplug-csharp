@@ -182,18 +182,17 @@ namespace Buttplug.Client
 
                     // Get full device list and populate internal list
                     var resp = await SendMessageAsync(new RequestDeviceList());
-                    if ((resp as DeviceList)?.Devices == null)
+                    if (!(resp is DeviceList))
                     {
-                        if (resp is Error)
+                        await DisconnectAsync();
+                        if (resp is Error errResp)
                         {
-                            await DisconnectAsync();
-                            throw new ButtplugClientException(_bpLogger,
-                                "Cannot retrieve device list from server.",
-                                Error.ErrorClass.ERROR_INIT,
-                                res.Id);
+                            throw new ButtplugClientException(_bpLogger, errResp);
                         }
 
-                        return;
+                        throw new ButtplugClientException(_bpLogger,
+                            "Received unknown response to DeviceList handshake query", Error.ErrorClass.ERROR_INIT,
+                            resp.Id);
                     }
 
                     foreach (var d in (resp as DeviceList).Devices)
