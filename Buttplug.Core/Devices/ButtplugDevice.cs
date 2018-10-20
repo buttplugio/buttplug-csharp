@@ -89,14 +89,12 @@ namespace Buttplug.Core.Devices
         {
             if (_isDisconnected)
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE,
-                    $"{Name} has disconnected and can no longer process messages.");
+                throw new ButtplugDeviceException(BpLogger, $"{Name} has disconnected and can no longer process messages.", aMsg.Id);
             }
 
             if (!MsgFuncs.ContainsKey(aMsg.GetType()))
             {
-                return BpLogger.LogErrorMsg(aMsg.Id, ErrorClass.ERROR_DEVICE,
-                    $"{Name} cannot handle message of type {aMsg.GetType().Name}");
+                throw new ButtplugDeviceException(BpLogger, $"{Name} cannot handle message of type {aMsg.GetType().Name}", aMsg.Id);
             }
 
             // We just checked whether the key exists above, so we're ok.
@@ -148,6 +146,12 @@ namespace Buttplug.Core.Devices
             MessageAttributes aAttrs = null) where T : ButtplugDeviceMessage
         {
             MsgFuncs.Add(typeof(T), (aFunction, aAttrs ?? new MessageAttributes()));
+        }
+
+        protected T CheckMessageHandler<T>(ButtplugDeviceMessage aMsg)
+            where T : ButtplugDeviceMessage
+        {
+            return (aMsg is T cmdMsg) ? cmdMsg : throw new ButtplugDeviceException(BpLogger, $"Wrong handler for message type {aMsg.GetType()}", aMsg.Id);
         }
     }
 }

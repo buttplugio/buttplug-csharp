@@ -126,10 +126,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is SingleMotorVibrateCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
             return await HandleVibrateCmd(
                 VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 6), aToken);
@@ -137,17 +134,13 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is VibrateCmd cmdMsg))
-            {
-                return Task.FromResult(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler") as ButtplugMessage);
-            }
+            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
 
             if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > 6)
             {
-                return Task.FromResult(new Error(
+                throw new ButtplugDeviceException(BpLogger,
                     "VibrateCmd requires 1-6 commands for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
-                    cmdMsg.Id) as ButtplugMessage);
+                    cmdMsg.Id);
             }
 
             var newVibratorSpeeds = (byte[])_vibratorSpeeds.Clone();
@@ -156,10 +149,9 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 if (v.Index > 5)
                 {
-                    return Task.FromResult(new Error(
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
-                        cmdMsg.Id) as ButtplugMessage);
+                        cmdMsg.Id);
                 }
 
                 newVibratorSpeeds[v.Index] = (byte)(v.Speed * MaxSpeed);

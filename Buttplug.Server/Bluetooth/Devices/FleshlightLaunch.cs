@@ -110,7 +110,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             // Setup message function array
-            AddMessageHandler<FleshlightLaunchFW12Cmd>(HandleFleshlightLaunchRawCmd);
+            AddMessageHandler<FleshlightLaunchFW12Cmd>(HandleFleshlightLaunchFW12Cmd);
             AddMessageHandler<LinearCmd>(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 });
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
@@ -144,17 +144,12 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = aMsg as LinearCmd;
-            if (cmdMsg is null)
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<LinearCmd>(aMsg);
 
             if (cmdMsg.Vectors.Count != 1)
             {
-                return new Error(
+                throw new ButtplugDeviceException(BpLogger,
                     "LinearCmd requires 1 vector for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id);
             }
 
@@ -162,13 +157,12 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 if (v.Index != 0)
                 {
-                    return new Error(
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Index {v.Index} is out of bounds for LinearCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
                         cmdMsg.Id);
                 }
 
-                return await HandleFleshlightLaunchRawCmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
+                return await HandleFleshlightLaunchFW12Cmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
                     Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs(_lastPosition - v.Position), v.Duration) * 99),
                     Convert.ToUInt32(v.Position * 99), cmdMsg.Id), aToken);
             }
@@ -176,12 +170,9 @@ namespace Buttplug.Server.Bluetooth.Devices
             return new Ok(aMsg.Id);
         }
 
-        private async Task<ButtplugMessage> HandleFleshlightLaunchRawCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+        private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is FleshlightLaunchFW12Cmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<FleshlightLaunchFW12Cmd>(aMsg);
 
             _lastPosition = Convert.ToDouble(cmdMsg.Position) / 99;
 

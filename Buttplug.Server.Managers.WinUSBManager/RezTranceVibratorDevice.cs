@@ -42,26 +42,21 @@ namespace Buttplug.Server.Managers.WinUSBManager
 
         private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is VibrateCmd cmdMsg))
-            {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
-            }
+            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
 
             if (cmdMsg.Speeds.Count == 0 || cmdMsg.Speeds.Count > _vibratorCount)
             {
-                return Task.FromResult<ButtplugMessage>(new Error("VibrateCmd requires 1 speed for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
-                    cmdMsg.Id));
+                throw new ButtplugDeviceException(BpLogger, "VibrateCmd requires 1 speed for this device.",
+                    cmdMsg.Id);
             }
 
             foreach (var v in cmdMsg.Speeds)
             {
                 if (v.Index >= _vibratorCount)
                 {
-                    return Task.FromResult<ButtplugMessage>(new Error(
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
-                        cmdMsg.Id));
+                        cmdMsg.Id);
                 }
 
                 var speed = (byte)Math.Floor(v.Speed * 255);
@@ -79,11 +74,7 @@ namespace Buttplug.Server.Managers.WinUSBManager
 
         private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = aMsg as SingleMotorVibrateCmd;
-            if (cmdMsg is null)
-            {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
-            }
+            var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
             var speeds = new List<VibrateCmd.VibrateSubcommand>();
             for (uint i = 0; i < _vibratorCount; i++)

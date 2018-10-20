@@ -14,6 +14,7 @@ using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
+using FluentAssertions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -214,7 +215,7 @@ namespace Buttplug.Server.Test.Util
         public async Task TestInvalidDeviceMessage(ButtplugDeviceMessage aOutgoingMessage)
         {
             Clear();
-            Assert.True(await bleDevice.ParseMessageAsync(aOutgoingMessage) is Error);
+            bleDevice.Awaiting(async aDev => await aDev.ParseMessageAsync(aOutgoingMessage)).Should().Throw<ButtplugDeviceException>();
         }
 
         public async Task TestInvalidVibrateCmd(uint aNumVibes)

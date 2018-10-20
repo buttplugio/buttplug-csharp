@@ -537,16 +537,12 @@ namespace Buttplug.Server.Managers.SerialPortManager
 
         private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is LinearCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<LinearCmd>(aMsg);
 
             if (cmdMsg.Vectors.Count != 1)
             {
-                return new Error(
+                throw new ButtplugDeviceException(BpLogger,
                     "LinearCmd requires 1 vector for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id);
             }
 
@@ -554,9 +550,8 @@ namespace Buttplug.Server.Managers.SerialPortManager
             {
                 if (v.Index != 0)
                 {
-                    return new Error(
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Index {v.Index} is out of bounds for LinearCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
                         cmdMsg.Id);
                 }
 
@@ -570,10 +565,7 @@ namespace Buttplug.Server.Managers.SerialPortManager
 
         private Task<ButtplugMessage> HandleFleshlightLaunchCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is FleshlightLaunchFW12Cmd cmdMsg))
-            {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
-            }
+            var cmdMsg = CheckMessageHandler<FleshlightLaunchFW12Cmd>(aMsg);
 
             _speed = (Convert.ToDouble(cmdMsg.Speed) / 99) * 100;
             _position = (Convert.ToDouble(cmdMsg.Position) / 99) * 100;

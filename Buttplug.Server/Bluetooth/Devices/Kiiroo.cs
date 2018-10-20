@@ -205,10 +205,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleKiirooRawCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is KiirooCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<KiirooCmd>(aMsg);
 
             return await Interface.WriteValueAsync(cmdMsg.Id, (uint)KiirooBluetoothInfo.Chrs.Tx,
                 Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"), false, aToken);
@@ -216,26 +213,19 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is SingleMotorVibrateCmd cmdMsg) || Interface.Name != "PEARL")
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
             return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 1), aToken);
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is VibrateCmd cmdMsg) || Interface.Name != "PEARL")
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
 
             if (cmdMsg.Speeds.Count != 1)
             {
-                return new Error(
+                throw new ButtplugDeviceException(BpLogger,
                     "VibrateCmd requires 1 vector for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id);
             }
 
@@ -243,9 +233,8 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 if (v.Index != 0)
                 {
-                    return new Error(
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
                         cmdMsg.Id);
                 }
 
@@ -262,11 +251,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is FleshlightLaunchFW12Cmd cmdMsg) || Interface.Name != "ONYX")
-            {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(
-                    aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
-            }
+            var cmdMsg = CheckMessageHandler<FleshlightLaunchFW12Cmd>(aMsg);
 
             var pos = Convert.ToDouble(cmdMsg.Position) / 99.0;
             var dur = Convert.ToUInt32(FleshlightHelper.GetDuration(Math.Abs((1 - pos) - _currentPosition), cmdMsg.Speed / 99.0));
@@ -275,28 +260,18 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private Task<ButtplugMessage> HandleLinearCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is LinearCmd cmdMsg) || Interface.Name != "ONYX")
-            {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(
-                    aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
-            }
+            var cmdMsg = CheckMessageHandler<LinearCmd>(aMsg);
 
             if (cmdMsg.Vectors.Count != 1)
             {
-                return Task.FromResult<ButtplugMessage>(new Error(
-                    "LinearCmd requires 1 vector for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
-                    cmdMsg.Id));
+                throw new ButtplugDeviceException(BpLogger, "LinearCmd requires 1 vector for this device.", cmdMsg.Id);
             }
 
             foreach (var v in cmdMsg.Vectors)
             {
                 if (v.Index != 0)
                 {
-                    return Task.FromResult<ButtplugMessage>(new Error(
-                        $"Index {v.Index} is out of bounds for LinearCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
-                        cmdMsg.Id));
+                    throw new ButtplugDeviceException(BpLogger, $"Index {v.Index} is out of bounds for LinearCmd for this device.", cmdMsg.Id);
                 }
 
                 // Invert the position

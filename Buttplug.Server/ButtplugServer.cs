@@ -137,6 +137,8 @@ namespace Buttplug.Server
         {
             // Stop the timer by specifying an infinite due period (See: https://msdn.microsoft.com/en-us/library/yz1c7148(v=vs.110).aspx)
             _pingTimer?.Change(Timeout.Infinite, (int)_maxPingTime);
+            // Since this happens in an event handler, output a message, not an exception
+            // TODO Once server has ErrorReceived event handlers, change this to throwing an exception through that.
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
                 Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId)));
             await SendMessageAsync(new StopAllDevices()).ConfigureAwait(false);
@@ -171,7 +173,7 @@ namespace Buttplug.Server
             // If we get a message that's not RequestServerInfo first, return an error.
             if (!_receivedRequestServerInfo && !(aMsg is RequestServerInfo))
             {
-                throw new ButtplugHandshakeException("RequestServerInfo must be first message received by server!", id);
+                throw new ButtplugHandshakeException(_bpLogger, "RequestServerInfo must be first message received by server!", id);
             }
 
             _bpLogger.Debug($"Got {aMsg.Name} message.");
@@ -191,7 +193,7 @@ namespace Buttplug.Server
                 case RequestServerInfo rsi:
                     if (_receivedRequestServerInfo)
                     {
-                        throw new ButtplugHandshakeException("Already received RequestServerInfo, cannot be sent twice.", id);
+                        throw new ButtplugHandshakeException(_bpLogger, "Already received RequestServerInfo, cannot be sent twice.", id);
                     }
 
                     _receivedRequestServerInfo = true;

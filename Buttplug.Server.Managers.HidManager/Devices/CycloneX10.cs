@@ -59,17 +59,13 @@ namespace Buttplug.Server.Managers.HidManager.Devices
 
         private Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is RotateCmd cmdMsg))
-            {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
-            }
+            var cmdMsg = CheckMessageHandler<RotateCmd>(aMsg);
 
             if (cmdMsg.Rotations.Count != 1)
             {
-                return Task.FromResult<ButtplugMessage>(new Error(
+                throw new ButtplugDeviceException(
                     "RotateCmd requires 1 vector for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
-                    cmdMsg.Id));
+                    cmdMsg.Id);
             }
 
             var changed = false;
@@ -77,10 +73,9 @@ namespace Buttplug.Server.Managers.HidManager.Devices
             {
                 if (i.Index != 0)
                 {
-                    return Task.FromResult<ButtplugMessage>(new Error(
+                    throw new ButtplugDeviceException(
                         $"Index {i.Index} is out of bounds for RotateCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
-                        cmdMsg.Id));
+                        cmdMsg.Id);
                 }
 
                 changed |= _clockwise != i.Clockwise;
@@ -105,16 +100,12 @@ namespace Buttplug.Server.Managers.HidManager.Devices
 
             return WriteData(data) ?
                 Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id)) :
-                Task.FromResult<ButtplugMessage>(new Error("Failed to send command",
-                    Error.ErrorClass.ERROR_DEVICE, aMsg.Id));
+                throw new ButtplugDeviceException(BpLogger, "Failed to send command", aMsg.Id);
         }
 
         private Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is VorzeA10CycloneCmd cmdMsg))
-            {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
-            }
+            var cmdMsg = CheckMessageHandler<VorzeA10CycloneCmd>(aMsg);
 
             return HandleRotateCmd(new RotateCmd(cmdMsg.DeviceIndex,
                 new List<RotateCmd.RotateSubcommand>

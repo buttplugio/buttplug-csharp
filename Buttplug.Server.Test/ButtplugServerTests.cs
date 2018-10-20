@@ -186,7 +186,8 @@ namespace Buttplug.Server.Test
             _server.AddDeviceSubtypeManager(aLogger => m);
             (await _server.SendMessageAsync(new StartScanning())).Should().BeOfType<Ok>();
             (await _server.SendMessageAsync(new StopScanning())).Should().BeOfType<Ok>();
-            (await _server.SendMessageAsync(new FleshlightLaunchFW12Cmd(1, 0, 0))).Should().BeOfType<Error>();
+            _server.Awaiting(async aServer => await aServer.SendMessageAsync(new FleshlightLaunchFW12Cmd(1, 0, 0)))
+                .Should().Throw<ButtplugDeviceException>();
         }
 
         [Test]

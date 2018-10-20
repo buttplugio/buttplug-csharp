@@ -34,14 +34,10 @@ namespace Buttplug.Core.Test
 
             (await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken))).Should().BeOfType<Ok>();
 
-            var outMsg = await dev.ParseMessageAsync(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken));
-            outMsg.Should().BeOfType<Error>();
-            (outMsg as Error).ErrorCode.Should().Be(Error.ErrorClass.ERROR_DEVICE);
+            dev.Awaiting(async aDevice => await dev.ParseMessageAsync(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken))).Should().Throw<ButtplugDeviceException>();
 
             dev.Disconnect();
-            outMsg = await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken));
-            outMsg.Should().BeOfType<Error>();
-            (outMsg as Error).ErrorCode.Should().Be(Error.ErrorClass.ERROR_DEVICE);
+            dev.Awaiting(async aDevice => await aDevice.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken))).Should().Throw<ButtplugDeviceException>();
         }
 
         protected class TestDeviceDoubleAdd : TestDevice

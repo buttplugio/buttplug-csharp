@@ -34,18 +34,13 @@ namespace Buttplug.Core.Test
 
         private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = aMsg as VibrateCmd;
-            if (cmdMsg is null)
-            {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
-            }
+            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
 
             if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > 2)
             {
-                Task.FromResult<ButtplugMessage>(new Error(
+                throw new ButtplugDeviceException(
                     "VibrateCmd requires between 1 and 2 vectors for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
-                    cmdMsg.Id));
+                    cmdMsg.Id);
             }
 
             foreach (var vi in cmdMsg.Speeds)
@@ -60,10 +55,9 @@ namespace Buttplug.Core.Test
                 }
                 else
                 {
-                    Task.FromResult<ButtplugMessage>(new Error(
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Index {vi.Index} is out of bounds for VibrateCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
-                        cmdMsg.Id));
+                        cmdMsg.Id);
                 }
             }
 
@@ -72,12 +66,7 @@ namespace Buttplug.Core.Test
 
         private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = aMsg as SingleMotorVibrateCmd;
-
-            if (cmdMsg is null)
-            {
-                return Task.FromResult<ButtplugMessage>(BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler"));
-            }
+            var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
             var speeds = new List<VibrateCmd.VibrateSubcommand>();
             for (uint i = 0; i < 2; i++)

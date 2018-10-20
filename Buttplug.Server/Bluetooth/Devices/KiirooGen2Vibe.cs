@@ -137,26 +137,18 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is SingleMotorVibrateCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
             return await HandleVibrateCmd(VibrateCmd.Create(aMsg.DeviceIndex, aMsg.Id, cmdMsg.Speed, _devInfo.VibeCount), aToken);
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is VibrateCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
 
             if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > _devInfo.VibeCount)
             {
-                return new Error(
-                    $"VibrateCmd requires between 1 and {_devInfo.VibeCount} vectors for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
+                throw new ButtplugDeviceException(BpLogger, $"VibrateCmd requires between 1 and {_devInfo.VibeCount} vectors for this device.",
                     cmdMsg.Id);
             }
 
@@ -165,10 +157,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 if (vi.Index >= _devInfo.VibeCount)
                 {
-                    return new Error(
-                        $"Index {vi.Index} is out of bounds for VibrateCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
-                        cmdMsg.Id);
+                    throw new ButtplugDeviceException(BpLogger, $"Index {vi.Index} is out of bounds for VibrateCmd for this device.", cmdMsg.Id);
                 }
 
                 if (Math.Abs(_vibratorSpeeds[vi.Index] - vi.Speed) < 0.0001)

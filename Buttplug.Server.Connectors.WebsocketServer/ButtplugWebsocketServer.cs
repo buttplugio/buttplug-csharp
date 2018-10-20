@@ -106,8 +106,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             {
                 try
                 {
-                    await ws.WriteStringAsync(new ButtplugJsonMessageParser(_logManager).Serialize(_logger.LogErrorMsg(
-                        ButtplugConsts.SystemMsgId, ErrorClass.ERROR_INIT, "WebSocketServer already in use!"), 0));
+                    await ws.WriteStringAsync(new ButtplugJsonMessageParser(_logManager).Serialize(new ButtplugHandshakeException("WebSocketServer already in use!").ButtplugErrorMessage, 0));
                     await ws.CloseAsync();
                 }
                 catch

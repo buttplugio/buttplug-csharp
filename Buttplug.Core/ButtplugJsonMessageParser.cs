@@ -59,7 +59,7 @@ namespace Buttplug.Core
             // If we can't find any message types in our assembly, the system is basically useless.
             if (!_messageTypes.Any())
             {
-                throw new ButtplugMessageException("No message types available.");
+                throw new ButtplugMessageException(_bpLogger, "No message types available.");
             }
 
             // Load the schema for validation. Schema file is an embedded resource in the library.
@@ -296,7 +296,7 @@ namespace Buttplug.Core
                 {
                     if (aMsg.Id != ButtplugConsts.SystemMsgId)
                     {
-                        throw new ButtplugMessageException(
+                        throw new ButtplugMessageException(_bpLogger,
                             $"No backwards compatible version for message #{aMsg.Name} at Schema Version {aClientSpecVersion}!", aMsg.Id);
                     }
 

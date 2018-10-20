@@ -17,6 +17,7 @@ using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Security.Cryptography;
+using Buttplug.Core;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
@@ -175,8 +176,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             if (_txChar == null)
             {
-                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
-                    $"WriteValue using txChar called with no txChar available");
+                throw new ButtplugDeviceException(_bpLogger, $"WriteValue using txChar called with no txChar available", aMsgId);
             }
 
             return await WriteValueAsync(aMsgId, _txChar, aValue, aWriteWithResponse, aToken);
@@ -191,14 +191,13 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             if (_indexedChars == null)
             {
-                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
-                    $"WriteValue using indexed characteristics called with no indexed characteristics available");
+                throw new ButtplugDeviceException(_bpLogger, $"WriteValue using indexed characteristics called with no indexed characteristics available", aMsgId);
             }
 
             if (!_indexedChars.ContainsKey(aIndex))
             {
-                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
-                    $"WriteValue using indexed characteristics called with invalid index");
+                throw new ButtplugDeviceException(_bpLogger,
+                    $"WriteValue using indexed characteristics called with invalid index", aMsgId);
             }
 
             return await WriteValueAsync(aMsgId, _indexedChars[aIndex], aValue, aWriteWithResponse, aToken);
@@ -226,23 +225,23 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 _currentWriteTokenSource = null;
                 if (status != GattCommunicationStatus.Success)
                 {
-                    return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
-                        $"GattCommunication Error: {status}");
+                    throw new ButtplugDeviceException(_bpLogger,
+                        $"GattCommunication Error: {status}", aMsgId);
                 }
             }
             catch (InvalidOperationException e)
             {
                 // This exception will be thrown if the bluetooth device disconnects in the middle of
                 // a transfer.
-                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
-                    $"GattCommunication Error: {e.Message}");
+                throw new ButtplugDeviceException(_bpLogger,
+                    $"GattCommunication Error: {e.Message}", aMsgId);
             }
             catch (TaskCanceledException e)
             {
                 // This exception will be thrown if the bluetooth device disconnects in the middle of
                 // a transfer (happened when MysteryVibe lost power).
-                return _bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
-                    $"Device disconnected: {e.Message}");
+                throw new ButtplugDeviceException(_bpLogger,
+                    $"Device disconnected: {e.Message}", aMsgId);
             }
 
             return new Ok(aMsgId);
@@ -252,8 +251,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             if (_rxChar == null)
             {
-                return (_bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
-                    $"ReadValue using rxChar called with no rxChar available"), new byte[] { });
+                throw new ButtplugDeviceException(_bpLogger,
+                    $"ReadValue using rxChar called with no rxChar available", aMsgId);
             }
 
             return await ReadValueAsync(aMsgId, _rxChar, aToken);
@@ -263,14 +262,14 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             if (_indexedChars == null)
             {
-                return (_bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
-                    $"ReadValue using indexed characteristics called with no indexed characteristics available"), new byte[] { });
+                throw new ButtplugDeviceException(_bpLogger,
+                    $"ReadValue using indexed characteristics called with no indexed characteristics available", aMsgId);
             }
 
             if (!_indexedChars.ContainsKey(aIndex))
             {
-                return (_bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE,
-                    $"ReadValue using indexed characteristics called with invalid index"), new byte[] { });
+                throw new ButtplugDeviceException(_bpLogger,
+                    $"ReadValue using indexed characteristics called with invalid index", aMsgId);
             }
 
             return await ReadValueAsync(aMsgId, _indexedChars[aIndex], aToken);
@@ -281,7 +280,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             var result = await aChar.ReadValueAsync().AsTask(aToken);
             if (result?.Value == null)
             {
-                return (_bpLogger.LogErrorMsg(aMsgId, Error.ErrorClass.ERROR_DEVICE, $"Got null read from {Name}"), null);
+                throw new ButtplugDeviceException(_bpLogger, $"Got null read from {Name}", aMsgId);
             }
 
             return (new Ok(aMsgId), result.Value.ToArray());

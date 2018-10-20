@@ -152,7 +152,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 // If we don't get back the amount of tokens we expect, identify as unknown, log, bail.
                 if (deviceInfo.Length != 3 || deviceInfo[0].Length != 1)
                 {
-                    return BpLogger.LogErrorMsg(ButtplugConsts.SystemMsgId, Error.ErrorClass.ERROR_DEVICE,
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Unknown Lovense DeviceType of {deviceInfoString} found. Please report to Buttplug Developers by filing an issue at https://github.com/buttplugio/buttplug/");
                 }
 
@@ -169,9 +169,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                     // If we don't know what device this is, just assume it has a single vibrator,
                     // call it unknown, log something.
                     AddCommonMessages();
-                    BpLogger.LogErrorMsg(new Error($"Unknown Lovense Device of Type {deviceTypeLetter} found. Please report to Buttplug Developers by filing an issue at https://github.com/buttplugio/buttplug/",
-                        Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId));
-                    return new Ok(ButtplugConsts.SystemMsgId);
+                    throw new ButtplugDeviceException(BpLogger, $"Unknown Lovense Device of Type {deviceTypeLetter} found. Please report to Buttplug Developers by filing an issue at https://github.com/buttplugio/buttplug/");
                 }
 
                 Name = $"Lovense {Enum.GetName(typeof(LovenseDeviceType), (uint)deviceTypeLetter)} v{deviceVersion}";
@@ -183,7 +181,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 // If we for some reason don't get a device info query back, use fallback method.
                 //
                 // TODO Remove this branch at some point? Not sure we'll need it now since device queries seem stable.
-                BpLogger.Warn($"Error retreiving device info from Lovense {Name}, using fallback method");
+                BpLogger.Warn($"Error retrieving device info from Lovense {Name}, using fallback method");
 
                 // Some of the older devices seem to have issues with info lookups? Not sure why, so
                 // for now use fallback method.
@@ -265,27 +263,20 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is SingleMotorVibrateCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
             return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, _vibratorCount), aToken);
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is VibrateCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
 
             if (cmdMsg.Speeds.Count == 0 || cmdMsg.Speeds.Count > _vibratorCount)
             {
-                return new Error(
+                throw new ButtplugDeviceException(BpLogger,
                     _vibratorCount == 1 ? "VibrateCmd requires 1 vector for this device." :
                                          $"VibrateCmd requires between 1 and {_vibratorCount} vectors for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id);
             }
 
@@ -293,9 +284,8 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 if (v.Index >= _vibratorCount)
                 {
-                    return new Error(
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
                         cmdMsg.Id);
                 }
 
@@ -320,29 +310,22 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleLovenseCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is LovenseCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<LovenseCmd>(aMsg);
 
             return await Interface.WriteValueAsync(aMsg.Id, Encoding.ASCII.GetBytes(cmdMsg.Command), false, aToken);
         }
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is RotateCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<RotateCmd>(aMsg);
 
             var dirChange = false;
             var speedChange = false;
 
             if (cmdMsg.Rotations.Count != 1)
             {
-                return new Error(
+                throw new ButtplugDeviceException(BpLogger,
                     "RotateCmd requires 1 vector for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id);
             }
 
@@ -350,9 +333,8 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 if (vi.Index != 0)
                 {
-                    return new Error(
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Index {vi.Index} is out of bounds for RotateCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
                         cmdMsg.Id);
                 }
 

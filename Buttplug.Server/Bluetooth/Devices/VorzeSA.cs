@@ -90,16 +90,12 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is RotateCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<RotateCmd>(aMsg);
 
             if (cmdMsg.Rotations.Count != 1)
             {
-                return new Error(
+                throw new ButtplugDeviceException(BpLogger,
                     "RotateCmd requires 1 vector for this device.",
-                    Error.ErrorClass.ERROR_DEVICE,
                     cmdMsg.Id);
             }
 
@@ -107,9 +103,8 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 if (i.Index != 0)
                 {
-                    return new Error(
+                    throw new ButtplugDeviceException(BpLogger,
                         $"Index {i.Index} is out of bounds for RotateCmd for this device.",
-                        Error.ErrorClass.ERROR_DEVICE,
                         cmdMsg.Id);
                 }
 
@@ -122,10 +117,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (!(aMsg is VorzeA10CycloneCmd cmdMsg))
-            {
-                return BpLogger.LogErrorMsg(aMsg.Id, Error.ErrorClass.ERROR_DEVICE, "Wrong Handler");
-            }
+            var cmdMsg = CheckMessageHandler<VorzeA10CycloneCmd>(aMsg);
 
             if (_clockwise == cmdMsg.Clockwise && _speed == cmdMsg.Speed)
             {
