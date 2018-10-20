@@ -17,13 +17,24 @@ namespace Buttplug.Core
         /// Creates a ButtplugException.
         /// </summary>
         /// <param name="aMessage">Exception message.</param>
+        /// <param name="aInner">Optional inner exception.</param>
+        public ButtplugException(Error aMessage, Exception aInner = null)
+            : base(aMessage.ErrorMessage, aInner)
+        {
+            ButtplugErrorMessage = aMessage;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a ButtplugException.
+        /// </summary>
+        /// <param name="aMessage">Exception message.</param>
         /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. (https://buttplug-spec.docs.buttplug.io/status.html#error)</param>
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
         public ButtplugException(string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null) 
-            : base(aMessage, aInner)
+            : this(new Error(aMessage, aClass, aId), aInner)
         {
-            ButtplugErrorMessage = new Error(aMessage, aClass, aId);
         }
 
         /// <inheritdoc />
@@ -38,11 +49,7 @@ namespace Buttplug.Core
         public ButtplugException([NotNull] IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null) 
             : this(aMessage, aClass, aId, aInner)
         {
-            if (aLogger == null)
-            {
-                throw new ArgumentNullException(nameof(aLogger));
-            }
-
+            ButtplugUtils.ArgumentNotNull(aLogger, nameof(aLogger));
             aLogger.Error(aMessage);
         }
     }
