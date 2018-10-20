@@ -20,8 +20,6 @@ namespace Buttplug.Server.Test
 {
     public class TestServer : ButtplugServer
     {
-        public readonly List<string> OutgoingAsync = new List<string>();
-
         // Set MaxPingTime to zero (infinite ping/ping checks off) by default for tests
         public TestServer(uint aMaxPingTime = 0, DeviceManager aDevManager = null)
             : base("Test Server", aMaxPingTime, aDevManager)
@@ -32,11 +30,6 @@ namespace Buttplug.Server.Test
             LogManager.Configuration.AddTarget("debugger", dt);
             LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, dt));
             LogManager.Configuration = LogManager.Configuration;
-        }
-
-        public void OnMessageReceived(object aObj, MessageReceivedEventArgs aEvent)
-        {
-            OutgoingAsync.Add(Serialize(aEvent.Message));
         }
 
         // ReSharper disable once UnusedMember.Global
