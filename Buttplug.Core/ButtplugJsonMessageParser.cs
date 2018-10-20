@@ -59,7 +59,7 @@ namespace Buttplug.Core
             // If we can't find any message types in our assembly, the system is basically useless.
             if (!_messageTypes.Any())
             {
-                throw new ButtplugParserException("No message types available.", ButtplugConsts.SystemMsgId);
+                throw new ButtplugMessageException("No message types available.");
             }
 
             // Load the schema for validation. Schema file is an embedded resource in the library.
@@ -117,8 +117,7 @@ namespace Buttplug.Core
                 }
                 catch (JsonReaderException e)
                 {
-                    throw new ButtplugParserException(_bpLogger, $"Not valid JSON: {aJsonMsg} - {e.Message}", 
-                        ButtplugConsts.SystemMsgId);
+                    throw new ButtplugMessageException(_bpLogger, $"Not valid JSON: {aJsonMsg} - {e.Message}");
                 }
 
                 JArray msgArray;
@@ -128,24 +127,26 @@ namespace Buttplug.Core
                 }
                 catch (JsonReaderException e)
                 {
-                    throw new ButtplugParserException(_bpLogger, $"Not valid JSON: {aJsonMsg} - {e.Message}",
-                        ButtplugConsts.SystemMsgId);
+                    throw new ButtplugMessageException(_bpLogger, $"Not valid JSON: {aJsonMsg} - {e.Message}");
                 }
 
                 var errors = _schema.Validate(msgArray);
                 if (errors.Any())
                 {
-                    throw new ButtplugParserException(_bpLogger,
+                    throw new ButtplugMessageException(_bpLogger,
                         "Message does not conform to schema: " + string.Join(", ",
-                            errors.Select(aErr => aErr?.ToString()).ToArray()), ButtplugConsts.SystemMsgId);
+                            errors.Select(aErr => aErr?.ToString()).ToArray()));
                 }
 
                 foreach (var jsonObj in msgArray.Children<JObject>())
                 {
                     var msgName = jsonObj.Properties().First().Name;
+                    
+                    // Only way we should get here is if the schema includes a class that we don't
+                    // have a matching C# class for.
                     if (!_messageTypes.ContainsKey(msgName))
                     {
-                        throw new ButtplugParserException(_bpLogger, $"{msgName} is not a valid message class", ButtplugConsts.SystemMsgId);
+                        throw new ButtplugMessageException(_bpLogger, $"{msgName} is not a valid message class");
                     }
 
                     // This specifically could fail due to object conversion.
@@ -166,8 +167,8 @@ namespace Buttplug.Core
         {
             if (!aMsgType.IsSubclassOf(typeof(ButtplugMessage)))
             {
-                throw new ButtplugParserException(_bpLogger,
-                    $"Type {aMsgType.Name} is not a subclass of ButtplugMessage", ButtplugConsts.SystemMsgId);
+                throw new ButtplugMessageException(_bpLogger,
+                    $"Type {aMsgType.Name} is not a subclass of ButtplugMessage");
             }
             var msgName = ButtplugMessage.GetName(aMsgType);
             try
@@ -179,8 +180,8 @@ namespace Buttplug.Core
             }
             catch (InvalidCastException e)
             {
-                throw new ButtplugParserException(_bpLogger,
-                    $"Could not create message for JSON {aObject}: {e.Message}", ButtplugConsts.SystemMsgId);
+                throw new ButtplugMessageException(_bpLogger,
+                    $"Could not create message for JSON {aObject}: {e.Message}");
             }
             catch (JsonSerializationException e)
             {
@@ -188,8 +189,8 @@ namespace Buttplug.Core
                 var prevType = ButtplugMessage.GetPreviousType(aMsgType);
                 if (prevType == null)
                 {
-                    throw new ButtplugParserException(_bpLogger,
-                        $"Could not create message for JSON {aObject}: {e.Message}", ButtplugConsts.SystemMsgId);
+                    throw new ButtplugMessageException(_bpLogger,
+                        $"Could not create message for JSON {aObject}: {e.Message}");
                 }
                 return DeserializeAs(aObject, prevType);
             }
@@ -212,8 +213,8 @@ namespace Buttplug.Core
             // If we get nothing back, throw now, because if we don't the schema verifier will.
             if (jsonMsg == null)
             {
-                throw new ButtplugParserException(_bpLogger,
-                    "Message cannot be converted to JSON.", ButtplugConsts.SystemMsgId);
+                throw new ButtplugMessageException(_bpLogger,
+                    "Message cannot be converted to JSON.", aMsg.Id);
             }
             var msgArray = new JArray { jsonMsg };
 
@@ -222,9 +223,9 @@ namespace Buttplug.Core
             var errors = _schema.Validate(msgArray);
             if (errors.Any())
             {
-                throw new ButtplugParserException(_bpLogger,
+                throw new ButtplugMessageException(_bpLogger,
                     "Message does not conform to schema: " + string.Join(", ",
-                        errors.Select(aErr => aErr?.ToString()).ToArray()), ButtplugConsts.SystemMsgId);
+                        errors.Select(aErr => aErr?.ToString()).ToArray()), aMsg.Id);
             }
             _bpLogger?.Trace($"Message serialized to: {jsonMsg.ToString(Formatting.None)}", true);
             return msgArray.ToString(Formatting.None);
@@ -255,8 +256,8 @@ namespace Buttplug.Core
             // of nothing through the schema verifier and it will throw.
             if (!msgArray.Any())
             {
-                throw new ButtplugParserException(_bpLogger,
-                    "No messages serialized.", ButtplugConsts.SystemMsgId);
+                throw new ButtplugMessageException(_bpLogger,
+                    "No messages serialized.");
             }
 
             // Shove our JSON objects through the schema validator, just to make sure it'll be
@@ -264,9 +265,9 @@ namespace Buttplug.Core
             var errors = _schema.Validate(msgArray);
             if (errors.Any())
             {
-                throw new ButtplugParserException(_bpLogger,
+                throw new ButtplugMessageException(_bpLogger,
                     "Message does not conform to schema: " + string.Join(", ",
-                        errors.Select(aErr => aErr?.ToString()).ToArray()), ButtplugConsts.SystemMsgId);
+                        errors.Select(aErr => aErr?.ToString()).ToArray()));
             }
             
             _bpLogger?.Trace($"Message serialized to: {msgArray.ToString(Formatting.None)}", true);
@@ -281,7 +282,7 @@ namespace Buttplug.Core
         /// <param name="aClientSpecVersion">
         /// Schema version of the client the message will be sent to.
         /// </param>
-        /// <exception cref="ButtplugParserException">
+        /// <exception cref="ButtplugMessageException">
         /// Throws when no backward compatible non-system message can be found, or when a default
         /// constructor for a message is not available.
         /// </exception>
@@ -295,7 +296,7 @@ namespace Buttplug.Core
                 {
                     if (aMsg.Id != ButtplugConsts.SystemMsgId)
                     {
-                        throw new ButtplugParserException(
+                        throw new ButtplugMessageException(
                             $"No backwards compatible version for message #{aMsg.Name} at Schema Version {aClientSpecVersion}!", aMsg.Id);
                     }
 
@@ -312,7 +313,7 @@ namespace Buttplug.Core
                     new[] { aMsg.GetType() })?.Invoke(new object[] { aMsg });
                 if (newMsg == null)
                 {
-                    throw new ButtplugParserException(_bpLogger, $"No default constructor for message #{aMsg.GetType().Name}!",
+                    throw new ButtplugMessageException(_bpLogger, $"No default constructor for message #{aMsg.GetType().Name}!",
                         aMsg.Id);
                 }
 

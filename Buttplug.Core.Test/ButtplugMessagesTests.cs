@@ -216,7 +216,7 @@ namespace Buttplug.Core.Test
 
             CheckMsg(newMsg);
 
-            _parser.Invoking(x => x.Serialize(msg, 0)).Should().Throw<ButtplugParserException>();
+            _parser.Invoking(x => x.Serialize(msg, 0)).Should().Throw<ButtplugMessageException>();
         }
 
         [Test]

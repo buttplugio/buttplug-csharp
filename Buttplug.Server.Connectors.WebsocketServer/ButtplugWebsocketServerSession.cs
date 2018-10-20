@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
@@ -106,7 +107,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
                             {
                                 msg = await _server.SendMessageAsync(incomingMsg);
                             }
-                            catch (ButtplugServerException ex)
+                            catch (ButtplugException ex)
                             {
                                 msg = new ButtplugMessage[] { ex.ButtplugErrorMessage };
                             }

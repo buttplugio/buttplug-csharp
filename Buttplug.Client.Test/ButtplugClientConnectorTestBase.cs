@@ -79,8 +79,7 @@ namespace Buttplug.Client.Test
             await _client.ConnectAsync();
             _client.Connected.Should().BeTrue();
             _client.Awaiting(async aClient => await aClient.ConnectAsync())
-                .Should().Throw<ButtplugClientException>()
-                .And.ButtplugErrorMessage.ErrorCode.Should().Be(Error.ErrorClass.ERROR_INIT);
+                .Should().Throw<ButtplugHandshakeException>();
         }
 
         [Test]
@@ -121,7 +120,7 @@ namespace Buttplug.Client.Test
             var device = _client.Devices[0];
 
             // Test device only takes vibration commands
-            device.Awaiting(async aDevice => await aDevice.SendMessageAsync(new FleshlightLaunchFW12Cmd(0, 0, 0))).Should().Throw<ButtplugClientException>();
+            device.Awaiting(async aDevice => await aDevice.SendMessageAsync(new FleshlightLaunchFW12Cmd(0, 0, 0))).Should().Throw<ButtplugDeviceException>();
 
             // Shouldn't throw.
             await _client.Devices[0].SendMessageAsync(new SingleMotorVibrateCmd(0, 0.5));
@@ -168,10 +167,9 @@ namespace Buttplug.Client.Test
         }
 
         [Test]
-        public async Task TestSendWithoutConnecting()
+        public void TestSendWithoutConnecting()
         {
-            _client.Awaiting(async aClient => await aClient.StartScanningAsync()).Should().Throw<ButtplugClientException>().And
-                .ButtplugErrorMessage.ErrorCode.Should().Be(Error.ErrorClass.ERROR_UNKNOWN);
+            _client.Awaiting(async aClient => await aClient.StartScanningAsync()).Should().Throw<ButtplugClientConnectorException>();
         }
 
         public class SystemMessageSendingClient : ButtplugClient
@@ -188,16 +186,7 @@ namespace Buttplug.Client.Test
 
             public async Task SendOutgoingOnlyMessage()
             {
-                try
-                {
-                    var msg = await SendMessageAsync(new Ok(ButtplugConsts.DefaultMsgId));
-                    Debug.WriteLine(msg.Name);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("THROWING");
-                    throw;
-                }
+                var msg = await SendMessageAsync(new Ok(ButtplugConsts.DefaultMsgId));
             }
         }
 
@@ -213,7 +202,7 @@ namespace Buttplug.Client.Test
                 await c.SendOutgoingOnlyMessage();
                 Assert.Fail("Should throw!");
             }
-            catch (ButtplugServerException e)
+            catch (ButtplugMessageException)
             {
                 Assert.Pass("Got expected exception");
             }

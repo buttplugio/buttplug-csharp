@@ -5,12 +5,13 @@
 // </copyright>
 
 using System;
+using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 
 namespace Buttplug.Client
 {
-    public class ButtplugClientConnectorException : ButtplugClientException
+    public class ButtplugClientConnectorException : ButtplugException
     {
         /// <inheritdoc cref="ButtplugClientException" />
         /// <summary>
@@ -20,8 +21,8 @@ namespace Buttplug.Client
         /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. See https://buttplug-spec.docs.buttplug.io/status.html#error for more info.</param>
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugClientConnectorException(string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null)
-            : this(null, aMessage, aClass, aId, aInner)
+        public ButtplugClientConnectorException(string aMessage, Exception aInner = null)
+            : base(aMessage, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId, aInner)
         {
         }
 
@@ -34,8 +35,8 @@ namespace Buttplug.Client
         /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. See https://buttplug-spec.docs.buttplug.io/status.html#error for more info.</param>
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugClientConnectorException(IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null)
-            : base(aLogger, aMessage, aClass, aId, aInner)
+        public ButtplugClientConnectorException(IButtplugLog aLogger, string aMessage, Exception aInner = null)
+            : base(aLogger, aMessage, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId, aInner)
         {
         }
     }

@@ -18,7 +18,7 @@ namespace Buttplug.Client
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
-        public event EventHandler<ButtplugClientException> InvalidMessageReceived;
+        public event EventHandler<ButtplugExceptionEventArgs> InvalidMessageReceived;
 
         public IButtplugLogManager LogManager
         {
@@ -56,9 +56,9 @@ namespace Buttplug.Client
             {
                 msgs = _jsonSerializer.Deserialize(aJSONMsg);
             }
-            catch (ButtplugParserException e)
+            catch (ButtplugMessageException e)
             {
-                InvalidMessageReceived?.Invoke(this, new ButtplugClientException(_logger, "Parser threw an error", Error.ErrorClass.ERROR_MSG, ButtplugConsts.SystemMsgId, e));
+                InvalidMessageReceived?.Invoke(this, new ButtplugExceptionEventArgs(e));
                 return;
             }
 
@@ -74,9 +74,9 @@ namespace Buttplug.Client
                 {
                     _msgSorter.CheckMessage(msg, _logger);
                 }
-                catch (ButtplugClientException e)
+                catch (ButtplugMessageException e)
                 {
-                    InvalidMessageReceived?.Invoke(this, e);
+                    InvalidMessageReceived?.Invoke(this, new ButtplugExceptionEventArgs(e));
                 }
             }
         }

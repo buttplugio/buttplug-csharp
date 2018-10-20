@@ -41,7 +41,7 @@ namespace Buttplug.Server.Test
                 .Awaiting(s =>
                     s.SendMessageAsync(new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.DefaultMsgId)))
                 .Should()
-                .Throw<ButtplugServerException>();
+                .Throw<ButtplugMessageException>();
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Buttplug.Server.Test
         {
             var deviceListMsg = await aServer.SendMessageAsync(new RequestDeviceList());
             deviceListMsg.Should().BeOfType<DeviceList>();
-           ((DeviceList)deviceListMsg).Devices.Length.Should().Be(aExpectedCount);
+            ((DeviceList)deviceListMsg).Devices.Length.Should().Be(aExpectedCount);
         }
 
         [Test]
@@ -158,13 +158,13 @@ namespace Buttplug.Server.Test
             // Test echos back a test message with the same string and id
             _server.Awaiting(s => s.SendMessageAsync(new Core.Messages.Test("Right", 2))).Should().NotThrow();
             _server.Awaiting(s => s.SendMessageAsync(new Core.Messages.Test("Wrong", 0))).Should()
-                .Throw<ButtplugServerException>();
+                .Throw<ButtplugMessageException>();
         }
 
         [Test]
         public void TestInvalidDeviceIdMessage()
         {
-            _server.Awaiting(s => s.SendMessageAsync(new SingleMotorVibrateCmd(1, .2, 0))).Should().Throw<ButtplugServerException>();
+            _server.Awaiting(s => s.SendMessageAsync(new SingleMotorVibrateCmd(1, .2))).Should().Throw<ButtplugDeviceException>();
         }
 
         [Test]
@@ -262,7 +262,7 @@ namespace Buttplug.Server.Test
 
             // Now lets ensure we can actually timeout
             Thread.Sleep(150);
-            server.Awaiting(async aServer => await aServer.SendMessageAsync(new Ping())).Should().Throw<ButtplugServerException>();
+            server.Awaiting(async aServer => await aServer.SendMessageAsync(new Ping())).Should().Throw<ButtplugPingException>();
         }
 
         [Test]

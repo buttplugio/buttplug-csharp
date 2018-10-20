@@ -9,6 +9,7 @@
 
 using System.Reflection;
 using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using FluentAssertions;
@@ -34,7 +35,7 @@ namespace Buttplug.Server.Test
         {
             // Sending RequestServerInfo twice should throw, otherwise weird things like Spec version changes could happen.
             _server.Awaiting(async aServer => await aServer.SendMessageAsync(new RequestServerInfo("TestClient")))
-                .Should().Throw<ButtplugServerException>();
+                .Should().Throw<ButtplugHandshakeException>();
         }
 
         [Test]
@@ -66,7 +67,7 @@ namespace Buttplug.Server.Test
         [Test]
         public void TestSendUnhandledMessage()
         {
-            _server.Awaiting(async aServer => await aServer.SendMessageAsync(new FakeMessage(1))).Should().Throw<ButtplugServerException>();
+            _server.Awaiting(async aServer => await aServer.SendMessageAsync(new FakeMessage(1))).Should().Throw<ButtplugMessageException>();
         }
 
         [Test]
@@ -97,7 +98,7 @@ namespace Buttplug.Server.Test
         {
             var s = new ButtplugServer("TestServer", 0);
 
-            s.Awaiting(async aServer => await s.SendMessageAsync(new Core.Messages.Test("Test"))).Should().Throw<ButtplugServerException>();
+            s.Awaiting(async aServer => await s.SendMessageAsync(new Core.Messages.Test("Test"))).Should().Throw<ButtplugHandshakeException>();
 
             var msg = await s.SendMessageAsync(new RequestServerInfo("TestClient"));
             msg.Should().BeOfType<ServerInfo>();

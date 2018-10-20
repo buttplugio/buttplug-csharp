@@ -155,27 +155,23 @@ namespace Buttplug.Server
 
             if (id == 0)
             {
-                throw new ButtplugServerException(_bpLogger, "Message Id 0 is reserved for outgoing system messages. Please use another Id.",
-                    Error.ErrorClass.ERROR_MSG, id);
+                throw new ButtplugMessageException(_bpLogger, "Message Id 0 is reserved for outgoing system messages. Please use another Id.", id);
             }
 
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
-                throw new ButtplugServerException(_bpLogger, $"Message of type {aMsg.GetType().Name} cannot be sent to server",
-                    Error.ErrorClass.ERROR_MSG, id);
+                throw new ButtplugMessageException(_bpLogger, $"Message of type {aMsg.GetType().Name} cannot be sent to server", id);
             }
 
             if (_pingTimedOut)
             {
-                throw new ButtplugServerException(_bpLogger, $"Ping timed out.",
-                    Error.ErrorClass.ERROR_PING, id);
+                throw new ButtplugPingException(_bpLogger, $"Ping timed out.", id);
             }
 
             // If we get a message that's not RequestServerInfo first, return an error.
             if (!_receivedRequestServerInfo && !(aMsg is RequestServerInfo))
             {
-                throw new ButtplugServerException("RequestServerInfo must be first message received by server!",
-                    Error.ErrorClass.ERROR_INIT, id);
+                throw new ButtplugHandshakeException("RequestServerInfo must be first message received by server!", id);
             }
 
             _bpLogger.Debug($"Got {aMsg.Name} message.");
@@ -195,8 +191,7 @@ namespace Buttplug.Server
                 case RequestServerInfo rsi:
                     if (_receivedRequestServerInfo)
                     {
-                        throw new ButtplugServerException("Already received RequestServerInfo, cannot be sent twice.",
-                            Error.ErrorClass.ERROR_INIT, id);
+                        throw new ButtplugHandshakeException("Already received RequestServerInfo, cannot be sent twice.", id);
                     }
 
                     _receivedRequestServerInfo = true;

@@ -77,7 +77,7 @@ namespace Buttplug.Core.Test
         [Theory]
         public void DeserializeIncorrectMessages(string aMsgStr)
         {
-            _parser.Invoking(aParser => aParser.Deserialize(aMsgStr)).Should().Throw<ButtplugParserException>();
+            _parser.Invoking(aParser => aParser.Deserialize(aMsgStr)).Should().Throw<ButtplugMessageException>();
         }
 
         private void CheckValidTestMessage([NotNull] ButtplugMessage aMsg)
@@ -94,7 +94,7 @@ namespace Buttplug.Core.Test
                     aParser.Deserialize(
                         "[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}},{\"Test\":{\"TestString\":\"Error\",\"Id\":1}},{\"Test\":{\"TestString\":\"Test\",\"Id\":1}}]"))
                 .Should()
-                .Throw<ButtplugParserException>();
+                .Throw<ButtplugMessageException>();
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace Buttplug.Core.Test
         public void TestParseUnhandledMessage()
         {
             Action a = () => _parser.Serialize(new FakeMessage(0), ButtplugConsts.CurrentSpecVersion);
-            a.Should().Throw<ButtplugParserException>();
+            a.Should().Throw<ButtplugMessageException>();
         }
 
         [Test]

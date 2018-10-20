@@ -227,8 +227,7 @@ namespace Buttplug.Server
                         $"Dropping message for unknown device index {m.DeviceIndex}", id);
             }
 
-            throw new ButtplugServerException(_bpLogger, $"Message type {aMsg.GetType().Name} unhandled by this server.",
-                Error.ErrorClass.ERROR_MSG, id);
+            throw new ButtplugMessageException(_bpLogger, $"Message type {aMsg.GetType().Name} unhandled by this server.", id);
         }
 
         internal void RemoveAllDevices()

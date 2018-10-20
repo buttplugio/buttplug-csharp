@@ -1,4 +1,13 @@
-﻿using System;
+﻿// <copyright file="ButtplugClientTestConnector.cs" company="Nonpolynomial Labs LLC">
+// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
+// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +22,7 @@ namespace Buttplug.Client.Test
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
-        public event EventHandler<ButtplugClientException> InvalidMessageReceived;
+        public event EventHandler<ButtplugExceptionEventArgs> InvalidMessageReceived;
 
         public event EventHandler Disconnected;
 
@@ -44,14 +53,16 @@ namespace Buttplug.Client.Test
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(aMsg));
         }
 
-        public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
+        public Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             _connected = true;
+            return Task.CompletedTask;
         }
 
-        public async Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
+        public Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             _connected = false;
+            return Task.CompletedTask;
         }
 
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))

@@ -97,12 +97,12 @@ namespace Buttplug.Client
         {
             if (!_owningClient.Connected)
             {
-                throw new ButtplugClientException(_bpLogger, "Client that owns device is not connected", Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId);
+                throw new ButtplugClientConnectorException(_bpLogger, "Client that owns device is not connected");
             }
 
             if (!_owningClient.Devices.Contains(this))
             {
-                throw new ButtplugClientException(_bpLogger, "Device no longer connected or valid", Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId);
+                throw new ButtplugDeviceException(_bpLogger, "Device no longer connected or valid");
             }
 
             await _sendClosure(this, aMsg, aToken);

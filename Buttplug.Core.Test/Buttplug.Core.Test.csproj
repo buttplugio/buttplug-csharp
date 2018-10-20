@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ButtplugDeviceTests.cs" />
+    <Compile Include="ButtplugExceptionTests.cs" />
     <Compile Include="ButtplugJsonMessageParserTests.cs" />
     <Compile Include="ButtplugMessagesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

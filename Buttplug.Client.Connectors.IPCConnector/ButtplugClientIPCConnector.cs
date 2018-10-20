@@ -85,7 +85,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
                     }
                     else
                     {
-                        throw new ButtplugClientConnectorException("Bad Pipe state!", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
+                        throw new ButtplugClientConnectorException("Bad Pipe state!");
                     }
                 }
 

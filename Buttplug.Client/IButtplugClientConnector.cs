@@ -7,6 +7,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 
@@ -16,7 +17,7 @@ namespace Buttplug.Client
     {
         event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
-        event EventHandler<ButtplugClientException> InvalidMessageReceived;
+        event EventHandler<ButtplugExceptionEventArgs> InvalidMessageReceived;
 
         event EventHandler Disconnected;
 

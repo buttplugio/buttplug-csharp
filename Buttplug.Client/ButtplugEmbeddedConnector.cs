@@ -19,7 +19,7 @@ namespace Buttplug.Client
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
-        public event EventHandler<ButtplugClientException> InvalidMessageReceived;
+        public event EventHandler<ButtplugExceptionEventArgs> InvalidMessageReceived;
 
         public event EventHandler Disconnected;
 
