@@ -44,6 +44,11 @@ namespace Buttplug.Client
             return new Tuple<string, Task<ButtplugMessage>>(jsonMsg, promise);
         }
 
+        protected void Shutdown()
+        {
+            _msgSorter.Shutdown();
+        }
+
         protected void ReceiveMessages(string aJSONMsg)
         {
             IEnumerable<ButtplugMessage> msgs;

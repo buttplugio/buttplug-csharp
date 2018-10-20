@@ -36,10 +36,14 @@ namespace Buttplug.Client
         /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. See https://buttplug-spec.docs.buttplug.io/status.html#error for more info.</param>
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugClientException(IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null)
-            : this(aMessage, aClass, aId, aInner)
+        public ButtplugClientException([NotNull] IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass, uint aId, Exception aInner = null)
+            : base(aLogger, aMessage, aClass, aId, aInner)
         {
-            aLogger?.Error(aMessage);
+        }
+
+        public ButtplugClientException(Error aMsg)
+            : base(aMsg)
+        {
         }
 
         public ButtplugClientException(IButtplugLog aLogger, Error aMsg)

@@ -98,10 +98,19 @@ namespace Buttplug.Server.Connectors.WebsocketServer
 
                     if (completedTaskIndex == 0)
                     {
-                        var incomingMsg = ((Task<string>)msgTasks[0]).GetAwaiter().GetResult();
+                        var incomingMsg = await (Task<string>) msgTasks[0];
                         if (incomingMsg != null)
                         {
-                            await QueueMessage(await _server.SendMessageAsync(incomingMsg));
+                            ButtplugMessage[] msg;
+                            try
+                            {
+                                msg = await _server.SendMessageAsync(incomingMsg);
+                            }
+                            catch (ButtplugServerException ex)
+                            {
+                                msg = new ButtplugMessage[] { ex.ButtplugErrorMessage };
+                            }
+                            await QueueMessage(msg);
                         }
 
                         readTask = _ws.ReadStringAsync(_linkedCancelSource.Token);
@@ -112,10 +121,10 @@ namespace Buttplug.Server.Connectors.WebsocketServer
                         {
                             IList<string> msgs = new List<string>();
                             _outgoingMessages.TryReceiveAll(out msgs);
-                            string outmsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
+                            var outMsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
                             if (_ws != null && _ws.IsConnected)
                             {
-                                await _ws.WriteStringAsync(outmsgs, _linkedCancelSource.Token);
+                                await _ws.WriteStringAsync(outMsgs, _linkedCancelSource.Token);
                             }
 
                             writeTask = _outgoingMessages.OutputAvailableAsync(_linkedCancelSource.Token);

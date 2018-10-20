@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Server;
 using JetBrains.Annotations;
 
 namespace Buttplug.Client
@@ -32,6 +33,20 @@ namespace Buttplug.Client
         [NotNull]
         private readonly ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs =
             new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
+
+        ~ButtplugConnectorMessageSorter()
+        {
+            Shutdown();
+        }
+
+        public void Shutdown()
+        {
+            // If we've somehow destructed while holding tasks, throw exceptions at all of them.
+            foreach (var task in _waitingMsgs.Values)
+            {
+                task.TrySetException(new Exception("Sorter has been destroyed with live tasks still in queue."));
+            }
+        }
 
         public Task<ButtplugMessage> PrepareMessage(ButtplugMessage aMsg)
         {
@@ -59,7 +74,13 @@ namespace Buttplug.Client
                 throw new ButtplugClientException(aLog, "Message with non-matching ID received.", Error.ErrorClass.ERROR_MSG, aMsg.Id);
             }
 
-            queued.TrySetResult(aMsg);
+            if (aMsg is Error errMsg)
+            {
+                queued.SetException(new ButtplugServerException(errMsg.ErrorMessage, errMsg));
+                return;
+            }
+
+            queued.SetResult(aMsg);
         }
     }
 }

@@ -147,7 +147,16 @@ namespace Buttplug.Server.Connectors.IPCServer
 
                         if (msg.Length > 0)
                         {
-                            var respMsgs = await buttplugServer.SendMessageAsync(msg);
+                            ButtplugMessage[] respMsgs;
+                            try
+                            {
+                                respMsgs = await buttplugServer.SendMessageAsync(msg);
+                            }
+                            catch (ButtplugException e)
+                            {
+                                respMsgs = new ButtplugMessage[] { e.ButtplugErrorMessage };
+                            }
+                            
                             var respMsg = buttplugServer.Serialize(respMsgs);
                             if (respMsg == null)
                             {

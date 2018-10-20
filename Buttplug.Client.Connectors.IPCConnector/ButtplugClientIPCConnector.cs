@@ -76,8 +76,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
         {
             var (msgString, promise) = PrepareMessage(aMsg);
             var output = Encoding.UTF8.GetBytes(msgString);
-            try
-            {
+
                 lock (_sendLock)
                 {
                     if (Connected)
@@ -86,17 +85,11 @@ namespace Buttplug.Client.Connectors.IPCConnector
                     }
                     else
                     {
-                        return new Error("Bad Pipe state!", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
+                        throw new ButtplugClientConnectorException("Bad Pipe state!", Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
                     }
                 }
 
                 return await promise;
-            }
-            catch (Exception e)
-            {
-                // Noop - WS probably closed on us during read
-                return new Error(e.Message, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId);
-            }
         }
 
         private async Task pipeReader(CancellationToken aCancellationToken)
@@ -127,6 +120,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
                         msg += Encoding.UTF8.GetString(buffer, 0, len);
                     }
                 }
+
                 ReceiveMessages(msg);
             }
             _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);

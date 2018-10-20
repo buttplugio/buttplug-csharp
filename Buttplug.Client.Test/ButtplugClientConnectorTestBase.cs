@@ -9,12 +9,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Server;
 using Buttplug.Server.Test;
 using FluentAssertions;
+using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace Buttplug.Client.Test
@@ -161,6 +165,58 @@ namespace Buttplug.Client.Test
             await _client.StopScanningAsync();
 
             await signal.WaitAsync();
+        }
+
+        [Test]
+        public async Task TestSendWithoutConnecting()
+        {
+            _client.Awaiting(async aClient => await aClient.StartScanningAsync()).Should().Throw<ButtplugClientException>().And
+                .ButtplugErrorMessage.ErrorCode.Should().Be(Error.ErrorClass.ERROR_UNKNOWN);
+        }
+
+        public class SystemMessageSendingClient : ButtplugClient
+        {
+            public SystemMessageSendingClient([NotNull] string aClientName, [NotNull] IButtplugClientConnector aConnector)
+            : base(aClientName, aConnector)
+            {
+            }
+
+            public async Task SendSystemIdMessage()
+            {
+                await SendMessageAsync(new StartScanning(ButtplugConsts.SystemMsgId));
+            }
+
+            public async Task SendOutgoingOnlyMessage()
+            {
+                try
+                {
+                    var msg = await SendMessageAsync(new Ok(ButtplugConsts.DefaultMsgId));
+                    Debug.WriteLine(msg.Name);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("THROWING");
+                    throw;
+                }
+            }
+        }
+
+        [Test]
+        public async Task TestRethrowErrorMessage()
+        {
+            var c = new SystemMessageSendingClient("TestClient", _connector);
+            await c.ConnectAsync();
+
+            // For some reason, trying this with FluentAssertions Awaiting clauses causes a stall. Back to Asserts.
+            try
+            {
+                await c.SendOutgoingOnlyMessage();
+                Assert.Fail("Should throw!");
+            }
+            catch (ButtplugServerException e)
+            {
+                Assert.Pass("Got expected exception");
+            }
         }
     }
 }

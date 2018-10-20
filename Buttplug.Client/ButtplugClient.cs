@@ -306,6 +306,12 @@ namespace Buttplug.Client
         /// <returns>The response, which will derive from <see cref="ButtplugMessage"/>.</returns>
         protected async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
+            if (!Connected)
+            {
+                throw new ButtplugClientException(_bpLogger, "Client not connected.", Error.ErrorClass.ERROR_UNKNOWN,
+                    ButtplugConsts.DefaultMsgId);
+            }
+
             return await _connector.SendAsync(aMsg, aToken);
         }
 

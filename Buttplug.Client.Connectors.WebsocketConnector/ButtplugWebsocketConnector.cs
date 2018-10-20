@@ -138,10 +138,10 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
                     if (completedTaskIndex == 0)
                     {
-                        var incomingMsg = ((Task<string>)msgTasks[0]).GetAwaiter().GetResult();
+                        var incomingMsg = await (Task<string>) msgTasks[0];
                         if (incomingMsg != null)
                         {
-                            _owningDispatcher.Send(_ => ReceiveMessages(incomingMsg), null);
+                            ReceiveMessages(incomingMsg);
                         }
 
                         readTask = _ws.ReadStringAsync(aToken);
@@ -163,20 +163,23 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                         catch (WebSocketException e)
                         {
                             // Probably means we're replying to a message we received just before shutdown.
+                            // TODO This is on its own task. Where does it throw to?
                             throw new ButtplugClientConnectorException(_logger, "Websocket Client Read Error", Error.ErrorClass.ERROR_INIT, ButtplugConsts.SystemMsgId, e);
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //_logger.Error(e.Message, true);
+                _logger.Error(e.Message, true);
             }
             finally
             {
                 // Clean up the websocket and fire the disconnection event.
                 _ws.Dispose();
                 _ws = null;
+                // If we somehow still have some live messages, throw exceptions so they aren't stuck.
+                _owningDispatcher.Send(_ => Shutdown(), null);
                 _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
             }
         }
