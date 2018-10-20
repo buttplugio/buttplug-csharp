@@ -156,26 +156,26 @@ namespace Buttplug.Server
             if (id == 0)
             {
                 throw new ButtplugServerException(_bpLogger, "Message Id 0 is reserved for outgoing system messages. Please use another Id.",
-                    id, Error.ErrorClass.ERROR_MSG);
+                    Error.ErrorClass.ERROR_MSG, id);
             }
 
             if (aMsg is IButtplugMessageOutgoingOnly)
             {
                 throw new ButtplugServerException(_bpLogger, $"Message of type {aMsg.GetType().Name} cannot be sent to server",
-                    id, Error.ErrorClass.ERROR_MSG);
+                    Error.ErrorClass.ERROR_MSG, id);
             }
 
             if (_pingTimedOut)
             {
                 throw new ButtplugServerException(_bpLogger, $"Ping timed out.",
-                    id, Error.ErrorClass.ERROR_PING);
+                    Error.ErrorClass.ERROR_PING, id);
             }
 
             // If we get a message that's not RequestServerInfo first, return an error.
             if (!_receivedRequestServerInfo && !(aMsg is RequestServerInfo))
             {
                 throw new ButtplugServerException("RequestServerInfo must be first message received by server!",
-                    id, Error.ErrorClass.ERROR_INIT);
+                    Error.ErrorClass.ERROR_INIT, id);
             }
 
             _bpLogger.Debug($"Got {aMsg.Name} message.");
@@ -196,7 +196,7 @@ namespace Buttplug.Server
                     if (_receivedRequestServerInfo)
                     {
                         throw new ButtplugServerException("Already received RequestServerInfo, cannot be sent twice.",
-                            id, Error.ErrorClass.ERROR_INIT);
+                            Error.ErrorClass.ERROR_INIT, id);
                     }
 
                     _receivedRequestServerInfo = true;

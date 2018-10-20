@@ -205,7 +205,7 @@ namespace Buttplug.Server
                         return new Ok(aMsg.Id);
                     }
 
-                    return new Error(errorMsg, Error.ErrorClass.ERROR_DEVICE, aMsg.Id);
+                    throw new ButtplugDeviceException(_bpLogger, errorMsg, aMsg.Id);
                 case RequestDeviceList _:
                     _bpLogger.Debug("Got RequestDeviceList Message");
                     var msgDevices = _devices.Where(aDevice => aDevice.Value.IsConnected)
@@ -227,7 +227,8 @@ namespace Buttplug.Server
                         $"Dropping message for unknown device index {m.DeviceIndex}", id);
             }
 
-            throw new ButtplugServerException(_bpLogger, $"Message type {aMsg.GetType().Name} unhandled by this server.", id, Error.ErrorClass.ERROR_MSG);
+            throw new ButtplugServerException(_bpLogger, $"Message type {aMsg.GetType().Name} unhandled by this server.",
+                Error.ErrorClass.ERROR_MSG, id);
         }
 
         internal void RemoveAllDevices()
