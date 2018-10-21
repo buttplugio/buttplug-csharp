@@ -83,7 +83,9 @@
     <Compile Include="Bluetooth\Devices\KiirooTests.cs" />
     <Compile Include="Bluetooth\Devices\LiBoTest.cs" />
     <Compile Include="Bluetooth\Devices\MysteryVibeTests.cs" />
+    <Compile Include="Bluetooth\Devices\VorzeCycloneSATests.cs" />
     <Compile Include="Bluetooth\Devices\VorzeSATests.cs" />
+    <Compile Include="Bluetooth\Devices\VorzeUFOSATests.cs" />
     <Compile Include="ButtplugBluetoothDeviceTests.cs" />
     <Compile Include="ButtplugServerMessageTests.cs" />
     <Compile Include="ButtplugServerTests.cs" />
