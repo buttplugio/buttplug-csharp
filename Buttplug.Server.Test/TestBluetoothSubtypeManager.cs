@@ -8,7 +8,6 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System.Collections.Generic;
-using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Server.Bluetooth;
 

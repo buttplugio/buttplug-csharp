@@ -14,7 +14,6 @@ using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 using vtortola.WebSockets;
 using vtortola.WebSockets.Rfc6455;
-using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Server.Connectors.WebsocketServer
 {

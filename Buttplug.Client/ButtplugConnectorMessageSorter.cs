@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Server;
 using JetBrains.Annotations;
 
 namespace Buttplug.Client

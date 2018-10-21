@@ -1,5 +1,4 @@
-﻿using Buttplug.Core;
-using System;
+﻿using System;
 using System.IO.Pipes;
 using System.Security.Principal;
 using System.Text;

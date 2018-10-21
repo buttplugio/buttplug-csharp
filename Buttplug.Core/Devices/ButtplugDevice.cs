@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
-using static Buttplug.Core.Messages.Error;
 
 namespace Buttplug.Core.Devices
 {

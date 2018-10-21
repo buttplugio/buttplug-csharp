@@ -5,7 +5,6 @@
 // </copyright>
 
 using System;
-using Buttplug.Core;
 using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using JetBrains.Annotations;

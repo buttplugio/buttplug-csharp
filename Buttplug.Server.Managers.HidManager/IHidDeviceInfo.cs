@@ -4,7 +4,6 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using Buttplug.Core;
 using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using HidLibrary;

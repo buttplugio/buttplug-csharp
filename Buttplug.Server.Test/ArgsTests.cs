@@ -5,7 +5,6 @@
 // </copyright>
 
 using System;
-using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using NUnit.Framework;

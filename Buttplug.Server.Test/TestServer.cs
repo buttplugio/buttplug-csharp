@@ -8,13 +8,11 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System.Collections.Generic;
-using Buttplug.Core;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using NUnit.Framework;
 
 namespace Buttplug.Server.Test
 {

@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Server.Managers.HidManager.Devices;
 using HidLibrary;

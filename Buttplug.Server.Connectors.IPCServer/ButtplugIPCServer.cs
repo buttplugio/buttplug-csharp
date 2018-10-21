@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Server;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server.Connectors.IPCServer
@@ -60,7 +59,7 @@ namespace Buttplug.Server.Connectors.IPCServer
             _serverFactory = aFactory;
 
             _logManager = new ButtplugLogManager();
-            _logger = _logManager.GetLogger(this.GetType());
+            _logger = _logManager.GetLogger(GetType());
 
             _acceptTask = new Task(async () => { await ConnectionAccepter(aPipeName, _cancellation.Token); }, _cancellation.Token, TaskCreationOptions.LongRunning);
             _acceptTask.Start();
