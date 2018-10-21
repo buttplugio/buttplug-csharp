@@ -49,7 +49,6 @@ namespace Buttplug.Client
 
         [NotNull]
         private readonly IButtplugLog _bpLogger;
-        private readonly IButtplugLogManager _bpLogManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
@@ -84,8 +83,7 @@ namespace Buttplug.Client
             ButtplugUtils.ArgumentNotNull(aLogManager, nameof(aLogManager));
             ButtplugUtils.ArgumentNotNull(aOwningClient, nameof(aOwningClient));
             ButtplugUtils.ArgumentNotNull(aSendClosure, nameof(aSendClosure));
-            _bpLogManager = aLogManager;
-            _bpLogger = _bpLogManager.GetLogger(GetType());
+            _bpLogger = aLogManager.GetLogger(GetType());
             _owningClient = aOwningClient;
             _sendClosure = aSendClosure;
             Index = aIndex;
@@ -93,6 +91,7 @@ namespace Buttplug.Client
             AllowedMessages = aMessages;
         }
 
+        // ReSharper disable once UnusedMember.Global
         public async Task SendMessageAsync(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
             if (!_owningClient.Connected)

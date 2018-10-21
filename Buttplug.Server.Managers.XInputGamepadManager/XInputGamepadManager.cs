@@ -45,7 +45,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             }
             catch (DllNotFoundException e)
             {
-                BpLogger.LogException(e, false, $"Required DirextX DLL not found: {e.Message}\nThis probably means you need to install the DirextX Runtimes from June 2010: https://www.microsoft.com/en-us/download/details.aspx?id=8109");
+                BpLogger.LogException(e, false, $"Required DirectX DLL not found: {e.Message}\nThis probably means you need to install the DirectX Runtimes from June 2010: https://www.microsoft.com/en-us/download/details.aspx?id=8109");
                 InvokeScanningFinished();
             }
         }

@@ -8,6 +8,7 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using NLog;
@@ -16,6 +17,7 @@ using NLog.Targets;
 
 namespace Buttplug.Server.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class TestServer : ButtplugServer
     {
         // Set MaxPingTime to zero (infinite ping/ping checks off) by default for tests

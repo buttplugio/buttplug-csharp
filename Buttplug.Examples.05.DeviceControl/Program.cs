@@ -34,7 +34,7 @@ namespace Buttplug.Examples._05.DeviceControl
             var server = connector.Server;
             var testDevice = new TestDevice(new ButtplugLogManager(), "Test Device");
             server.AddDeviceSubtypeManager(
-                (IButtplugLogManager aLogManager) => new TestDeviceSubtypeManager(testDevice));
+                aLogManager => new TestDeviceSubtypeManager(testDevice));
             try
             {
                 await client.ConnectAsync();

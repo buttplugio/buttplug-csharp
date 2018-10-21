@@ -4,8 +4,12 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +24,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Util
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public interface IBluetoothDeviceGeneralTestUtils
     {
         Task SetupTest(string aDeviceName, bool aShouldInitialize = false);
@@ -29,6 +34,7 @@ namespace Buttplug.Server.Test.Util
         Task TestDeviceMessageNoop(ButtplugDeviceMessage aOutgoingMessage);
     }
 
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class BluetoothDeviceTestUtils<T> : IBluetoothDeviceGeneralTestUtils
         where T : IBluetoothDeviceInfo, new()
     {
@@ -119,7 +125,7 @@ namespace Buttplug.Server.Test.Util
             {
                 Assert.AreEqual(aExpectedBytes.Count(), bleIface.LastWritten.Count);
 
-                // Since the expected values and lastwritten in interface should be lockstepped, we can
+                // Since the expected values and lastWritten in interface should be lock-stepped, we can
                 // merge them and iterate through everything at once.
                 var checkSeq = aExpectedBytes.Zip(bleIface.LastWritten, (first, second) => (first, second));
                 foreach (var ((bytes, chr), lastWritten) in checkSeq)
@@ -180,7 +186,7 @@ namespace Buttplug.Server.Test.Util
             TestPacketMatching(aExpectedBytes, aWriteWithResponse, aStrict);
         }
 
-        // Testing timing with delays is a great way to get inetermittents, but here we are. Sadness.
+        // Testing timing with delays is a great way to get intermittent errors, but here we are. Sadness.
         public async Task TestDeviceMessageOnWrite(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
         {
             Clear();
@@ -212,17 +218,17 @@ namespace Buttplug.Server.Test.Util
             await TestDeviceMessage(aOutgoingMessage, new List<(byte[], uint)>(), false);
         }
 
-        public async Task TestInvalidDeviceMessage(ButtplugDeviceMessage aOutgoingMessage)
+        public void TestInvalidDeviceMessage(ButtplugDeviceMessage aOutgoingMessage)
         {
             Clear();
             bleDevice.Awaiting(async aDev => await aDev.ParseMessageAsync(aOutgoingMessage)).Should().Throw<ButtplugDeviceException>();
         }
 
-        public async Task TestInvalidVibrateCmd(uint aNumVibes)
+        public void TestInvalidVibrateCmd(uint aNumVibes)
         {
-            await TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 0));
-            await TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, aNumVibes + 1));
-            await TestInvalidDeviceMessage(
+            TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 0));
+            TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, aNumVibes + 1));
+            TestInvalidDeviceMessage(
                 new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
                 {
                     new VibrateCmd.VibrateSubcommand(0xffffffff, 0.5),

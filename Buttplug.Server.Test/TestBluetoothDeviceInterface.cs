@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class TestBluetoothDeviceInterface : IBluetoothDeviceInterface
     {
         public enum Chrs : uint
@@ -28,8 +30,6 @@ namespace Buttplug.Server.Test
         }
 
         public string Name { get; }
-
-        private readonly ulong _address;
 
         public class WriteData
         {
@@ -45,7 +45,7 @@ namespace Buttplug.Server.Test
             public byte[] Value;
         }
 
-        public ulong Address => _address;
+        public ulong Address { get; }
 
         public List<WriteData> LastWritten = new List<WriteData>();
         public Dictionary<uint, List<byte[]>> ExpectedRead = new Dictionary<uint, List<byte[]>>();
@@ -63,7 +63,7 @@ namespace Buttplug.Server.Test
         public TestBluetoothDeviceInterface(string aName)
         {
             Name = aName;
-            _address = (ulong)new Random().Next(0, 100);
+            Address = (ulong)new Random().Next(0, 100);
             Removed = false;
             DeviceRemoved += (obj, args) => { Removed = true; };
         }

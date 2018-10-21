@@ -86,7 +86,7 @@ namespace Buttplug.Core.Messages
             ERROR_UNKNOWN,
 
             /// <summary>
-            /// Error was caused by initilaisaion.
+            /// Error was caused during connection handshake.
             /// </summary>
             ERROR_INIT,
 
@@ -331,7 +331,7 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// Sent from server when a new device is discoved.
+    /// Sent from server when a new device is discovered.
     /// </summary>
     [ButtplugMessageMetadata("DeviceAdded", 1, typeof(DeviceAddedVersion0))]
     public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
@@ -378,7 +378,7 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// Sent from server when a new device is discoved. Represents a prior spec version of the message, kept for downgrade support.
+    /// Sent from server when a new device is discovered. Represents a prior spec version of the message, kept for downgrade support.
     /// </summary>
     [ButtplugMessageMetadata("DeviceAdded", 0)]
     public class DeviceAddedVersion0 : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
@@ -573,7 +573,7 @@ namespace Buttplug.Core.Messages
 
     /// <summary>
     /// Sent to server to set up client information, including client name and schema version.
-    /// Denotes the beginning of a conneciton handshake.
+    /// Denotes the beginning of a connection handshake.
     /// </summary>
     [ButtplugMessageMetadata("RequestServerInfo", 0)]
     public class RequestServerInfo : ButtplugMessage
@@ -923,7 +923,7 @@ namespace Buttplug.Core.Messages
 
     /// <summary>
     /// Sent to server, generic message that can control any vibrating device. If sent to device with
-    /// multiple vibrators, causes all vibrators to vibrate at same speed. This has been superceeded
+    /// multiple vibrators, causes all vibrators to vibrate at same speed. This has been superseded
     /// by <see cref="VibrateCmd"/>.
     /// </summary>
     [ButtplugMessageMetadata("SingleMotorVibrateCmd", 0)]

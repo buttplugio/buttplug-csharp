@@ -109,7 +109,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             Interface.BluetoothNotifyReceived += NotifyReceived;
 
             // Retreiving device type info for identification.
-            var writeMsg = await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes($"DeviceType;"), true, aToken);
+            var writeMsg = await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes("DeviceType;"), true, aToken);
             if (writeMsg is Error)
             {
                 BpLogger.Error($"Error requesting device info from Lovense {Name}");
@@ -278,7 +278,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 _clockwise = !_clockwise;
                 await Interface.WriteValueAsync(aMsg.Id,
-                   Encoding.ASCII.GetBytes($"RotateChange;"), false, aToken);
+                   Encoding.ASCII.GetBytes("RotateChange;"), false, aToken);
             }
 
             if (Math.Abs(_rotateSpeed - vi.Speed) < 0.0001)

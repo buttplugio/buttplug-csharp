@@ -46,7 +46,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             // rx (touch: 3 zone bitmask)
             { (uint)Chrs.RxTouch, new Guid("88f82582-0000-01e6-aace-0002a5d5c51b") },
 
-            // rx (accellorometer?)
+            // rx (accelerometer?)
             { (uint)Chrs.RxAccel, new Guid("88f82584-0000-01e6-aace-0002a5d5c51b") },
         };
 

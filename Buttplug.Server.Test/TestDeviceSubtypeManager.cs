@@ -7,12 +7,14 @@
 // Test file, disable ConfigureAwait checking.
 // ReSharper disable ConsiderUsingConfigureAwait
 
+using System.Diagnostics.CodeAnalysis;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Test;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class TestDeviceSubtypeManager : DeviceSubtypeManager
     {
         [CanBeNull]

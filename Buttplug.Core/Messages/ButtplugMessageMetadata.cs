@@ -2,8 +2,8 @@
 
 namespace Buttplug.Core.Messages
 {
-    [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class ButtplugMessageMetadata : System.Attribute
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ButtplugMessageMetadata : Attribute
     {
         /// <summary>
         /// String name of the message. Can be similar between different spec versions of messages.

@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Devices;
@@ -19,6 +20,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Core.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class ButtplugDeviceTests
     {

@@ -82,7 +82,7 @@ namespace Buttplug.Core.Messages
         /// <returns>Message name of ButtplugMessage class type.</returns>
         public static string GetName(Type aMsgType)
         {
-            return GetMessageAttribute<string>(aMsgType, (aMd) => aMd.Name);
+            return GetMessageAttribute(aMsgType, (aMd) => aMd.Name);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Buttplug.Core.Messages
         /// <returns>Spec version of ButtplugMessage class type.</returns>
         public static uint GetSpecVersion(Type aMsgType)
         {
-            return GetMessageAttribute<uint>(aMsgType, (aMd) => aMd.Version);
+            return GetMessageAttribute(aMsgType, (aMd) => aMd.Version);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Buttplug.Core.Messages
         /// <returns>Previous message type version of ButtplugMessage class type, or null if no previous message type exists.</returns>
         public static Type GetPreviousType(Type aMsgType)
         {
-            return GetMessageAttribute<Type>(aMsgType, (aMd) => aMd.PreviousType);
+            return GetMessageAttribute(aMsgType, (aMd) => aMd.PreviousType);
         }
     }
 

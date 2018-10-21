@@ -230,11 +230,11 @@ namespace Buttplug.Server.Managers.SerialPortManager
             }
 
             // Try reading from RAM with our pre-set box key of 0x10 - if this fails, the device is
-            // in an unknown state, throwception.
+            // in an unknown state, throw an exception.
             _boxKey = 0x10;
             await Peek((uint)ET312Consts.Flash.BoxModel);
 
-            // If we got this far we're back in busines!
+            // If we got this far we're back in business!
             BpLogger.Info("Encryption already set up. No handshake required.");
         }
 
@@ -290,7 +290,7 @@ namespace Buttplug.Server.Managers.SerialPortManager
             // Only commands 2 bytes or longer get a checksum
             if (buffer.Length > 1)
             {
-                // Resize the buffer we were sent to accomodiate a checksum.
+                // Resize the buffer we were sent to accommodate a checksum.
                 Array.Resize(ref buffer, buffer.Length + 1);
                 buffer[0] |= (byte)((buffer.Length - 1) << 4);                     // Command length sans checksum goes into upper 4 command bits
                 buffer[buffer.Length - 1] = Checksum(buffer);                      // Checksum goes into last byte

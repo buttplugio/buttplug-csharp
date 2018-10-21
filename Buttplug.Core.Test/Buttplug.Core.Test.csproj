@@ -62,6 +62,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgsTests.cs" />
+    <Compile Include="AssemblyGitVersionTests.cs" />
     <Compile Include="ButtplugDeviceTests.cs" />
     <Compile Include="ButtplugExceptionTests.cs" />
     <Compile Include="ButtplugJsonMessageParserTests.cs" />

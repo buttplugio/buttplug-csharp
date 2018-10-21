@@ -8,6 +8,7 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Buttplug.Core.Logging;
 using Buttplug.Server.Bluetooth;
@@ -15,6 +16,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class ButtplugBluetoothDeviceTests
     {

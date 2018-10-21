@@ -1,5 +1,15 @@
-﻿using System;
+﻿// <copyright file="ButtplugClientTestJSONConnector.cs" company="Nonpolynomial Labs LLC">
+// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
+// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -8,13 +18,12 @@ using NUnit.Framework;
 
 namespace Buttplug.Client.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class ButtplugClientTestJSONConnector : ButtplugRemoteJSONConnector, IButtplugClientConnector
     {
         public event EventHandler Disconnected;
 
-        public bool Connected => _connected;
-
-        private bool _connected = false;
+        public bool Connected { get; private set; }
 
         private Dictionary<Type, ButtplugMessage> _messageResponse;
 
@@ -37,17 +46,19 @@ namespace Buttplug.Client.Test
             ReceiveMessages(aMsgString);
         }
 
-        public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
+        public Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
-            _connected = true;
+            Connected = true;
+            return Task.CompletedTask;
         }
 
-        public async Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
+        public Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
         {
-            _connected = false;
+            Connected = false;
+            return Task.CompletedTask;
         }
 
-        public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        public Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
             var msg = _messageResponse[aMsg.GetType()];
             if (msg == null)
@@ -56,7 +67,7 @@ namespace Buttplug.Client.Test
             }
 
             msg.Id = aMsg.Id;
-            return msg;
+            return Task.FromResult(msg);
         }
     }
 }

@@ -91,7 +91,7 @@ namespace Buttplug.Core
         [NotNull]
         public IEnumerable<ButtplugMessage> Deserialize(string aJsonMsg)
         {
-            _bpLogger?.Trace($"Got JSON Message: {aJsonMsg}");
+            _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
             var textReader = new StringReader(aJsonMsg);
             // While we aren't receiving from a stream here, we may get multiple JSON arrays
             // depending on how we received messages.
@@ -175,7 +175,7 @@ namespace Buttplug.Core
             {
                 var msgObj = aObject[msgName].Value<JObject>();
                 var msg = (ButtplugMessage)msgObj.ToObject(aMsgType, _serializer);
-                _bpLogger?.Trace($"Message successfully parsed as {msgName} type");
+                _bpLogger.Trace($"Message successfully parsed as {msgName} type");
                 return msg;
             }
             catch (InvalidCastException e)
@@ -227,7 +227,7 @@ namespace Buttplug.Core
                     "Message does not conform to schema: " + string.Join(", ",
                         errors.Select(aErr => aErr?.ToString()).ToArray()), aMsg.Id);
             }
-            _bpLogger?.Trace($"Message serialized to: {jsonMsg.ToString(Formatting.None)}", true);
+            _bpLogger.Trace($"Message serialized to: {jsonMsg.ToString(Formatting.None)}", true);
             return msgArray.ToString(Formatting.None);
         }
 
@@ -270,7 +270,7 @@ namespace Buttplug.Core
                         errors.Select(aErr => aErr?.ToString()).ToArray()));
             }
             
-            _bpLogger?.Trace($"Message serialized to: {msgArray.ToString(Formatting.None)}", true);
+            _bpLogger.Trace($"Message serialized to: {msgArray.ToString(Formatting.None)}", true);
             return msgArray.ToString(Formatting.None);
         }
 

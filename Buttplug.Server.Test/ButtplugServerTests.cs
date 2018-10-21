@@ -8,6 +8,7 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -21,6 +22,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class ButtplugServerTests
     {
@@ -68,7 +70,7 @@ namespace Buttplug.Server.Test
             msg.Should().BeOfType<Ok>();
             SendOutgoingMessageToServer();
             Assert.True(gotMessage);
-            msg = await _server.SendMessageAsync(new RequestLog(ButtplugLogLevel.Off));
+            msg = await _server.SendMessageAsync(new RequestLog());
             msg.Should().BeOfType<Ok>();
             gotMessage = false;
             SendOutgoingMessageToServer();

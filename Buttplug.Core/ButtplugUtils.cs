@@ -59,6 +59,7 @@ namespace Buttplug.Core
         /// </summary>
         /// <param name="aResourceName">Resource to retrieve</param>
         /// <returns>String of all licenses for assembly dependencies.</returns>
+        // ReSharper disable once UnusedMember.Global
         public static string GetLicense(Assembly aAssembly, string aResourceName)
         {
             Stream stream = null;

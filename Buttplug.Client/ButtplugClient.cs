@@ -151,6 +151,7 @@ namespace Buttplug.Client
             DisconnectAsync().Wait();
         }
 
+        // ReSharper disable once UnusedMember.Global
         public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             if (Connected)
@@ -238,6 +239,7 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
+        // ReSharper disable once UnusedMember.Global
         public async Task StartScanningAsync(CancellationToken aToken = default(CancellationToken))
         {
             await SendMessageExpectOk(new StartScanning(), aToken);
@@ -251,6 +253,7 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
+        // ReSharper disable once UnusedMember.Global
         public async Task StopScanningAsync(CancellationToken aToken = default(CancellationToken))
         {
             await SendMessageExpectOk(new StopScanning(), aToken);
@@ -265,6 +268,7 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
+        // ReSharper disable once UnusedMember.Global
         public async Task RequestLogAsync(ButtplugLogLevel aLogLevel, CancellationToken aToken = default(CancellationToken))
         {
             await SendMessageExpectOk(new RequestLog(aLogLevel), aToken);
@@ -346,7 +350,7 @@ namespace Buttplug.Client
                         ErrorReceived?.Invoke(this,
                             new ButtplugExceptionEventArgs(
                                 new ButtplugDeviceException(_bpLogger,
-                                    $"Got device removed message for unknown device.",
+                                    "Got device removed message for unknown device.",
                                     msg.Id)));
                         return;
                     }
@@ -356,7 +360,7 @@ namespace Buttplug.Client
                     DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
                     break;
 
-                case ScanningFinished sf:
+                case ScanningFinished _:
                     // The scanning finished event is self explanatory and doesn't require extra arguments.
                     ScanningFinished?.Invoke(this, new EventArgs());
                     break;
@@ -397,7 +401,7 @@ namespace Buttplug.Client
             }
             catch (Exception e)
             {
-                ErrorReceived?.Invoke(_bpLogger, new ButtplugExceptionEventArgs(new ButtplugPingException(_bpLogger, $"Exception thrown during ping update", ButtplugConsts.SystemMsgId, e)));
+                ErrorReceived?.Invoke(_bpLogger, new ButtplugExceptionEventArgs(new ButtplugPingException(_bpLogger, "Exception thrown during ping update", ButtplugConsts.SystemMsgId, e)));
 
                 // If SendMessageAsync throws, we're probably already disconnected, but just make sure.
                 await DisconnectAsync();

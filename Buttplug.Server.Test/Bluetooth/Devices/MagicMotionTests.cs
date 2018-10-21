@@ -4,7 +4,11 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
@@ -14,6 +18,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class MagicMotionSingleVibeTests
     {
@@ -85,12 +90,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public async Task TestInvalidVibrateCmd()
+        public void TestInvalidVibrateCmd()
         {
-            await testUtil.TestInvalidVibrateCmd(1);
+            testUtil.TestInvalidVibrateCmd(1);
         }
     }
 
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class MagicMotionDualVibeTests
     {
@@ -162,9 +168,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public async Task TestInvalidVibrateCmd()
+        public void TestInvalidVibrateCmd()
         {
-            await testUtil.TestInvalidVibrateCmd(2);
+            testUtil.TestInvalidVibrateCmd(2);
         }
     }
 }

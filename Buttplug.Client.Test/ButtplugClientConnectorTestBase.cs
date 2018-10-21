@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -21,6 +22,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Client.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public abstract class ButtplugClientConnectorTestBase
     {
         protected volatile TaskCompletionSource<object> _resetSource = new TaskCompletionSource<object>();
@@ -184,7 +186,7 @@ namespace Buttplug.Client.Test
 
             public async Task SendOutgoingOnlyMessage()
             {
-                var msg = await SendMessageAsync(new Ok(ButtplugConsts.DefaultMsgId));
+                await SendMessageAsync(new Ok(ButtplugConsts.DefaultMsgId));
             }
         }
 
@@ -198,6 +200,24 @@ namespace Buttplug.Client.Test
             try
             {
                 await c.SendOutgoingOnlyMessage();
+                Assert.Fail("Should throw!");
+            }
+            catch (ButtplugMessageException)
+            {
+                Assert.Pass("Got expected exception");
+            }
+        }
+
+        [Test]
+        public async Task TestSendSystemIdMessage()
+        {
+            var c = new SystemMessageSendingClient("TestClient", _connector);
+            await c.ConnectAsync();
+
+            // For some reason, trying this with FluentAssertions Awaiting clauses causes a stall. Back to Asserts.
+            try
+            {
+                await c.SendSystemIdMessage();
                 Assert.Fail("Should throw!");
             }
             catch (ButtplugMessageException)

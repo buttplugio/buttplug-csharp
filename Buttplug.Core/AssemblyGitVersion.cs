@@ -17,6 +17,7 @@ namespace Buttplug.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="AssemblyGitVersion"/> class.
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public AssemblyGitVersion()
         {
             Value = string.Empty;
@@ -26,6 +27,7 @@ namespace Buttplug.Core
         /// Initializes a new instance of the <see cref="AssemblyGitVersion"/> class.
         /// </summary>
         /// <param name="aValue">Git Version (includes commit SHA)</param>
+        // ReSharper disable once UnusedMember.Global
         public AssemblyGitVersion(string aValue)
         {
             Value = aValue;

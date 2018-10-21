@@ -4,8 +4,12 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
@@ -17,6 +21,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
 {
     // This info class represents multiple device types, so we can't call setup for our test utils
     // here, they need to be generated per-loop.
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class KiirooGen2VibeTests
     {
@@ -27,7 +32,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             {
                 var testUtil = new BluetoothDeviceTestUtils<KiirooGen2VibeBluetoothInfo>();
                 await testUtil.SetupTest(item.Key);
-                testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
+                testUtil.TestDeviceAllowedMessages(new Dictionary<Type, uint>()
                 {
                     { typeof(StopDeviceCmd), 0 },
                     { typeof(SingleMotorVibrateCmd), 0 },
@@ -96,7 +101,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             {
                 var testUtil = new BluetoothDeviceTestUtils<KiirooGen2VibeBluetoothInfo>();
                 await testUtil.SetupTest(item.Key);
-                await testUtil.TestInvalidVibrateCmd(item.Value.VibeCount);
+                testUtil.TestInvalidVibrateCmd(item.Value.VibeCount);
             }
         }
     }

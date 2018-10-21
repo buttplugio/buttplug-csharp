@@ -28,11 +28,13 @@ namespace Buttplug.Server
             BpLogger.Debug($"Setting up Device Manager {GetType().Name}");
         }
 
+        // ReSharper disable once UnusedMember.Global
         protected void InvokeDeviceAdded([NotNull] DeviceAddedEventArgs aEventArgs)
         {
             DeviceAdded?.Invoke(this, aEventArgs);
         }
 
+        // ReSharper disable once UnusedMember.Global
         protected void InvokeScanningFinished()
         {
             ScanningFinished?.Invoke(this, new EventArgs());

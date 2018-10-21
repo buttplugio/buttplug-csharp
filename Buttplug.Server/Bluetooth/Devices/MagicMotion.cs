@@ -183,7 +183,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 return new Ok(cmdMsg.Id);
             }
 
-            byte[] data = null;
+            byte[] data;
             switch (_devInfo.Protocol)
             {
             case MagicMotionProtocol.Protocol1:

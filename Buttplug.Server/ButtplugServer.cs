@@ -137,6 +137,7 @@ namespace Buttplug.Server
         {
             // Stop the timer by specifying an infinite due period (See: https://msdn.microsoft.com/en-us/library/yz1c7148(v=vs.110).aspx)
             _pingTimer?.Change(Timeout.Infinite, (int)_maxPingTime);
+
             // Since this happens in an event handler, output a message, not an exception
             // TODO Once server has ErrorReceived event handlers, change this to throwing an exception through that.
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(new Error("Ping timed out.",
@@ -167,7 +168,7 @@ namespace Buttplug.Server
 
             if (_pingTimedOut)
             {
-                throw new ButtplugPingException(_bpLogger, $"Ping timed out.", id);
+                throw new ButtplugPingException(_bpLogger, "Ping timed out.", id);
             }
 
             // If we get a message that's not RequestServerInfo first, return an error.
@@ -265,6 +266,7 @@ namespace Buttplug.Server
             return _parser.Serialize(aMsgs, _clientSpecVersion);
         }
 
+        // ReSharper disable once UnusedMember.Global
         public void AddDeviceSubtypeManager<T>(Func<IButtplugLogManager, T> aCreateMgrFunc)
             where T : IDeviceSubtypeManager
         {

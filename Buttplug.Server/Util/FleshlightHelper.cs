@@ -27,7 +27,8 @@ namespace Buttplug.Server.Util
             {
                 return 0;
             }
-            else if (aSpeed > 1)
+
+            if (aSpeed > 1)
             {
                 aSpeed = 1;
             }

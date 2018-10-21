@@ -75,8 +75,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgsTests.cs" />
-    <Compile Include="AssemblyGitVersionTests.cs" />
     <Compile Include="Bluetooth\Devices\KiirooOnyx1Tests.cs" />
     <Compile Include="Bluetooth\Devices\KiirooOnyx2Tests.cs" />
     <Compile Include="Bluetooth\Devices\FleshlightLaunchTests.cs" />

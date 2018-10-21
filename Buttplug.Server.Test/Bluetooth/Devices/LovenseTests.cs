@@ -96,9 +96,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public async Task TestInvalidVibrateCmd()
+        public void TestInvalidVibrateCmd()
         {
-            await testUtil.TestInvalidVibrateCmd(1);
+            testUtil.TestInvalidVibrateCmd(1);
         }
     }
 
@@ -187,9 +187,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public async Task TestInvalidVibrateCmd()
+        public void TestInvalidVibrateCmd()
         {
-            await testUtil.TestInvalidVibrateCmd(2);
+            testUtil.TestInvalidVibrateCmd(2);
         }
     }
 
@@ -271,11 +271,11 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public async Task TestInvalidVibrateCmd()
+        public void TestInvalidVibrateCmd()
         {
-            await testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 0));
-            await testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 2));
-            await testUtil.TestInvalidDeviceMessage(
+            testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 0));
+            testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 2));
+            testUtil.TestInvalidDeviceMessage(
                 new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
                 {
                     new VibrateCmd.VibrateSubcommand(0xffffffff, 0.5),

@@ -7,8 +7,14 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
+// Lots of weird names in here, don't want to add all of them to the dictionary so we'll just disable
+// spell checking here.
+// ReSharper disable IdentifierTypo
+// ReSharper disable CommentTypo
+
 namespace Buttplug.Server.Managers.SerialPortManager
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1602:EnumerationItemsMustBeDocumented", Justification = "Need to figure out regex to turn these into docs.")]
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Based on 3rd party documentation.")]
     [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Based on 3rd party documentation.")]
     public static class ET312Consts

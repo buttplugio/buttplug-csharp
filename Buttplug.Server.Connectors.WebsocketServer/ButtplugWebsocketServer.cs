@@ -19,7 +19,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
 {
     public class ButtplugWebsocketServer
     {
-        [NotNull]
+        [CanBeNull]
         private WebSocketListener _server;
 
         [NotNull]
@@ -133,7 +133,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
                 ConnectionClosed?.Invoke(this, aEventArgs);
             };
             await session.RunServerSession();
-            _connections.TryRemove(remoteId, out var closews);
+            _connections.TryRemove(remoteId, out var closeWebSockets);
         }
 
         public async Task StopServerAsync()

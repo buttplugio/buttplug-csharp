@@ -133,9 +133,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             {
                 testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
                 await testUtil.SetupTest(name);
-                await testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 0));
-                await testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 2));
-                await testUtil.TestInvalidDeviceMessage(
+                testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 0));
+                testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 2));
+                testUtil.TestInvalidDeviceMessage(
                     new RotateCmd(4, new List<RotateCmd.RotateSubcommand>()
                     {
                         new RotateCmd.RotateSubcommand(0xffffffff, 0.5, true),

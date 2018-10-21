@@ -25,7 +25,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public Guid[] Services { get; } = { new Guid("00001523-1212-efde-1523-785feabcd123") };
 
-        // Device can be renamed, but wildcarding spams our logs and they
+        // Device can be renamed, but using wildcard names spams our logs and they
         // reuse a common Service UUID, so require it to be the default
         public string[] Names { get; } =
         {

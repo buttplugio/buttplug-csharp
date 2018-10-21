@@ -65,7 +65,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"MysteryVibe Crescendo",
+                   "MysteryVibe Crescendo",
                    aInterface,
                    aInfo)
         {
@@ -111,7 +111,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             // We'll have to use an internal token here since this is timer triggered.
             if (await Interface.WriteValueAsync(ButtplugConsts.DefaultMsgId,
                 (uint)MysteryVibeBluetoothInfo.Chrs.MotorControl,
-                _vibratorSpeeds, false, _stopUpdateCommandSource.Token) is Error errorMsg)
+                _vibratorSpeeds, false, _stopUpdateCommandSource.Token) is Error)
             {
                 BpLogger.Error($"Cannot send update to {Name}, device may stop moving.");
                 _updateValueTimer.Enabled = false;

@@ -101,7 +101,7 @@ namespace Buttplug.Server.Managers.WinUSBManager
             foreach (var deviceinfo in devices)
             {
                 var device = new USBDevice(deviceinfo);
-                BpLogger.Debug($"Found TranceVibrator Device");
+                BpLogger.Debug("Found TranceVibrator Device");
                 var tvDevice = new RezTranceVibratorDevice(LogManager, device, index);
                 index += 1;
                 InvokeDeviceAdded(new DeviceAddedEventArgs(tvDevice));

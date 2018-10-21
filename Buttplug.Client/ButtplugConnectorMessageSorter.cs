@@ -20,7 +20,7 @@ namespace Buttplug.Client
         /// <summary>
         /// Holds count for message IDs, if needed.
         /// </summary>
-        private int _counter = 0;
+        private int _counter;
 
         /// <summary>
         /// Gets the next available message ID. In most cases, setting the message ID is done automatically.

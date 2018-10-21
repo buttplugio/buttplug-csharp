@@ -51,24 +51,10 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
 
         private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
-
-            if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > 2)
-            {
-                throw new ButtplugDeviceException(BpLogger,
-                    "VibrateCmd requires between 1 and 2 vectors for this device.",
-                    cmdMsg.Id);
-            }
+            var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, 2);
 
             foreach (var vi in cmdMsg.Speeds)
             {
-                if (vi.Index < 0 || vi.Index >= 2)
-                {
-                    throw new ButtplugDeviceException(BpLogger,
-                        $"Index {vi.Index} is out of bounds for VibrateCmd for this device.",
-                        cmdMsg.Id);
-                }
-
                 _vibratorSpeeds[vi.Index] = _vibratorSpeeds[vi.Index] < 0 ? 0
                                           : _vibratorSpeeds[vi.Index] > 1 ? 1
                                                                           : vi.Speed;

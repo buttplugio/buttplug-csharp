@@ -25,7 +25,7 @@ namespace Buttplug.Server.Bluetooth
 
         Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
 
-        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharactieristicIndex, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
+        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharacteristicIndex, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
 
         Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken);
 

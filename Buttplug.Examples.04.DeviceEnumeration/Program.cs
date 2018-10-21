@@ -67,7 +67,7 @@ namespace Buttplug.Examples._03.DeviceEnumeration
             // hardware subtype manager.
             var testDevice = new TestDevice(new ButtplugLogManager(), "Test Device");
             server.AddDeviceSubtypeManager(
-                (IButtplugLogManager aLogManager) => new TestDeviceSubtypeManager(testDevice));
+                aLogManager => new TestDeviceSubtypeManager(testDevice));
 
             // If you'd like to see what this looks like with an actual hardware manager, here's how
             // we'd add the XInput (Xbox Gamepad) manager to the server. 

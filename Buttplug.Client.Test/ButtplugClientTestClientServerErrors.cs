@@ -4,6 +4,10 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
@@ -12,6 +16,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Client.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class ButtplugClientTestClientServerErrors
     {
@@ -26,6 +31,7 @@ namespace Buttplug.Client.Test
             {
                 Assert.Fail("Multiple errors thrown without resets.");
             }
+
             _errorInvoked = true;
             _currentException = aEx.Exception;
         }
@@ -120,6 +126,7 @@ namespace Buttplug.Client.Test
             _connector.SetMessageResponse<Ping>(new Error("Ping timeout", Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId));
             var waitTask = new TaskCompletionSource<bool>();
             var disconnectTask = new TaskCompletionSource<bool>();
+
             // This test fails often on CI if we using timing/sleeps. Remove failure on multiple
             // errors and set up own handlers.
             _client.ErrorReceived -= HandleErrorInvoked;

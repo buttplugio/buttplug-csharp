@@ -15,6 +15,7 @@ using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
+    // ReSharper disable once UnusedMember.Global
     public class ButtplugEmbeddedConnector : IButtplugClientConnector
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;

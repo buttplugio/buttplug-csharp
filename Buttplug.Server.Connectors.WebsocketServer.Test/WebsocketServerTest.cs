@@ -1,4 +1,14 @@
-﻿using System;
+﻿// <copyright file="WebsocketServerTest.cs" company="Nonpolynomial Labs LLC">
+// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
+// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Client;
@@ -8,6 +18,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Connectors.WebsocketServer.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class WebsocketServerTest
     {
@@ -34,7 +45,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer.Test
         public async Task TestConnectionAcceptedEvent()
         {
             // There's a good chance the server will fire ConnectionAccepted while we're calling
-            // ConnectAsync(), but using a semaphor means we'll pass even if its out of sync.
+            // ConnectAsync(), but using a semaphore means we'll pass even if its out of sync.
             var sem = new SemaphoreSlim(0, 1);
             _server.ConnectionAccepted += (aObject, aEventArgs) => { sem.Release(); };
             await _server.StartServerAsync(() => new ButtplugServer("Test Server", 0));

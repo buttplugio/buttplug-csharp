@@ -4,7 +4,11 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Devices;
@@ -13,10 +17,11 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Core.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class TestDevice : ButtplugDevice
     {
-        public double V1 = 0;
-        public double V2 = 0;
+        public double V1;
+        public double V2;
 
         public TestDevice(IButtplugLogManager aLogManager, string aName, string aIdentifier = null)
             : base(aLogManager, aName, aIdentifier ?? aName)

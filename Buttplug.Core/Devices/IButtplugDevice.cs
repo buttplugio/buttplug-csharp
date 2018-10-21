@@ -75,8 +75,8 @@ namespace Buttplug.Core.Devices
         void Disconnect();
 
         /// <summary>
-        /// Retreives the message attributes for the device associated with this message. Used for
-        /// retreiving information about feature counts in device command messages, etc...
+        /// Retrieves the message attributes for the device associated with this message. Used for
+        /// retrieving information about feature counts in device command messages, etc...
         /// </summary>
         /// <param name="aMsg">Message type to fetch attributes for</param>
         [NotNull]

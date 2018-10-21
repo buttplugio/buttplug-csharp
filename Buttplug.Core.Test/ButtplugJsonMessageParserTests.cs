@@ -8,6 +8,7 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
@@ -17,6 +18,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Core.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class ButtplugJsonMessageParserTests
     {
@@ -46,6 +48,7 @@ namespace Buttplug.Core.Test
             msg.Should().Be("[{\"Test\":{\"TestString\":\"ThisIsATest\",\"Id\":0}},{\"Test\":{\"TestString\":\"ThisIsAnotherTest\",\"Id\":0}}]");
         }
 
+        // ReSharper disable once UnusedMember.Global
         [Datapoints]
         public string[] TestData =
         {

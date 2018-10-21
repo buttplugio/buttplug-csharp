@@ -158,7 +158,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
                 if (Convert.ToUInt32(distance * 4) == 0 && delta.TotalMilliseconds < 500)
                 {
-                    // Skip. We do want to occationally ping the Onyx, but only every half a second
+                    // Skip. We do want to occasionally ping the Onyx, but only every half a second
                     return;
                 }
 
@@ -172,7 +172,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 }
                 else
                 {
-                    // The hard part: find the persentage time gone, then add that percentate of the movement delta
+                    // The hard part: find the percentage time gone, then add that percentage of the movement delta
                     var delta2 = _targetTime.Subtract(oldTime);
 
                     var move = (Convert.ToDouble(delta.TotalMilliseconds) / (Convert.ToDouble(delta2.TotalMilliseconds) + 1)) * distance;

@@ -4,7 +4,11 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
@@ -14,6 +18,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class FleshlightLaunchTests
     {
@@ -43,7 +48,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         {
             await testUtil.TestDeviceInitialize(new List<(byte[], uint)>()
             {
-                (new byte[1] { 0x0 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd),
+                (new byte[] { 0x0 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Cmd),
             }, true);
         }
 
@@ -56,7 +61,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             await testUtil.TestDeviceMessage(new FleshlightLaunchFW12Cmd(4, 50, 50),
                 new List<(byte[], uint)>()
                 {
-                    (new byte[2] { 50, 50 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
+                    (new byte[] { 50, 50 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
                 }, false);
         }
 
@@ -84,33 +89,33 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             await testUtil.TestDeviceMessage(msg,
                 new List<(byte[], uint)>()
                 {
-                    (new byte[2] { 50, 20 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
+                    (new byte[] { 50, 20 }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx),
                 }, false);
         }
 
         [Test]
-        public async Task TestInvalidVectorCmdTooManyFeatures()
+        public void TestInvalidVectorCmdTooManyFeatures()
         {
             var msg = LinearCmd.Create(4, 0, 500, 0.75, 2);
-            await testUtil.TestInvalidDeviceMessage(msg);
+            testUtil.TestInvalidDeviceMessage(msg);
         }
 
         [Test]
-        public async Task TestInvalidVectorCmdWrongFeatures()
+        public void TestInvalidVectorCmdWrongFeatures()
         {
             var msg = new LinearCmd(4,
                 new List<LinearCmd.VectorSubcommand>
                 {
                     new LinearCmd.VectorSubcommand(0xffffffff, 500, 0.75),
                 });
-            await testUtil.TestInvalidDeviceMessage(msg);
+            testUtil.TestInvalidDeviceMessage(msg);
         }
 
         [Test]
-        public async Task TestInvalidVectorNotEnoughFeatures()
+        public void TestInvalidVectorNotEnoughFeatures()
         {
             var msg = LinearCmd.Create(4, 0, 500, 0.75, 0);
-            await testUtil.TestInvalidDeviceMessage(msg);
+            testUtil.TestInvalidDeviceMessage(msg);
         }
     }
 }

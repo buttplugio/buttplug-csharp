@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
@@ -21,6 +22,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     // Note that tests that happen here only run on one kind of device from a device info class,
     // assuming all devices will act the same. If you need varying reactions per device, put those
     // tests in the specific device test class.
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class GeneralDeviceTests
     {

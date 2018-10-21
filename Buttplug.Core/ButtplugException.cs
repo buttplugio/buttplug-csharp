@@ -43,7 +43,6 @@ namespace Buttplug.Core
         /// Creates a ButtplugException.
         /// </summary>
         /// <param name="aMessage">Exception message.</param>
-        /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. (https://buttplug-spec.docs.buttplug.io/status.html#error)</param>
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
         public ButtplugException(string aMessage, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null)

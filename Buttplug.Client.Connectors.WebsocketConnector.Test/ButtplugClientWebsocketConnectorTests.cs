@@ -8,6 +8,7 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Client.Test;
@@ -20,6 +21,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Client.Connectors.WebsocketConnector.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class ButtplugClientWebsocketConnectorTests : ButtplugClientConnectorTestBase
     {

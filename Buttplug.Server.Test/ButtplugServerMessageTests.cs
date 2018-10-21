@@ -7,6 +7,7 @@
 // Test file, disable ConfigureAwait checking.
 // ReSharper disable ConsiderUsingConfigureAwait
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -17,6 +18,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class ButtplugServerMessageTests
     {
@@ -49,7 +51,7 @@ namespace Buttplug.Server.Test
         public async Task TestCallStartScanning()
         {
             var dm = new TestDeviceSubtypeManager();
-            _server.AddDeviceSubtypeManager(aLogger => { return dm; });
+            _server.AddDeviceSubtypeManager(aLogger => dm);
             var r = await _server.SendMessageAsync(new StartScanning());
             r.Should().BeOfType<Ok>();
             dm.StartScanningCalled.Should().BeTrue();

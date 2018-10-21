@@ -13,7 +13,7 @@ namespace Buttplug.Client
 {
     public class ButtplugClientConnectorException : ButtplugException
     {
-        /// <inheritdoc cref="ButtplugClientException" />
+        /// <inheritdoc cref="ButtplugException" />
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientConnectorException"/> class.
         /// </summary>
@@ -26,7 +26,7 @@ namespace Buttplug.Client
         {
         }
 
-        /// <inheritdoc cref="ButtplugClientException" />
+        /// <inheritdoc cref="ButtplugException" />
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientConnectorException"/> class.
         /// </summary>

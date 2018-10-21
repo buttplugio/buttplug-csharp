@@ -4,7 +4,11 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// Test file, disable ConfigureAwait checking.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
@@ -15,6 +19,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class MysteryVibeTests
     {
@@ -86,9 +91,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public async Task TestInvalidVibrateCmd()
+        public void TestInvalidVibrateCmd()
         {
-            await testUtil.TestInvalidVibrateCmd(6);
+            testUtil.TestInvalidVibrateCmd(6);
         }
     }
 }

@@ -133,10 +133,10 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             const string signatureAlgorithm = "SHA256WithRSA";
             var signatureFactory = new Asn1SignatureFactory(signatureAlgorithm, subjectKeyPair.Private);
 
-            // selfsign certificate
+            // self-signed certificate
             var certificate = certificateGenerator.Generate(signatureFactory);
 
-            // correcponding private key
+            // corresponding private key
             var info = PrivateKeyInfoFactory.CreatePrivateKeyInfo(subjectKeyPair.Private);
 
             // merge into X509Certificate2
@@ -148,12 +148,12 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             }
 
             var rsa = RsaPrivateKeyStructure.GetInstance(seq);
-            var rsaparams = new RsaPrivateCrtKeyParameters(
+            var rsaParams = new RsaPrivateCrtKeyParameters(
                 rsa.Modulus, rsa.PublicExponent, rsa.PrivateExponent, rsa.Prime1, rsa.Prime2, rsa.Exponent1, rsa.Exponent2, rsa.Coefficient);
 
             // This can throw CryptographicException in some cases. Catch above here and deal with it
             // in the application level.
-            x509.PrivateKey = ToDotNetKey(rsaparams); // x509.PrivateKey = DotNetUtilities.ToRSA(rsaparams);
+            x509.PrivateKey = ToDotNetKey(rsaParams); // x509.PrivateKey = DotNetUtilities.ToRSA(rsaParams);
 
             return x509;
         }
@@ -174,19 +174,19 @@ namespace Buttplug.Server.Connectors.WebsocketServer
 
         // Extra padding solution from: https://stackoverflow.com/questions/28370414/import-rsa-key-from-bouncycastle-sometimes-throws-bad-data/28387580#28387580
         // ReSharper disable once InconsistentNaming
-        private static RSAParameters ToRSAParameters(RsaPrivateCrtKeyParameters privKey)
+        private static RSAParameters ToRSAParameters(RsaPrivateCrtKeyParameters privateKey)
         {
             var rp = new RSAParameters
             {
-                Modulus = privKey.Modulus.ToByteArrayUnsigned(),
-                Exponent = privKey.PublicExponent.ToByteArrayUnsigned(),
-                P = privKey.P.ToByteArrayUnsigned(),
-                Q = privKey.Q.ToByteArrayUnsigned(),
+                Modulus = privateKey.Modulus.ToByteArrayUnsigned(),
+                Exponent = privateKey.PublicExponent.ToByteArrayUnsigned(),
+                P = privateKey.P.ToByteArrayUnsigned(),
+                Q = privateKey.Q.ToByteArrayUnsigned(),
             };
-            rp.D = ConvertRSAParametersField(privKey.Exponent, rp.Modulus.Length);
-            rp.DP = ConvertRSAParametersField(privKey.DP, rp.P.Length);
-            rp.DQ = ConvertRSAParametersField(privKey.DQ, rp.Q.Length);
-            rp.InverseQ = ConvertRSAParametersField(privKey.QInv, rp.Q.Length);
+            rp.D = ConvertRSAParametersField(privateKey.Exponent, rp.Modulus.Length);
+            rp.DP = ConvertRSAParametersField(privateKey.DP, rp.P.Length);
+            rp.DQ = ConvertRSAParametersField(privateKey.DQ, rp.Q.Length);
+            rp.InverseQ = ConvertRSAParametersField(privateKey.QInv, rp.Q.Length);
             return rp;
         }
 

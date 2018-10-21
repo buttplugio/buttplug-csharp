@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -18,6 +19,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Client.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class ButtplugClientTestConnector : IButtplugClientConnector
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
@@ -28,17 +30,17 @@ namespace Buttplug.Client.Test
 
         public IButtplugLogManager LogManager { private get; set; }
 
-        public bool Connected => _connected;
-
-        private bool _connected = false;
+        public bool Connected { get; private set; }
 
         private Dictionary<Type, ButtplugMessage> _messageResponse;
 
         public ButtplugClientTestConnector()
         {
-            _messageResponse = new Dictionary<Type, ButtplugMessage>();
-            _messageResponse.Add(typeof(RequestServerInfo), new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0));
-            _messageResponse.Add(typeof(RequestDeviceList), new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId));
+            _messageResponse = new Dictionary<Type, ButtplugMessage>
+            {
+                { typeof(RequestServerInfo), new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0) },
+                { typeof(RequestDeviceList), new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId) },
+            };
         }
 
         public void SetMessageResponse<T>(ButtplugMessage aMsg)
@@ -55,17 +57,17 @@ namespace Buttplug.Client.Test
 
         public Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
-            _connected = true;
+            Connected = true;
             return Task.CompletedTask;
         }
 
         public Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
         {
-            _connected = false;
+            Connected = false;
             return Task.CompletedTask;
         }
 
-        public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        public Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
             var msg = _messageResponse[aMsg.GetType()];
             if (msg == null)
@@ -74,7 +76,7 @@ namespace Buttplug.Client.Test
             }
 
             msg.Id = aMsg.Id;
-            return msg;
+            return Task.FromResult(msg);
         }
     }
 }

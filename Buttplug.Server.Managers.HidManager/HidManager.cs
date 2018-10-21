@@ -32,8 +32,8 @@ namespace Buttplug.Server.Managers.HidManager
         public override void StartScanning()
         {
             _scanning = true;
-            var hids = new HidEnumerator();
-            foreach (var hid in hids.Enumerate())
+            var hidDevices = new HidEnumerator();
+            foreach (var hid in hidDevices.Enumerate())
             {
                 try
                 {
@@ -55,7 +55,7 @@ namespace Buttplug.Server.Managers.HidManager
                     {
                         if (buttplugHidDeviceFactories.Any())
                         {
-                            BpLogger.Warn($"Found multiple HID factories for " + hid.Attributes.VendorHexId + ":" + hid.Attributes.ProductHexId);
+                            BpLogger.Warn($"Found multiple HID factories for {hid.Attributes.VendorHexId}:{hid.Attributes.ProductHexId}");
                             buttplugHidDeviceFactories.ToList().ForEach(x => BpLogger.Warn(x.GetType().Name));
                         }
                         else

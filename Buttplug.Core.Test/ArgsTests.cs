@@ -5,12 +5,15 @@
 // </copyright>
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class ArgsTests
     {
@@ -19,9 +22,9 @@ namespace Buttplug.Server.Test
         {
             var ex = new Exception("foo");
             var arg = new LogExceptionEventArgs(ex, false, "bar");
-            Assert.AreEqual(ex, arg.Ex);
-            Assert.False(arg.LocalOnly);
-            Assert.AreEqual("bar", arg.ErrorMessage);
+            arg.Ex.Should().Be(ex);
+            arg.LocalOnly.Should().BeFalse();
+            arg.ErrorMessage.Should().Be("bar");
         }
 
         [Test]
@@ -29,15 +32,15 @@ namespace Buttplug.Server.Test
         {
             var msg = new Core.Messages.Test("foo");
             var arg = new MessageReceivedEventArgs(msg);
-            Assert.AreEqual(msg, arg.Message);
+            msg.Should().Be(arg.Message);
         }
 
         [Test]
         public void ButtplugLogMessageEventArgsTest()
         {
             var arg = new ButtplugLogMessageEventArgs(ButtplugLogLevel.Info, "foo");
-            Assert.AreEqual("foo", arg.LogMessage.LogMessage);
-            Assert.AreEqual(ButtplugLogLevel.Info, arg.LogMessage.LogLevel);
+            arg.LogMessage.LogMessage.Should().Be("foo");
+            arg.LogMessage.LogLevel.Should().Be(ButtplugLogLevel.Info);
         }
     }
 }

@@ -8,11 +8,13 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Buttplug.Core.Logging;
 using Buttplug.Server.Bluetooth;
 
 namespace Buttplug.Server.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     internal class TestBluetoothSubtypeManager : BluetoothSubtypeManager
     {
         public TestBluetoothSubtypeManager(IButtplugLogManager aLogManager)

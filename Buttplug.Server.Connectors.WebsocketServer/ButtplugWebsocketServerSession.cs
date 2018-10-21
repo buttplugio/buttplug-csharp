@@ -120,8 +120,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
                     {
                         try
                         {
-                            IList<string> msgs = new List<string>();
-                            _outgoingMessages.TryReceiveAll(out msgs);
+                            _outgoingMessages.TryReceiveAll(out var msgs);
                             var outMsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
                             if (_ws != null && _ws.IsConnected)
                             {
@@ -132,7 +131,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
                         }
                         catch (WebSocketException e)
                         {
-                            // Probably means we're repling to a message we recieved just before shutdown.
+                            // Probably means we're replying to a message we received just before shutdown.
                             _logger.Error(e.Message, true);
                         }
                     }

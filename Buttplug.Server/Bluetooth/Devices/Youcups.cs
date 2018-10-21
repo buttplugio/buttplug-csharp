@@ -51,13 +51,13 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "Youcups", "Warrior II" },
         };
 
-        private double _vibratorSpeed = 0;
+        private double _vibratorSpeed;
 
         public Youcups(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface,
                        IBluetoothDeviceInfo aInfo)
             : base(aLogManager,
-                   $"Youcups Unknown",
+                   "Youcups Unknown",
                    aInterface,
                    aInfo)
         {

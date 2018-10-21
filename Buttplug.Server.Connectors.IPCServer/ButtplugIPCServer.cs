@@ -81,7 +81,7 @@ namespace Buttplug.Server.Connectors.IPCServer
 
                 var buttplugServer = _serverFactory();
 
-                EventHandler<MessageReceivedEventArgs> msgReceived = (aObject, aEvent) =>
+                void MsgReceived(object aObject, MessageReceivedEventArgs aEvent)
                 {
                     var msg = buttplugServer.Serialize(aEvent.Message);
                     if (msg == null)
@@ -104,21 +104,21 @@ namespace Buttplug.Server.Connectors.IPCServer
                     }
                     catch (WebSocketException e)
                     {
-                        // Probably means we're repling to a message we recieved just before shutdown.
+                        // Probably means we're replying to a message we received just before shutdown.
                         _logger.Error(e.Message, true);
                     }
-                };
+                }
 
-                buttplugServer.MessageReceived += msgReceived;
+                buttplugServer.MessageReceived += MsgReceived;
 
-                EventHandler<MessageReceivedEventArgs> clientConnected = (aObject, aEvent) =>
+                void ClientConnected(object aObject, MessageReceivedEventArgs aEvent)
                 {
                     var msg = aEvent.Message as RequestServerInfo;
                     var clientName = msg?.ClientName ?? "Unknown client";
                     ConnectionUpdated?.Invoke(this, new IPCConnectionEventArgs(clientName));
-                };
+                }
 
-                buttplugServer.ClientConnected += clientConnected;
+                buttplugServer.ClientConnected += ClientConnected;
 
                 try
                 {
@@ -189,7 +189,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                 }
                 finally
                 {
-                    buttplugServer.MessageReceived -= msgReceived;
+                    buttplugServer.MessageReceived -= MsgReceived;
                     await buttplugServer.ShutdownAsync();
                     buttplugServer = null;
                     _connections.TryDequeue(out var stashed);
