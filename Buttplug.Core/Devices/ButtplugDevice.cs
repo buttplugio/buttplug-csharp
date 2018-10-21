@@ -112,16 +112,6 @@ namespace Buttplug.Core.Devices
         public abstract void Disconnect();
 
         /// <summary>
-        /// Invokes the EmitMessage event handler.
-        /// Required to allow events to be raised for this device from the lower levels.
-        /// </summary>
-        /// <param name="aMsg">The message to emit from the device</param>
-        protected void EmitMessage(ButtplugMessage aMsg)
-        {
-            MessageEmitted?.Invoke(this, new MessageReceivedEventArgs(aMsg));
-        }
-
-        /// <summary>
         /// Invokes the DeviceRemoved event handler.
         /// Required to disconnect devices from the lower levels.
         /// </summary>
