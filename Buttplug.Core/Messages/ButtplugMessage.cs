@@ -34,6 +34,8 @@ namespace Buttplug.Core.Messages
             Id = aId;
         }
 
+        private static Dictionary<Type, ButtplugMessageMetadata> _metadataCache = new Dictionary<Type, ButtplugMessageMetadata>();
+
         /// <summary>
         /// Gets a certain ButtplugMessageMetadata attributes for a ButtplugMessage
         /// </summary>
@@ -52,9 +54,11 @@ namespace Buttplug.Core.Messages
                 throw new ArgumentException($"Argument {aMsgType.Name} must be a subclass of ButtplugMessage");
             }
 
+            if (_metadataCache.ContainsKey(aMsgType))
+            {
+                return aFunc(_metadataCache[aMsgType]);
+            }
 
-            // TODO All queried ButtplugMessageMetadata attribute lookups should be cached.
-            //
             // Message creation is extremely hot path, and these are queried a lot. All of
             // these loops for lookups may get slow.
             var attrs = Attribute.GetCustomAttributes(aMsgType);
@@ -64,6 +68,7 @@ namespace Buttplug.Core.Messages
             {
                 if (attr is ButtplugMessageMetadata metadata)
                 {
+                    _metadataCache[aMsgType] = metadata;
                     return aFunc(metadata);
                 }
             }
