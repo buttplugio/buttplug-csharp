@@ -144,30 +144,12 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckMessageHandler<LinearCmd>(aMsg);
+            var cmdMsg = CheckGenericMessageHandler<LinearCmd>(aMsg, 1);
+            var v = cmdMsg.Vectors[0];
 
-            if (cmdMsg.Vectors.Count != 1)
-            {
-                throw new ButtplugDeviceException(BpLogger,
-                    "LinearCmd requires 1 vector for this device.",
-                    cmdMsg.Id);
-            }
-
-            foreach (var v in cmdMsg.Vectors)
-            {
-                if (v.Index != 0)
-                {
-                    throw new ButtplugDeviceException(BpLogger,
-                        $"Index {v.Index} is out of bounds for LinearCmd for this device.",
-                        cmdMsg.Id);
-                }
-
-                return await HandleFleshlightLaunchFW12Cmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
-                    Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs(_lastPosition - v.Position), v.Duration) * 99),
-                    Convert.ToUInt32(v.Position * 99), cmdMsg.Id), aToken);
-            }
-
-            return new Ok(aMsg.Id);
+            return await HandleFleshlightLaunchFW12Cmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
+                Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs(_lastPosition - v.Position), v.Duration) * 99),
+                Convert.ToUInt32(v.Position * 99), cmdMsg.Id), aToken);
         }
 
         private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)

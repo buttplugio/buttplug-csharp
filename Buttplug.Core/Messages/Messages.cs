@@ -977,6 +977,22 @@ namespace Buttplug.Core.Messages
         }
     }
 
+    public class GenericMessageSubcommand
+    {
+        /// <summary>
+        /// Index of vibrator on device. Indexes are specific per device, see
+        /// https://docs.buttplug.io/stphikal for device info.
+        /// </summary>
+        [JsonProperty(Required = Required.Always)]
+        public uint Index;
+
+        protected GenericMessageSubcommand(uint aIndex)
+        {
+            Index = aIndex;
+        }
+    }
+
+
     /// <summary>
     /// Sent to server, generic message that can control any vibrating device. Unlike <see
     /// cref="SingleMotorVibrateCmd"/>, this message can take multiple commands for devices with
@@ -987,18 +1003,11 @@ namespace Buttplug.Core.Messages
     {
         /// <summary>
         /// Container object for representing a single vibration speed on a device that may have
-        /// multiple independent vibtators.
+        /// multiple independent vibrators.
         /// </summary>
-        public class VibrateSubcommand
+        public class VibrateSubcommand : GenericMessageSubcommand
         {
             private double _speedImpl;
-
-            /// <summary>
-            /// Index of vibrator on device. Indexes are specific per device, see
-            /// https://docs.buttplug.io/stphikal for device info.
-            /// </summary>
-            [JsonProperty(Required = Required.Always)]
-            public uint Index;
 
             /// <summary>
             /// Gets/sets vibration speed (0.0-1.0)
@@ -1029,8 +1038,8 @@ namespace Buttplug.Core.Messages
             /// <param name="aIndex">Vibration feature index</param>
             /// <param name="aSpeed">Vibration speed</param>
             public VibrateSubcommand(uint aIndex, double aSpeed)
+            : base(aIndex)
             {
-                Index = aIndex;
                 Speed = aSpeed;
             }
         }
@@ -1105,16 +1114,9 @@ namespace Buttplug.Core.Messages
         /// Container object for representing a single rotation command on a device that may have
         /// multiple independent rotating features.
         /// </summary>
-        public class RotateSubcommand
+        public class RotateSubcommand : GenericMessageSubcommand
         {
             private double _speedImpl;
-
-            /// <summary>
-            /// Index of rotation feature on device. Indexes are specific per device, see
-            /// https://docs.buttplug.io/stphikal for device info.
-            /// </summary>
-            [JsonProperty(Required = Required.Always)]
-            public uint Index;
 
             /// <summary>
             /// Gets/sets rotation speed.
@@ -1152,8 +1154,8 @@ namespace Buttplug.Core.Messages
             /// <param name="aSpeed">Rotation speed</param>
             /// <param name="aClockwise">Rotation direction</param>
             public RotateSubcommand(uint aIndex, double aSpeed, bool aClockwise)
+            : base(aIndex)
             {
-                Index = aIndex;
                 Speed = aSpeed;
                 Clockwise = aClockwise;
             }
@@ -1226,16 +1228,9 @@ namespace Buttplug.Core.Messages
         /// Container object for representing a single linear motion command on a device that may
         /// have multiple independent linear actuated features.
         /// </summary>
-        public class VectorSubcommand
+        public class VectorSubcommand : GenericMessageSubcommand
         {
             private double _positionImpl;
-
-            /// <summary>
-            /// Index of actuator feature on device. Indexes are specific per device, see
-            /// https://docs.buttplug.io/stphikal for device info.
-            /// </summary>
-            [JsonProperty(Required = Required.Always)]
-            public uint Index;
 
             /// <summary>
             /// Duration of movement to goal position.
@@ -1273,8 +1268,8 @@ namespace Buttplug.Core.Messages
             /// <param name="aDuration">Duration of movement</param>
             /// <param name="aPosition">Goal position</param>
             public VectorSubcommand(uint aIndex, uint aDuration, double aPosition)
+            : base(aIndex)
             {
-                Index = aIndex;
                 Duration = aDuration;
                 Position = aPosition;
             }

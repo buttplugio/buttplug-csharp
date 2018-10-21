@@ -260,28 +260,16 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private Task<ButtplugMessage> HandleLinearCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckMessageHandler<LinearCmd>(aMsg);
+            var cmdMsg = CheckGenericMessageHandler<LinearCmd>(aMsg, 1);
+            var v = cmdMsg.Vectors[0];
 
-            if (cmdMsg.Vectors.Count != 1)
+            // Invert the position
+            lock (_onyxLock)
             {
-                throw new ButtplugDeviceException(BpLogger, "LinearCmd requires 1 vector for this device.", cmdMsg.Id);
-            }
-
-            foreach (var v in cmdMsg.Vectors)
-            {
-                if (v.Index != 0)
-                {
-                    throw new ButtplugDeviceException(BpLogger, $"Index {v.Index} is out of bounds for LinearCmd for this device.", cmdMsg.Id);
-                }
-
-                // Invert the position
-                lock (_onyxLock)
-                {
-                    _targetPosition = 1 - v.Position;
-                    _currentTime = DateTime.Now;
-                    _targetTime = DateTime.Now.AddMilliseconds(v.Duration);
-                    _onyxTimer?.Change(0, 50);
-                }
+                _targetPosition = 1 - v.Position;
+                _currentTime = DateTime.Now;
+                _targetTime = DateTime.Now.AddMilliseconds(v.Duration);
+                _onyxTimer?.Change(0, 50);
             }
 
             return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));

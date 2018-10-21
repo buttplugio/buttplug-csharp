@@ -270,25 +270,10 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
-
-            if (cmdMsg.Speeds.Count == 0 || cmdMsg.Speeds.Count > _vibratorCount)
-            {
-                throw new ButtplugDeviceException(BpLogger,
-                    _vibratorCount == 1 ? "VibrateCmd requires 1 vector for this device." :
-                                         $"VibrateCmd requires between 1 and {_vibratorCount} vectors for this device.",
-                    cmdMsg.Id);
-            }
+            var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, _vibratorCount);
 
             foreach (var v in cmdMsg.Speeds)
             {
-                if (v.Index >= _vibratorCount)
-                {
-                    throw new ButtplugDeviceException(BpLogger,
-                        $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
-                        cmdMsg.Id);
-                }
-
                 if (Math.Abs(v.Speed - _vibratorSpeeds[v.Index]) < 0.0001)
                 {
                     continue;
@@ -317,43 +302,23 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckMessageHandler<RotateCmd>(aMsg);
+            var cmdMsg = CheckGenericMessageHandler<RotateCmd>(aMsg, 1);
 
-            var dirChange = false;
-            var speedChange = false;
+            var vi = cmdMsg.Rotations[0];
 
-            if (cmdMsg.Rotations.Count != 1)
-            {
-                throw new ButtplugDeviceException(BpLogger,
-                    "RotateCmd requires 1 vector for this device.",
-                    cmdMsg.Id);
-            }
-
-            foreach (var vi in cmdMsg.Rotations)
-            {
-                if (vi.Index != 0)
-                {
-                    throw new ButtplugDeviceException(BpLogger,
-                        $"Index {vi.Index} is out of bounds for RotateCmd for this device.",
-                        cmdMsg.Id);
-                }
-
-                speedChange = Math.Abs(_rotateSpeed - vi.Speed) > 0.0001;
-                _rotateSpeed = vi.Speed;
-                dirChange = _clockwise != vi.Clockwise;
-            }
-
-            if (dirChange)
+            if (_clockwise != vi.Clockwise)
             {
                 _clockwise = !_clockwise;
                 await Interface.WriteValueAsync(aMsg.Id,
                    Encoding.ASCII.GetBytes($"RotateChange;"), false, aToken);
             }
 
-            if (!speedChange)
+            if (Math.Abs(_rotateSpeed - vi.Speed) < 0.0001)
             {
                 return new Ok(cmdMsg.Id);
             }
+
+            _rotateSpeed = vi.Speed;
 
             return await Interface.WriteValueAsync(aMsg.Id,
                 Encoding.ASCII.GetBytes($"Rotate:{(int)(_rotateSpeed * 20)};"), false, aToken);

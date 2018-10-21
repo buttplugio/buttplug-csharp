@@ -90,29 +90,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckMessageHandler<RotateCmd>(aMsg);
+            var cmdMsg = CheckGenericMessageHandler<RotateCmd>(aMsg, 1);
+            var v = cmdMsg.Rotations[0];
 
-            if (cmdMsg.Rotations.Count != 1)
-            {
-                throw new ButtplugDeviceException(BpLogger,
-                    "RotateCmd requires 1 vector for this device.",
-                    cmdMsg.Id);
-            }
-
-            foreach (var i in cmdMsg.Rotations)
-            {
-                if (i.Index != 0)
-                {
-                    throw new ButtplugDeviceException(BpLogger,
-                        $"Index {i.Index} is out of bounds for RotateCmd for this device.",
-                        cmdMsg.Id);
-                }
-
-                return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(cmdMsg.DeviceIndex,
-                    Convert.ToUInt32(i.Speed * 99), i.Clockwise, cmdMsg.Id), aToken);
-            }
-
-            return new Ok(cmdMsg.Id);
+            return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(cmdMsg.DeviceIndex,
+                Convert.ToUInt32(v.Speed * 99), v.Clockwise, cmdMsg.Id), aToken);
         }
 
         private async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)

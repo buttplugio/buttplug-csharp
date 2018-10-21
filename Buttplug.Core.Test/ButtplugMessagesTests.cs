@@ -212,7 +212,7 @@ namespace Buttplug.Core.Test
             CheckMsg(msg);
 
             var newMsg = CheckParsedVersion<RotateCmd>(msg, 1,
-                "[{\"RotateCmd\":{\"Rotations\":[{\"Index\":0,\"Clockwise\":true,\"Speed\":0.5}],\"DeviceIndex\":2,\"Id\":4}}]");
+                "[{\"RotateCmd\":{\"Rotations\":[{\"Clockwise\":true,\"Index\":0,\"Speed\":0.5}],\"DeviceIndex\":2,\"Id\":4}}]");
 
             CheckMsg(newMsg);
 

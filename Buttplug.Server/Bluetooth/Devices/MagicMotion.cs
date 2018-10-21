@@ -163,31 +163,19 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
-
-            if (cmdMsg.Speeds.Count == 0 || cmdMsg.Speeds.Count > _devInfo.VibeCount )
-            {
-                throw new ButtplugDeviceException(BpLogger,
-                    $"VibrateCmd requires between 1 and {_devInfo.VibeCount} vectors for this device.",
-                    cmdMsg.Id);
-            }
+            var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, _devInfo.VibeCount);
 
             var changed = false;
 
             foreach (var v in cmdMsg.Speeds)
             {
-                if (v.Index >= _devInfo.VibeCount)
+                if (Math.Abs(v.Speed - _vibratorSpeeds[v.Index]) < 0.001)
                 {
-                    throw new ButtplugDeviceException(BpLogger,
-                        $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
-                        cmdMsg.Id);
+                    continue;
                 }
 
-                if (Math.Abs(v.Speed - _vibratorSpeeds[v.Index]) > 0.001)
-                {
-                    changed = true;
-                    _vibratorSpeeds[v.Index] = v.Speed;
-                }
+                changed = true;
+                _vibratorSpeeds[v.Index] = v.Speed;
             }
 
             if (!changed)

@@ -134,26 +134,12 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
-
-            if (cmdMsg.Speeds.Count < 1 || cmdMsg.Speeds.Count > 6)
-            {
-                throw new ButtplugDeviceException(BpLogger,
-                    "VibrateCmd requires 1-6 commands for this device.",
-                    cmdMsg.Id);
-            }
+            var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, 6);
 
             var newVibratorSpeeds = (byte[])_vibratorSpeeds.Clone();
 
             foreach (var v in cmdMsg.Speeds)
             {
-                if (v.Index > 5)
-                {
-                    throw new ButtplugDeviceException(BpLogger,
-                        $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
-                        cmdMsg.Id);
-                }
-
                 newVibratorSpeeds[v.Index] = (byte)(v.Speed * MaxSpeed);
             }
 

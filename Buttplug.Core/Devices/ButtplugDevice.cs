@@ -153,5 +153,52 @@ namespace Buttplug.Core.Devices
         {
             return (aMsg is T cmdMsg) ? cmdMsg : throw new ButtplugDeviceException(BpLogger, $"Wrong handler for message type {aMsg.GetType()}", aMsg.Id);
         }
+
+        private void CheckGenericSubcommandList<T>(ButtplugDeviceMessage aMsg, List<T> aCmdList, uint aLimitValue)
+        where T : GenericMessageSubcommand
+        {
+            if (aCmdList.Count < 1 || aCmdList.Count > aLimitValue)
+            {
+                if (aLimitValue == 1)
+                {
+                    throw new ButtplugDeviceException(BpLogger, $"{aMsg.GetType().Name} requires 1 subcommand for this device, {aCmdList.Count} present.", aMsg.Id);
+                }
+                throw new ButtplugDeviceException(BpLogger, $"{aMsg.GetType().Name} requires between 1 and {aLimitValue} subcommands for this device, {aCmdList.Count} present.", aMsg.Id);
+            }
+            foreach (var cmd in aCmdList)
+            {
+                if (cmd.Index >= aLimitValue)
+                {
+                    throw new ButtplugDeviceException(BpLogger, $"Index {cmd.Index} is out of bounds for {aMsg.GetType().Name} for this device.", aMsg.Id);
+                }
+            }
+        }
+
+        protected T CheckGenericMessageHandler<T>(ButtplugDeviceMessage aMsg, uint aLimitValue)
+            where T : ButtplugDeviceMessage
+        {
+            var actualMsg = CheckMessageHandler<T>(aMsg);
+
+            // Can't seem to pattern match this, so big ol' if/else chain it is. :(
+            if (typeof(T) == typeof(VibrateCmd))
+            {
+                var cmdMsg = actualMsg as VibrateCmd;
+                CheckGenericSubcommandList(cmdMsg, cmdMsg.Speeds, aLimitValue);
+                return actualMsg;
+            }
+            if (typeof(T) == typeof(RotateCmd))
+            {
+                var cmdMsg = actualMsg as RotateCmd;
+                CheckGenericSubcommandList(cmdMsg, cmdMsg.Rotations, aLimitValue);
+                return actualMsg;
+            }
+            if (typeof(T) == typeof(LinearCmd))
+            {
+                var cmdMsg = actualMsg as LinearCmd;
+                CheckGenericSubcommandList(cmdMsg, cmdMsg.Vectors, aLimitValue);
+                return actualMsg;
+            }
+            throw new ButtplugMessageException("CheckGenericMessageHandler only works with generic (VibrateCmd/RotateCmd/etc) messages.", aMsg.Id);
+        }
     }
 }

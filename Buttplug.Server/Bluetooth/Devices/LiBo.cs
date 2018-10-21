@@ -94,25 +94,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
-
-            if (cmdMsg.Speeds.Count != _vibratorCount)
-            {
-                throw new ButtplugDeviceException(BpLogger,
-                    $"VibrateCmd requires between 1 and {_vibratorCount} vectors for this device.",
-                    cmdMsg.Id);
-            }
+            var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, _vibratorCount);
 
             var changed = false;
             foreach (var v in cmdMsg.Speeds)
             {
-                if (v.Index >= _vibratorCount)
-                {
-                    throw new ButtplugDeviceException(BpLogger,
-                        $"Index {v.Index} is out of bounds for VibrateCmd for this device.",
-                        cmdMsg.Id);
-                }
-
                 if (!(Math.Abs(v.Speed - _vibratorSpeed[v.Index]) > 0.001))
                 {
                     continue;
@@ -129,9 +115,9 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             // Map a 0 - 100% value to a 0 - 3 value since 0 * x == 0 this will turn off the vibe if
             // speed is 0.00
-            int mode = (int)Math.Ceiling(_vibratorSpeed[0] * 3);
+            var mode = (int)Math.Ceiling(_vibratorSpeed[0] * 3);
 
-            var data = new byte[] { Convert.ToByte(mode) };
+            var data = new[] { Convert.ToByte(mode) };
 
             return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)LiBoBluetoothInfo.Chrs.WriteVibrate,
