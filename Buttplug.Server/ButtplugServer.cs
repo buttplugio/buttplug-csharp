@@ -40,7 +40,7 @@ namespace Buttplug.Server
         /// Event handler that fires whenever a client connects to a server.
         /// </summary>
         [CanBeNull]
-        public event EventHandler<MessageReceivedEventArgs> ClientConnected;
+        public event EventHandler ClientConnected;
 
         /// <summary>
         /// Event handler that fires on client ping timeouts.
@@ -48,11 +48,15 @@ namespace Buttplug.Server
         [CanBeNull]
         public event EventHandler PingTimeout;
 
+        public string ClientName => _clientName ?? throw new InvalidOperationException("No client currently connected");
+
         /// <summary>
         /// Log manager that is passed to subclasses to make sure everything shares the same log object.
         /// </summary>
         [NotNull]
         protected readonly IButtplugLogManager BpLogManager;
+
+        [CanBeNull] private string _clientName;
 
         /// <summary>
         /// Actual logger object, creates and stores log messages.
@@ -97,6 +101,7 @@ namespace Buttplug.Server
 
         public ButtplugServer(string aServerName, uint aMaxPingTime, DeviceManager aDeviceManager = null)
         {
+            _clientName = null;
             _serverName = aServerName;
             _maxPingTime = aMaxPingTime;
             _pingTimedOut = false;
@@ -145,6 +150,7 @@ namespace Buttplug.Server
             await SendMessageAsync(new StopAllDevices()).ConfigureAwait(false);
             _pingTimedOut = true;
             PingTimeout?.Invoke(this, new EventArgs());
+            _clientName = null;
         }
 
         [NotNull]
@@ -203,7 +209,8 @@ namespace Buttplug.Server
 
                     // Start the timer
                     _pingTimer?.Change((int)_maxPingTime, (int)_maxPingTime);
-                    ClientConnected?.Invoke(this, new MessageReceivedEventArgs(rsi));
+                    _clientName = rsi.ClientName;
+                    ClientConnected?.Invoke(this, EventArgs.Empty);
                     return new ServerInfo(_serverName, ButtplugConsts.CurrentSpecVersion, _maxPingTime, id);
 
                 case Test m:

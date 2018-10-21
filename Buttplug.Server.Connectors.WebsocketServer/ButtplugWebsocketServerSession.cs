@@ -52,12 +52,9 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             _server.PingTimeout += PingTimeoutHandler;
         }
 
-        public void ClientConnectedHandler(object aObject, MessageReceivedEventArgs aEvent)
+        public void ClientConnectedHandler(object aObject, EventArgs aUnused)
         {
-            var msg = aEvent.Message as RequestServerInfo;
-            var clientName = msg?.ClientName ?? "Unknown client";
-
-            ConnectionAccepted?.Invoke(this, new ConnectionEventArgs(_ws.RemoteEndpoint.ToString(), clientName));
+            ConnectionAccepted?.Invoke(this, new ConnectionEventArgs(_ws.RemoteEndpoint.ToString(), _server.ClientName));
         }
 
         private void PingTimeoutHandler(object aObject, EventArgs aEvent)

@@ -111,11 +111,9 @@ namespace Buttplug.Server.Connectors.IPCServer
 
                 buttplugServer.MessageReceived += MsgReceived;
 
-                void ClientConnected(object aObject, MessageReceivedEventArgs aEvent)
+                void ClientConnected(object aObject, EventArgs aUnused)
                 {
-                    var msg = aEvent.Message as RequestServerInfo;
-                    var clientName = msg?.ClientName ?? "Unknown client";
-                    ConnectionUpdated?.Invoke(this, new IPCConnectionEventArgs(clientName));
+                    ConnectionUpdated?.Invoke(this, new IPCConnectionEventArgs(buttplugServer.ClientName));
                 }
 
                 buttplugServer.ClientConnected += ClientConnected;
