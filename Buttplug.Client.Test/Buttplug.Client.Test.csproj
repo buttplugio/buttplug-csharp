@@ -74,6 +74,7 @@
     <Compile Include="ButtplugClientTestConnector.cs" />
     <Compile Include="ButtplugClientTestJSONConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemMessageSendingClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />

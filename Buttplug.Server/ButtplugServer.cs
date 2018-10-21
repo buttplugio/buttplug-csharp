@@ -156,7 +156,7 @@ namespace Buttplug.Server
 
             ButtplugUtils.ArgumentNotNull(aMsg, nameof(aMsg));
 
-            if (id == 0)
+            if (id == ButtplugConsts.SystemMsgId)
             {
                 throw new ButtplugMessageException(_bpLogger, "Message Id 0 is reserved for outgoing system messages. Please use another Id.", id);
             }

@@ -69,11 +69,8 @@ namespace Buttplug.Client.Test
 
         public Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
+            // This will just throw if we don't have a corresponding reply to the message, which is fine.
             var msg = _messageResponse[aMsg.GetType()];
-            if (msg == null)
-            {
-                Assert.Fail($"Don't have a message to respond to {aMsg.GetType()} with.");
-            }
 
             msg.Id = aMsg.Id;
             return Task.FromResult(msg);

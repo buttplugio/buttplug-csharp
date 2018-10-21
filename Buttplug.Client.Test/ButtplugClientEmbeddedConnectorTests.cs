@@ -10,6 +10,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Core.Test;
 using Buttplug.Server;
 using Buttplug.Server.Test;
@@ -70,6 +71,26 @@ namespace Buttplug.Client.Test
             // We should connect, then basically be instantly disconnected due to ping timeout
             await _client.ConnectAsync();
             await signal.WaitAsync();
+        }
+
+        // Connectors using the MessageSorter will overwrite message IDs, so this requires using an
+        // embedded server connector.
+        [Test]
+        public async Task TestSendSystemIdMessage()
+        {
+            var c = new SystemMessageSendingClient("TestClient", _connector);
+            await c.ConnectAsync();
+
+            // For some reason, trying this with FluentAssertions Awaiting clauses causes a stall. Back to Asserts.
+            try
+            {
+                await c.SendSystemIdMessage();
+                Assert.Fail("Should throw!");
+            }
+            catch (ButtplugMessageException)
+            {
+                Assert.Pass("Got expected exception");
+            }
         }
     }
 }

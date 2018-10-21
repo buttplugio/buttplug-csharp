@@ -172,24 +172,6 @@ namespace Buttplug.Client.Test
             _client.Awaiting(async aClient => await aClient.StartScanningAsync()).Should().Throw<ButtplugClientConnectorException>();
         }
 
-        public class SystemMessageSendingClient : ButtplugClient
-        {
-            public SystemMessageSendingClient([NotNull] string aClientName, [NotNull] IButtplugClientConnector aConnector)
-            : base(aClientName, aConnector)
-            {
-            }
-
-            public async Task SendSystemIdMessage()
-            {
-                await SendMessageAsync(new StartScanning(ButtplugConsts.SystemMsgId));
-            }
-
-            public async Task SendOutgoingOnlyMessage()
-            {
-                await SendMessageAsync(new Ok(ButtplugConsts.DefaultMsgId));
-            }
-        }
-
         [Test]
         public async Task TestRethrowErrorMessage()
         {
@@ -200,24 +182,6 @@ namespace Buttplug.Client.Test
             try
             {
                 await c.SendOutgoingOnlyMessage();
-                Assert.Fail("Should throw!");
-            }
-            catch (ButtplugMessageException)
-            {
-                Assert.Pass("Got expected exception");
-            }
-        }
-
-        [Test]
-        public async Task TestSendSystemIdMessage()
-        {
-            var c = new SystemMessageSendingClient("TestClient", _connector);
-            await c.ConnectAsync();
-
-            // For some reason, trying this with FluentAssertions Awaiting clauses causes a stall. Back to Asserts.
-            try
-            {
-                await c.SendSystemIdMessage();
                 Assert.Fail("Should throw!");
             }
             catch (ButtplugMessageException)
