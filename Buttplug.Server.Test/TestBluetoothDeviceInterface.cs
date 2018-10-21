@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test
@@ -99,7 +100,7 @@ namespace Buttplug.Server.Test
         public Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken)
         {
             // Expect that we'll only have one entry in the dictionary at this point.
-            Assert.AreEqual(ExpectedRead.Count, 1);
+            ExpectedRead.Count.Should().Be(1);
             var value = ExpectedRead[ExpectedRead.Keys.ToArray()[0]].ElementAt(0);
             ExpectedRead[ExpectedRead.Keys.ToArray()[0]].RemoveAt(0);
             return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), value));

@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Buttplug.Core.Logging;
 using Buttplug.Server.Bluetooth;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test
@@ -26,16 +27,16 @@ namespace Buttplug.Server.Test
             var buttplugAssembly = AppDomain.CurrentDomain
                 .GetAssemblies()
                 .SingleOrDefault(aAssembly => aAssembly.GetName().Name == "Buttplug.Server");
-            Assert.NotNull(buttplugAssembly);
+            buttplugAssembly.Should().NotBeNull();
             var types = buttplugAssembly.GetTypes()
                 .Where(aType => aType.IsClass && aType.Namespace == "Buttplug.Server.Bluetooth.Devices" &&
                             typeof(IBluetoothDeviceInfo).IsAssignableFrom(aType)).ToList();
-            Assert.True(types.Any());
+            types.Any().Should().BeTrue();
             var b = new TestBluetoothSubtypeManager(new ButtplugLogManager());
             var d = b.GetDefaultDeviceInfoList();
             foreach (var t in types)
             {
-                Assert.True(d.Any(aInfoObj => aInfoObj.GetType() == t), $"Default types contains type: {t.Name}");
+                d.Any(aInfoObj => aInfoObj.GetType() == t).Should().BeTrue();
             }
         }
     }

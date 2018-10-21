@@ -69,7 +69,7 @@ namespace Buttplug.Server.Test
             var msg = await _server.SendMessageAsync(new RequestLog(ButtplugLogLevel.Trace));
             msg.Should().BeOfType<Ok>();
             SendOutgoingMessageToServer();
-            Assert.True(gotMessage);
+            gotMessage.Should().BeTrue();
             msg = await _server.SendMessageAsync(new RequestLog());
             msg.Should().BeOfType<Ok>();
             gotMessage = false;
@@ -274,7 +274,7 @@ namespace Buttplug.Server.Test
             // If we request a DeviceAdded/DeviceList message on a client with an older spec version
             // than the server, it should remove all non-spec-supported message types.
             _server = new TestServer();
-            Assert.True(await _server.SendMessageAsync(new RequestServerInfo("TestClient", 1, 0)) is ServerInfo);
+            (await _server.SendMessageAsync(new RequestServerInfo("TestClient", 1, 0))).Should().BeOfType<ServerInfo>();
 
             var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
             var m = new TestDeviceSubtypeManager(d);
@@ -307,15 +307,12 @@ namespace Buttplug.Server.Test
                 (await _server.SendMessageAsync(new StartScanning())).Should().BeOfType<Ok>();
                 (await _server.SendMessageAsync(new StopScanning())).Should().BeOfType<Ok>();
                 var x = await _server.SendMessageAsync(new RequestDeviceList());
-                Assert.True(x is DeviceList);
-                switch (x)
-                {
-                    case DeviceList dl:
-                        dl.Devices.Length.Should().Be(1);
-                        dl.Devices[0].DeviceIndex.Should().Be(1U);
-                        dl.Devices[0].DeviceName.Should().Be("TestDevice");
-                        break;
-                }
+                x.Should().BeOfType<DeviceList>();
+                var dl = x as DeviceList;
+
+                dl.Devices.Length.Should().Be(1);
+                dl.Devices[0].DeviceIndex.Should().Be(1U);
+                dl.Devices[0].DeviceName.Should().Be("TestDevice");
 
                 (i == 0 ? msgReceived : !msgReceived).Should().BeTrue();
                 msgReceived = false;

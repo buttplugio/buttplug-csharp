@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
@@ -53,7 +54,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 var expected = new byte[] { 0, 0, 0 };
                 for (var i = 0u; i < item.Value.VibeCount; ++i)
                 {
-                    Assert.True(item.Value.VibeOrder.Contains(i));
+                    item.Value.VibeOrder.Should().Contain(i);
                     expected[Array.IndexOf(item.Value.VibeOrder, i)] = 50;
                 }
 
@@ -82,7 +83,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 var expected = new byte[] { 0, 0, 0 };
                 for (var i = 0u; i < item.Value.VibeCount; ++i)
                 {
-                    Assert.True(item.Value.VibeOrder.Contains(i));
+                    item.Value.VibeOrder.Should().Contain(i);
                     expected[Array.IndexOf(item.Value.VibeOrder, i)] = (byte)(speeds[i] * 100);
                 }
 

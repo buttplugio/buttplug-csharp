@@ -240,10 +240,7 @@ namespace Buttplug.Core.Test
                 "[{\"VorzeA10CycloneCmd\":{\"Clockwise\":true,\"Speed\":50,\"DeviceIndex\":2,\"Id\":4}}]");
             CheckMsg(newMsg);
 
-            Assert.Catch<ArgumentException>(() =>
-            {
-                msg.Speed = 1000;
-            });
+            msg.Invoking(aMsg => aMsg.Speed = 1000).Should().Throw<ArgumentException>();
         }
 
         [Test]
