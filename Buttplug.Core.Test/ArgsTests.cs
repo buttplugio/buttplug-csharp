@@ -18,16 +18,6 @@ namespace Buttplug.Server.Test
     public class ArgsTests
     {
         [Test]
-        public void LogExceptionEventArgsTest()
-        {
-            var ex = new Exception("foo");
-            var arg = new LogExceptionEventArgs(ex, false, "bar");
-            arg.Ex.Should().Be(ex);
-            arg.LocalOnly.Should().BeFalse();
-            arg.ErrorMessage.Should().Be("bar");
-        }
-
-        [Test]
         public void MessageReceivedEventArgsTest()
         {
             var msg = new Core.Messages.Test("foo");

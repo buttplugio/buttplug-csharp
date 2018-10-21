@@ -68,14 +68,5 @@ namespace Buttplug.Core.Logging
                 LogMessageReceived?.Invoke(this, new ButtplugLogMessageEventArgs(ButtplugLogLevel.Fatal, aMsg));
             }
         }
-
-        public event EventHandler<LogExceptionEventArgs> OnLogException;
-
-        public void LogException(Exception aEx, bool aLocalOnly = true, string aMsg = null)
-        {
-            Error((aEx?.GetType().ToString() ?? "Unknown Exception") + ": " +
-                  (aMsg ?? (aEx != null ? (aEx.Message + "\n" + aEx.StackTrace) : "Unknown Exception")), aLocalOnly);
-            OnLogException?.Invoke(this, new LogExceptionEventArgs(aEx, aLocalOnly, aMsg));
-        }
     }
 }

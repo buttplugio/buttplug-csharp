@@ -49,19 +49,5 @@ namespace Buttplug.Core.Logging
         /// <param name="aMsg">Log message</param>
         /// <param name="aLocalOnly">If true, do not send the log message to the client</param>
         void Fatal(string aMsg, bool aLocalOnly = false);
-
-        /// <summary>
-        /// Emits a Error log event from an exception.
-        /// </summary>
-        /// <param name="aEx">Exception object</param>
-        /// <param name="aLocalOnly">If true, do not send the log message to the client</param>
-        /// <param name="aMsg">Optional log message.</param>
-        void LogException(Exception aEx, bool aLocalOnly = true, string aMsg = null);
-
-        /// <summary>
-        /// Called when an exception log message has been received.
-        /// </summary>
-        [CanBeNull]
-        event EventHandler<LogExceptionEventArgs> OnLogException;
     }
 }

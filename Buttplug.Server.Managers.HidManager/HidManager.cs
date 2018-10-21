@@ -18,14 +18,13 @@ namespace Buttplug.Server.Managers.HidManager
     {
         private readonly List<HidDeviceFactory> _deviceFactories;
 
-        private readonly IButtplugLogManager _logger;
+        private readonly IButtplugLog _log;
 
         private bool _scanning;
 
         public HidManager(IButtplugLogManager aLogger)
             : base(aLogger)
         {
-            _logger = aLogger;
             _deviceFactories = new List<HidDeviceFactory>() { new HidDeviceFactory(aLogger, new CycloneX10HidDeviceInfo()) };
         }
 
@@ -44,7 +43,7 @@ namespace Buttplug.Server.Managers.HidManager
                     prod = prod.Substring(0, prod.IndexOf('\0'));
                     vend = vend.Substring(0, vend.IndexOf('\0'));
 
-                    _logger?.GetLogger(GetType()).Trace("Found HID device (" +
+                    BpLogger.Trace("Found HID device (" +
                         hid.Attributes.VendorHexId + ":" + hid.Attributes.ProductHexId +
                         "): " + vend + " - " + prod);
 
@@ -74,7 +73,8 @@ namespace Buttplug.Server.Managers.HidManager
                 }
                 catch (Exception e)
                 {
-                    _logger?.GetLogger(GetType()).LogException(e);
+                    // TODO Figure out what exceptions can actually be thrown here.
+                    BpLogger.Error(e.Message);
                 }
             }
 
