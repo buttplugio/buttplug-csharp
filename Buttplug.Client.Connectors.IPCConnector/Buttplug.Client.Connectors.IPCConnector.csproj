@@ -37,7 +37,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <!-- This isn't default as far as I'm aware (TODO: Check this) -->
     <DebugType>full</DebugType>
   </PropertyGroup>
   
