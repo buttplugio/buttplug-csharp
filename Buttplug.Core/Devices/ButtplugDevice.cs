@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
@@ -143,16 +144,16 @@ namespace Buttplug.Core.Devices
             return (aMsg is T cmdMsg) ? cmdMsg : throw new ButtplugDeviceException(BpLogger, $"Wrong handler for message type {aMsg.GetType()}", aMsg.Id);
         }
 
-        private void CheckGenericSubcommandList<T>(ButtplugDeviceMessage aMsg, List<T> aCmdList, uint aLimitValue)
+        private void CheckGenericSubcommandList<T>(ButtplugDeviceMessage aMsg, IEnumerable<T> aCmdList, uint aLimitValue)
         where T : GenericMessageSubcommand
         {
-            if (aCmdList.Count < 1 || aCmdList.Count > aLimitValue)
+            if (!aCmdList.Any() || aCmdList.Count() > aLimitValue)
             {
                 if (aLimitValue == 1)
                 {
-                    throw new ButtplugDeviceException(BpLogger, $"{aMsg.GetType().Name} requires 1 subcommand for this device, {aCmdList.Count} present.", aMsg.Id);
+                    throw new ButtplugDeviceException(BpLogger, $"{aMsg.GetType().Name} requires 1 subcommand for this device, {aCmdList.Count()} present.", aMsg.Id);
                 }
-                throw new ButtplugDeviceException(BpLogger, $"{aMsg.GetType().Name} requires between 1 and {aLimitValue} subcommands for this device, {aCmdList.Count} present.", aMsg.Id);
+                throw new ButtplugDeviceException(BpLogger, $"{aMsg.GetType().Name} requires between 1 and {aLimitValue} subcommands for this device, {aCmdList.Count()} present.", aMsg.Id);
             }
             foreach (var cmd in aCmdList)
             {

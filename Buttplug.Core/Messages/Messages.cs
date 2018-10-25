@@ -1046,22 +1046,22 @@ namespace Buttplug.Core.Messages
 
         public static VibrateCmd Create(double aSpeed, uint aCmdCount)
         {
-            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat(aSpeed, (int)aCmdCount).ToArray(), aCmdCount);
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat(aSpeed, (int)aCmdCount).ToArray());
+        }
+
+        public static VibrateCmd Create(IEnumerable<double> aSpeeds)
+        {
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, aSpeeds);
         }
 
         public static VibrateCmd Create(uint aDeviceIndex, uint aMsgId, double aSpeed, uint aCmdCount)
         {
-            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat(aSpeed, (int)aCmdCount).ToArray(), aCmdCount);
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat(aSpeed, (int)aCmdCount).ToArray());
         }
 
-        public static VibrateCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<double> aSpeeds, uint aCmdCount)
+        public static VibrateCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<double> aSpeeds)
         {
-            if (aCmdCount != aSpeeds.Count())
-            {
-                throw new ArgumentException("Number of speeds and number of commands must match.");
-            }
-
-            var cmdList = new List<VibrateSubcommand>((int)aCmdCount);
+            var cmdList = new List<VibrateSubcommand>(aSpeeds.Count());
 
             uint i = 0;
             foreach (var speed in aSpeeds)
@@ -1162,22 +1162,22 @@ namespace Buttplug.Core.Messages
 
         public static RotateCmd Create(double aSpeed, bool aClockwise, uint aCmdCount)
         {
-            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat((aSpeed, aClockwise), (int)aCmdCount), aCmdCount);
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat((aSpeed, aClockwise), (int)aCmdCount));
+        }
+
+        public static RotateCmd Create(IEnumerable<(double speed, bool clockwise)> aCmds)
+        {
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, aCmds);
         }
 
         public static RotateCmd Create(uint aDeviceIndex, uint aMsgId, double aSpeed, bool aClockwise, uint aCmdCount)
         {
-            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aSpeed, aClockwise), (int)aCmdCount), aCmdCount);
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aSpeed, aClockwise), (int)aCmdCount));
         }
 
-        public static RotateCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(double speed, bool clockwise)> aCmds, uint aCmdCount)
+        public static RotateCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(double speed, bool clockwise)> aCmds)
         {
-            if (aCmdCount != aCmds.Count())
-            {
-                throw new ArgumentException("Number of speeds and number of commands must match.");
-            }
-
-            var cmdList = new List<RotateSubcommand>((int)aCmdCount);
+            var cmdList = new List<RotateSubcommand>(aCmds.Count());
             uint i = 0;
             foreach (var cmd in aCmds)
             {
@@ -1277,22 +1277,22 @@ namespace Buttplug.Core.Messages
 
         public static LinearCmd Create(uint aDuration, double aPosition, uint aCmdCount)
         {
-            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat((aDuration, aPosition), (int)aCmdCount), aCmdCount);
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat((aDuration, aPosition), (int)aCmdCount));
         }
 
         public static LinearCmd Create(uint aDeviceIndex, uint aMsgId, uint aDuration, double aPosition, uint aCmdCount)
         {
-            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aDuration, aPosition), (int)aCmdCount), aCmdCount);
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aDuration, aPosition), (int)aCmdCount));
         }
 
-        public static LinearCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(uint duration, double position)> aCmds, uint aCmdCount)
+        public static LinearCmd Create(IEnumerable<(uint duration, double position)> aCmds)
         {
-            if (aCmdCount != aCmds.Count())
-            {
-                throw new ArgumentException("Number of speeds and number of commands must match.");
-            }
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, aCmds);
+        }
 
-            var cmdList = new List<VectorSubcommand>((int)aCmdCount);
+        public static LinearCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(uint duration, double position)> aCmds)
+        {
+            var cmdList = new List<VectorSubcommand>(aCmds.Count());
             uint i = 0;
             foreach (var cmd in aCmds)
             {

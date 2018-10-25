@@ -286,17 +286,6 @@ namespace Buttplug.Client
         /// </returns>
         protected async Task SendDeviceMessageAsync(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg, CancellationToken aToken = default(CancellationToken))
         {
-            if (!_devices.TryGetValue(aDevice.Index, out ButtplugClientDevice dev))
-            {
-                throw new ButtplugDeviceException(_bpLogger, "Device not available.");
-            }
-
-            if (!dev.AllowedMessages.ContainsKey(aDeviceMsg.GetType().Name))
-            {
-                throw new ButtplugDeviceException(_bpLogger, "Device does not accept message type: " + aDeviceMsg.GetType().Name);
-            }
-
-            aDeviceMsg.DeviceIndex = aDevice.Index;
             await SendMessageExpectOk(aDeviceMsg, aToken);
         }
 

@@ -49,14 +49,14 @@ namespace Buttplug.Client.Test
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
-                { "DifferentName", new MessageAttributes() },
+                { "FleshlightLaunchFW12Cmd", new MessageAttributes() },
             });
             var testDevice5 = new ButtplugClientDevice(logMgr, client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
                 { "StopDeviceCmd", new MessageAttributes() },
-                { "TooMany", new MessageAttributes() },
+                { "RotateCmd", new MessageAttributes(1) },
             });
 
             var newClient = new ButtplugClient("Other Test Device Client", new ButtplugEmbeddedConnector("Other Test Device Server"));

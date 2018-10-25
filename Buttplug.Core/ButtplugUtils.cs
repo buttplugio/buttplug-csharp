@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Buttplug.Core.Devices;
+using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
@@ -78,5 +79,17 @@ namespace Buttplug.Core
             }
         }
 
+        /// <summary>
+        /// Given a string, tries to return the ButtplugMessage Type (as in, C# Class Type) denoted by the string.
+        /// </summary>
+        /// <remarks>
+        /// Added as part of the Buttplug.Core utils so we don't have to worry about Assembly resolution.
+        /// </remarks>
+        /// <param name="aMessageName">Name of the message type to find a Type for. Case-sensitive.</param>
+        /// <returns>Type object of message type if it exists, otherwise null.</returns>
+        public static Type GetMessageType(string aMessageName)
+        {
+            return Type.GetType($"Buttplug.Core.Messages.{aMessageName}");
+        }
     }
 }

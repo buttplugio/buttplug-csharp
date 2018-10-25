@@ -109,7 +109,7 @@ namespace Buttplug.Examples._05.DeviceControl
             //
             // There's a couple of ways to send this message.
             var testClientDevice = client.Devices[0];
-            var vibratorCount = testClientDevice.AllowedMessages["VibrateCmd"].FeatureCount;
+            var vibratorCount = testClientDevice.AllowedMessages[typeof(VibrateCmd)].FeatureCount;
 
             // We can create the message manually and send it over through the device object.
             var vibrateCmdMsg = new VibrateCmd(new List<VibrateCmd.VibrateSubcommand> { new VibrateCmd.VibrateSubcommand(0, 1.0) });

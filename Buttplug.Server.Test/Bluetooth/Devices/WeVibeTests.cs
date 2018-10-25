@@ -161,7 +161,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                     (new byte[] { 0x0f, 0x03, 0x00, 0x4B, 0x00, 0x03, 0x00, 0x00 }, (uint)WeVibeBluetoothInfo.Chrs.Tx),
                 };
 
-            await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, new[] { 0.25, 0.75 }, 2), expected, false);
+            await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, new[] { 0.25, 0.75 }), expected, false);
         }
 
         [Test]

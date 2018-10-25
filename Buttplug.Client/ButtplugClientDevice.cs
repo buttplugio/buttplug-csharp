@@ -41,7 +41,7 @@ namespace Buttplug.Client
         /// The Buttplug Protocol messages supported by this device, with additional attributes.
         /// </summary>
         [NotNull]
-        public readonly Dictionary<string, MessageAttributes> AllowedMessages;
+        public Dictionary<Type, MessageAttributes> AllowedMessages { get; }
 
         private readonly ButtplugClient _owningClient;
 
@@ -88,12 +88,44 @@ namespace Buttplug.Client
             _sendClosure = aSendClosure;
             Index = aIndex;
             Name = aName;
-            AllowedMessages = aMessages;
+            AllowedMessages = new Dictionary<Type, MessageAttributes>();
+            foreach (var msg in aMessages)
+            {
+                var msgType = ButtplugUtils.GetMessageType(msg.Key);
+                if (msgType == null)
+                {
+                    throw new ButtplugDeviceException($"Message type {msg.Key} does not exist.");
+                }
+                AllowedMessages[msgType] = msg.Value;
+            }
         }
 
-        // ReSharper disable once UnusedMember.Global
+        public MessageAttributes GetMessageAttributes(Type aMsgType)
+        {
+            ButtplugUtils.ArgumentNotNull(aMsgType, nameof(aMsgType));
+            if (!aMsgType.IsSubclassOf(typeof(ButtplugDeviceMessage)))
+            {
+                throw new ArgumentException("Argument must be subclass of ButtplugDeviceMessage");
+            }
+
+            if (!AllowedMessages.ContainsKey(aMsgType))
+            {
+                throw new ButtplugDeviceException($"Message type {aMsgType.Name} not allowed for device {Name}.");
+            }
+
+            return AllowedMessages[aMsgType];
+        }
+
+        public MessageAttributes GetMessageAttributes<T>()
+        where T : ButtplugDeviceMessage
+        {
+            return GetMessageAttributes(typeof(T));
+        }
+
         public async Task SendMessageAsync(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
+            ButtplugUtils.ArgumentNotNull(aMsg, nameof(aMsg));
+
             if (!_owningClient.Connected)
             {
                 throw new ButtplugClientConnectorException(_bpLogger, "Client that owns device is not connected");
@@ -103,6 +135,14 @@ namespace Buttplug.Client
             {
                 throw new ButtplugDeviceException(_bpLogger, "Device no longer connected or valid");
             }
+
+            if (!AllowedMessages.ContainsKey(aMsg.GetType()))
+            {
+                throw new ButtplugDeviceException(_bpLogger,
+                    $"Device {Name} does not support message type {aMsg.GetType().Name}");
+            }
+
+            aMsg.DeviceIndex = Index;
 
             await _sendClosure(this, aMsg, aToken);
         }
@@ -129,6 +169,110 @@ namespace Buttplug.Client
             {
                 return false;
             }
+        }
+
+        public void CheckGenericSubcommandList<T>(IEnumerable<T> aCmdList, uint aLimitValue)
+            where T : GenericMessageSubcommand
+        {
+            if (!aCmdList.Any() || aCmdList.Count() > aLimitValue)
+            {
+                if (aLimitValue == 1)
+                {
+                    throw new ButtplugDeviceException(_bpLogger, $"{typeof(T).Name} requires 1 subcommand for this device, {aCmdList.Count()} present.");
+                }
+
+                throw new ButtplugDeviceException(_bpLogger, $"{typeof(T).Name} requires between 1 and {aLimitValue} subcommands for this device, {aCmdList.Count()} present.");
+            }
+
+            foreach (var cmd in aCmdList)
+            {
+                if (cmd.Index >= aLimitValue)
+                {
+                    throw new ButtplugDeviceException(_bpLogger, $"Index {cmd.Index} is out of bounds for {typeof(T).Name} for this device.");
+                }
+            }
+        }
+
+        private void CheckAllowedMessageType<T>()
+        where T : ButtplugDeviceMessage
+        {
+            if (!AllowedMessages.ContainsKey(typeof(T)))
+            {
+                throw new ButtplugDeviceException($"Device {Name} does not support message type {typeof(T).Name}");
+            }
+        }
+
+        public async Task SendVibrateCmd(double aSpeed)
+        {
+            CheckAllowedMessageType<VibrateCmd>();
+            await SendMessageAsync(VibrateCmd.Create(aSpeed, GetMessageAttributes<VibrateCmd>().FeatureCount.Value));
+        }
+
+        public async Task SendVibrateCmd(IEnumerable<double> aCmds)
+        {
+            CheckAllowedMessageType<VibrateCmd>();
+            var msg = VibrateCmd.Create(aCmds);
+            CheckGenericSubcommandList(msg.Speeds, GetMessageAttributes<VibrateCmd>().FeatureCount.Value);
+            await SendMessageAsync(VibrateCmd.Create(aCmds));
+        }
+
+        public async Task SendRotateCmd(double aSpeed, bool aClockwise)
+        {
+            CheckAllowedMessageType<RotateCmd>();
+            await SendMessageAsync(RotateCmd.Create(aSpeed, aClockwise, GetMessageAttributes<RotateCmd>().FeatureCount.Value));
+        }
+
+        public async Task SendRotateCmd(IEnumerable<(double, bool)> aCmds)
+        {
+            CheckAllowedMessageType<RotateCmd>();
+            var msg = RotateCmd.Create(aCmds);
+            CheckGenericSubcommandList(msg.Rotations, GetMessageAttributes<RotateCmd>().FeatureCount.Value);
+            await SendMessageAsync(RotateCmd.Create(aCmds));
+        }
+
+        public async Task SendLinearCmd(uint aDuration, double aPosition)
+        {
+            CheckAllowedMessageType<LinearCmd>();
+            await SendMessageAsync(LinearCmd.Create(aDuration, aPosition, GetMessageAttributes<LinearCmd>().FeatureCount.Value));
+        }
+
+        public async Task SendLinearCmd(IEnumerable<(uint, double)> aCmds)
+        {
+            CheckAllowedMessageType<LinearCmd>();
+            var msg = LinearCmd.Create(aCmds);
+            CheckGenericSubcommandList(msg.Vectors, GetMessageAttributes<LinearCmd>().FeatureCount.Value);
+            await SendMessageAsync(LinearCmd.Create(aCmds));
+        }
+
+        public async Task SendFleshlightLaunchFW12Cmd(uint aSpeed, uint aPosition)
+        {
+            CheckAllowedMessageType<FleshlightLaunchFW12Cmd>();
+            await SendMessageAsync(new FleshlightLaunchFW12Cmd(Index, aSpeed, aPosition));
+        }
+
+        public async Task SendLovenseCmd(string aDeviceCmd)
+        {
+            CheckAllowedMessageType<LovenseCmd>();
+            await SendMessageAsync(new LovenseCmd(Index, aDeviceCmd));
+        }
+
+        public async Task SendVorzeA10CycloneCmd(uint aSpeed, bool aClockwise)
+        {
+            CheckAllowedMessageType<VorzeA10CycloneCmd>();
+            await SendMessageAsync(new VorzeA10CycloneCmd(Index, aSpeed, aClockwise));
+        }
+
+        public async Task StopDeviceCmd()
+        {
+            // Every message should support this, but it doesn't hurt to check
+            CheckAllowedMessageType<StopDeviceCmd>();
+            await SendMessageAsync(new StopDeviceCmd(Index));
+        }
+
+        public async Task KiirooCmd(uint aPosition)
+        {
+            CheckAllowedMessageType<KiirooCmd>();
+            await SendMessageAsync(new KiirooCmd(Index, aPosition));
         }
     }
 }

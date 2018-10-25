@@ -112,7 +112,7 @@ namespace Buttplug.Client.Test
         }
 
         [Test]
-        public async Task TestDeviceMessage()
+        public async Task TestDeviceMessageRaw()
         {
             await _client.ConnectAsync();
             await _client.StartScanningAsync();
@@ -126,6 +126,31 @@ namespace Buttplug.Client.Test
             await _client.Devices[0].SendMessageAsync(new SingleMotorVibrateCmd(0, 0.5));
 
             _subtypeMgr.Device.V1.Should().Be(0.5);
+            _subtypeMgr.Device.V2.Should().Be(0.5);
+        }
+
+        [Test]
+        public async Task TestDeviceMessageHelper()
+        {
+            await _client.ConnectAsync();
+            await _client.StartScanningAsync();
+            await _client.StopScanningAsync();
+            var device = _client.Devices[0];
+
+            // Test device only takes vibration commands
+            device.Awaiting(async aDevice => await aDevice.SendFleshlightLaunchFW12Cmd(0, 0)).Should()
+                .Throw<ButtplugDeviceException>();
+
+            // Shouldn't throw.
+            await _client.Devices[0].SendVibrateCmd(0.5);
+
+            _subtypeMgr.Device.V1.Should().Be(0.5);
+            _subtypeMgr.Device.V2.Should().Be(0.5);
+
+            // Shouldn't throw.
+            await _client.Devices[0].SendVibrateCmd(new[] { 0.0, 0.5 } );
+
+            _subtypeMgr.Device.V1.Should().Be(0.0);
             _subtypeMgr.Device.V2.Should().Be(0.5);
         }
 
