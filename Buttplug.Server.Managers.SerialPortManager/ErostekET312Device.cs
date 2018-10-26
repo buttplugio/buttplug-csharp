@@ -42,10 +42,13 @@ namespace Buttplug.Server.Managers.SerialPortManager
             {
                 if (ex is UnauthorizedAccessException
                     || ex is ArgumentOutOfRangeException
+                    || ex is ArgumentException
                     || ex is IOException)
                 {
                     // This port is inaccessible. Possibly because a device detected earlier is
                     // already using it, or because our required parameters are not supported
+
+                    aLogManager.GetLogger(GetType()).Warn($"Cannot use serial port: {ex.Message}");
                     return null;
                 }
 
