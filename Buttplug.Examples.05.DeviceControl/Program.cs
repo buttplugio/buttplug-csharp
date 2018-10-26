@@ -78,12 +78,13 @@ namespace Buttplug.Examples._05.DeviceControl
                 foreach (var msgInfo in device.AllowedMessages)
                 {
                     // msgInfo will have two pieces of information
-                    // - Message name, which should be the same as the message type.
+                    // - Message Type, which will represent the classes of messages we can send
                     // - Message constraints, which can vary depending on the type of message
                     //
-                    // For instance the VibrateCmd message will have a "name" of VibrateCmd, and a
-                    // "FeatureCount" of 1 < x < N, depending on the number of vibration motors the
-                    // device has. Messages that don't have a FeatureCount will leave FeatureCount as null.
+                    // For instance the VibrateCmd message will have a Type of VibrateCmd (the C#
+                    // class in our library), and a "FeatureCount" of 1 < x < N, depending on the
+                    // number of vibration motors the device has. Messages that don't have a
+                    // FeatureCount will leave FeatureCount as null.
                     //
                     // Since we're working with a TestDevice, we know it will support 3 different
                     // types of messages.
@@ -94,7 +95,7 @@ namespace Buttplug.Examples._05.DeviceControl
                     // vibrate at the same speed.
                     // - StopDeviceCmd, which stops all output on a device. All devices should
                     // support this message.
-                    Console.WriteLine($"- {msgInfo.Key}");
+                    Console.WriteLine($"- {msgInfo.Key.Name}");
                     if (msgInfo.Value.FeatureCount != null)
                     {
                         Console.WriteLine($"  - Feature Count: {msgInfo.Value.FeatureCount}");
@@ -109,17 +110,20 @@ namespace Buttplug.Examples._05.DeviceControl
             //
             // There's a couple of ways to send this message.
             var testClientDevice = client.Devices[0];
-            var vibratorCount = testClientDevice.AllowedMessages[typeof(VibrateCmd)].FeatureCount;
+            
 
-            // We can create the message manually and send it over through the device object.
-            var vibrateCmdMsg = new VibrateCmd(new List<VibrateCmd.VibrateSubcommand> { new VibrateCmd.VibrateSubcommand(0, 1.0) });
-            await testClientDevice.SendMessageAsync(vibrateCmdMsg);
+            // We can use the convenience functions on ButtplugClientDevice to send the message. This
+            // version sets all of the motors on a vibrating device to the same speed.
+            await testClientDevice.SendVibrateCmd(1.0);
 
-            // We can also use the .Create() function on Generic messages to make life a bit easier.
-            // For instance, with VibrateCmd, the create function just makes a VibrateCmd message for
-            // us and sets all vibration motors to the same speed in that message.
-            var createVibrateCmdMsg = VibrateCmd.Create(1.0, vibratorCount ?? 0);
-            await testClientDevice.SendMessageAsync(createVibrateCmdMsg);
+            // If we wanted to just set one motor on and the other off, we could try this version
+            // that uses an array. It'll throw an exception if the array isn't the same size as the
+            // number of motors available as denoted by FeatureCount, though.
+            //
+            // You can get the vibrator count using the following code, though we know it's 2 so we
+            // don't really have to use it.
+            var vibratorCount = testClientDevice.GetMessageAttributes<VibrateCmd>().FeatureCount;
+            await testClientDevice.SendVibrateCmd(new[] { 1.0, 0.0 } );
 
             await WaitForKey();
 
@@ -130,13 +134,12 @@ namespace Buttplug.Examples._05.DeviceControl
             // an exception thrown.
             try
             {
-                await testClientDevice.SendMessageAsync(createVibrateCmdMsg);
+                await testClientDevice.SendVibrateCmd(1.0);
             }
-            catch (Exception e)
+            catch (ButtplugClientConnectorException e)
             {
                 Console.WriteLine("Tried to send a device message after the client disconnected! Exception: ");
                 Console.WriteLine(e);
-                throw;
             }
             await WaitForKey();
         }
