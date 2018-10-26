@@ -61,7 +61,7 @@ namespace Buttplug.Server.Connectors.IPCServer
             _logManager = new ButtplugLogManager();
             _logger = _logManager.GetLogger(GetType());
 
-            _acceptTask = new Task(async () => { await ConnectionAccepter(aPipeName, _cancellation.Token); }, _cancellation.Token, TaskCreationOptions.LongRunning);
+            _acceptTask = new Task(async () => { await ConnectionAccepter(aPipeName, _cancellation.Token).ConfigureAwait(false); }, _cancellation.Token, TaskCreationOptions.LongRunning);
             _acceptTask.Start();
         }
 
@@ -70,7 +70,7 @@ namespace Buttplug.Server.Connectors.IPCServer
             while (!aToken.IsCancellationRequested)
             {
                 var pipeServer = new NamedPipeServerStream(aPipeName, PipeDirection.InOut, 10, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
-                await pipeServer.WaitForConnectionAsync(aToken);
+                await pipeServer.WaitForConnectionAsync(aToken).ConfigureAwait(false);
                 if (!pipeServer.IsConnected)
                 {
                     continue;
@@ -130,7 +130,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                         {
                             try
                             {
-                                len = await aServer.ReadAsync(buffer, 0, buffer.Length, aToken);
+                                len = await aServer.ReadAsync(buffer, 0, buffer.Length, aToken).ConfigureAwait(false);
                                 if (len > 0)
                                 {
                                     msg += Encoding.UTF8.GetString(buffer, 0, len);
@@ -147,7 +147,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                             ButtplugMessage[] respMsgs;
                             try
                             {
-                                respMsgs = await buttplugServer.SendMessageAsync(msg);
+                                respMsgs = await buttplugServer.SendMessageAsync(msg).ConfigureAwait(false);
                             }
                             catch (ButtplugException e)
                             {
@@ -161,7 +161,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                             }
 
                             var output = Encoding.UTF8.GetBytes(respMsg);
-                            await aServer.WriteAsync(output, 0, output.Length, aToken);
+                            await aServer.WriteAsync(output, 0, output.Length, aToken).ConfigureAwait(false);
 
                             foreach (var m in respMsgs)
                             {
@@ -188,7 +188,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                 finally
                 {
                     buttplugServer.MessageReceived -= MsgReceived;
-                    await buttplugServer.ShutdownAsync();
+                    await buttplugServer.ShutdownAsync().ConfigureAwait(false);
                     buttplugServer = null;
                     _connections.TryDequeue(out var stashed);
                     while (stashed != aServer && _connections.Any())

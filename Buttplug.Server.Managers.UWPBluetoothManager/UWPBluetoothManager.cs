@@ -150,7 +150,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 // Just log the error and hope it reconnects on a later retry.
                 try
                 {
-                    var d = await factory.CreateDeviceAsync(dev);
+                    var d = await factory.CreateDeviceAsync(dev).ConfigureAwait(false);
                     InvokeDeviceAdded(new DeviceAddedEventArgs(d));
                 }
                 catch (Exception ex)

@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 using Buttplug.Client;
 using Buttplug.Client.Connectors.WebsocketConnector;
 
+// Tutorial file, disable ConfigureAwait checking since it's an actual program.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 namespace Buttplug.Examples._02.WebsocketClientSetup
 {
     internal class Program

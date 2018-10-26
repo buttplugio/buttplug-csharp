@@ -111,7 +111,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         public async Task SubscribeToUpdatesAsync()
         {
-            await SubscribeToUpdatesAsync(_rxChar);
+            await SubscribeToUpdatesAsync(_rxChar).ConfigureAwait(false);
         }
 
         public async Task SubscribeToUpdatesAsync(uint aIndex)
@@ -128,7 +128,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 return;
             }
 
-            await SubscribeToUpdatesAsync(_indexedChars[aIndex]);
+            await SubscribeToUpdatesAsync(_indexedChars[aIndex]).ConfigureAwait(false);
         }
 
         private async Task SubscribeToUpdatesAsync(GattCharacteristic aCharacteristic)
@@ -178,7 +178,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 throw new ButtplugDeviceException(_bpLogger, "WriteValue using txChar called with no txChar available", aMsgId);
             }
 
-            return await WriteValueAsync(aMsgId, _txChar, aValue, aWriteWithResponse, aToken);
+            return await WriteValueAsync(aMsgId, _txChar, aValue, aWriteWithResponse, aToken).ConfigureAwait(false);
         }
 
         [ItemNotNull]
@@ -199,7 +199,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     "WriteValue using indexed characteristics called with invalid index", aMsgId);
             }
 
-            return await WriteValueAsync(aMsgId, _indexedChars[aIndex], aValue, aWriteWithResponse, aToken);
+            return await WriteValueAsync(aMsgId, _indexedChars[aIndex], aValue, aWriteWithResponse, aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> WriteValueAsync(uint aMsgId,
@@ -220,7 +220,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 _currentWriteTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_internalTokenSource.Token, aToken);
                 var writeTask = aChar.WriteValueAsync(aValue.AsBuffer(),
                     aWriteWithResponse ? GattWriteOption.WriteWithResponse : GattWriteOption.WriteWithoutResponse).AsTask(_currentWriteTokenSource.Token);
-                var status = await writeTask;
+                var status = await writeTask.ConfigureAwait(false);
                 _currentWriteTokenSource = null;
                 if (status != GattCommunicationStatus.Success)
                 {
@@ -254,7 +254,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     "ReadValue using rxChar called with no rxChar available", aMsgId);
             }
 
-            return await ReadValueAsync(aMsgId, _rxChar, aToken);
+            return await ReadValueAsync(aMsgId, _rxChar, aToken).ConfigureAwait(false);
         }
 
         public async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, uint aIndex, CancellationToken aToken)
@@ -271,12 +271,12 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     "ReadValue using indexed characteristics called with invalid index", aMsgId);
             }
 
-            return await ReadValueAsync(aMsgId, _indexedChars[aIndex], aToken);
+            return await ReadValueAsync(aMsgId, _indexedChars[aIndex], aToken).ConfigureAwait(false);
         }
 
         private async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, GattCharacteristic aChar, CancellationToken aToken)
         {
-            var result = await aChar.ReadValueAsync().AsTask(aToken);
+            var result = await aChar.ReadValueAsync().AsTask(aToken).ConfigureAwait(false);
             if (result?.Value == null)
             {
                 throw new ButtplugDeviceException(_bpLogger, $"Got null read from {Name}", aMsgId);

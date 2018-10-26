@@ -3,6 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Client;
 
+// Tutorial file, disable ConfigureAwait checking since it's an actual program.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 namespace Buttplug.Examples._03.ConnectionLifetimesAndPingTimers
 {
     class Program

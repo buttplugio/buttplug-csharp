@@ -55,9 +55,9 @@ namespace Buttplug.Client.Connectors.IPCConnector
                 PipeDirection.InOut, PipeOptions.Asynchronous,
                 TokenImpersonationLevel.Impersonation);
 
-            await _pipeClient.ConnectAsync(aToken);
+            await _pipeClient.ConnectAsync(aToken).ConfigureAwait(false);
 
-            _readTask = new Task(async () => { await pipeReader(aToken); },
+            _readTask = new Task(async () => { await pipeReader(aToken).ConfigureAwait(false); },
                 aToken,
                 TaskCreationOptions.LongRunning);
             _readTask.Start();
@@ -68,7 +68,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
             // TODO Create internal token for cancellation and use link source with external key
             //_cancellationToken.Cancel();
             _pipeClient.Close();
-            await _readTask;
+            await _readTask.ConfigureAwait(false);
         }
 
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
@@ -88,7 +88,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
                     }
                 }
 
-                return await promise;
+                return await promise.ConfigureAwait(false);
         }
 
         private async Task pipeReader(CancellationToken aCancellationToken)
@@ -102,7 +102,7 @@ namespace Buttplug.Client.Connectors.IPCConnector
                 {
                     try
                     {
-                        len = await _pipeClient.ReadAsync(buffer, 0, buffer.Length, aCancellationToken);
+                        len = await _pipeClient.ReadAsync(buffer, 0, buffer.Length, aCancellationToken).ConfigureAwait(false);
                     }
                     catch
                     {

@@ -84,7 +84,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug("Stopping Device " + Name);
-            return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, _clockwise, aMsg.Id), aToken);
+            return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, _clockwise, aMsg.Id), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -93,7 +93,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             var v = cmdMsg.Rotations[0];
 
             return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(cmdMsg.DeviceIndex,
-                Convert.ToUInt32(v.Speed * 99), v.Clockwise, cmdMsg.Id), aToken);
+                Convert.ToUInt32(v.Speed * 99), v.Clockwise, cmdMsg.Id), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -111,7 +111,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
             return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)VorzeSABluetoothInfo.Chrs.Tx,
-                new byte[] { (byte)_deviceType, 0x01, rawSpeed }, false, aToken);
+                new byte[] { (byte)_deviceType, 0x01, rawSpeed }, false, aToken).ConfigureAwait(false);
         }
     }
 }

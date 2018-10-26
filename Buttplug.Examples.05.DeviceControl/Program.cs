@@ -7,6 +7,9 @@ using Buttplug.Core.Messages;
 using Buttplug.Core.Test;
 using Buttplug.Server.Test;
 
+// Tutorial file, disable ConfigureAwait checking since it's an actual program.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 namespace Buttplug.Examples._05.DeviceControl
 {
     class Program

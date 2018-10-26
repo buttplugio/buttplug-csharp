@@ -78,14 +78,14 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
             try
             {
-                _ws = await _wsClient.ConnectAsync(_uri, aToken);
+                _ws = await _wsClient.ConnectAsync(_uri, aToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 throw new ButtplugClientConnectorException(_logger, "Websocket Connection Exception! See Inner Exception", e);
             }
 
-            _readTask = new Task(async () => { await RunClientLoop(aToken); },
+            _readTask = new Task(async () => { await RunClientLoop(aToken).ConfigureAwait(false); },
                 aToken,
                 TaskCreationOptions.LongRunning);
             _readTask.Start();
@@ -101,7 +101,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             {
                 if (_ws != null && _ws.IsConnected)
                 {
-                    await _ws.CloseAsync();
+                    await _ws.CloseAsync().ConfigureAwait(false);
                 }
             }
             catch
@@ -110,14 +110,14 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             }
 
             // If we have a live task, wait for it to shut down and fire the disconnection event
-            await _readTask;
+            await _readTask.ConfigureAwait(false);
         }
 
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken)
         {
             var (msgString, msgPromise) = PrepareMessage(aMsg);
-            await _outgoingMessages.SendAsync(msgString, aToken);
-            return await msgPromise;
+            await _outgoingMessages.SendAsync(msgString, aToken).ConfigureAwait(false);
+            return await msgPromise.ConfigureAwait(false);
         }
 
         private async Task RunClientLoop(CancellationToken aToken)
@@ -138,7 +138,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
                     if (completedTaskIndex == 0)
                     {
-                        var incomingMsg = await (Task<string>) msgTasks[0];
+                        var incomingMsg = await ((Task<string>) msgTasks[0]).ConfigureAwait(false);
                         if (incomingMsg != null)
                         {
                             ReceiveMessages(incomingMsg);
@@ -155,7 +155,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                             var outMsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
                             if (_ws != null && _ws.IsConnected)
                             {
-                                await _ws.WriteStringAsync(outMsgs, aToken);
+                                await _ws.WriteStringAsync(outMsgs, aToken).ConfigureAwait(false);
                             }
 
                             writeTask = _outgoingMessages.OutputAvailableAsync(aToken);

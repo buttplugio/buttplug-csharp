@@ -74,14 +74,14 @@ namespace Buttplug.Server.Bluetooth.Devices
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug("Stopping Device " + Name);
-            return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken);
+            return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
-            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 1), aToken);
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 1), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -97,7 +97,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             _vibratorSpeed = v.Speed;
 
             return await Interface.WriteValueAsync(aMsg.Id,
-                Encoding.ASCII.GetBytes($"$SYS,{(int)(_vibratorSpeed * 8),1}?"), false, aToken);
+                Encoding.ASCII.GetBytes($"$SYS,{(int)(_vibratorSpeed * 8),1}?"), false, aToken).ConfigureAwait(false);
         }
     }
 }

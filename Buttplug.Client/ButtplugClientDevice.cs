@@ -144,7 +144,7 @@ namespace Buttplug.Client
 
             aMsg.DeviceIndex = Index;
 
-            await _sendClosure(this, aMsg, aToken);
+            await _sendClosure(this, aMsg, aToken).ConfigureAwait(false);
         }
 
         public bool Equals(ButtplugClientDevice aDevice)
@@ -205,7 +205,7 @@ namespace Buttplug.Client
         public async Task SendVibrateCmd(double aSpeed)
         {
             CheckAllowedMessageType<VibrateCmd>();
-            await SendMessageAsync(VibrateCmd.Create(aSpeed, GetMessageAttributes<VibrateCmd>().FeatureCount.Value));
+            await SendMessageAsync(VibrateCmd.Create(aSpeed, GetMessageAttributes<VibrateCmd>().FeatureCount.Value)).ConfigureAwait(false);
         }
 
         public async Task SendVibrateCmd(IEnumerable<double> aCmds)
@@ -213,13 +213,13 @@ namespace Buttplug.Client
             CheckAllowedMessageType<VibrateCmd>();
             var msg = VibrateCmd.Create(aCmds);
             CheckGenericSubcommandList(msg.Speeds, GetMessageAttributes<VibrateCmd>().FeatureCount.Value);
-            await SendMessageAsync(VibrateCmd.Create(aCmds));
+            await SendMessageAsync(VibrateCmd.Create(aCmds)).ConfigureAwait(false);
         }
 
         public async Task SendRotateCmd(double aSpeed, bool aClockwise)
         {
             CheckAllowedMessageType<RotateCmd>();
-            await SendMessageAsync(RotateCmd.Create(aSpeed, aClockwise, GetMessageAttributes<RotateCmd>().FeatureCount.Value));
+            await SendMessageAsync(RotateCmd.Create(aSpeed, aClockwise, GetMessageAttributes<RotateCmd>().FeatureCount.Value)).ConfigureAwait(false);
         }
 
         public async Task SendRotateCmd(IEnumerable<(double, bool)> aCmds)
@@ -227,13 +227,13 @@ namespace Buttplug.Client
             CheckAllowedMessageType<RotateCmd>();
             var msg = RotateCmd.Create(aCmds);
             CheckGenericSubcommandList(msg.Rotations, GetMessageAttributes<RotateCmd>().FeatureCount.Value);
-            await SendMessageAsync(RotateCmd.Create(aCmds));
+            await SendMessageAsync(RotateCmd.Create(aCmds)).ConfigureAwait(false);
         }
 
         public async Task SendLinearCmd(uint aDuration, double aPosition)
         {
             CheckAllowedMessageType<LinearCmd>();
-            await SendMessageAsync(LinearCmd.Create(aDuration, aPosition, GetMessageAttributes<LinearCmd>().FeatureCount.Value));
+            await SendMessageAsync(LinearCmd.Create(aDuration, aPosition, GetMessageAttributes<LinearCmd>().FeatureCount.Value)).ConfigureAwait(false);
         }
 
         public async Task SendLinearCmd(IEnumerable<(uint, double)> aCmds)
@@ -241,38 +241,38 @@ namespace Buttplug.Client
             CheckAllowedMessageType<LinearCmd>();
             var msg = LinearCmd.Create(aCmds);
             CheckGenericSubcommandList(msg.Vectors, GetMessageAttributes<LinearCmd>().FeatureCount.Value);
-            await SendMessageAsync(LinearCmd.Create(aCmds));
+            await SendMessageAsync(LinearCmd.Create(aCmds)).ConfigureAwait(false);
         }
 
         public async Task SendFleshlightLaunchFW12Cmd(uint aSpeed, uint aPosition)
         {
             CheckAllowedMessageType<FleshlightLaunchFW12Cmd>();
-            await SendMessageAsync(new FleshlightLaunchFW12Cmd(Index, aSpeed, aPosition));
+            await SendMessageAsync(new FleshlightLaunchFW12Cmd(Index, aSpeed, aPosition)).ConfigureAwait(false);
         }
 
         public async Task SendLovenseCmd(string aDeviceCmd)
         {
             CheckAllowedMessageType<LovenseCmd>();
-            await SendMessageAsync(new LovenseCmd(Index, aDeviceCmd));
+            await SendMessageAsync(new LovenseCmd(Index, aDeviceCmd)).ConfigureAwait(false);
         }
 
         public async Task SendVorzeA10CycloneCmd(uint aSpeed, bool aClockwise)
         {
             CheckAllowedMessageType<VorzeA10CycloneCmd>();
-            await SendMessageAsync(new VorzeA10CycloneCmd(Index, aSpeed, aClockwise));
+            await SendMessageAsync(new VorzeA10CycloneCmd(Index, aSpeed, aClockwise)).ConfigureAwait(false);
         }
 
         public async Task StopDeviceCmd()
         {
             // Every message should support this, but it doesn't hurt to check
             CheckAllowedMessageType<StopDeviceCmd>();
-            await SendMessageAsync(new StopDeviceCmd(Index));
+            await SendMessageAsync(new StopDeviceCmd(Index)).ConfigureAwait(false);
         }
 
         public async Task KiirooCmd(uint aPosition)
         {
             CheckAllowedMessageType<KiirooCmd>();
-            await SendMessageAsync(new KiirooCmd(Index, aPosition));
+            await SendMessageAsync(new KiirooCmd(Index, aPosition)).ConfigureAwait(false);
         }
     }
 }

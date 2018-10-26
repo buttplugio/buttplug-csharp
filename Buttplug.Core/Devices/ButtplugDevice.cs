@@ -99,7 +99,7 @@ namespace Buttplug.Core.Devices
 
             // We just checked whether the key exists above, so we're ok.
             // ReSharper disable once PossibleNullReferenceException
-            return await MsgFuncs[aMsg.GetType()].Function.Invoke(aMsg, aToken);
+            return await MsgFuncs[aMsg.GetType()].Function.Invoke(aMsg, aToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

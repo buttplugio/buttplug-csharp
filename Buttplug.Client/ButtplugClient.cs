@@ -160,9 +160,9 @@ namespace Buttplug.Client
             }
 
             _connector.MessageReceived += MessageReceivedHandler;
-            await _connector.ConnectAsync(aToken);
+            await _connector.ConnectAsync(aToken).ConfigureAwait(false);
 
-            var res = await SendMessageAsync(new RequestServerInfo(Name), aToken);
+            var res = await SendMessageAsync(new RequestServerInfo(Name), aToken).ConfigureAwait(false);
             switch (res)
             {
                 case ServerInfo si:
@@ -174,17 +174,17 @@ namespace Buttplug.Client
 
                     if (si.MessageVersion < ButtplugConsts.CurrentSpecVersion)
                     {
-                        await DisconnectAsync();
+                        await DisconnectAsync().ConfigureAwait(false);
                         throw new ButtplugHandshakeException(_bpLogger,
                             $"Buttplug Server's schema version ({si.MessageVersion}) is less than the client's ({ButtplugConsts.CurrentSpecVersion}). A newer server is required.",
                             res.Id);
                     }
 
                     // Get full device list and populate internal list
-                    var resp = await SendMessageAsync(new RequestDeviceList());
+                    var resp = await SendMessageAsync(new RequestDeviceList()).ConfigureAwait(false);
                     if (!(resp is DeviceList))
                     {
-                        await DisconnectAsync();
+                        await DisconnectAsync().ConfigureAwait(false);
                         if (resp is Error errResp)
                         {
                             throw ButtplugException.FromError(_bpLogger, errResp);
@@ -209,11 +209,11 @@ namespace Buttplug.Client
                     break;
 
                 case Error e:
-                    await DisconnectAsync();
+                    await DisconnectAsync().ConfigureAwait(false);
                     throw ButtplugException.FromError(_bpLogger, e);
 
                 default:
-                    await DisconnectAsync();
+                    await DisconnectAsync().ConfigureAwait(false);
                     throw new ButtplugHandshakeException(_bpLogger, $"Unrecognized message {res.Name} during handshake", res.Id);
             }
         }
@@ -226,7 +226,7 @@ namespace Buttplug.Client
             }
 
             _connector.MessageReceived -= MessageReceivedHandler;
-            await _connector.DisconnectAsync();
+            await _connector.DisconnectAsync().ConfigureAwait(false);
             ServerDisconnect?.Invoke(this, new EventArgs());
         }
 
@@ -242,7 +242,7 @@ namespace Buttplug.Client
         // ReSharper disable once UnusedMember.Global
         public async Task StartScanningAsync(CancellationToken aToken = default(CancellationToken))
         {
-            await SendMessageExpectOk(new StartScanning(), aToken);
+            await SendMessageExpectOk(new StartScanning(), aToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace Buttplug.Client
         // ReSharper disable once UnusedMember.Global
         public async Task StopScanningAsync(CancellationToken aToken = default(CancellationToken))
         {
-            await SendMessageExpectOk(new StopScanning(), aToken);
+            await SendMessageExpectOk(new StopScanning(), aToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace Buttplug.Client
         // ReSharper disable once UnusedMember.Global
         public async Task RequestLogAsync(ButtplugLogLevel aLogLevel, CancellationToken aToken = default(CancellationToken))
         {
-            await SendMessageExpectOk(new RequestLog(aLogLevel), aToken);
+            await SendMessageExpectOk(new RequestLog(aLogLevel), aToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace Buttplug.Client
         /// </returns>
         protected async Task SendDeviceMessageAsync(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg, CancellationToken aToken = default(CancellationToken))
         {
-            await SendMessageExpectOk(aDeviceMsg, aToken);
+            await SendMessageExpectOk(aDeviceMsg, aToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace Buttplug.Client
                 throw new ButtplugClientConnectorException(_bpLogger, "Client not connected.");
             }
 
-            return await _connector.SendAsync(aMsg, aToken);
+            return await _connector.SendAsync(aMsg, aToken).ConfigureAwait(false);
         }
 
         private void ConnectorErrorHandler(object aSender, ButtplugExceptionEventArgs aException)
@@ -361,7 +361,7 @@ namespace Buttplug.Client
                     if (e.ErrorCode == Error.ErrorClass.ERROR_PING)
                     {
                         PingTimeout?.Invoke(this, EventArgs.Empty);
-                        await DisconnectAsync();
+                        await DisconnectAsync().ConfigureAwait(false);
                     }
 
                     break;
@@ -386,14 +386,14 @@ namespace Buttplug.Client
         {
             try
             {
-                await SendMessageExpectOk(new Ping());
+                await SendMessageExpectOk(new Ping()).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 ErrorReceived?.Invoke(_bpLogger, new ButtplugExceptionEventArgs(new ButtplugPingException(_bpLogger, "Exception thrown during ping update", ButtplugConsts.SystemMsgId, e)));
 
                 // If SendMessageAsync throws, we're probably already disconnected, but just make sure.
-                await DisconnectAsync();
+                await DisconnectAsync().ConfigureAwait(false);
             }
         }
 
@@ -405,7 +405,7 @@ namespace Buttplug.Client
         /// <returns>True if successful.</returns>
         private async Task SendMessageExpectOk(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
-            var msg = await SendMessageAsync(aMsg, aToken);
+            var msg = await SendMessageAsync(aMsg, aToken).ConfigureAwait(false);
             switch (msg)
             {
                 case Ok _:
