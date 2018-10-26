@@ -7,8 +7,8 @@
     <ProjectGuid>{436CF4FF-AE10-45DA-8909-9AACF1ED6425}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Buttplug.Server.Managers.ETSerialManager</RootNamespace>
-    <AssemblyName>Buttplug.Server.Managers.ETSerialManager</AssemblyName>
+    <RootNamespace>Buttplug.Server.Managers.SerialPortManager</RootNamespace>
+    <AssemblyName>Buttplug.Server.Managers.SerialPortManager</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -69,6 +69,7 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Buttplug.Server.Managers.SerialPortManager.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
