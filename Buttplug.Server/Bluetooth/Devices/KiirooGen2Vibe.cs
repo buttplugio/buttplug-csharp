@@ -131,14 +131,14 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             BpLogger.Debug($"Stopping Device {Name}");
 
-            return await HandleVibrateCmd(VibrateCmd.Create(aMsg.DeviceIndex, aMsg.Id, 0, _devInfo.VibeCount), aToken);
+            return await HandleVibrateCmd(VibrateCmd.Create(aMsg.DeviceIndex, aMsg.Id, 0, _devInfo.VibeCount), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
-            return await HandleVibrateCmd(VibrateCmd.Create(aMsg.DeviceIndex, aMsg.Id, cmdMsg.Speed, _devInfo.VibeCount), aToken);
+            return await HandleVibrateCmd(VibrateCmd.Create(aMsg.DeviceIndex, aMsg.Id, cmdMsg.Speed, _devInfo.VibeCount), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -171,7 +171,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx,
-                data, false, aToken);
+                data, false, aToken).ConfigureAwait(false);
         }
     }
 }

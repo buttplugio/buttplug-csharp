@@ -128,7 +128,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             return await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
                 chr,
                 new byte[] { 0 },
-                true, aToken);
+                true, aToken).ConfigureAwait(false);
         }
 
         private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -149,7 +149,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             return await HandleFleshlightLaunchFW12Cmd(new FleshlightLaunchFW12Cmd(cmdMsg.DeviceIndex,
                 Convert.ToUInt32(FleshlightHelper.GetSpeed(Math.Abs(_lastPosition - v.Position), v.Duration) * 99),
-                Convert.ToUInt32(v.Position * 99), cmdMsg.Id), aToken);
+                Convert.ToUInt32(v.Position * 99), cmdMsg.Id), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -160,7 +160,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             return await Interface.WriteValueAsync(aMsg.Id,
                 (int)FleshlightLaunchBluetoothInfo.Chrs.Tx,
-                new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }, false, aToken);
+                new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }, false, aToken).ConfigureAwait(false);
         }
     }
 }

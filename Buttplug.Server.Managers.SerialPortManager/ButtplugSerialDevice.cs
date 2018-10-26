@@ -38,7 +38,7 @@ namespace Buttplug.Server.Managers.SerialPortManager
             var retBuf = new byte[aLength];
             while (c < aLength)
             {
-                c += await _port.BaseStream.ReadAsync(retBuf, c, aLength - c, aToken);
+                c += await _port.BaseStream.ReadAsync(retBuf, c, aLength - c, aToken).ConfigureAwait(false);
             }
 
             return retBuf;
@@ -46,12 +46,12 @@ namespace Buttplug.Server.Managers.SerialPortManager
 
         protected async Task WriteAsync(byte[] aBuffer, CancellationToken aToken = default(CancellationToken))
         {
-            await WriteAsync(aBuffer, 0, aBuffer.Length, aToken);
+            await WriteAsync(aBuffer, 0, aBuffer.Length, aToken).ConfigureAwait(false);
         }
 
         protected async Task WriteAsync(byte[] aBuffer, int aOffset, int aCount, CancellationToken aToken)
         {
-            await _port.BaseStream.WriteAsync(aBuffer, aOffset, aCount, aToken);
+            await _port.BaseStream.WriteAsync(aBuffer, aOffset, aCount, aToken).ConfigureAwait(false);
         }
 
         public override void Disconnect()

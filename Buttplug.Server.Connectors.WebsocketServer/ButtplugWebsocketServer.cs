@@ -74,7 +74,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             }
 
             _server = new WebSocketListener(endpoint, options);
-            await _server.StartAsync();
+            await _server.StartAsync().ConfigureAwait(false);
 
             _websocketTask = Task.Run(() => AcceptWebSocketClientsAsync(_server, _cancellation.Token));
         }
@@ -89,7 +89,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
                     ws = await aServer.AcceptWebSocketAsync(aToken).ConfigureAwait(false);
                     if (ws != null)
                     {
-                        await Task.Run(() => HandleConnectionAsync(ws, aToken), aToken);
+                        await Task.Run(() => HandleConnectionAsync(ws, aToken), aToken).ConfigureAwait(false);
                     }
                 }
                 catch (Exception aEx)
@@ -105,8 +105,8 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             {
                 try
                 {
-                    await ws.WriteStringAsync(new ButtplugJsonMessageParser(_logManager).Serialize(new ButtplugHandshakeException("WebSocketServer already in use!").ButtplugErrorMessage, 0));
-                    await ws.CloseAsync();
+                    await ws.WriteStringAsync(new ButtplugJsonMessageParser(_logManager).Serialize(new ButtplugHandshakeException("WebSocketServer already in use!").ButtplugErrorMessage, 0)).ConfigureAwait(false);
+                    await ws.CloseAsync().ConfigureAwait(false);
                 }
                 catch
                 {
@@ -132,7 +132,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             {
                 ConnectionClosed?.Invoke(this, aEventArgs);
             };
-            await session.RunServerSession();
+            await session.RunServerSession().ConfigureAwait(false);
             _connections.TryRemove(remoteId, out var closeWebSockets);
         }
 
@@ -143,8 +143,8 @@ namespace Buttplug.Server.Connectors.WebsocketServer
                 return;
             }
             _cancellation.Cancel();
-            await _websocketTask;
-            await _server.StopAsync();
+            await _websocketTask.ConfigureAwait(false);
+            await _server.StopAsync().ConfigureAwait(false);
             _server = null;
         }
 
@@ -154,7 +154,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             {
                 foreach (var conn in _connections.Values)
                 {
-                    await conn.CloseAsync();
+                    await conn.CloseAsync().ConfigureAwait(false);
                 }
 
                 return;
@@ -162,7 +162,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer
 
             if (_connections.TryGetValue(remoteId, out WebSocket ws))
             {
-                await ws.CloseAsync();
+                await ws.CloseAsync().ConfigureAwait(false);
             }
         }
     }

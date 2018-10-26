@@ -5,6 +5,9 @@ using Buttplug.Core.Logging;
 using Buttplug.Core.Test;
 using Buttplug.Server.Test;
 
+// Tutorial file, disable ConfigureAwait checking since it's an actual program.
+// ReSharper disable ConsiderUsingConfigureAwait
+
 namespace Buttplug.Examples._03.DeviceEnumeration
 {
     class Program

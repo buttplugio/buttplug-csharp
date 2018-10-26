@@ -219,7 +219,7 @@ namespace Buttplug.Server
                     _bpLogger.Trace($"Sending {aMsg.GetType().Name} to device index {m.DeviceIndex}");
                     if (_devices.ContainsKey(m.DeviceIndex))
                     {
-                        return await _devices[m.DeviceIndex].ParseMessageAsync(m, aToken);
+                        return await _devices[m.DeviceIndex].ParseMessageAsync(m, aToken).ConfigureAwait(false);
                     }
 
                     throw new ButtplugDeviceException(_bpLogger,

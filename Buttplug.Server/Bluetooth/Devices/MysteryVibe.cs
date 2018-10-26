@@ -88,7 +88,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             // create pattern mode.
             return await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
                 (uint)MysteryVibeBluetoothInfo.Chrs.ModeControl,
-                new byte[] { 0x43, 0x02, 0x00 }, true, aToken);
+                new byte[] { 0x43, 0x02, 0x00 }, true, aToken).ConfigureAwait(false);
         }
 
         private void OnDeviceRemoved(object aEvent, EventArgs aArgs)
@@ -111,7 +111,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             // We'll have to use an internal token here since this is timer triggered.
             if (await Interface.WriteValueAsync(ButtplugConsts.DefaultMsgId,
                 (uint)MysteryVibeBluetoothInfo.Chrs.MotorControl,
-                _vibratorSpeeds, false, _stopUpdateCommandSource.Token) is Error)
+                _vibratorSpeeds, false, _stopUpdateCommandSource.Token).ConfigureAwait(false) is Error)
             {
                 BpLogger.Error($"Cannot send update to {Name}, device may stop moving.");
                 _updateValueTimer.Enabled = false;
@@ -121,7 +121,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug($"Stopping Device {Name}");
-            return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken);
+            return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -129,7 +129,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
             return await HandleVibrateCmd(
-                VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 6), aToken);
+                VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 6), aToken).ConfigureAwait(false);
         }
 
         private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)

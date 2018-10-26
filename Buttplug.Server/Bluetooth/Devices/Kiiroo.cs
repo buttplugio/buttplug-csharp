@@ -99,17 +99,17 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             // Start listening for incoming
             Interface.BluetoothNotifyReceived += OnBluetoothMessageReceived;
-            await Interface.SubscribeToUpdatesAsync((uint)KiirooBluetoothInfo.Chrs.Rx);
+            await Interface.SubscribeToUpdatesAsync((uint)KiirooBluetoothInfo.Chrs.Rx).ConfigureAwait(false);
 
             // Mode select
             await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
                 (uint)KiirooBluetoothInfo.Chrs.Cmd,
-                new byte[] { 0x01, 0x00 }, true, aToken);
+                new byte[] { 0x01, 0x00 }, true, aToken).ConfigureAwait(false);
 
             // Set to start position
             await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
                 (uint)KiirooBluetoothInfo.Chrs.Tx,
-                new byte[] { 0x30, 0x2c }, true, aToken);
+                new byte[] { 0x30, 0x2c }, true, aToken).ConfigureAwait(false);
 
             if (Interface.Name != "ONYX")
             {
@@ -181,7 +181,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 }
             }
 
-            var res = await HandleKiirooRawCmd(new KiirooCmd(0, Convert.ToUInt32(_currentPosition * 4), ButtplugConsts.SystemMsgId), default(CancellationToken));
+            var res = await HandleKiirooRawCmd(new KiirooCmd(0, Convert.ToUInt32(_currentPosition * 4), ButtplugConsts.SystemMsgId), default(CancellationToken)).ConfigureAwait(false);
             if (res is Error err)
             {
                 BpLogger.Error(err.ErrorMessage);
@@ -197,7 +197,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             if (Interface.Name == "PEARL" && _deviceSpeed > 0)
             {
-                return await HandleKiirooRawCmd(new KiirooCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken);
+                return await HandleKiirooRawCmd(new KiirooCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken).ConfigureAwait(false);
             }
 
             return new Ok(aMsg.Id);
@@ -208,14 +208,14 @@ namespace Buttplug.Server.Bluetooth.Devices
             var cmdMsg = CheckMessageHandler<KiirooCmd>(aMsg);
 
             return await Interface.WriteValueAsync(cmdMsg.Id, (uint)KiirooBluetoothInfo.Chrs.Tx,
-                Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"), false, aToken);
+                Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"), false, aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
-            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 1), aToken);
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 1), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -246,7 +246,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 _deviceSpeed = v.Speed;
             }
 
-            return await HandleKiirooRawCmd(new KiirooCmd(aMsg.DeviceIndex, Convert.ToUInt16(_deviceSpeed * 4), aMsg.Id), aToken);
+            return await HandleKiirooRawCmd(new KiirooCmd(aMsg.DeviceIndex, Convert.ToUInt16(_deviceSpeed * 4), aMsg.Id), aToken).ConfigureAwait(false);
         }
 
         private Task<ButtplugMessage> HandleFleshlightLaunchFW12Cmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
