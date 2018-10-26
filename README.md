@@ -25,6 +25,7 @@ page.](https://github.com/buttplugio/buttplug-windows-suite/releases/)
 - [Buttplug Spec and Documentation](#buttplug-spec-and-documentation)
 - [Hardware Support](#hardware-support)
 - [Installation](#installation)
+- [Compiling](#compiling)
 - [Client Software (Buttplug Server, Game Vibration Router)](#client-software)
 - [Third Party Applications Using Buttplug-C#](#third-party-applications-using-buttplug-c)
 - [License]()
@@ -102,6 +103,16 @@ support.
 Packages and libraries from the buttplug-csharp repo are available via
 [nuget](http://nuget.org). Simply run a search for "buttplug", or
 [follow this link to the nuget "buttplug" search](https://www.nuget.org/packages?q=buttplug).
+
+## Compiling
+
+The project should compile with Visual Studio 2017, Visual Studio on
+Mac (.Net Standard projects only), or Mono on linux (.Net Standard
+projects only).
+
+Note that for building using Visual Studio on Windows 7/8/10, the project
+requires the [Windows 10
+SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk) to be installed.
 
 ## Client Software
 
