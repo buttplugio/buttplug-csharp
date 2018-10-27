@@ -318,5 +318,17 @@ namespace Buttplug.Server.Test
                 msgReceived = false;
             }
         }
+
+        [Test]
+        public async Task TestNoSubtypeManagerError()
+        {
+            // If we request a DeviceAdded/DeviceList message on a client with an older spec version
+            // than the server, it should remove all non-spec-supported message types.
+            _server = new TestServer();
+            (await _server.SendMessageAsync(new RequestServerInfo("TestClient", 1, 0))).Should().BeOfType<ServerInfo>();
+
+            _server.Awaiting(async aServer => await aServer.SendMessageAsync(new StartScanning())).Should()
+                .Throw<ButtplugDeviceException>();
+        }
     }
 }

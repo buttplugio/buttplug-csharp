@@ -170,7 +170,15 @@ namespace Buttplug.Server
             {
                 case StartScanning _:
                     _bpLogger.Debug("Got StartScanning Message");
-                    StartScanning();
+                    try
+                    {
+                        StartScanning();
+                    }
+                    catch (ButtplugDeviceException aEx)
+                    {
+                        throw new ButtplugDeviceException(_bpLogger, aEx.Message, id);
+                    }
+
                     return new Ok(id);
 
                 case StopScanning _:
@@ -243,6 +251,10 @@ namespace Buttplug.Server
 
         private void StartScanning()
         {
+            if (!_managers.Any())
+            {
+                throw new ButtplugDeviceException(_bpLogger, "No DeviceSubtypeManagers available to scan with.");
+            }
             lock (_scanLock)
             {
                 _sentFinished = false;
