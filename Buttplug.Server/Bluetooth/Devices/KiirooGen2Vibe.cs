@@ -30,6 +30,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Pearl2",
             "Fuse",
             "Virtual Blowbot",
+            "Titan",
         };
 
         public string[] Names { get; } = NamesInfo;
@@ -95,6 +96,15 @@ namespace Buttplug.Server.Bluetooth.Devices
                 new KiirooGen2VibeType
                 {
                     Brand = "PornHub",
+                    VibeCount = 3,
+                    VibeOrder = new[] { 0u, 1u, 2u },
+                }
+            },
+            {
+                "Titan",
+                new KiirooGen2VibeType
+                {
+                    Brand = "Kiiroo",
                     VibeCount = 3,
                     VibeOrder = new[] { 0u, 1u, 2u },
                 }
