@@ -273,7 +273,7 @@ namespace Buttplug.Server
             AddDeviceSubtypeManager(aCreateMgrFunc(_bpLogManager));
         }
 
-        internal void AddDeviceSubtypeManager(IDeviceSubtypeManager aMgr)
+        public void AddDeviceSubtypeManager(IDeviceSubtypeManager aMgr)
         {
             _managers.Add(aMgr);
             aMgr.DeviceAdded += DeviceAddedHandler;
