@@ -6,6 +6,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -271,6 +274,52 @@ namespace Buttplug.Server
             ButtplugUtils.ArgumentNotNull(aMsgs, nameof(aMsgs));
 
             return _parser.Serialize(aMsgs, _clientSpecVersion);
+        }
+
+        /// <summary>
+        /// Finds all Manager DLLs (DLLs named "Buttplug.Server.Managers.*.dll") in the local
+        /// directory, loads them into the assembly cache, scans them for DeviceSubtypeManager
+        /// deriving classes, and adds instances of those classes to the device manager. Handy if you
+        /// just want to load all of the device managers at once, versus one-by-one by hand. Note
+        /// that this function can be slow enough to delay startup and GUIs, and might best be run on
+        /// a thread or Task.
+        /// </summary>
+        public void AddAllSubtypeManagers()
+        {
+            // Force load all Buttplug.Server.Manager assemblies in the current directory
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            // Assume all assemblies will be named as "Buttplug.Server.Managers.*.dll" because that's
+            // what we do now anyways.
+            foreach (var dll in Directory.GetFiles(path, "Buttplug.Server.Managers.*.dll"))
+            {
+                Assembly.LoadFile(dll);
+            }
+
+            // Within the assemblies, extract all subclasses of DeviceSubtypeManager, which are what
+            // we need to add here.
+            var types =
+                from a in AppDomain.CurrentDomain.GetAssemblies()
+                from t in a.GetTypes()
+                where t.IsSubclassOf(typeof(DeviceSubtypeManager))
+                select t;
+
+            // Add new instances of all found types to the DeviceManager. All DeviceSubtypeManager
+            // classes should take a IButtplugLogManager as a constructor parameter. If not (which
+            // will at least be the case for BluetoothDeviceManager, which is a base class), log and continue.
+            foreach (var t in types)
+            {
+                try
+                {
+                    _bpLogger.Info($"Adding subtype manager {t.Name} as part of AddAllSubtypeManagers.");
+                    var mgr = (IDeviceSubtypeManager)Activator.CreateInstance(t, new[] { BpLogManager });
+                    _deviceManager.AddDeviceSubtypeManager(mgr);
+                }
+                catch (MissingMethodException _)
+                {
+                    _bpLogger.Info($"Subtype manager {t.Name} not added, missing appropriate constructor.");
+                }
+            }
         }
 
         // ReSharper disable once UnusedMember.Global
