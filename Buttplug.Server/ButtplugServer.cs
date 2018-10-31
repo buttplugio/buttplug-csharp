@@ -102,13 +102,19 @@ namespace Buttplug.Server
         /// </summary>
         private uint _clientSpecVersion;
 
-        public ButtplugServer(string aServerName, uint aMaxPingTime, DeviceManager aDeviceManager = null)
+        public ButtplugServer(string aServerName, uint aMaxPing, DeviceManager aManager = null)
+            : this(new ButtplugServerOptions(aServerName, aMaxPing, aManager))
         {
+        }
+
+        public ButtplugServer(ButtplugServerOptions aOptions)
+        {
+            ButtplugUtils.ArgumentNotNull(aOptions, nameof(aOptions));
             _clientName = null;
-            _serverName = aServerName;
-            _maxPingTime = aMaxPingTime;
+            _serverName = aOptions.ServerName;
+            _maxPingTime = aOptions.MaxPingTime;
             _pingTimedOut = false;
-            if (aMaxPingTime != 0)
+            if (_maxPingTime != 0)
             {
                 // Create a new timer that wont fire any events just yet
                 _pingTimer = new Timer(PingTimeoutHandler, null, Timeout.Infinite, Timeout.Infinite);
@@ -118,7 +124,7 @@ namespace Buttplug.Server
             _bpLogger = BpLogManager.GetLogger(GetType());
             _bpLogger.Debug("Setting up ButtplugServer");
             _parser = new ButtplugJsonMessageParser(BpLogManager);
-            _deviceManager = aDeviceManager ?? new DeviceManager(BpLogManager);
+            _deviceManager = aOptions.DeviceManager ?? new DeviceManager(BpLogManager);
 
             _bpLogger.Info("Finished setting up ButtplugServer");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
