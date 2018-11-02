@@ -122,7 +122,7 @@ after_build:
 test_script:
   - ps: |
       if ($isWindows) {
-        .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"$env:SYSTEMDRIVE\Tools\NUnit3\nunit3-console.exe" -targetargs:"Buttplug.Core.Test\bin\$env:CONFIGURATION\Buttplug.Core.Test.dll Buttplug.Server.Test\bin\$env:CONFIGURATION\Buttplug.Server.Test.dll Buttplug.Client.Test\bin\$env:CONFIGURATION\Buttplug.Client.Test.dll Buttplug.Client.Connectors.IPCConnector.Test\bin\$env:CONFIGURATION\Buttplug.Client.Connectors.IPCConnector.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test\bin\$env:CONFIGURATION\Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=myresults.xml;format=AppVeyor" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs" -filter:"+[*]* -[nunit*]*"
+        .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"$env:SYSTEMDRIVE\Tools\NUnit3\nunit3-console.exe" -targetargs:"Buttplug.Test\bin\$env:CONFIGURATION\Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test\bin\$env:CONFIGURATION\Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=myresults.xml;format=AppVeyor" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs" -filter:"+[*]* -[nunit*]*"
       }
 
 after_test:
