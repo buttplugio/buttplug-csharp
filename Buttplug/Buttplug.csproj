@@ -38,15 +38,6 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Client\Connectors\" />
-    <Folder Include="Core\Devices\" />
-    <Folder Include="Core\Logging\" />
-    <Folder Include="Core\Messages\" />
-    <Folder Include="Server\Bluetooth\" />
-    <Folder Include="Server\Util\" />
-  </ItemGroup>
-
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>full</DebugType>
   </PropertyGroup>
@@ -69,6 +60,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="..\dependencies\buttplug-schema\schema\buttplug-schema.json" />
+    <EmbeddedResource Include="..\LICENSE" Link="Server\LICENSE" />
     <None Include="app.config" />
   </ItemGroup>
 

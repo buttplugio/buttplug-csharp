@@ -72,12 +72,6 @@
     <Compile Include="TestDevice.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
-      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
-      <Name>Buttplug.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset">
       <Link>ButtplugCodeAnalysisRules.ruleset</Link>
     </None>

@@ -52,19 +52,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Client\Buttplug.Client.csproj">
-      <Project>{1592d845-8fe5-4f33-a665-d7675c9aaee4}</Project>
-      <Name>Buttplug.Client</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
-      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
-      <Name>Buttplug.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Server\Buttplug.Server.csproj">
-      <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
-      <Name>Buttplug.Server</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

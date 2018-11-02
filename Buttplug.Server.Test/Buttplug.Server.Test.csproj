@@ -113,14 +113,6 @@
       <Project>{b0c9d3f2-6eae-48d2-8363-104a14cd50cd}</Project>
       <Name>Buttplug.Core.Test</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj">
-      <Project>{fc4af8fe-8c21-4e07-8d24-7fb7791149d0}</Project>
-      <Name>Buttplug.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Buttplug.Server\Buttplug.Server.csproj">
-      <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
-      <Name>Buttplug.Server</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

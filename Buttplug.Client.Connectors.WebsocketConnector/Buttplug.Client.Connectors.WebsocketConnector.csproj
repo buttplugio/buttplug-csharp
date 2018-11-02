@@ -43,9 +43,4 @@
     <PackageReference Include="deniszykov.WebSocketListener" Version="4.2.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Client\Buttplug.Client.csproj" />
-    <ProjectReference Include="..\Buttplug.Core\Buttplug.Core.csproj" />
-  </ItemGroup>
-
 </Project>
