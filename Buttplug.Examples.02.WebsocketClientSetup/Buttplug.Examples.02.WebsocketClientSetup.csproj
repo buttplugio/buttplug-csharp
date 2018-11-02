@@ -55,6 +55,10 @@
       <Project>{0d71ed9e-7dd6-4b64-a7c9-be38759ac6ea}</Project>
       <Name>Buttplug.Client.Connectors.WebsocketConnector</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Buttplug\Buttplug.csproj">
+      <Project>{6dc84b42-8492-4f92-a988-6d4b371d4f30}</Project>
+      <Name>Buttplug</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

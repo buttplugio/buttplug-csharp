@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using NJsonSchema;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -64,7 +65,7 @@ namespace Buttplug.Core
 
             // Load the schema for validation. Schema file is an embedded resource in the library.
             var assembly = Assembly.GetExecutingAssembly();
-            const string resourceName = "Buttplug.Core.buttplug-schema.json";
+            const string resourceName = "Buttplug.buttplug-schema.json";
             var stream = assembly.GetManifestResourceStream(resourceName);
             try
             {
@@ -223,6 +224,7 @@ namespace Buttplug.Core
             var errors = _schema.Validate(msgArray);
             if (errors.Any())
             {
+                Debug.WriteLine(msgArray);
                 throw new ButtplugMessageException(_bpLogger,
                     "Message does not conform to schema: " + string.Join(", ",
                         errors.Select(aErr => aErr?.ToString()).ToArray()), aMsg.Id);

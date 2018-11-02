@@ -26,7 +26,7 @@ namespace Buttplug.Server.Test
         {
             var buttplugAssembly = AppDomain.CurrentDomain
                 .GetAssemblies()
-                .SingleOrDefault(aAssembly => aAssembly.GetName().Name == "Buttplug.Server");
+                .SingleOrDefault(aAssembly => aAssembly.GetName().Name == "Buttplug");
             buttplugAssembly.Should().NotBeNull();
             var types = buttplugAssembly.GetTypes()
                 .Where(aType => aType.IsClass && aType.Namespace == "Buttplug.Server.Bluetooth.Devices" &&

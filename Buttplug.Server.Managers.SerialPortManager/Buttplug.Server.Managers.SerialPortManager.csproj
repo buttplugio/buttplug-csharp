@@ -60,6 +60,10 @@
       <Project>{23d9ec18-2dba-4149-a951-b84786d4bfa6}</Project>
       <Name>Buttplug.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Buttplug\Buttplug.csproj">
+      <Project>{6dc84b42-8492-4f92-a988-6d4b371d4f30}</Project>
+      <Name>Buttplug</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
