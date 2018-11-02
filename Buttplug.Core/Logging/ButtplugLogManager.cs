@@ -12,7 +12,7 @@ namespace Buttplug.Core.Logging
         public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
 
         /// <inheritdoc cref="IButtplugLogManager"/>>
-        public ButtplugLogLevel Level { private get; set; }
+        public ButtplugLogLevel Level { get; set; }
 
         private void LogMessageHandler([NotNull] object aObject, [NotNull] ButtplugLogMessageEventArgs aMsg)
         {
