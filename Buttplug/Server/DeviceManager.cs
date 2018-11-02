@@ -329,7 +329,7 @@ namespace Buttplug.Server
                     var mgr = (IDeviceSubtypeManager)Activator.CreateInstance(t, new[] { _bpLogManager });
                     AddDeviceSubtypeManager(mgr);
                 }
-                catch (MissingMethodException _)
+                catch (MissingMethodException)
                 {
                     _bpLogger.Info($"Subtype manager {t.Name} not added, missing appropriate constructor.");
                 }

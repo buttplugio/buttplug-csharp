@@ -1,4 +1,5 @@
 ﻿using System;
+using Buttplug.Logging;
 using JetBrains.Annotations;
 
 namespace Buttplug.Core.Logging
