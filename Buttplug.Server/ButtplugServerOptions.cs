@@ -18,12 +18,22 @@ namespace Buttplug.Server
         [CanBeNull]
         public DeviceManager DeviceManager { get; }
 
-        public ButtplugServerOptions(string aServerName, uint aMaxPingTime, DeviceManager aManager = null)
+        public ButtplugServerOptions(string aServerName, uint aMaxPingTime, DeviceManager aManager = null, List<string> aPaths = null)
         {
             ServerName = aServerName;
             MaxPingTime = aMaxPingTime;
-            SubtypeManagerSearchPaths = new List<string>();
-            AddSubtypeManagerSearchDirectory(Directory.GetCurrentDirectory());
+
+            // If someone passes in paths, assume they already know what they want to do.
+            if (aPaths != null)
+            {
+                SubtypeManagerSearchPaths = aPaths;
+            }
+            else
+            {
+                SubtypeManagerSearchPaths = new List<string>();
+                AddSubtypeManagerSearchDirectory(Directory.GetCurrentDirectory());
+            }
+
             DeviceManager = aManager;
         }
 

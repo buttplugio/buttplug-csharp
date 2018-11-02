@@ -18,7 +18,7 @@ namespace Buttplug.Core.Logging
         /// <summary>
         /// Sets the log level to report.
         /// </summary>
-        ButtplugLogLevel Level { set; }
+        ButtplugLogLevel Level { get; set; }
 
         /// <summary>
         /// Gets a <see cref="ButtplugLog"/> for the specified type. Used for creating loggers specific to
