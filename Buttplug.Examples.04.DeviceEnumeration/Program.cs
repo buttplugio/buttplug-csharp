@@ -53,10 +53,14 @@ namespace Buttplug.Examples._03.DeviceEnumeration
             // - XInput/XBox Gamepads (C# Win7/Win10)
             // - Test/Simulator (C#/Typescript)
             //
-            // When creating a Server, we need to specify which device subtype managers we want to
-            // use. This can vary depending on what operating systems we're planning to ship on, what
-            // toys we plan on supporting, etc. For this example, we'll just add a TestDeviceManager
-            // so we don't have to deal with actual hardware.
+            // When creating a Server, if we don't add subtype managers ourselves, the server will go
+            // looking for them in DLLs around the executable on the first time we call
+            // StartScanning(). This means you can simply add SubtypeManager nuget dependencies, and
+            // they'll instantly be brought in when you start looking for devices.
+            //
+            // We can also specify which device subtype managers we want to use manually, if we want.
+            // For this example, we'll just add a TestDeviceManager so we don't have to deal with
+            // actual hardware. This requires manual setup.
             //
             // To do this, we'll get the server from the connector.
             var server = connector.Server;
@@ -72,8 +76,8 @@ namespace Buttplug.Examples._03.DeviceEnumeration
             server.AddDeviceSubtypeManager(
                 aLogManager => new TestDeviceSubtypeManager(testDevice));
 
-            // If you'd like to see what this looks like with an actual hardware manager, here's how
-            // we'd add the XInput (Xbox Gamepad) manager to the server. 
+            // If you'd like to see what manual setup looks like with an actual hardware manager,
+            // here's how we'd add the XInput (Xbox Gamepad) manager to the server.
             //
             // server.AddDeviceSubtypeManager((IButtplugLogManager aLogManager) => new XInputGamepadManager(aLogManager));
 
