@@ -33,11 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Client.Connectors.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Connectors.WebsocketServer.Test", "Buttplug.Server.Connectors.WebsocketServer.Test\Buttplug.Server.Connectors.WebsocketServer.Test.csproj", "{9A3C4577-1EB0-4C7A-8B3B-490672AFB074}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug", "Buttplug\Buttplug.csproj", "{6DC84B42-8492-4F92-A988-6D4B371D4F30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug", "Buttplug\Buttplug.csproj", "{6DC84B42-8492-4F92-A988-6D4B371D4F30}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.SerialPortManager", "Buttplug.Server.Managers.SerialPortManager\Buttplug.Server.Managers.SerialPortManager.csproj", "{436CF4FF-AE10-45DA-8909-9AACF1ED6425}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Test", "Buttplug.Test\Buttplug.Test.csproj", "{E8CAF510-C33E-40C4-A084-E1F0F099BE3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.06.LoggingAndErrorHandling", "Buttplug.Examples.06.LoggingAndErrorHandling\Buttplug.Examples.06.LoggingAndErrorHandling.csproj", "{CBB026A8-D657-428F-8A4D-17B6FBB58166}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -169,6 +171,14 @@ Global
 		{E8CAF510-C33E-40C4-A084-E1F0F099BE3B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E8CAF510-C33E-40C4-A084-E1F0F099BE3B}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{E8CAF510-C33E-40C4-A084-E1F0F099BE3B}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
+		{CBB026A8-D657-428F-8A4D-17B6FBB58166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBB026A8-D657-428F-8A4D-17B6FBB58166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBB026A8-D657-428F-8A4D-17B6FBB58166}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBB026A8-D657-428F-8A4D-17B6FBB58166}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
+		{CBB026A8-D657-428F-8A4D-17B6FBB58166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBB026A8-D657-428F-8A4D-17B6FBB58166}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBB026A8-D657-428F-8A4D-17B6FBB58166}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
+		{CBB026A8-D657-428F-8A4D-17B6FBB58166}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -179,6 +189,7 @@ Global
 		{EF343F29-119E-4A3E-86BC-506347D19CBF} = {3376413E-7614-4D02-B8CA-CE753F9B3399}
 		{3A6BACCC-3484-48BB-AB08-16F641AE9F9E} = {3376413E-7614-4D02-B8CA-CE753F9B3399}
 		{BD8BA8EC-30A2-4486-B0D6-D9F830F26775} = {3376413E-7614-4D02-B8CA-CE753F9B3399}
+		{CBB026A8-D657-428F-8A4D-17B6FBB58166} = {3376413E-7614-4D02-B8CA-CE753F9B3399}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BBB843FD-4B1A-42DA-853F-FD2F9F3D5B35}
