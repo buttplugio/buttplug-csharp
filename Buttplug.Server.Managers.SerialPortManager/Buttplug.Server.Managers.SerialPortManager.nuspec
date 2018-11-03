@@ -13,8 +13,7 @@
     <description>Serial Port support for Buttplug Servers. (.Net Framework 4.7+/.Net Standard 2.0)</description>
     <copyright>Copyright Nonpolynomial Labs LLC 2017-2018</copyright>
     <dependencies>
-      <dependency id="Buttplug.Core" version="0.2" />
-      <dependency id="Buttplug.Server" version="0.2" />
+      <dependency id="Buttplug" version="0.2" />
     </dependencies>
   </metadata>
 </package>
