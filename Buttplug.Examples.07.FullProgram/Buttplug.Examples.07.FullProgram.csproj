@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C34E5649-ABC2-4F1C-A9CC-4742A359AE12}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Buttplug.Examples._07.FullProgram</RootNamespace>
+    <AssemblyName>Buttplug.Examples.07.FullProgram</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Buttplug.Client.Connectors.WebsocketConnector\Buttplug.Client.Connectors.WebsocketConnector.csproj">
+      <Project>{0d71ed9e-7dd6-4b64-a7c9-be38759ac6ea}</Project>
+      <Name>Buttplug.Client.Connectors.WebsocketConnector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.HidManager\Buttplug.Server.Managers.HidManager.csproj">
+      <Project>{83574729-6eb4-43e9-b7cc-ac5725380038}</Project>
+      <Name>Buttplug.Server.Managers.HidManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.SerialPortManager\Buttplug.Server.Managers.SerialPortManager.csproj">
+      <Project>{436cf4ff-ae10-45da-8909-9aacf1ed6425}</Project>
+      <Name>Buttplug.Server.Managers.SerialPortManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.UWPBluetoothManager\Buttplug.Server.Managers.UWPBluetoothManager.csproj">
+      <Project>{223ea194-8318-4189-bec8-73734c3f4a78}</Project>
+      <Name>Buttplug.Server.Managers.UWPBluetoothManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.WinUSBManager\Buttplug.Server.Managers.WinUSBManager.csproj">
+      <Project>{0f5dab4b-184b-4b7e-9f40-339c7f5e216f}</Project>
+      <Name>Buttplug.Server.Managers.WinUSBManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug.Server.Managers.XInputGamepadManager\Buttplug.Server.Managers.XInputGamepadManager.csproj">
+      <Project>{c7d040e1-e18e-4f51-859f-cff8aa57bd64}</Project>
+      <Name>Buttplug.Server.Managers.XInputGamepadManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Buttplug\Buttplug.csproj">
+      <Project>{6dc84b42-8492-4f92-a988-6d4b371d4f30}</Project>
+      <Name>Buttplug</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
