@@ -1,3 +1,49 @@
+# 0.3.0 (2018-11-03)
+
+## Features
+
+- Added Hardware Support
+  - Kiiroo Titan
+  - Kiiroo Onyx 1 (Bluetooth)
+  - WeVibe Classic
+- Made code more C#-y
+  - Methods exposed to developers now throws exceptions on errors, versus returning Buttplug Messages
+  - All async methods now end in Async, take cancellation tokens
+- Complete rewrite of Client API
+  - More closely resembles buttplug-js client API
+  - Uses extensible Connector setup for managing communications
+  - More ergonomic API for developers, should never have to form raw Buttplug Messages
+  - Server now searches local DLLs for Subtype Managers, versus requiring client to specifically add them
+- Nuget Core/Client/Server packages now condensed to Buttplug package
+- Buttplug package and Client/Server connectors now .Net Standard/Framework, supporting on Linux/Mac as well as Windows
+  - Hardware Subtype Manager libraries still .Net Framework, because they're windows specific
+- Lovense devices now support LovenseCmd message
+- IPC Connectors for Client/Server
+- SerialPortManager now capable of using protocols other than ET312
+- Remove GUI applications (now at https://github.com/buttplugio/buttplug-windows-suite)
+- Kiiroo Emulator completely removed
+- Added example/tutorial programs to show developers how Buttplug C# should work
+- Lots of Documentation updates
+- Added Copyright to (most) files
+- Lots more tests
+- Converted all tests to using FluentAssertions
+- Print Bluetooth radio info on first scan when logging at Debug or higher
+- Use Types over strings where possible
+
+## Bugfixes
+
+- Lovense legacy devices (using BLE Indicate) now detected via same method as newer devices
+- Catch exception when serial port with incorrect name shows up
+- Lots of Resharper warnings fixes
+- Lots of spelling fixes
+
+# 0.2.3 (2018-05-23)
+
+## Bugfixes
+
+- Fix issue with Launch not connecting
+- Fix issue with WeVibe/Youcups devices not being found
+
 # 0.2.2 (2018-05-21)
 
 ## Features
