@@ -10,7 +10,7 @@
     <projectUrl>http://www.github.com/buttplugio/buttplug-csharp</projectUrl>
     <iconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Serial Port support for Buttplug Servers. (.Net Framework 4.7+/.Net Standard 2.0)</description>
+    <description>Serial Port support for Buttplug Servers. (.Net Framework 4.7+ Only)</description>
     <copyright>Copyright Nonpolynomial Labs LLC 2017-2018</copyright>
     <dependencies>
       <dependency id="Buttplug" version="0.3" />
