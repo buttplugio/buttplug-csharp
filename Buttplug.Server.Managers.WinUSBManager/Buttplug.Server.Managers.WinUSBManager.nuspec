@@ -13,7 +13,7 @@
     <description>WinUSB device support (Rez Trancevibrator) for Buttplug Servers. (.Net Framework 4.7+ only)</description>
     <copyright>Copyright Nonpolynomial Labs LLC 2017-2018</copyright>
     <dependencies>
-      <dependency id="Buttplug" version="0.2" />
+      <dependency id="Buttplug" version="0.3" />
     </dependencies>
   </metadata>
 </package>
