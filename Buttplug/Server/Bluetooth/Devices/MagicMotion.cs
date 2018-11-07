@@ -1,4 +1,4 @@
-﻿// <copyright file="MagicMotion.cs" company="Nonpolynomial Labs LLC">
+// <copyright file="MagicMotion.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -37,8 +37,9 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Smart Mini Vibe",
             "Flamingo",
             "Eidolon",
-            "Smart Bean", // Kegel Master
+            "Smart Bean", // Kegel Twins/Master
             "Magic Cell", // Dante/Candy
+            "Magic Wand",
         };
 
         public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
@@ -115,9 +116,19 @@ namespace Buttplug.Server.Bluetooth.Devices
                     "Smart Bean",
                     new MagicMotionType()
                     {
-                        // ToDo: has pressure sensor
-                        Name = "Kegel Master",
+                        // ToDo: Master has pressure sensor, Twins does not
+                        Name = "Kegel",
                         VibeCount = 1,
+                        Protocol = MagicMotionProtocol.Protocol1,
+                    }
+                },
+                {
+                    "Magic Wand",
+                    new MagicMotionType()
+                    {
+                        // ToDo: Wand has temperature sensor and heater
+                        Name = "Wand",
+                        VibeCount = 2,
                         Protocol = MagicMotionProtocol.Protocol1,
                     }
                 },
