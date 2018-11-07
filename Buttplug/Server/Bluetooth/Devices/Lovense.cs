@@ -40,6 +40,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             new Guid("50300001-0023-4bd4-bbd5-a6920e4c5653"),
             new Guid("53300001-0023-4bd4-bbd5-a6920e4c5653"),
             new Guid("5a300001-0023-4bd4-bbd5-a6920e4c5653"),
+            new Guid("4f300001-0023-4bd4-bbd5-a6920e4c5653"),
         };
 
         public static string[] NamePrefixesInfo { get; } =
