@@ -1,3 +1,17 @@
+# 0.3.1 (2018-11-08)
+
+## Features
+
+- Added Hardware Support
+  - Lovense Osci
+  - Magic Motion Magic Wand
+  - Magic Motion Magic Kegel Twins
+  
+## Bugfixes
+
+- Updated schema to fix NJsonSchema parsing issues
+- Fixed issue with not being able to scan for devices more than once per session
+
 # 0.3.0 (2018-11-03)
 
 ## Features
