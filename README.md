@@ -12,7 +12,10 @@
 Buttplug is a framework for hooking up hardware to interfaces, where
 hardware usually means sex toys, but could honestly be just about
 anything. Think of it as a userland HID manager for things that may
-not specifically be HID, but may go in your butt.
+not specifically be HID, but may go in your butt. 
+
+Or other places too! We're not completely butt-centric, despite the
+project name. And logo.
 
 If you're looking for the installer for the Buttplug Server or Game
 Vibration Router software, [visit the buttplug-windows-suite releases
