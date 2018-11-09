@@ -33,7 +33,6 @@ namespace Buttplug.Server
         private readonly IButtplugLog _bpLogger;
 
         private readonly IButtplugLogManager _bpLogManager;
-        private readonly SemaphoreSlim _scanLock;
 
         private bool _hasAddedSubtypeManagers;
         private bool _isScanning;
@@ -41,6 +40,11 @@ namespace Buttplug.Server
         private long _deviceIndexCounter;
         private bool _sentFinished;
 
+        /// <summary>
+        /// True when we're starting scans for all managers, so that we don't also trigger a
+        /// ScanningFinished call if a manager returns immediately.
+        /// </summary>
+        private bool _isStartingScan;
         // Needs to be internal for tests.
         // ReSharper disable once MemberCanBePrivate.Global
         internal Dictionary<uint, IButtplugDevice> _devices { get; }
@@ -56,7 +60,6 @@ namespace Buttplug.Server
             _sentFinished = true;
             _devices = new Dictionary<uint, IButtplugDevice>();
             _deviceIndexCounter = 0;
-            _scanLock = new SemaphoreSlim(1);
             _hasAddedSubtypeManagers = false;
             _isScanning = false;
 
@@ -154,27 +157,22 @@ namespace Buttplug.Server
 
         private void ScanningFinishedHandler(object aObj, EventArgs aEvent)
         {
-            Task.Run(() =>
+            // If we're in the middle of starting a scan, or we've already send ScanningFinished, bail
+            if (_isStartingScan || _sentFinished)
             {
-                _scanLock.Wait();
-                if (_sentFinished)
-                {
-                    _scanLock.Release();
-                    return;
-                }
+                return;
+            }
 
-                var done = true;
-                _managers.ForEach(aMgr => done &= !aMgr.IsScanning());
-                if (!done)
-                {
-                    _scanLock.Release();
-                    return;
-                }
+            var done = true;
+            _managers.ForEach(aMgr => done &= !aMgr.IsScanning());
+            if (!done)
+            {
+                return;
+            }
 
-                _sentFinished = true;
-                ScanningFinished?.Invoke(this, new EventArgs());
-                _scanLock.Release();
-            });
+            _sentFinished = true;
+            _isScanning = false;
+            ScanningFinished?.Invoke(this, new EventArgs());
         }
 
         public async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
@@ -191,6 +189,7 @@ namespace Buttplug.Server
                     }
                     catch (ButtplugDeviceException aEx)
                     {
+                        // Catch and rethrow here, adding the message Id onto the exception
                         throw new ButtplugDeviceException(_bpLogger, aEx.Message, id);
                     }
 
@@ -266,24 +265,38 @@ namespace Buttplug.Server
 
         private async Task StartScanning()
         {
-            _scanLock.Wait();
-            if (_isScanning)
-            {
-                return;
-            }
-
-            _isScanning = true;
+            // Check for subtype managers before we lock.
             if (!_hasAddedSubtypeManagers)
             {
                 await AddAllSubtypeManagers();
             }
+
+            if (_isScanning)
+            {
+                throw new ButtplugDeviceException(_bpLogger, "Device scanning already in progress.");
+            }
+            _isScanning = true;
+
             if (!_managers.Any())
             {
                 throw new ButtplugDeviceException(_bpLogger, "No DeviceSubtypeManagers available to scan with.");
             }
-            _scanLock.Release();
             _sentFinished = false;
-            _managers.ForEach(aMgr => aMgr.StartScanning());
+
+            // Use a non-blocking guard around our calls to start scanning, to make sure that if all
+            // managers instantly return, they don't send a whole bunch of ScanningFinished messages.
+            try
+            {
+                _isStartingScan = true;
+                _managers.ForEach(aMgr => aMgr.StartScanning());
+            }
+            finally
+            {
+                _isStartingScan = false;
+            }
+            // Now actually call ScanningFinishedHandler. If everything already finished but was
+            // ignored because our guard was live, it'll fire ScanningFinished. Otherwise, it'll just bail.
+            ScanningFinishedHandler(this, null);
         }
 
         /// <summary>

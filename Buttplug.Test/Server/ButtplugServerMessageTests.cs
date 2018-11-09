@@ -48,13 +48,37 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
-        public async Task TestCallStartScanning()
+        public async Task TestStartScanning()
         {
+            // Throw if we try to scan with no SubtypeManagers
+            // _server.Awaiting(async s => s.SendMessageAsync(new StartScanning())).Should()
+            //    .Throw<ButtplugDeviceException>();
             var dm = new TestDeviceSubtypeManager();
             _server.AddDeviceSubtypeManager(aLogger => dm);
             var r = await _server.SendMessageAsync(new StartScanning());
             r.Should().BeOfType<Ok>();
             dm.StartScanningCalled.Should().BeTrue();
+            // Throw if we try to scan again
+            _server.Awaiting(async s => await s.SendMessageAsync(new StartScanning())).Should()
+                .Throw<ButtplugDeviceException>();
+
+            var finishTask = new TaskCompletionSource<bool>();
+
+            void ScanningFinishedHandler(object aObj, MessageReceivedEventArgs aMsg)
+            {
+                if (aMsg.Message is ScanningFinished)
+                {
+                    finishTask.TrySetResult(true);
+                }
+            }
+
+            _server.MessageReceived += ScanningFinishedHandler;
+            _server.SendMessageAsync(new StopScanning());
+            await finishTask.Task;
+
+            // Now we should be able to call StartScanning again.
+            r = await _server.SendMessageAsync(new StartScanning());
+            r.Should().BeOfType<Ok>();
         }
 
         [ButtplugMessageMetadata("FakeMessage", 0)]
