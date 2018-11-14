@@ -633,7 +633,7 @@
             "additionalProperties": false,
             "required": [
               "Index",
-              "Speed",
+              "Duration",
               "Position"
             ]
           }
