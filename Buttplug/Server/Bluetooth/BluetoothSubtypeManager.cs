@@ -38,6 +38,7 @@ namespace Buttplug.Server.Bluetooth
                 new WeVibeBluetoothInfo(),
                 new MysteryVibeBluetoothInfo(),
                 new LiBoBluetoothInfo(),
+                new PicobongBluetoothInfo(),
             };
         }
     }
