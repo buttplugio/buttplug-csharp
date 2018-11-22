@@ -1,6 +1,6 @@
 branches:
   only:
-    - /master|^\d+\.\d+\.\d+$/
+    - /master|^\d+\.\d+\.\d+$|dev/
 
 configuration:
   - Debug
