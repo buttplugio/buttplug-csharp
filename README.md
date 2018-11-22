@@ -29,10 +29,11 @@ page.](https://github.com/buttplugio/buttplug-windows-suite/releases/)
 - [Buttplug Spec and Documentation](#buttplug-spec-and-documentation)
 - [Hardware Support](#hardware-support)
 - [Installation](#installation)
+- [Development Branches](#development-branches)
 - [Compiling](#compiling)
 - [Client Software (Buttplug Server, Game Vibration Router)](#client-software)
 - [Third Party Applications Using Buttplug-C#](#third-party-applications-using-buttplug-c)
-- [License]()
+- [License](#license)
 
 ## Support The Project
 
@@ -112,6 +113,17 @@ support.
 Packages and libraries from the buttplug-csharp repo are available via
 [nuget](http://nuget.org). Simply run a search for "buttplug", or
 [follow this link to the nuget "buttplug" search](https://www.nuget.org/packages?q=buttplug).
+
+## Development Branches
+
+There are 2 main branches:
+
+- master - The current release code for the library
+- dev - The current development code for the library
+
+When submitting patches, they should be based on the current state of
+the dev branch, and should use dev as their target. The master branch
+is kept synced to release so our documentation matches expectations.
 
 ## Compiling
 
