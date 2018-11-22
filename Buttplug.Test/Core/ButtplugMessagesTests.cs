@@ -196,6 +196,54 @@ namespace Buttplug.Core.Test
             CheckMsg(newMsg);
         }
 
+
+        [Test]
+        public void TestVibrateCmd()
+        {
+            void CheckMsg(VibrateCmd aMsg)
+            {
+                aMsg.Id.Should().Be(4);
+                aMsg.DeviceIndex.Should().Be(2);
+                aMsg.Speeds.Count.Should().Be(1);
+                aMsg.Speeds[0].Index.Should().Be(0);
+                aMsg.Speeds[0].Speed.Should().Be(0.5);
+            }
+
+            var msg = new VibrateCmd(2, new List<VibrateCmd.VibrateSubcommand> { new VibrateCmd.VibrateSubcommand(0, 0.5) }, 4);
+            CheckMsg(msg);
+
+            var newMsg = CheckParsedVersion<VibrateCmd>(msg, 1,
+                "[{\"VibrateCmd\":{\"Speeds\":[{\"Index\":0,\"Speed\":0.5}],\"DeviceIndex\":2,\"Id\":4}}]");
+
+            CheckMsg(newMsg);
+
+            _parser.Invoking(x => x.Serialize(msg, 0)).Should().Throw<ButtplugMessageException>();
+        }
+
+        [Test]
+        public void TestLinearCmd()
+        {
+            void CheckMsg(LinearCmd aMsg)
+            {
+                aMsg.Id.Should().Be(4);
+                aMsg.DeviceIndex.Should().Be(2);
+                aMsg.Vectors.Count.Should().Be(1);
+                aMsg.Vectors[0].Index.Should().Be(0);
+                aMsg.Vectors[0].Duration.Should().Be(100);
+                aMsg.Vectors[0].Position.Should().Be(0.5);
+            }
+
+            var msg = new LinearCmd(2, new List<LinearCmd.VectorSubcommand> { new LinearCmd.VectorSubcommand(0, 100, 0.5) }, 4);
+            CheckMsg(msg);
+
+            var newMsg = CheckParsedVersion<LinearCmd>(msg, 1,
+                "[{\"LinearCmd\":{\"Vectors\":[{\"Duration\":100,\"Index\":0,\"Position\":0.5}],\"DeviceIndex\":2,\"Id\":4}}]");
+
+            CheckMsg(newMsg);
+
+            _parser.Invoking(x => x.Serialize(msg, 0)).Should().Throw<ButtplugMessageException>();
+        }
+
         [Test]
         public void TestRotateCmd()
         {
