@@ -1,3 +1,14 @@
+# 0.3.2 (2018-11-23)
+
+## Features
+
+- Added Hardware Support
+  - Picobong Toys (All)
+  
+## Bugfixes
+
+- Updates schema to fix LinearCmd issue
+
 # 0.3.1 (2018-11-08)
 
 ## Features
