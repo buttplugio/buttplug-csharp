@@ -151,6 +151,17 @@ deploy:
     artifact: /.*\.nupkg/
     on:
       branch: master
+      appveyor_repo_tag: false
+      configuration: release
+      appveyor_repo_provider: github
+      appveyor_repo_name: buttplugio/buttplug-csharp
+  - provider: NuGet
+    api_key:
+      secure: vUJ4hlf8iKu6epmN7F68KkVFQUqGE0Fe0i6kYeKAj85ZRTVy3EOmX6M68oi3me0R
+    skip_symbols: true
+    artifact: /.*\.nupkg/
+    on:
+      appveyor_repo_tag: true
       configuration: release
       appveyor_repo_provider: github
       appveyor_repo_name: buttplugio/buttplug-csharp
