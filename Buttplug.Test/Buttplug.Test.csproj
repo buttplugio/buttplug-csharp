@@ -98,6 +98,7 @@
     <Compile Include="Server\Bluetooth\Devices\VorzeBachTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VorzeUFOSATests.cs" />
     <Compile Include="Server\Bluetooth\Devices\WeVibeTests.cs" />
+    <Compile Include="Server\Bluetooth\Devices\PicobongTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\YoucupsTests.cs" />
     <Compile Include="Server\ButtplugBluetoothDeviceTests.cs" />
     <Compile Include="Server\ButtplugServerMessageTests.cs" />
