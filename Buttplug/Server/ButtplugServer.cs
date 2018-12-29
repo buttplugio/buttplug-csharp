@@ -222,8 +222,8 @@ namespace Buttplug.Server
                     ClientConnected?.Invoke(this, EventArgs.Empty);
                     return new ServerInfo(_serverName, ButtplugConsts.CurrentSpecVersion, _maxPingTime, id);
 
-                case Test m:
-                    return new Test(m.TestString, id);
+                case Core.Messages.Test m:
+                    return new Core.Messages.Test(m.TestString, id);
             }
 
             return await _deviceManager.SendMessageAsync(aMsg, combinedToken.Token).ConfigureAwait(false);

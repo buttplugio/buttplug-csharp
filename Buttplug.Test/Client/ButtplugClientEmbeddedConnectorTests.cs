@@ -14,6 +14,7 @@ using Buttplug.Core;
 using Buttplug.Core.Test;
 using Buttplug.Server;
 using Buttplug.Server.Test;
+using Buttplug.Test;
 using NUnit.Framework;
 
 namespace Buttplug.Client.Test

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Client;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
-using Buttplug.Core.Messages;
-using Buttplug.Core.Test;
-using Buttplug.Server.Test;
+using Buttplug.Test;
 
 // Tutorial file, disable ConfigureAwait checking since it's an actual program.
 // ReSharper disable ConsiderUsingConfigureAwait

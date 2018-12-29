@@ -2,8 +2,7 @@
 using System.Threading.Tasks;
 using Buttplug.Client;
 using Buttplug.Core.Logging;
-using Buttplug.Core.Test;
-using Buttplug.Server.Test;
+using Buttplug.Test;
 
 // Tutorial file, disable ConfigureAwait checking since it's an actual program.
 // ReSharper disable ConsiderUsingConfigureAwait

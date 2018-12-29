@@ -10,12 +10,10 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Buttplug.Core.Messages;
+using Buttplug.Server;
 using JetBrains.Annotations;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 
-namespace Buttplug.Server.Test
+namespace Buttplug.Test
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class TestServer : ButtplugServer
@@ -24,12 +22,6 @@ namespace Buttplug.Server.Test
         public TestServer(uint aMaxPingTime = 0, DeviceManager aDevManager = null)
             : base("Test Server", aMaxPingTime, aDevManager)
         {
-            // Build ourselves an NLog manager just so we can see what's going on.
-            var dt = new DebuggerTarget();
-            LogManager.Configuration = new LoggingConfiguration();
-            LogManager.Configuration.AddTarget("debugger", dt);
-            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, dt));
-            LogManager.Configuration = LogManager.Configuration;
         }
 
         // ReSharper disable once UnusedMember.Global

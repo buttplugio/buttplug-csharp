@@ -82,7 +82,6 @@
     <Compile Include="Core\ButtplugExceptionTests.cs" />
     <Compile Include="Core\ButtplugJsonMessageParserTests.cs" />
     <Compile Include="Core\ButtplugMessagesTests.cs" />
-    <Compile Include="Core\TestDevice.cs" />
     <Compile Include="Server\Bluetooth\Devices\FleshlightLaunchTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\GeneralDeviceTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\KiirooGen2VibeTests.cs" />
@@ -104,8 +103,7 @@
     <Compile Include="Server\ButtplugServerTests.cs" />
     <Compile Include="Server\TestBluetoothDeviceInterface.cs" />
     <Compile Include="Server\TestBluetoothSubtypeManager.cs" />
-    <Compile Include="Server\TestDeviceSubtypeManager.cs" />
-    <Compile Include="Server\TestServer.cs" />
+    <Compile Include="Server\TestLoggingServer.cs" />
     <Compile Include="Server\Util\BluetoothDeviceTestUtils.cs" />
     <Compile Include="Server\Util\FleshlightHelperTests.cs" />
   </ItemGroup>

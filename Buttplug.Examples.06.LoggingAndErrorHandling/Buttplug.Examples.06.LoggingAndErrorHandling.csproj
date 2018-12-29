@@ -65,10 +65,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Buttplug.Test\Buttplug.Test.csproj">
-      <Project>{e8caf510-c33e-40c4-a084-e1f0f099be3b}</Project>
-      <Name>Buttplug.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Buttplug\Buttplug.csproj">
       <Project>{6dc84b42-8492-4f92-a988-6d4b371d4f30}</Project>
       <Name>Buttplug</Name>
