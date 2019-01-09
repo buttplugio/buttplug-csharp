@@ -23,7 +23,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         public Guid[] Services { get; } = { new Guid("40ee1111-63ec-4b7f-8ce7-712efd55b90e") };
 
-        public string[] Names { get; } = { "CycSA", "UFOSA" };
+        public string[] Names { get; } = { "CycSA", "UFOSA", "Bach smart" };
 
         public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
         {
@@ -43,14 +43,21 @@ namespace Buttplug.Server.Bluetooth.Devices
     {
         private bool _clockwise = true;
         private uint _speed;
-
+        
         private enum DeviceType
         {
             CycloneOrUnknown = 1,
             UFO = 2,
+            Bach = 6,
         }
-
+        public enum CommandType
+        {
+            Rotate = 1,
+            Vibrate = 3,
+        }
+        
         private DeviceType _deviceType = DeviceType.CycloneOrUnknown;
+        private CommandType _commandType = CommandType.Rotate;
 
         public VorzeSA(IButtplugLogManager aLogManager,
                        IBluetoothDeviceInterface aInterface,
@@ -60,31 +67,63 @@ namespace Buttplug.Server.Bluetooth.Devices
                    aInterface,
                    aInfo)
         {
-            if (aInterface.Name == "CycSA")
+            switch (aInterface.Name)
             {
-                _deviceType = DeviceType.CycloneOrUnknown;
-                Name = "Vorze A10 Cyclone SA";
-            }
-            else if (aInterface.Name == "UFOSA")
-            {
-                _deviceType = DeviceType.UFO;
-                Name = "Vorze UFO SA";
-            }
-            else
-            {
-                // If the device doesn't identify, warn and try sending it Cyclone packets.
-                BpLogger.Warn($"Vorze product with unrecognized name ({Name}) found. This product may not work with Buttplug. Contact the developers for more info.");
+                case "CycSA":
+                    _deviceType = DeviceType.CycloneOrUnknown;
+                    _commandType = CommandType.Rotate;
+                    Name = "Vorze A10 Cyclone SA";
+                    break;
+
+                case "UFOSA":
+                    _deviceType = DeviceType.UFO;
+                    _commandType = CommandType.Rotate;
+                    Name = "Vorze UFO SA";
+                    break;
+
+                case "Bach smart":
+                    _deviceType = DeviceType.Bach;
+                    _commandType = CommandType.Vibrate;
+                    Name = "Vorze Bach";
+                    break;
+
+                default:
+                    // If the device doesn't identify, warn and try sending it Cyclone packets.
+                    BpLogger.Warn($"Vorze product with unrecognized name ({Name}) found. This product may not work with Buttplug. Contact the developers for more info.");
+                    break;
             }
 
-            AddMessageHandler<VorzeA10CycloneCmd>(HandleVorzeA10CycloneCmd);
-            AddMessageHandler<RotateCmd>(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 });
+            switch (_commandType)
+            {
+                case CommandType.Rotate:
+                    AddMessageHandler<VorzeA10CycloneCmd>(HandleVorzeA10CycloneCmd);
+                    AddMessageHandler<RotateCmd>(HandleRotateCmd, new MessageAttributes() {FeatureCount = 1});
+                    break;
+
+                case CommandType.Vibrate:
+                    AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
+                    AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() {FeatureCount = 1});
+                    break;
+
+                default:
+                    BpLogger.Error("Unhandled command type.");
+                    break;
+            }
+
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug("Stopping Device " + Name);
-            return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, _clockwise, aMsg.Id), aToken).ConfigureAwait(false);
+            if (_speed == 0)
+            {
+                return new Ok(aMsg.Id);
+            }
+
+            return await Interface.WriteValueAsync(aMsg.Id,
+                (uint)VorzeSABluetoothInfo.Chrs.Tx,
+                new byte[] { (byte)_deviceType, (byte)_commandType, 0 }, false, aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -111,7 +150,41 @@ namespace Buttplug.Server.Bluetooth.Devices
             var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
             return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)VorzeSABluetoothInfo.Chrs.Tx,
-                new byte[] { (byte)_deviceType, 0x01, rawSpeed }, false, aToken).ConfigureAwait(false);
+                new byte[] { (byte)_deviceType, (byte)_commandType, rawSpeed }, false, aToken).ConfigureAwait(false);
+        }
+        
+        private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+        {
+            var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
+
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, 1), aToken).ConfigureAwait(false);
+        }
+
+        private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+        {
+            var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, 1);
+
+            var changed = false;
+            foreach (var v in cmdMsg.Speeds)
+            {
+                var tmpSpeed = Convert.ToUInt32(v.Speed * 100);
+                if (tmpSpeed == _speed)
+                {
+                    continue;
+                }
+
+                changed = true;
+                _speed = tmpSpeed;
+            }
+
+            if (!changed)
+            {
+                return new Ok(cmdMsg.Id);
+            }
+
+            return await Interface.WriteValueAsync(aMsg.Id,
+                (uint)VorzeSABluetoothInfo.Chrs.Tx,
+                new [] { (byte)_deviceType, (byte)_commandType, (byte)_speed }, false, aToken).ConfigureAwait(false);
         }
     }
 }

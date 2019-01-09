@@ -16,11 +16,11 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
-    public class VorzeCycloneSATests : VorzeSATests
+    public class VorzeBachTests : VorzeSATests
     {
-        private string _deviceName = "CycSA";
-        private byte _commandPrefix = 0x01;
-        private VorzeSA.CommandType _commandType = VorzeSA.CommandType.Rotate;
+        private string _deviceName = "Bach smart";
+        private byte _commandPrefix = 0x06;
+        private VorzeSA.CommandType _commandType = VorzeSA.CommandType.Vibrate;
 
         [Test]
         public async Task TestAllowedMessages()
@@ -37,15 +37,15 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
 
         [Test]
-        public async Task TestVorzeA10CycloneCmd()
+        public async Task TestSingleMotorVibrateCmd()
         {
-            await TestVorzeA10CycloneCmd(_deviceName, _commandPrefix);
+            await TestSingleMotorVibrateCmd(_deviceName, _commandPrefix);
         }
 
         [Test]
-        public async Task TestRotateCmd()
+        public async Task TestVibrateCmd()
         {
-            await TestRotateCmd(_deviceName, _commandPrefix);
+            await TestVibrateCmd(_deviceName, _commandPrefix);
         }
 
         [Test]

@@ -9,6 +9,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Buttplug.Server.Bluetooth.Devices;
 using NUnit.Framework;
 
 namespace Buttplug.Server.Test.Bluetooth.Devices
@@ -18,12 +19,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class VorzeUFOSATests : VorzeSATests
     {
         private string _deviceName = "UFOSA";
-        private byte _commandPrefix = 0x2;
+        private byte _commandPrefix = 0x02;
+        private VorzeSA.CommandType _commandType = VorzeSA.CommandType.Rotate;
 
         [Test]
         public async Task TestAllowedMessages()
         {
-            await TestAllowedMessages(_deviceName);
+            await TestAllowedMessages(_deviceName, _commandType);
         }
 
         // StopDeviceCmd noop test handled in GeneralDeviceTests
@@ -31,7 +33,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public async Task TestStopDeviceCmd()
         {
-            await TestStopDeviceCmd(_deviceName, _commandPrefix);
+            await TestStopDeviceCmd(_deviceName, _commandPrefix, _commandType);
         }
 
         [Test]
@@ -49,7 +51,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public async Task TestInvalidCmds()
         {
-            await TestInvalidCmds(_deviceName);
+            await TestInvalidCmds(_deviceName, _commandType);
         }
     }
 }

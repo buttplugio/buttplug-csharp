@@ -24,33 +24,65 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [NotNull]
         private BluetoothDeviceTestUtils<VorzeSABluetoothInfo> testUtil;
 
-        public async Task TestAllowedMessages(string aDeviceName)
+        internal async Task TestAllowedMessages(string aDeviceName, VorzeSA.CommandType aCommandType)
         {
             testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
             await testUtil.SetupTest(aDeviceName);
-            testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
+
+            if (aCommandType == VorzeSA.CommandType.Rotate)
+            {
+                testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
                 {
-                    { typeof(StopDeviceCmd), 0 },
-                    { typeof(VorzeA10CycloneCmd), 0 },
-                    { typeof(RotateCmd), 1 },
+                    {typeof(StopDeviceCmd), 0},
+                    {typeof(VorzeA10CycloneCmd), 0},
+                    {typeof(RotateCmd), 1},
                 });
+            }
+            else if (aCommandType == VorzeSA.CommandType.Vibrate)
+            {
+                testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
+                {
+                    {typeof(StopDeviceCmd), 0},
+                    {typeof(SingleMotorVibrateCmd), 0},
+                    {typeof(VibrateCmd), 1},
+                });
+            }
+            else
+            {
+                Assert.Fail("Unknown command type");
+            }
         }
 
         // StopDeviceCmd noop test handled in GeneralDeviceTests
 
-        public async Task TestStopDeviceCmd(string aDeviceName, byte aPrefix)
+        internal async Task TestStopDeviceCmd(string aDeviceName, byte aPrefix, VorzeSA.CommandType aCommandType)
         {
             testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
             await testUtil.SetupTest(aDeviceName);
-            var expected = new byte[] { aPrefix, 0x1, 50 };
+            var expected = new byte[] { aPrefix, (byte)aCommandType, 50 };
 
-            await testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
-                new List<(byte[], uint)>()
-                {
-                        (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
-                }, false);
+            if (aCommandType == VorzeSA.CommandType.Rotate)
+            {
+                await testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
+                    new List<(byte[], uint)>()
+                    {
+                        (expected, (uint) VorzeSABluetoothInfo.Chrs.Tx),
+                    }, false);
+            }
+            else if (aCommandType == VorzeSA.CommandType.Vibrate)
+            {
+                await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), 
+                    new List<(byte[], uint)>()
+                    {
+                        (expected, (uint) VorzeSABluetoothInfo.Chrs.Tx),
+                    }, false);
+            }
+            else
+            {
+                Assert.Fail("Unknown command type");
+            }
 
-            expected = new byte[] { aPrefix, 0x1, 0 };
+            expected = new byte[] { aPrefix, (byte)aCommandType, 0 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4),
                 new List<(byte[], uint)>()
@@ -68,7 +100,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             await testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
                 new List<(byte[], uint)>()
                 {
-                        (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
                 }, false);
 
             expected = new byte[] { aPrefix, 0x1, 50 + 128 };
@@ -90,30 +122,91 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 RotateCmd.Create(4, 1, 0.5, false, 1),
                 new List<(byte[], uint)>
                 {
-                        (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
                 }, false);
 
             expected = new byte[] { aPrefix, 0x1, 50 + 128 };
 
             await testUtil.TestDeviceMessage(
                 RotateCmd.Create(4, 1, 0.5, true, 1),
-                new List<(byte[], uint)>()
+                new List<(byte[], uint)>
                 {
-                        (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
                 }, false);
         }
 
-        public async Task TestInvalidCmds(string aDeviceName)
+        public async Task TestSingleMotorVibrateCmd(string aDeviceName, byte aPrefix)
         {
             testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
             await testUtil.SetupTest(aDeviceName);
-            testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 0));
-            testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 2));
-            testUtil.TestInvalidDeviceMessage(
-                new RotateCmd(4, new List<RotateCmd.RotateSubcommand>()
+            var expected = new byte[] { aPrefix, 0x03, 50 };
+
+            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), 
+                new List<(byte[], uint)>()
                 {
+                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                }, false);
+
+            expected = new byte[] { aPrefix, 0x03, 25 };
+
+            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.25),
+                new List<(byte[], uint)>()
+                {
+                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                }, false);
+        }
+
+        public async Task TestVibrateCmd(string aDeviceName, byte aPrefix)
+        {
+            testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
+            await testUtil.SetupTest(aDeviceName);
+            var expected = new byte[] { aPrefix, 0x3, 50 };
+
+            await testUtil.TestDeviceMessage(
+                VibrateCmd.Create(4, 1, 0.5, 1),
+                new List<(byte[], uint)>
+                {
+                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                }, false);
+
+            expected = new byte[] { aPrefix, 0x3, 25 };
+
+            await testUtil.TestDeviceMessage(
+                VibrateCmd.Create(4, 1, 0.25, 1),
+                new List<(byte[], uint)>
+                {
+                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                }, false);
+        }
+
+        internal async Task TestInvalidCmds(string aDeviceName, VorzeSA.CommandType aCommandType)
+        {
+            testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
+            await testUtil.SetupTest(aDeviceName);
+            if (aCommandType == VorzeSA.CommandType.Rotate)
+            {
+                testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 0));
+                testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 2));
+                testUtil.TestInvalidDeviceMessage(
+                    new RotateCmd(4, new List<RotateCmd.RotateSubcommand>()
+                    {
                         new RotateCmd.RotateSubcommand(0xffffffff, 0.5, true),
-                }));
+                    }));
+            }
+            else if (aCommandType == VorzeSA.CommandType.Vibrate)
+            {
+                testUtil.TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 0));
+                testUtil.TestInvalidDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 2));
+                testUtil.TestInvalidDeviceMessage(
+                    new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
+                    {
+                        new VibrateCmd.VibrateSubcommand(0xffffffff, 0.5),
+                    }));
+            }
+            else
+            {
+                Assert.Fail("Unknown command type");
+            }
         }
     }
 }
