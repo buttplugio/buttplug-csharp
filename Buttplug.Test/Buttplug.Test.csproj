@@ -95,6 +95,7 @@
     <Compile Include="Server\Bluetooth\Devices\VibratissimoTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VorzeCycloneSATests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VorzeSATests.cs" />
+    <Compile Include="Server\Bluetooth\Devices\VorzeBachTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VorzeUFOSATests.cs" />
     <Compile Include="Server\Bluetooth\Devices\WeVibeTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\YoucupsTests.cs" />
