@@ -24,6 +24,8 @@ environment:
     secure: SvHymEaf8z/NGLTrYUeI3PutAKTLiWlQtT0LVuVTkPGSG1uWXsF22ySBx4o/sRH1
   git_email: build@appveyor.com
   git_user: Appveyor Build
+  DISCORD_WEBHOOK_URL:
+    secure: 0N/+OHOE9ePrZMtAS0kfQfqrM+zqQgYqpR5N9GHmEbipmWshAzRcTkfA1inZGNE8aijVzDT78LVZrwFZbhaU4YEd9rfuTbgD600v6GnunBroFmTfeFXlLHDvB7WzFwU6ZqibKN7I6rD/tgt675wK77mDtDdAetqTrinwLdINTn8=
   
 # Taken from https://boblokerse.github.io/2015/11/03/GitVersion-versioning-made-easy-and-dry/
 install:
@@ -138,7 +140,15 @@ after_test:
 # Enable for RDP connections to failing build VMs
 # on_finish:
 #   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-      
+
+# Discord webhook
+on_success:
+  - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+  - ps: ./send.ps1 success $env:DISCORD_WEBHOOK_URL
+on_failure:
+  - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+  - ps: ./send.ps1 failure $env:DISCORD_WEBHOOK_URL
+    
 cache:
   - packages -> **\packages.config
   # Cache chocolatey packages
