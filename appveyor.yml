@@ -144,9 +144,11 @@ after_test:
 # Discord webhook
 on_success:
   - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+  - ps: write-host "Sending success message to discord webhook"
   - ps: ./send.ps1 success $env:DISCORD_WEBHOOK_URL
 on_failure:
   - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+  - ps: write-host "Sending failure message to discord webhook"
   - ps: ./send.ps1 failure $env:DISCORD_WEBHOOK_URL
     
 cache:
