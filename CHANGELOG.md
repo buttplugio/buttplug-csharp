@@ -1,3 +1,12 @@
+# 0.3.3 (2019-01-13)
+
+## Features
+
+- Added Hardware Support
+  - Vorze Bach
+- Moved TestServer/DeviceManager/Device to Core library for examples
+- Updated dependencies
+
 # 0.3.2 (2018-11-23)
 
 ## Features
