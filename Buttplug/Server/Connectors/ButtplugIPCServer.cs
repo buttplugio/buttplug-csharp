@@ -153,7 +153,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                             {
                                 respMsgs = new ButtplugMessage[] { e.ButtplugErrorMessage };
                             }
-                            
+
                             var respMsg = buttplugServer.Serialize(respMsgs);
                             if (respMsg == null)
                             {

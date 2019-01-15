@@ -1322,8 +1322,8 @@ namespace Buttplug.Core.Messages
             Vectors = aVectors;
         }
 
-        public LinearCmd(List<VectorSubcommand> aVectors) :
-            this (uint.MaxValue, aVectors)
+        public LinearCmd(List<VectorSubcommand> aVectors)
+            : this(uint.MaxValue, aVectors)
         {
         }
     }

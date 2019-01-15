@@ -58,7 +58,7 @@ namespace Buttplug.Core
         /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. (https://buttplug-spec.docs.buttplug.io/status.html#error)</param>
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugException(string aMessage, Error.ErrorClass aClass = Error.ErrorClass.ERROR_UNKNOWN, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null) 
+        public ButtplugException(string aMessage, Error.ErrorClass aClass = Error.ErrorClass.ERROR_UNKNOWN, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null)
             : base(aMessage, aInner)
         {
             ButtplugErrorMessage = new Error(aMessage, aClass, aId);
@@ -73,7 +73,7 @@ namespace Buttplug.Core
         /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. (https://buttplug-spec.docs.buttplug.io/status.html#error)</param>
         /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
         /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugException([NotNull] IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass = Error.ErrorClass.ERROR_UNKNOWN, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null) 
+        public ButtplugException([NotNull] IButtplugLog aLogger, string aMessage, Error.ErrorClass aClass = Error.ErrorClass.ERROR_UNKNOWN, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null)
             : this(aMessage, aClass, aId, aInner)
         {
             ButtplugUtils.ArgumentNotNull(aLogger, nameof(aLogger));

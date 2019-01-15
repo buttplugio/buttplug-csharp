@@ -45,7 +45,11 @@ namespace Buttplug.Core
         public ButtplugJsonMessageParser([NotNull] IButtplugLogManager aLogManager)
         {
             // Set up logging.
-            if (aLogManager == null) throw new ArgumentNullException(nameof(aLogManager));
+            if (aLogManager == null)
+            {
+                throw new ArgumentNullException(nameof(aLogManager));
+            }
+
             _bpLogger = aLogManager.GetLogger(GetType());
             _bpLogger?.Info($"Setting up {GetType().Name}");
 
@@ -142,7 +146,7 @@ namespace Buttplug.Core
                 foreach (var jsonObj in msgArray.Children<JObject>())
                 {
                     var msgName = jsonObj.Properties().First().Name;
-                    
+
                     // Only way we should get here is if the schema includes a class that we don't
                     // have a matching C# class for.
                     if (!_messageTypes.ContainsKey(msgName))
@@ -271,7 +275,7 @@ namespace Buttplug.Core
                     "Message does not conform to schema: " + string.Join(", ",
                         errors.Select(aErr => aErr?.ToString()).ToArray()));
             }
-            
+
             _bpLogger.Trace($"Message serialized to: {msgArray.ToString(Formatting.None)}", true);
             return msgArray.ToString(Formatting.None);
         }

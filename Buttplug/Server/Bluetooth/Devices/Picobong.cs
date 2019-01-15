@@ -56,7 +56,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
     internal class Picobong : ButtplugBluetoothDevice
     {
-        private static readonly Dictionary<string,string> NameMap = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> NameMap = new Dictionary<string, string>()
         {
             { "Blow hole", "Blow hole" },
             { "Picobong Male Toy", "Blow hole" },
@@ -64,7 +64,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             { "Picobong Egg", "Diver" },
             { "Life guard", "Life guard" },
             { "Picobong Ring", "Life guard" },
-            { "Surfer", "Surfer"},
+            { "Surfer", "Surfer" },
             { "Picobong Butt Plug", "Surfer" },
             { "Egg driver", "Surfer" },
             { "Surfer_plug", "Surfer" },
@@ -124,7 +124,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             var speedInt = Convert.ToUInt16(_vibratorSpeed * 10);
-            
+
             var data = new byte[] { 0x01, speedInt > 0 ? (byte)0x01 : (byte)0xff, Convert.ToByte(speedInt) };
 
             return await Interface.WriteValueAsync(aMsg.Id, (uint)PicobongBluetoothInfo.Chrs.Tx, data, false, aToken).ConfigureAwait(false);

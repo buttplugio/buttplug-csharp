@@ -43,7 +43,7 @@ namespace Buttplug.Server.Bluetooth.Devices
     {
         private bool _clockwise = true;
         private uint _speed;
-        
+
         private enum DeviceType
         {
             CycloneOrUnknown = 1,
@@ -55,7 +55,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             Rotate = 1,
             Vibrate = 3,
         }
-        
+
         private DeviceType _deviceType = DeviceType.CycloneOrUnknown;
         private CommandType _commandType = CommandType.Rotate;
 
@@ -97,12 +97,12 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 case CommandType.Rotate:
                     AddMessageHandler<VorzeA10CycloneCmd>(HandleVorzeA10CycloneCmd);
-                    AddMessageHandler<RotateCmd>(HandleRotateCmd, new MessageAttributes() {FeatureCount = 1});
+                    AddMessageHandler<RotateCmd>(HandleRotateCmd, new MessageAttributes() { FeatureCount = 1 });
                     break;
 
                 case CommandType.Vibrate:
                     AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
-                    AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() {FeatureCount = 1});
+                    AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 });
                     break;
 
                 default:
@@ -152,7 +152,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 (uint)VorzeSABluetoothInfo.Chrs.Tx,
                 new byte[] { (byte)_deviceType, (byte)_commandType, rawSpeed }, false, aToken).ConfigureAwait(false);
         }
-        
+
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
@@ -184,7 +184,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             return await Interface.WriteValueAsync(aMsg.Id,
                 (uint)VorzeSABluetoothInfo.Chrs.Tx,
-                new [] { (byte)_deviceType, (byte)_commandType, (byte)_speed }, false, aToken).ConfigureAwait(false);
+                new[] { (byte)_deviceType, (byte)_commandType, (byte)_speed }, false, aToken).ConfigureAwait(false);
         }
     }
 }

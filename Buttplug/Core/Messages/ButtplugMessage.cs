@@ -62,7 +62,7 @@ namespace Buttplug.Core.Messages
             // these loops for lookups may get slow.
             var attrs = Attribute.GetCustomAttributes(aMsgType);
 
-            // Displaying output.  
+            // Displaying output.
             foreach (var attr in attrs)
             {
                 if (attr is ButtplugMessageMetadata metadata)
