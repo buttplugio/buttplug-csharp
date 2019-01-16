@@ -40,6 +40,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Smart Bean", // Kegel Twins/Master
             "Magic Cell", // Dante/Candy
             "Magic Wand",
+            "Krush",
         };
 
         public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
@@ -63,6 +64,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             Protocol1,
             Protocol2,
+            Protocol3,
         }
 
         internal struct MagicMotionType
@@ -130,6 +132,16 @@ namespace Buttplug.Server.Bluetooth.Devices
                         Name = "Wand",
                         VibeCount = 2,
                         Protocol = MagicMotionProtocol.Protocol1,
+                    }
+                },
+                {
+                    "Krush",
+                    new MagicMotionType()
+                    {
+                        // ToDo: Receive squeeze sensor packets & capture exact motor values
+                        Name      = "LoveLife Krush",
+                        VibeCount = 1,
+                        Protocol  = MagicMotionProtocol.Protocol3,
                     }
                 },
             };
@@ -211,6 +223,12 @@ namespace Buttplug.Server.Bluetooth.Devices
                     data[14] = Convert.ToByte(_vibratorSpeeds[1] * byte.MaxValue);
                 }
 
+                break;
+
+            case MagicMotionProtocol.Protocol3:
+                data    = new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x46, 0x46, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 };
+                byte deviceLimit = 0x4d ;
+                data[9] = Convert.ToByte(_vibratorSpeeds[0] * deviceLimit);
                 break;
 
             default:
