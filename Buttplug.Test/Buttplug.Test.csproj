@@ -91,6 +91,7 @@
     <Compile Include="Server\Bluetooth\Devices\LiBoTest.cs" />
     <Compile Include="Server\Bluetooth\Devices\LovenseTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\MagicMotionTests.cs" />
+    <Compile Include="Server\Bluetooth\Devices\CuemeTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\MysteryVibeTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VibratissimoTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VorzeCycloneSATests.cs" />
