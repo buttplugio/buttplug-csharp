@@ -40,7 +40,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             "Smart Bean", // Kegel Twins/Master
             "Magic Cell", // Dante/Candy
             "Magic Wand",
-            "Krush",
+            "Krush", // Kegel Master re-branded for LoveLife
         };
 
         public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
@@ -69,9 +69,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         internal struct MagicMotionType
         {
+            public string Brand;
             public string Name;
             public uint VibeCount;
             public MagicMotionProtocol Protocol;
+            public byte MaxSpeed;
         }
 
         internal static readonly Dictionary<string, MagicMotionType> DevInfos =
@@ -81,18 +83,22 @@ namespace Buttplug.Server.Bluetooth.Devices
                     "Smart Mini Vibe",
                     new MagicMotionType()
                     {
+                        Brand = "MagicMotion",
                         Name = "Smart Mini Vibe",
                         VibeCount = 1,
                         Protocol = MagicMotionProtocol.Protocol1,
+                        MaxSpeed = 0x64,
                     }
                 },
                 {
                     "Flamingo",
                     new MagicMotionType()
                     {
+                        Brand = "MagicMotion",
                         Name = "Flamingo",
                         VibeCount = 1,
                         Protocol = MagicMotionProtocol.Protocol1,
+                        MaxSpeed = 0x64,
                     }
                 },
                 {
@@ -100,18 +106,22 @@ namespace Buttplug.Server.Bluetooth.Devices
                     new MagicMotionType()
                     {
                         // ToDo: has accelerometer
+                        Brand = "MagicMotion",
                         Name = "Dante/Candy",
                         VibeCount = 1,
                         Protocol = MagicMotionProtocol.Protocol1,
+                        MaxSpeed = 0x64,
                     }
                 },
                 {
                     "Eidolon",
                     new MagicMotionType()
                     {
+                        Brand = "MagicMotion",
                         Name = "Eidolon",
                         VibeCount = 2,
                         Protocol = MagicMotionProtocol.Protocol2,
+                        MaxSpeed = 0x64,
                     }
                 },
                 {
@@ -119,9 +129,11 @@ namespace Buttplug.Server.Bluetooth.Devices
                     new MagicMotionType()
                     {
                         // ToDo: Master has pressure sensor, Twins does not
+                        Brand = "MagicMotion",
                         Name = "Kegel",
                         VibeCount = 1,
                         Protocol = MagicMotionProtocol.Protocol1,
+                        MaxSpeed = 0x64,
                     }
                 },
                 {
@@ -129,9 +141,11 @@ namespace Buttplug.Server.Bluetooth.Devices
                     new MagicMotionType()
                     {
                         // ToDo: Wand has temperature sensor and heater
+                        Brand = "MagicMotion",
                         Name = "Wand",
-                        VibeCount = 2,
+                        VibeCount = 1,
                         Protocol = MagicMotionProtocol.Protocol1,
+                        MaxSpeed = 0x64,
                     }
                 },
                 {
@@ -139,9 +153,11 @@ namespace Buttplug.Server.Bluetooth.Devices
                     new MagicMotionType()
                     {
                         // ToDo: Receive squeeze sensor packets & capture exact motor values
-                        Name = "LoveLife Krush",
+                        Brand = "LoveLife",
+                        Name = "Krush",
                         VibeCount = 1,
                         Protocol = MagicMotionProtocol.Protocol3,
+                        MaxSpeed = 0x4d,
                     }
                 },
             };
@@ -158,8 +174,8 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             if (DevInfos.ContainsKey(aInterface.Name))
             {
-                Name = $"MagicMotion {DevInfos[aInterface.Name].Name}";
                 _devInfo = DevInfos[aInterface.Name];
+                Name = $"{_devInfo.Brand} {_devInfo.Name}";
             }
             else
             {
@@ -211,24 +227,23 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
             case MagicMotionProtocol.Protocol1:
                 data = new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 };
-                data[9] = Convert.ToByte(_vibratorSpeeds[0] * byte.MaxValue);
+                data[9] = Convert.ToByte(_vibratorSpeeds[0] * _devInfo.MaxSpeed);
                 break;
 
             case MagicMotionProtocol.Protocol2:
                 data = new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00, 0x04, 0x08, 0x00, 0x64, 0x01 };
-                data[9] = Convert.ToByte(_vibratorSpeeds[0] * byte.MaxValue);
+                data[9] = Convert.ToByte(_vibratorSpeeds[0] * _devInfo.MaxSpeed);
 
                 if (_devInfo.VibeCount >= 2)
                 {
-                    data[14] = Convert.ToByte(_vibratorSpeeds[1] * byte.MaxValue);
+                    data[14] = Convert.ToByte(_vibratorSpeeds[1] * _devInfo.MaxSpeed);
                 }
 
                 break;
 
             case MagicMotionProtocol.Protocol3:
                 data = new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x46, 0x46, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 };
-                byte deviceLimit = 0x4d;
-                data[9] = Convert.ToByte(_vibratorSpeeds[0] * deviceLimit);
+                data[9] = Convert.ToByte(_vibratorSpeeds[0] * _devInfo.MaxSpeed);
                 break;
 
             default:
