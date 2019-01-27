@@ -38,7 +38,7 @@
 #     easily, and we expect the user to help us with those by
 #     providing more information in their local config file.
 #
-# - Capabilities (Optional)
+# - Capabilities (Optional, Not Yet Implemented)
 #
 #   - What the device can do. Vibrate, rotate, thurst, etc. We'll also
 #     specify number of capabilities here, just in case something has
@@ -169,14 +169,12 @@ devices:
             - 4f300001-0023-4bd4-bbd5-a6920e4c5653
       - lovense-usb-to-serial: null
   xbox-gamepad:
+    # This will actually be ANY gamepad that supports XInput.
+    name:
+      en-us: XBox Compatible Gamepad
     busses:
       - xinput: null
     protocol: xinput
-    capabilities:
-      # XInput controllers have small and large vibrators. This will
-      # be handled by the protocol but I just wanted *some* capability
-      # specification in the file for an example.
-      - vibrate: 2
   fleshlight-launch:
     name:
       en-us: Fleshlight Launch
@@ -209,7 +207,7 @@ devices:
       - hidmanager:
           vendor-id: 0x0483
           product-id: 0x5750
-    protocol: vorze-cyclone
+    protocol: vorze-cyclonex
   rez-trancevibrator:
     name:
       en-us: Rez Trancevibrator
@@ -221,6 +219,36 @@ devices:
       - winusb:
           vendor-id: 0xb49
           product-id: 0x064f
+  kiiroo-onyx:
+    name:
+      en-us: Kiiroo Onyx
+    protocol: kiiroov1
+    busses:
+      - btle:
+          name: ONYX
+          services:
+            - 49535343-fe7d-4ae5-8fa9-9fafd205e455
+          characteristics:
+            rx: 49535343-1e4d-4bd9-ba61-23c647249616
+            tx: 49535343-8841-43f4-a8d4-ecbe34729bb3
+            cmd: 49535343-aca3-481c-91ec-d85e28a60318
+            cmd2: 49535343-6daa-4d02-abf6-19569aca69fe
+  kiiroo-pearl:
+    name:
+      en-us: Kiiroo Pearl
+    protocol: kiiroov1
+    busses:
+      - btle:
+          name: PEARL
+          services:
+            - 49535343-fe7d-4ae5-8fa9-9fafd205e455
+          characteristics:
+            rx: 49535343-1e4d-4bd9-ba61-23c647249616
+            tx: 49535343-8841-43f4-a8d4-ecbe34729bb3
+            cmd: 49535343-aca3-481c-91ec-d85e28a60318
+            cmd2: 49535343-6daa-4d02-abf6-19569aca69fe
+            
+
   # nintendo-joycon:
   #   name:
   #     en-us: Nintendo Joycon
