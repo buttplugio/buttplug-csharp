@@ -11,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
-using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 

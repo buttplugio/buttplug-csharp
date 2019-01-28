@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 

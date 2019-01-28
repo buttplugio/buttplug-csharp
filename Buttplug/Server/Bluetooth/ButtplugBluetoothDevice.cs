@@ -5,8 +5,8 @@
 // </copyright>
 
 using System;
-using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
+using Buttplug.Devices;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server.Bluetooth

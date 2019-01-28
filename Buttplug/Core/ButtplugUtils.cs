@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Buttplug.Core.Devices;
-using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 

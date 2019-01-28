@@ -5,7 +5,7 @@
 // </copyright>
 
 using System;
-using Buttplug.Core.Devices;
+using Buttplug.Devices;
 
 namespace Buttplug.Server
 {
