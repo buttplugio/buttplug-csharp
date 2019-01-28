@@ -90,6 +90,9 @@ connection-info-types:
 #   we'll name "rx") and an output characteristic (which we'll name
 #   "tx"), as mentioned above.
 #
+# - Similarly for USB, we'll test endpoints for r/w flags when no
+#   endpoint handles are passed.
+#
 # - A "btle" connection info with multiple service listings can mean
 #   one of two things. Either we expect the device to be identifiable
 #   as multiple services (like Lovense), or the device may have
@@ -111,6 +114,8 @@ connection-info-types:
 #
 # - Serial info here is for default device configuration.
 
+
+
 protocols:
   lovense:
     id:
@@ -129,15 +134,16 @@ protocols:
         name:
           - LVS-*
         services:
-          - uuid: 0000fff0-0000-1000-8000-00805f9b34fb
-          - uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e
-          - uuid: 50300001-0024-4bd4-bbd5-a6920e4c5653
-          - uuid: 57300001-0023-4bd4-bbd5-a6920e4c5653
-          - uuid: 5a300001-0024-4bd4-bbd5-a6920e4c5653
-          - uuid: 50300001-0023-4bd4-bbd5-a6920e4c5653
-          - uuid: 53300001-0023-4bd4-bbd5-a6920e4c5653
-          - uuid: 5a300001-0023-4bd4-bbd5-a6920e4c5653
-          - uuid: 4f300001-0023-4bd4-bbd5-a6920e4c5653
+          - 0000fff0-0000-1000-8000-00805f9b34fb
+          - 6e400001-b5a3-f393-e0a9-e50e24dcca9e
+          - 50300001-0024-4bd4-bbd5-a6920e4c5653
+          - 57300001-0023-4bd4-bbd5-a6920e4c5653
+          - 5a300001-0024-4bd4-bbd5-a6920e4c5653
+          - 50300001-0023-4bd4-bbd5-a6920e4c5653
+          - 53300001-0023-4bd4-bbd5-a6920e4c5653
+          - 5a300001-0023-4bd4-bbd5-a6920e4c5653
+          - 4f300001-0023-4bd4-bbd5-a6920e4c5653
+
   xinput:
     # This will actually be ANY gamepad that supports XInput. XInput
     # is its own connector type, so we don't have any special
@@ -146,19 +152,23 @@ protocols:
     # TODO Maybe just start calling this "gamepad"? Maybe add "VR
     # Controller" too?
     null
+
   kiiroo-v2:
     id:
       btle:
         name:
           - Launch
         services:
-          - uuid: 88f80580-0000-01e6-aace-0002a5d5c51b
-            characteristics:
-              tx: 88f80581-0000-01e6-aace-0002a5d5c51b
-              rx: 88f80582-0000-01e6-aace-0002a5d5c51b
-              # The Launch has a special characteristic for loading
-              # firmware.
-              firmware: 88f80583-0000-01e6-aace-0002a5d5c51b
+          - 88f80580-0000-01e6-aace-0002a5d5c51b
+    config:
+      btle:
+        88f80580-0000-01e6-aace-0002a5d5c51b:
+          tx: 88f80581-0000-01e6-aace-0002a5d5c51b
+          rx: 88f80582-0000-01e6-aace-0002a5d5c51b
+          # The Launch has a special characteristic for loading
+          # firmware.
+          firmware: 88f80583-0000-01e6-aace-0002a5d5c51b
+        
   erostek-et312:
     config:
       serial:
@@ -166,16 +176,19 @@ protocols:
         databits: 8
         parity: N
         stopbits: 1
+
   vorze-cyclone-x:
     id:
       hid:
         vendor-id: 0x0483
         product-id: 0x5750
+
   rez-trancevibrator:
     id: 
       usb:
         vendor-id: 0xb49
         product-id: 0x064f
+
   kiiroo-v1:
     id:
       btle:
@@ -183,12 +196,15 @@ protocols:
           - ONYX
           - PEARL
         services:
-          - uuid: 49535343-fe7d-4ae5-8fa9-9fafd205e455
-            characteristics:
-              rx: 49535343-1e4d-4bd9-ba61-23c647249616
-              tx: 49535343-8841-43f4-a8d4-ecbe34729bb3
-              cmd: 49535343-aca3-481c-91ec-d85e28a60318
-              cmd2: 49535343-6daa-4d02-abf6-19569aca69fe
+          - 49535343-fe7d-4ae5-8fa9-9fafd205e455
+    config:
+      btle:
+        49535343-fe7d-4ae5-8fa9-9fafd205e455:
+          rx: 49535343-1e4d-4bd9-ba61-23c647249616
+          tx: 49535343-8841-43f4-a8d4-ecbe34729bb3
+          cmd: 49535343-aca3-481c-91ec-d85e28a60318
+          cmd2: 49535343-6daa-4d02-abf6-19569aca69fe
+
   vorze-sa:
     id: 
       btle:
@@ -197,7 +213,7 @@ protocols:
           - Bach smart
           - UFOSA
         services:
-          - uuid: 40ee1111-63ec-4b7f-8ce7-712efd55b90e
+          - 40ee1111-63ec-4b7f-8ce7-712efd55b90e
   # nintendo-joycon:
   #   name:
   #     en-us: Nintendo Joycon
