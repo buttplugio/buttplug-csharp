@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.06.Loggin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.07.FullProgram", "Buttplug.Examples.07.FullProgram\Buttplug.Examples.07.FullProgram.csproj", "{C34E5649-ABC2-4F1C-A9CC-4742A359AE12}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.CLI", "Buttplug.Server.CLI\Buttplug.Server.CLI.csproj", "{F4726B66-2E07-4805-97B8-A8A4BD80E257}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,6 +191,14 @@ Global
 		{C34E5649-ABC2-4F1C-A9CC-4742A359AE12}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C34E5649-ABC2-4F1C-A9CC-4742A359AE12}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{C34E5649-ABC2-4F1C-A9CC-4742A359AE12}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
+		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
+		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
+		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
