@@ -37,9 +37,6 @@ namespace Buttplug.Server.Connectors.IPCServer
         public EventHandler<IPCConnectionEventArgs> ConnectionAccepted;
 
         [CanBeNull]
-        public EventHandler<IPCConnectionEventArgs> ConnectionUpdated;
-
-        [CanBeNull]
         public EventHandler<IPCConnectionEventArgs> ConnectionClosed;
 
         [NotNull]
@@ -69,15 +66,14 @@ namespace Buttplug.Server.Connectors.IPCServer
         {
             while (!aToken.IsCancellationRequested)
             {
-                var pipeServer = new NamedPipeServerStream(aPipeName, PipeDirection.InOut, 10, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+                var pipeServer = new NamedPipeServerStream(aPipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
                 await pipeServer.WaitForConnectionAsync(aToken).ConfigureAwait(false);
                 if (!pipeServer.IsConnected)
                 {
                     continue;
                 }
 
-                var aServer = pipeServer;
-                ConnectionAccepted?.Invoke(this, new IPCConnectionEventArgs());
+                var server = pipeServer;
 
                 var buttplugServer = _serverFactory();
 
@@ -91,15 +87,16 @@ namespace Buttplug.Server.Connectors.IPCServer
 
                     try
                     {
-                        if (aServer != null && aServer.IsConnected)
+                        if (server != null && server.IsConnected)
                         {
                             var output = Encoding.UTF8.GetBytes(msg);
-                            aServer.WriteAsync(output, 0, output.Length, aToken);
+                            server.WriteAsync(output, 0, output.Length, aToken);
                         }
 
-                        if (aEvent.Message is Error && (aEvent.Message as Error).ErrorCode == Error.ErrorClass.ERROR_PING && aServer != null && aServer.IsConnected)
+                        var error = aEvent.Message as Error;
+                        if (error != null && error.ErrorCode == Error.ErrorClass.ERROR_PING && server != null && server.IsConnected)
                         {
-                            aServer.Close();
+                            server.Close();
                         }
                     }
                     catch (WebSocketException e)
@@ -113,15 +110,15 @@ namespace Buttplug.Server.Connectors.IPCServer
 
                 void ClientConnected(object aObject, EventArgs aUnused)
                 {
-                    ConnectionUpdated?.Invoke(this, new IPCConnectionEventArgs(buttplugServer.ClientName));
+                    ConnectionAccepted?.Invoke(this, new IPCConnectionEventArgs(buttplugServer.ClientName));
                 }
 
                 buttplugServer.ClientConnected += ClientConnected;
 
                 try
                 {
-                    _connections.Enqueue(aServer);
-                    while (!aToken.IsCancellationRequested && aServer.IsConnected)
+                    _connections.Enqueue(server);
+                    while (!aToken.IsCancellationRequested && server.IsConnected)
                     {
                         var buffer = new byte[4096];
                         var msg = string.Empty;
@@ -130,7 +127,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                         {
                             try
                             {
-                                len = await aServer.ReadAsync(buffer, 0, buffer.Length, aToken).ConfigureAwait(false);
+                                len = await server.ReadAsync(buffer, 0, buffer.Length, aToken).ConfigureAwait(false);
                                 if (len > 0)
                                 {
                                     msg += Encoding.UTF8.GetString(buffer, 0, len);
@@ -161,13 +158,13 @@ namespace Buttplug.Server.Connectors.IPCServer
                             }
 
                             var output = Encoding.UTF8.GetBytes(respMsg);
-                            await aServer.WriteAsync(output, 0, output.Length, aToken).ConfigureAwait(false);
+                            await server.WriteAsync(output, 0, output.Length, aToken).ConfigureAwait(false);
 
                             foreach (var m in respMsgs)
                             {
-                                if (m is Error && (m as Error).ErrorCode == Error.ErrorClass.ERROR_PING && aServer.IsConnected)
+                                if (m is Error && (m as Error).ErrorCode == Error.ErrorClass.ERROR_PING && server.IsConnected)
                                 {
-                                    aServer.Close();
+                                    server.Close();
                                 }
                             }
                         }
@@ -178,7 +175,7 @@ namespace Buttplug.Server.Connectors.IPCServer
                     _logger.Error(e.Message, true);
                     try
                     {
-                        aServer.Close();
+                        server.Close();
                     }
                     catch
                     {
@@ -191,15 +188,15 @@ namespace Buttplug.Server.Connectors.IPCServer
                     await buttplugServer.ShutdownAsync().ConfigureAwait(false);
                     buttplugServer = null;
                     _connections.TryDequeue(out var stashed);
-                    while (stashed != aServer && _connections.Any())
+                    while (stashed != server && _connections.Any())
                     {
                         _connections.Enqueue(stashed);
                         _connections.TryDequeue(out stashed);
                     }
 
-                    aServer.Close();
-                    aServer.Dispose();
-                    aServer = null;
+                    server.Close();
+                    server.Dispose();
+                    server = null;
                     ConnectionClosed?.Invoke(this, new IPCConnectionEventArgs());
                 }
             }
