@@ -1,8 +1,7 @@
 ﻿using System;
-using Buttplug.Core.Messages;
 using Newtonsoft.Json;
 
-namespace Buttplug.Core.Devices
+namespace Buttplug.Core.Messages
 {
     /// <summary>
     /// Subclass of Buttplug Messages, that command a device to take an action.

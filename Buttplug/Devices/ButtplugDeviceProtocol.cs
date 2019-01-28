@@ -3,41 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
-namespace Buttplug.Core.Devices
+namespace Buttplug.Devices
 {
-    /// <summary>
-    /// Abstract representation of a device
-    /// </summary>
-    public abstract class ButtplugDevice : IButtplugDevice
+    public abstract class ButtplugDeviceProtocol : IButtplugDeviceProtocol
     {
-        /// <inheritdoc />
         public string Name { get; protected set; }
-
-        /// <inheritdoc />
-        public string Identifier { get; }
-
-        /// <inheritdoc />
-        public uint Index { get; set; }
-
-        /// <inheritdoc />
-        public bool IsConnected => !_isDisconnected;
-
-        /// <inheritdoc />
-        [CanBeNull]
-        public event EventHandler DeviceRemoved;
-
-        /// <inheritdoc />
-        public IEnumerable<Type> AllowedMessageTypes => MsgFuncs.Keys;
-
-        /// <summary>
-        /// Gets the logger
-        /// </summary>
-        [NotNull]
-        protected readonly IButtplugLog BpLogger;
 
         /// <summary>
         /// Gets the message handler functions.
@@ -47,33 +22,28 @@ namespace Buttplug.Core.Devices
         /// accidentally copy/paste duplicate keys when adding new functions, and that is hell to debug.
         /// </remarks>
         [NotNull]
-        private readonly Dictionary<Type, (Func<ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> Function, MessageAttributes Attrs)> MsgFuncs;
+        protected readonly Dictionary<Type, (Func<ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> Function, MessageAttributes Attrs)> MsgFuncs;
 
-        private bool _isDisconnected;
+        [NotNull]
+        protected readonly IButtplugLog BpLogger;
+
+        [NotNull] protected IButtplugDeviceImpl Interface;
 
         /// <inheritdoc />
-        [CanBeNull]
-        public event EventHandler<MessageReceivedEventArgs> MessageEmitted;
+        public IEnumerable<Type> AllowedMessageTypes => MsgFuncs.Keys;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ButtplugDevice"/> class.
-        /// </summary>
-        /// <param name="aLogManager">The log manager</param>
-        /// <param name="aName">The device name</param>
-        /// <param name="aIdentifier">The device identifier</param>
-        protected ButtplugDevice([NotNull] IButtplugLogManager aLogManager,
-            [NotNull] string aName,
-            [NotNull] string aIdentifier)
+        protected ButtplugDeviceProtocol(IButtplugLogManager aLogManager,
+            string aName,
+            IButtplugDeviceImpl aInterface)
         {
             BpLogger = aLogManager.GetLogger(GetType());
+            Name = aName;
+            Interface = aInterface;
             MsgFuncs =
                 new Dictionary<Type, (Func<ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> Function,
                     MessageAttributes Attrs)>();
-            Name = aName;
-            Identifier = aIdentifier;
         }
 
-        /// <inheritdoc />
         public MessageAttributes GetMessageAttrs(Type aMsg)
         {
             if (MsgFuncs.TryGetValue(aMsg, out var wrapper))
@@ -87,11 +57,6 @@ namespace Buttplug.Core.Devices
         /// <inheritdoc />
         public async Task<ButtplugMessage> ParseMessageAsync([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (_isDisconnected)
-            {
-                throw new ButtplugDeviceException(BpLogger, $"{Name} has disconnected and can no longer process messages.", aMsg.Id);
-            }
-
             if (!MsgFuncs.ContainsKey(aMsg.GetType()))
             {
                 throw new ButtplugDeviceException(BpLogger, $"{Name} cannot handle message of type {aMsg.GetType().Name}", aMsg.Id);
@@ -102,23 +67,9 @@ namespace Buttplug.Core.Devices
             return await MsgFuncs[aMsg.GetType()].Function.Invoke(aMsg, aToken).ConfigureAwait(false);
         }
 
-        /// <inheritdoc />
         public virtual Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
         {
             return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SystemMsgId));
-        }
-
-        /// <inheritdoc />
-        public abstract void Disconnect();
-
-        /// <summary>
-        /// Invokes the DeviceRemoved event handler.
-        /// Required to disconnect devices from the lower levels.
-        /// </summary>
-        protected void InvokeDeviceRemoved()
-        {
-            _isDisconnected = true;
-            DeviceRemoved?.Invoke(this, new EventArgs());
         }
 
         /// <summary>
@@ -137,6 +88,7 @@ namespace Buttplug.Core.Devices
         {
             MsgFuncs.Add(typeof(T), (aFunction, aAttrs ?? new MessageAttributes()));
         }
+
 
         protected T CheckMessageHandler<T>(ButtplugDeviceMessage aMsg)
             where T : ButtplugDeviceMessage
