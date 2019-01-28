@@ -6,6 +6,8 @@
 
 using System;
 using Buttplug.Core.Logging;
+using Buttplug.Devices;
+using Buttplug.Devices.Protocols;
 using SharpDX.XInput;
 
 namespace Buttplug.Server.Managers.XInputGamepadManager
@@ -23,6 +25,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             BpLogger.Info("XInputGamepadManager start scanning");
             try
             {
+                // TODO this should scan in a loop on a timer until told to stop
                 var controllers = new[]
                 {
                     new Controller(UserIndex.One),
@@ -38,7 +41,8 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
                     }
 
                     BpLogger.Debug($"Found connected XInput Gamepad for Index {c.UserIndex}");
-                    var device = new XInputGamepadDevice(LogManager, c);
+                    var deviceImpl = new XInputGamepadDevice(LogManager, c);
+                    var device = new ButtplugDevice(LogManager, new XInputProtocol(LogManager, deviceImpl), deviceImpl);
                     InvokeDeviceAdded(new DeviceAddedEventArgs(device));
                     InvokeScanningFinished();
                 }
