@@ -131,7 +131,7 @@ protocols:
       # exhaustive, because we have to specify services in WebBluetooth
       # and can't wildcard them. We'll add more as we find them.
       btle:
-        name:
+        names:
           - LVS-*
         services:
           - 0000fff0-0000-1000-8000-00805f9b34fb
@@ -156,7 +156,7 @@ protocols:
   kiiroo-v2:
     id:
       btle:
-        name:
+        names:
           - Launch
         services:
           - 88f80580-0000-01e6-aace-0002a5d5c51b
@@ -172,10 +172,10 @@ protocols:
   erostek-et312:
     config:
       serial:
-        baudrate: 19200
-        databits: 8
+        baud-rate: 19200
+        data-bits: 8
         parity: N
-        stopbits: 1
+        stop-bits: 1
 
   vorze-cyclone-x:
     id:
@@ -192,7 +192,7 @@ protocols:
   kiiroo-v1:
     id:
       btle:
-        name:
+        names:
           - ONYX
           - PEARL
         services:
@@ -208,14 +208,14 @@ protocols:
   vorze-sa:
     id: 
       btle:
-        name:
+        names:
           - CYCSA
           - Bach smart
           - UFOSA
         services:
           - 40ee1111-63ec-4b7f-8ce7-712efd55b90e
   # nintendo-joycon:
-  #   name:
+  #   names:
   #     en-us: Nintendo Joycon
   #   protocol: joycon
   #   connection-info:
