@@ -1,17 +1,17 @@
 ﻿namespace Buttplug.Devices.Configuration
 {
-    public class USBProtocolConfiguration : IProtocolConfiguration
+    public class HIDProtocolConfiguration : IProtocolConfiguration
     {
         public readonly ushort VendorId;
         public readonly ushort ProductId;
 
-        public USBProtocolConfiguration(ushort aVendorId, ushort aProductId)
+        public HIDProtocolConfiguration(ushort aVendorId, ushort aProductId)
         {
             VendorId = aVendorId;
             ProductId = aProductId;
         }
 
-        internal USBProtocolConfiguration(USBIdentifier aId, USBConfiguration aConfig)
+        internal HIDProtocolConfiguration(HIDIdentifier aId, HIDConfiguration aConfig)
         {
             VendorId = aId.VendorId;
             ProductId = aId.ProductId;
@@ -19,7 +19,7 @@
 
         public bool Matches(IProtocolConfiguration aConfig)
         {
-            return aConfig is USBProtocolConfiguration usbConfig && usbConfig.ProductId == ProductId && usbConfig.VendorId == VendorId;
+            return aConfig is HIDProtocolConfiguration hidConfig && hidConfig.ProductId == ProductId && hidConfig.VendorId == VendorId;
         }
     }
 }

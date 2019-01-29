@@ -6,7 +6,7 @@ namespace Buttplug.Devices.Configuration
 {
     class NullProtocolConfiguration : IProtocolConfiguration
     {
-        public NullProtocolConfiguration(Type aType)
+        public NullProtocolConfiguration()
         {
         }
 
