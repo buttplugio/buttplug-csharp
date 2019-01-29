@@ -25,9 +25,9 @@ write code for!
 
 ## License
 
-buttplug-js is BSD 3-Clause licensed.
+buttplug is BSD 3-Clause licensed.
 
-    Copyright (c) 2017-2018, Nonpolynomial Labs LLC
+    Copyright (c) 2017-2019, Nonpolynomial Labs LLC
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
