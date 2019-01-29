@@ -55,6 +55,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="YamlDotNet" Version="5.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,6 +66,7 @@
   <ItemGroup>
     <EmbeddedResource Include="..\dependencies\buttplug-schema\schema\buttplug-schema.json" />
     <EmbeddedResource Include="..\LICENSE" Link="Server\LICENSE" />
+    <EmbeddedResource Include="..\dependencies\buttplug-device-config\buttplug-device-config.yml" Link="buttplug-device-config.yml" />
     <None Include="app.config" />
   </ItemGroup>
 
