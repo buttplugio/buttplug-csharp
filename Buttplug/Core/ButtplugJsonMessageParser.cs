@@ -68,24 +68,8 @@ namespace Buttplug.Core
             }
 
             // Load the schema for validation. Schema file is an embedded resource in the library.
-            var assembly = Assembly.GetExecutingAssembly();
-            const string resourceName = "Buttplug.buttplug-schema.json";
-            var stream = assembly.GetManifestResourceStream(resourceName);
-            try
-            {
-                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
-                {
-                    stream = null;
-                    var result = reader.ReadToEnd();
-                    _schema = JsonSchema4.FromJsonAsync(result)?.GetAwaiter().GetResult() ?? throw new InvalidOperationException();
-                }
-            }
-            finally
-            {
-                // Always make sure we dispose of the resource stream, even if we throw. All
-                // exceptions should be rethrown though.
-                stream?.Dispose();
-            }
+            var jsonSchemaString = ButtplugUtils.GetStringFromFileResource("Buttplug.buttplug-schema.json");
+            _schema = JsonSchema4.FromJsonAsync(jsonSchemaString)?.GetAwaiter().GetResult() ?? throw new InvalidOperationException();
         }
 
         /// <summary>

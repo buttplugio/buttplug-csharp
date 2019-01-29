@@ -89,5 +89,28 @@ namespace Buttplug.Core
         {
             return Type.GetType($"Buttplug.Core.Messages.{aMessageName}");
         }
+
+        public static string GetStringFromFileResource(string aResourceName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var stream = assembly.GetManifestResourceStream(aResourceName);
+            string result;
+            try
+            {
+                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
+                {
+                    stream = null;
+                    result = reader.ReadToEnd();
+                }
+            }
+            finally
+            {
+                // Always make sure we dispose of the resource stream, even if we throw. All
+                // exceptions should be rethrown though.
+                stream?.Dispose();
+            }
+
+            return result;
+        }
     }
 }
