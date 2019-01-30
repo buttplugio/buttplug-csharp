@@ -19,22 +19,14 @@ namespace Buttplug.Devices
 
         Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
 
-        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharacteristicIndex, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
-
-        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, ushort[] aValue, bool aWriteWithResponse, CancellationToken aToken);
-
-        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharacteristicIndex, ushort[] aValue, bool aWriteWithResponse, CancellationToken aToken);
-
-        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint[] aValue, bool aWriteWithResponse, CancellationToken aToken);
-
-        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharacteristicIndex, uint[] aValue, bool aWriteWithResponse, CancellationToken aToken);
+        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, string aEndpointName, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
 
         Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken);
 
-        Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, uint aCharacteristicIndex, CancellationToken aToken);
+        Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, string aEndpointName, CancellationToken aToken);
 
         Task SubscribeToUpdatesAsync();
 
-        Task SubscribeToUpdatesAsync(uint aIndex);
+        Task SubscribeToUpdatesAsync(string aEndpointName);
     }
 }

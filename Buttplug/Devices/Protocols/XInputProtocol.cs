@@ -4,6 +4,7 @@
 //     license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,13 +57,14 @@ namespace Buttplug.Devices.Protocols
                                                                           : vi.Speed;
             }
 
-            var speeds = new[]
-            {
-                (ushort)(_vibratorSpeeds[0] * ushort.MaxValue),
-                (ushort)(_vibratorSpeeds[1] * ushort.MaxValue),
-            };
+            // This is gross, but in trying to keep with the "only take bytes in endpoints" rule, we
+            // gotta deal with it.
+            // todo Possible to optimize this but I currently do not care.
+            var speedBytes = new List<byte>();
+            speedBytes.AddRange(BitConverter.GetBytes((ushort)(_vibratorSpeeds[0] * ushort.MaxValue)));
+            speedBytes.AddRange(BitConverter.GetBytes((ushort)(_vibratorSpeeds[1] * ushort.MaxValue)));
 
-            return Interface.WriteValueAsync(aMsg.Id, speeds, false, aToken);
+            return Interface.WriteValueAsync(aMsg.Id, speedBytes.ToArray(), false, aToken);
         }
     }
 }

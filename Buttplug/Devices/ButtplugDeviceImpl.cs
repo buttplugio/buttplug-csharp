@@ -33,31 +33,7 @@ namespace Buttplug.Devices
             throw new NotImplementedException();
         }
 
-        public Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharacteristicIndex, byte[] aValue,
-            bool aWriteWithResponse, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ButtplugMessage> WriteValueAsync(uint aMsgId, ushort[] aValue, bool aWriteWithResponse,
-            CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharacteristicIndex, ushort[] aValue,
-            bool aWriteWithResponse, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint[] aValue, bool aWriteWithResponse,
-            CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ButtplugMessage> WriteValueAsync(uint aMsgId, uint aCharacteristicIndex, uint[] aValue,
+        public Task<ButtplugMessage> WriteValueAsync(uint aMsgId, string aEndpointName, byte[] aValue,
             bool aWriteWithResponse, CancellationToken aToken)
         {
             throw new NotImplementedException();
@@ -68,7 +44,7 @@ namespace Buttplug.Devices
             throw new NotImplementedException();
         }
 
-        public Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, uint aCharacteristicIndex,
+        public Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, string aEndpointName,
             CancellationToken aToken)
         {
             throw new NotImplementedException();
@@ -79,7 +55,7 @@ namespace Buttplug.Devices
             throw new NotImplementedException();
         }
 
-        public Task SubscribeToUpdatesAsync(uint aIndex)
+        public Task SubscribeToUpdatesAsync(string aEndpointName)
         {
             throw new NotImplementedException();
         }

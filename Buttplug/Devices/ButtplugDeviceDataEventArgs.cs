@@ -2,11 +2,14 @@
 {
     public class ButtplugDeviceDataEventArgs
     {
-        public byte[] bytes { get; }
+        public string Endpoint { get; }
 
-        public ButtplugDeviceDataEventArgs(byte[] aBytes)
+        public byte[] Bytes { get; }
+
+        public ButtplugDeviceDataEventArgs(string aEndpointName, byte[] aBytes)
         {
-            bytes = aBytes;
+            Endpoint = aEndpointName;
+            Bytes = aBytes;
         }
     }
 }
