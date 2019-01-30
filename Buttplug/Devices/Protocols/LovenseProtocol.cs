@@ -1,11 +1,10 @@
-// <copyright file="Lovense.cs" company="Nonpolynomial Labs LLC">
+// <copyright file="LovenseProtocol.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,56 +12,9 @@ using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 
-namespace Buttplug.Server.Bluetooth.Devices
+namespace Buttplug.Devices.Protocols
 {
-    internal class LovenseBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
-        // Use NamePrefix instead
-        public static string[] NamesInfo { get; } = { };
-
-        // Use autocreated TX/RX characteristics
-        public static Dictionary<uint, Guid> CharacteristicsInfo { get; } = new Dictionary<uint, Guid>();
-
-        public static Guid[] ServicesInfo { get; } =
-        {
-            new Guid("0000fff0-0000-1000-8000-00805f9b34fb"),
-            new Guid("6e400001-b5a3-f393-e0a9-e50e24dcca9e"),
-            new Guid("50300001-0024-4bd4-bbd5-a6920e4c5653"),
-            new Guid("57300001-0023-4bd4-bbd5-a6920e4c5653"),
-            new Guid("5a300001-0024-4bd4-bbd5-a6920e4c5653"),
-            new Guid("50300001-0023-4bd4-bbd5-a6920e4c5653"),
-            new Guid("53300001-0023-4bd4-bbd5-a6920e4c5653"),
-            new Guid("5a300001-0023-4bd4-bbd5-a6920e4c5653"),
-            new Guid("4f300001-0023-4bd4-bbd5-a6920e4c5653"),
-        };
-
-        public static string[] NamePrefixesInfo { get; } =
-        {
-            "LVS",
-        };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = CharacteristicsInfo;
-
-        public Guid[] Services { get; } = ServicesInfo;
-
-        public string[] Names { get; } = NamesInfo;
-
-        public string[] NamePrefixes { get; } = NamePrefixesInfo;
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Lovense(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class Lovense : ButtplugBluetoothDevice
+    class LovenseProtocol : ButtplugDeviceProtocol
     {
         // Identify Lovense devices against the character we expect to get back from the DeviceType
         // read. See https://docs.buttplug.io/stpihkal for protocol info.
@@ -89,13 +41,11 @@ namespace Buttplug.Server.Bluetooth.Devices
         private LovenseDeviceType _deviceType = LovenseDeviceType.Unknown;
         private string _lastNotifyReceived = string.Empty;
 
-        public Lovense(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface,
-                       IBluetoothDeviceInfo aInfo)
+        public LovenseProtocol(IButtplugLogManager aLogManager,
+                       IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    "Lovense Unknown Device",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
@@ -106,9 +56,9 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             // Subscribing to read updates
             await Interface.SubscribeToUpdatesAsync().ConfigureAwait(false);
-            Interface.BluetoothNotifyReceived += NotifyReceived;
+            Interface.DataReceived += NotifyReceived;
 
-            // Retreiving device type info for identification.
+            // Retrieving device type info for identification.
             var writeMsg = await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes("DeviceType;"), true, aToken).ConfigureAwait(false);
             if (writeMsg is Error)
             {
@@ -130,7 +80,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             {
                 // The device info notification isn't available immediately.
                 // TODO Turn this into a task semaphore with cancellation/timeout, let system handle check timing.
-                int timeout = 1000;
+                var timeout = 1000;
                 while (timeout > 0)
                 {
                     if (_lastNotifyReceived != string.Empty)
@@ -144,7 +94,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 }
             }
 
-            BpLogger.Debug($"Received device query return for {Interface.Name}");
+            BpLogger.Debug($"Received device query return for {Name}");
 
             // Expected Format X:YY:ZZZZZZZZZZZZ X is device type leter YY is firmware version Z is
             // bluetooth address
@@ -212,9 +162,9 @@ namespace Buttplug.Server.Bluetooth.Devices
             AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
         }
 
-        private void NotifyReceived(object sender, BluetoothNotifyEventArgs args)
+        private void NotifyReceived(object sender, ButtplugDeviceDataEventArgs args)
         {
-            var data = Encoding.ASCII.GetString(args.bytes);
+            var data = Encoding.ASCII.GetString(args.Bytes);
 
             //BpLogger.Trace(data);
             _lastNotifyReceived = data;
