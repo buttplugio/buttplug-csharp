@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices.Configuration;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server
@@ -127,6 +128,8 @@ namespace Buttplug.Server
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished += ScanningFinishedHandler;
             BpLogManager.LogMessageReceived += LogMessageReceivedHandler;
+
+            DeviceConfigurationManager.LoadBaseConfigurationFromResource();
         }
 
         private void DeviceMessageReceivedHandler([NotNull] object aObj, [NotNull] MessageReceivedEventArgs aMsg)
