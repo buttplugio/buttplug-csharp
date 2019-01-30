@@ -1,61 +1,23 @@
-﻿// <copyright file="Kiiroo.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="KiirooGen1Protocol.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Server.Util;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class KiirooBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            Rx = 0,
-            Tx,
-            Cmd,
-            Cmd2,
-        }
-
-        public string[] Names { get; } = { "ONYX", "PEARL" };
-
-        public string[] NamePrefixes { get; } = { };
-
-        public Guid[] Services { get; } = { new Guid("49535343-fe7d-4ae5-8fa9-9fafd205e455") };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            // rx
-            { (uint)Chrs.Rx, new Guid("49535343-1e4d-4bd9-ba61-23c647249616") },
-
-            // tx
-            { (uint)Chrs.Tx, new Guid("49535343-8841-43f4-a8d4-ecbe34729bb3") },
-
-            // cmd
-            { (uint)Chrs.Cmd, new Guid("49535343-aca3-481c-91ec-d85e28a60318") },
-
-            // cmd2
-            { (uint)Chrs.Cmd2, new Guid("49535343-6daa-4d02-abf6-19569aca69fe") },
-        };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Kiiroo(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class Kiiroo : ButtplugBluetoothDevice
+    internal class KiirooGen1Protocol : ButtplugDeviceProtocol
     {
         private readonly object _onyxLock = new object();
         private double _deviceSpeed;
@@ -65,13 +27,11 @@ namespace Buttplug.Server.Bluetooth.Devices
         private DateTime _currentTime = DateTime.Now;
         private Timer _onyxTimer;
 
-        public Kiiroo([NotNull] IButtplugLogManager aLogManager,
-                      [NotNull] IBluetoothDeviceInterface aInterface,
-                      [NotNull] IBluetoothDeviceInfo aInfo)
+        public KiirooGen1Protocol([NotNull] IButtplugLogManager aLogManager,
+                      [NotNull] IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    $"Kiiroo {aInterface.Name}",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             AddMessageHandler<KiirooCmd>(HandleKiirooRawCmd);
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
@@ -89,7 +49,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
         }
 
-        private void OnBluetoothMessageReceived(object sender, BluetoothNotifyEventArgs aArgs)
+        private void OnDataReceived(object sender, ButtplugDeviceDataEventArgs aArgs)
         {
             // no-op, but required for the Onyx to work
         }
@@ -97,17 +57,17 @@ namespace Buttplug.Server.Bluetooth.Devices
         public override async Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
         {
             // Start listening for incoming
-            Interface.BluetoothNotifyReceived += OnBluetoothMessageReceived;
-            await Interface.SubscribeToUpdatesAsync((uint)KiirooBluetoothInfo.Chrs.Rx).ConfigureAwait(false);
+            Interface.DataReceived += OnDataReceived;
+            await Interface.SubscribeToUpdatesAsync(Endpoints.Rx).ConfigureAwait(false);
 
             // Mode select
             await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
-                (uint)KiirooBluetoothInfo.Chrs.Cmd,
+                Endpoints.Command,
                 new byte[] { 0x01, 0x00 }, true, aToken).ConfigureAwait(false);
 
             // Set to start position
             await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
-                (uint)KiirooBluetoothInfo.Chrs.Tx,
+                Endpoints.Tx,
                 new byte[] { 0x30, 0x2c }, true, aToken).ConfigureAwait(false);
 
             if (Interface.Name != "ONYX")
@@ -126,17 +86,6 @@ namespace Buttplug.Server.Bluetooth.Devices
             _onyxTimer = new Timer(OnOnyxTimer, null, 500, 500);
 
             return new Ok(ButtplugConsts.SystemMsgId);
-        }
-
-        public override void Disconnect()
-        {
-            if (Interface.Name == "ONYX")
-            {
-                _onyxTimer?.Change(Timeout.Infinite, Timeout.Infinite);
-                _onyxTimer = null;
-            }
-
-            Interface.Disconnect();
         }
 
         private async void OnOnyxTimer(object state)
@@ -206,7 +155,7 @@ namespace Buttplug.Server.Bluetooth.Devices
         {
             var cmdMsg = CheckMessageHandler<KiirooCmd>(aMsg);
 
-            return await Interface.WriteValueAsync(cmdMsg.Id, (uint)KiirooBluetoothInfo.Chrs.Tx,
+            return await Interface.WriteValueAsync(cmdMsg.Id, Endpoints.Tx,
                 Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"), false, aToken).ConfigureAwait(false);
         }
 
