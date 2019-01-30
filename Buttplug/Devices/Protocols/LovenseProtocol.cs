@@ -158,7 +158,7 @@ namespace Buttplug.Devices.Protocols
 
         private void NotifyReceived(object sender, ButtplugDeviceDataEventArgs args)
         {
-            var data = Encoding.ASCII.GetString(args.bytes);
+            var data = Encoding.ASCII.GetString(args.Bytes);
 
             //BpLogger.Trace(data);
             _lastNotifyReceived = data;
