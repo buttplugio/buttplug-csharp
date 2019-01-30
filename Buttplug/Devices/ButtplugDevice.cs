@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -61,6 +62,23 @@ namespace Buttplug.Devices
         {
             _protocol = aProtocol;
             _device = aDevice;
+            BpLogger = aLogManager.GetLogger(GetType());
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ButtplugDevice"/> class.
+        /// </summary>
+        /// <param name="aLogManager">The log manager</param>
+        /// <param name="aDevice">The device implementation (Bluetooth, USB, etc).</param>
+        /// <param name="aProtocolType">A Type for a protocol, which we will create an instance of</param>
+        public ButtplugDevice([NotNull] IButtplugLogManager aLogManager,
+            [NotNull] Type aProtocolType,
+            [NotNull] IButtplugDeviceImpl aDevice)
+        {
+            _device = aDevice;
+            // A lot of trust happening in the structure of protocol constructors here.
+            // todo should probably document the many ways this can throw.
+            Activator.CreateInstance(aProtocolType, aLogManager, _device);
             BpLogger = aLogManager.GetLogger(GetType());
         }
 

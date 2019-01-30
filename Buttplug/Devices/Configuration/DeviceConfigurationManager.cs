@@ -4,13 +4,12 @@ using System.IO;
 using System.Linq;
 using Buttplug.Core;
 using Buttplug.Devices.Protocols;
-using YamlDotNet.RepresentationModel;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace Buttplug.Devices.Configuration
 {
-    class DeviceConfigurationManager
+    public class DeviceConfigurationManager
     {
         private static DeviceConfigurationManager _manager;
 
@@ -27,14 +26,18 @@ namespace Buttplug.Devices.Configuration
             }
         }
 
-        private readonly Dictionary<string, IProtocolConfiguration> _protocolConfigs = new Dictionary<string, IProtocolConfiguration>();
+        // Types and Configurations are kept in separate dictionaries, as there may be cases where we
+        // have a protocol but no matching configuration, or vice versa.
         private readonly Dictionary<string, Type> _protocolTypes = new Dictionary<string, Type>();
+        private readonly Dictionary<string, List<IProtocolConfiguration>> _protocolConfigs = new Dictionary<string, List<IProtocolConfiguration>>();
+
         private readonly List<IProtocolConfiguration> _whiteList = new List<IProtocolConfiguration>();
         private readonly List<IProtocolConfiguration> _blackList = new List<IProtocolConfiguration>();
 
         protected DeviceConfigurationManager()
         {
             AddProtocol("lovense", typeof(LovenseProtocol));
+            // todo We need a way to be able to turn off xinput, in case the protocol is blacklisted?
             AddProtocol("xinput", typeof(XInputProtocol));
         }
 
@@ -107,7 +110,12 @@ namespace Buttplug.Devices.Configuration
 
         public void AddProtocolConfig(string aProtocolName, IProtocolConfiguration aConfiguration)
         {
-            _protocolConfigs.Add(aProtocolName, aConfiguration);
+            if (!_protocolConfigs.ContainsKey(aProtocolName))
+            {
+                _protocolConfigs.Add(aProtocolName, new List<IProtocolConfiguration>());
+            }
+
+            _protocolConfigs[aProtocolName].Add(aConfiguration);
         }
 
         public void AddWhitelist(IProtocolConfiguration aConfiguration)
@@ -120,7 +128,7 @@ namespace Buttplug.Devices.Configuration
             _blackList.Add(aConfiguration);
         }
 
-        public Type FindProtocol(IProtocolConfiguration aConfig)
+        public ButtplugDeviceFactory Find(IProtocolConfiguration aConfig)
         {
             if (_whiteList.Any())
             {
@@ -136,6 +144,7 @@ namespace Buttplug.Devices.Configuration
                     break;
                 }
 
+                // If we found a whitelisted device, continue on to figure out its type.
                 if (!found)
                 {
                     return null;
@@ -155,18 +164,24 @@ namespace Buttplug.Devices.Configuration
 
             foreach (var config in _protocolConfigs)
             {
-                if (!config.Value.Matches(aConfig))
+                foreach (var deviceConfig in config.Value)
                 {
-                    continue;
-                }
+                    if (!deviceConfig.Matches(aConfig))
+                    {
+                        continue;
+                    }
 
-                if (!_protocolTypes.ContainsKey(config.Key))
-                {
-                    // Todo This means we found a device we have config but no protocol for. We should log here and return null.
-                    return null;
-                }
+                    if (!_protocolTypes.ContainsKey(config.Key))
+                    {
+                        // Todo This means we found a device we have config but no protocol for. We should log here and return null.
+                        return null;
+                    }
 
-                return _protocolTypes[config.Key];
+                    // We can't create the device just yet, as we need to let the subtype manager try
+                    // to connect to the device and set it up appropriately. Return a device factory
+                    // to let the subtype manager do that.
+                    return new ButtplugDeviceFactory(deviceConfig, _protocolTypes[config.Key]);
+                }
             }
 
             return null;

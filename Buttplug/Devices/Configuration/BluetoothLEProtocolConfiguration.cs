@@ -13,32 +13,31 @@ namespace Buttplug.Devices.Configuration
         /// </summary>
         public readonly Dictionary<Guid, Dictionary<string, Guid>> Characteristics = new Dictionary<Guid, Dictionary<string, Guid>>();
 
-        internal BluetoothLEProtocolConfiguration(BluetoothLEIdentifier aId, Dictionary<Guid, Dictionary<string, Guid>> aConfig)
-        {
-            Names = aId.Names;
-            Services = aId.Services;
-            if (aConfig == null)
-            {
-                return;
-            }
-            foreach (var serviceInfo in aConfig)
-            {
-                Characteristics.Add(serviceInfo.Key, serviceInfo.Value);
-            }
-        }
-
-        public BluetoothLEProtocolConfiguration(string aName)
-        {
-            Names.Add(aName);
-        }
-
         public BluetoothLEProtocolConfiguration(IEnumerable<string> aNames,
             IEnumerable<Guid> aServices = null,
             Dictionary<Guid, Dictionary<string, Guid>> aCharacteristics = null)
         {
             Names = aNames.ToList();
-            Services = aServices.ToList();
+
+            if (aServices != null)
+            {
+                Services = aServices.ToList();
+            }
+
+            // TODO Fail on similarly named characteristics
+
+            // TODO Fail on devices with multiple services without characteristic lists
             Characteristics = aCharacteristics;
+        }
+
+        internal BluetoothLEProtocolConfiguration(BluetoothLEIdentifier aId, Dictionary<Guid, Dictionary<string, Guid>> aConfig)
+            : this(aId.Names, aId.Services, aConfig)
+        {
+        }
+
+        public BluetoothLEProtocolConfiguration(string aName)
+            : this(new[] { aName })
+        {
         }
 
         public bool Matches(IProtocolConfiguration aConfig)
@@ -72,7 +71,7 @@ namespace Buttplug.Devices.Configuration
                 }
             }
 
-            // TODO Put in service checking, but that hasn't really been needed so far.
+            // TODO Put in advertised service checking, but that hasn't really been needed so far.
             return false;
         }
     }
