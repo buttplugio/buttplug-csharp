@@ -78,7 +78,13 @@ namespace Buttplug.Devices
             _device = aDevice;
             // A lot of trust happening in the structure of protocol constructors here.
             // todo should probably document the many ways this can throw.
-            Activator.CreateInstance(aProtocolType, aLogManager, _device);
+            _protocol = (IButtplugDeviceProtocol)Activator.CreateInstance(aProtocolType, aLogManager, _device);
+            if (_protocol == null)
+            {
+                // Treat it like we just tried to reference the protocol.
+                throw new NullReferenceException("Protocol generation did not generate a valid protocol");
+            }
+
             BpLogger = aLogManager.GetLogger(GetType());
         }
 

@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="UWPBluetoothManager.cs" />
     <Compile Include="UWPBluetoothDeviceInterface.cs" />
-    <Compile Include="UWPBluetoothDeviceFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

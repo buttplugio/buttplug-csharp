@@ -4,32 +4,32 @@
 //     license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using Buttplug.Core.Logging;
+using Buttplug.Core.Messages;
+using Buttplug.Devices;
+using Buttplug.Devices.Configuration;
+using JetBrains.Annotations;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Buttplug.Core.Logging;
-using Buttplug.Server.Bluetooth;
-using JetBrains.Annotations;
-using Microsoft.Win32;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
+using Windows.Devices.Bluetooth.GenericAttributeProfile;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
-    public class UWPBluetoothManager : BluetoothSubtypeManager
+    public class UWPBluetoothManager : DeviceSubtypeManager
     {
         [NotNull]
-        private readonly BluetoothLEAdvertisementWatcher _bleWatcher;
-
-        [NotNull]
-        private readonly List<UWPBluetoothDeviceFactory> _deviceFactories;
-
-        [NotNull]
-        private readonly List<ulong> _currentlyConnecting;
+        private readonly BluetoothLEAdvertisementWatcher _bleWatcher = new BluetoothLEAdvertisementWatcher { ScanningMode = BluetoothLEScanningMode.Active };
 
         private Task _radioTask;
+
+        [NotNull] private readonly List<ulong> _seenAddresses = new List<ulong>();
 
         public static bool HasRegistryKeysSet()
         {
@@ -48,18 +48,6 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             : base(aLogManager)
         {
             BpLogger.Info("Loading UWP Bluetooth Manager");
-            _currentlyConnecting = new List<ulong>();
-
-            // Introspect the ButtplugDevices namespace for all Factory classes, then create
-            // instances of all of them.
-            _deviceFactories = new List<UWPBluetoothDeviceFactory>();
-            BuiltinDevices.ForEach(aDeviceFactory =>
-                {
-                    BpLogger.Debug($"Loading Bluetooth Device Factory: {aDeviceFactory.GetType().Name}");
-                    _deviceFactories.Add(new UWPBluetoothDeviceFactory(aLogManager, aDeviceFactory));
-                });
-
-            _bleWatcher = new BluetoothLEAdvertisementWatcher { ScanningMode = BluetoothLEScanningMode.Active };
 
             // We can't filter device advertisements because you can only add one LocalName filter at
             // a time, meaning we would have to set up multiple watchers for multiple devices. We'll
@@ -86,8 +74,9 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             // Only run radio information lookup if we're actually logging at the level it will show.
             if (aLogManager.Level >= ButtplugLogLevel.Debug)
             {
-                // Do radio lookup in a background task, as the search query is very slow.
-                // TODO Should probably try and cancel this if it's still running on object destruction, but the Get() call is uninterruptable?
+                // Do radio lookup in a background task, as the search query is very slow. TODO
+                // Should probably try and cancel this if it's still running on object destruction,
+                // but the Get() call is uninterruptable?
                 _radioTask = Task.Run(() => LogBluetoothRadioInfo());
             }
         }
@@ -123,7 +112,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             var btAddr = aEvent.BluetoothAddress;
 
             // BpLogger.Trace($"Got BLE Advertisement for device: {aEvent.Advertisement.LocalName} / {aEvent.BluetoothAddress}");
-            if (_currentlyConnecting.Contains(btAddr))
+            if (_seenAddresses.Contains(btAddr))
             {
                 // BpLogger.Trace($"Ignoring advertisement for already connecting device:
                 // {aEvent.Advertisement.LocalName} / {aEvent.BluetoothAddress}");
@@ -131,55 +120,63 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
 
             BpLogger.Trace("BLE device found: " + advertName);
-            var factories = from x in _deviceFactories
-                            where x.MayBeDevice(advertName, advertGUIDs)
-                            select x;
 
-            // We should always have either 0 or 1 factories.
-            var buttplugBluetoothDeviceFactories = factories as UWPBluetoothDeviceFactory[] ?? factories.ToArray();
-            if (buttplugBluetoothDeviceFactories.Length != 1)
+            // We always need a name to match against.
+            if (advertName == string.Empty)
             {
-                if (buttplugBluetoothDeviceFactories.Any())
-                {
-                    BpLogger.Warn($"Found multiple BLE factories for {advertName} {btAddr}:");
-                    buttplugBluetoothDeviceFactories.ToList().ForEach(x => BpLogger.Warn(x.GetType().Name));
-                }
-                else
-                {
-                    // BpLogger.Trace("No BLE factories found for device.");
-                }
-
                 return;
             }
 
-            _currentlyConnecting.Add(btAddr);
-            var factory = buttplugBluetoothDeviceFactories.First();
-            BpLogger.Debug($"Found BLE factory: {factory.GetType().Name}");
+            // If we've got an actual name this time around, add to our seen list.
+            _seenAddresses.Add(btAddr);
 
-            // If we actually have a factory for this device, go ahead and create the device
-            var fromBluetoothAddressAsync = BluetoothLEDevice.FromBluetoothAddressAsync(btAddr);
-            if (fromBluetoothAddressAsync != null)
+            // todo Add advertGUIDs back in. Not sure that ever really gets used though.
+            var deviceCriteria = new BluetoothLEProtocolConfiguration(advertName);
+
+            var deviceFactory = DeviceConfigurationManager.Manager.Find(deviceCriteria);
+
+            // If we don't have a protocol to match the device, we can't do anything with it.
+            if (deviceFactory == null)
             {
-                var dev = await fromBluetoothAddressAsync;
-
-                // If a device is turned on after scanning has started, windows seems to lose the
-                // device handle the first couple of times it tries to deal with the advertisement.
-                // Just log the error and hope it reconnects on a later retry.
-                try
-                {
-                    var d = await factory.CreateDeviceAsync(dev).ConfigureAwait(false);
-                    InvokeDeviceAdded(new DeviceAddedEventArgs(d));
-                }
-                catch (Exception ex)
-                {
-                    BpLogger.Error(
-                        $"Cannot connect to device {advertName} {btAddr}: {ex.Message}");
-                    _currentlyConnecting.Remove(btAddr);
-                    return;
-                }
+                BpLogger.Debug($"No device factory available for {advertName}.");
+                return;
             }
 
-            _currentlyConnecting.Remove(btAddr);
+            if (!(deviceFactory.Config is BluetoothLEProtocolConfiguration bleConfig))
+            {
+                BpLogger.Error("Got a factory with a non-BLE protocol config object.");
+                return;
+            }
+
+            var fromBluetoothAddressAsync = BluetoothLEDevice.FromBluetoothAddressAsync(btAddr);
+
+            // Can return null if the device no longer exists, for instance if it turned off between
+            // advertising and us getting here. Since we didn't get a chance to try to connect,
+            // remove it from seen devices, since the user may turn it back on during this scanning period.
+            if (fromBluetoothAddressAsync == null)
+            {
+                return;
+            }
+
+            var dev = await fromBluetoothAddressAsync;
+
+            // If a device is turned on after scanning has started, windows seems to lose the device
+            // handle the first couple of times it tries to deal with the advertisement. Just log the
+            // error and hope it reconnects on a later retry.
+            try
+            {
+                var bleDevice = await UWPBluetoothDeviceInterface.Create(LogManager, bleConfig, dev).ConfigureAwait(false);
+                var btDevice = await deviceFactory.CreateDevice(LogManager, bleDevice).ConfigureAwait(false);
+                InvokeDeviceAdded(new DeviceAddedEventArgs(btDevice));
+            }
+            catch (Exception ex)
+            {
+                BpLogger.Error(
+                    $"Cannot connect to device {advertName} {btAddr}: {ex.Message}");
+                // Remove the address from our "seen" list so that we try to reconnect again.
+                _seenAddresses.Remove(btAddr);
+                return;
+            }
         }
 
         private void OnWatcherStopped(BluetoothLEAdvertisementWatcher aObj,
@@ -192,6 +189,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         public override void StartScanning()
         {
             BpLogger.Info("Starting BLE Scanning");
+            _seenAddresses.Clear();
             _bleWatcher.Start();
         }
 

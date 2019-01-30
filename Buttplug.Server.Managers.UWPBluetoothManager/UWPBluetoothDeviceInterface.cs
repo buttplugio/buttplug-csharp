@@ -1,21 +1,20 @@
 // <copyright file="UWPBluetoothDeviceInterface.cs" company="Nonpolynomial Labs LLC">
-// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
-// Copyright (c) Nonpolynomial Labs LLC. All rights reserved. Licensed under the BSD 3-Clause
-// license. See LICENSE file in the project root for full license information.
+//     Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+//     Copyright (c) Nonpolynomial Labs LLC. All rights reserved. Licensed under the BSD 3-Clause
+//     license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
-using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Server.Bluetooth;
+using Buttplug.Devices;
+using Buttplug.Devices.Configuration;
 using JetBrains.Annotations;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
@@ -23,18 +22,14 @@ using Windows.Security.Cryptography;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
-    internal class UWPBluetoothDeviceInterface : IBluetoothDeviceInterface
+    internal class UWPBluetoothDeviceInterface : IButtplugDeviceImpl
     {
         public string Name => _bleDevice.Name;
 
-        private readonly Dictionary<uint, GattCharacteristic> _indexedChars;
+        private readonly Dictionary<string, GattCharacteristic> _indexedChars = new Dictionary<string, GattCharacteristic>();
 
         [NotNull]
         private readonly IButtplugLog _bpLogger;
-
-        private GattCharacteristic _txChar;
-
-        private GattCharacteristic _rxChar;
 
         [NotNull]
         private CancellationTokenSource _internalTokenSource = new CancellationTokenSource();
@@ -48,105 +43,195 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         [CanBeNull]
         public event EventHandler DeviceRemoved;
 
-        public ulong Address => _bleDevice.BluetoothAddress;
+        public string Address => _bleDevice.BluetoothAddress.ToString();
 
         [CanBeNull]
-        public event EventHandler<BluetoothNotifyEventArgs> BluetoothNotifyReceived;
+        public event EventHandler<ButtplugDeviceDataEventArgs> DataReceived;
 
-        public UWPBluetoothDeviceInterface(
+        public bool Connected => _bleDevice != null && _bleDevice.ConnectionStatus == BluetoothConnectionStatus.Connected;
+
+        protected UWPBluetoothDeviceInterface(
             [NotNull] IButtplugLogManager aLogManager,
-            [NotNull] IBluetoothDeviceInfo aInfo,
-            [NotNull] BluetoothLEDevice aDevice,
-            [NotNull] GattCharacteristic[] aChars)
+            [NotNull] BluetoothLEDevice aDevice)
         {
             _bpLogger = aLogManager.GetLogger(GetType());
             _bleDevice = aDevice;
 
-            if (aInfo.Characteristics.Count > 0)
+            _bleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
+        }
+
+        public static async Task<IButtplugDeviceImpl> Create(IButtplugLogManager aLogManager,
+            BluetoothLEProtocolConfiguration aConfig,
+            BluetoothLEDevice aDevice)
+        {
+            var device = new UWPBluetoothDeviceInterface(aLogManager, aDevice);
+            await device.InitializeDevice(aConfig).ConfigureAwait(false);
+            return device;
+        }
+
+        protected async Task<GattDeviceService> GetService(Guid aServiceGuid)
+        {
+            // GetGattServicesForUuidAsync is 15063+ only?
+            var serviceResult = await _bleDevice.GetGattServicesForUuidAsync(aServiceGuid, BluetoothCacheMode.Cached);
+
+            // Don't log exceptions here, as we may not want to report them at some points.
+            if (serviceResult.Status != GattCommunicationStatus.Success)
             {
-                foreach (var item in aInfo.Characteristics)
-                {
-                    var c = (from x in aChars
-                             where x.Uuid == item.Value
-                             select x).ToArray();
-                    if (c.Length != 1)
-                    {
-                        var err = $"Cannot find characteristic ${item.Value} for device {Name}";
-                        _bpLogger.Error(err);
-                        throw new Exception(err);
-                    }
+                throw new ButtplugDeviceException($"Cannot check for service {aServiceGuid} of {_bleDevice.Name}.");
+            }
 
-                    if (_indexedChars == null)
-                    {
-                        _indexedChars = new Dictionary<uint, GattCharacteristic>();
-                    }
+            if (serviceResult.Services.Count == 0)
+            {
+                throw new ButtplugDeviceException($"Cannot find service {aServiceGuid} of {_bleDevice.Name}.");
+            }
 
-                    _indexedChars.Add(item.Key, c[0]);
-                }
+            // TODO is there EVER a way we'd get more than one service back?
+            return serviceResult.Services[0];
+        }
+
+        protected async Task InitializeDevice(BluetoothLEProtocolConfiguration aConfig)
+        {
+            // If we don't have any characteristic configuration, assume we're using characteristic detection.
+            if (aConfig.Characteristics.Count == 0)
+            {
+                await AddDefaultCharacteristics(aConfig.Services).ConfigureAwait(false);
             }
             else
             {
-                foreach (var c in aChars)
+                foreach (var characteristicInfo in aConfig.Characteristics)
                 {
-                    if (c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read) ||
-                        c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify) ||
-                        c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
+                    var serviceGuid = characteristicInfo.Key;
+
+                    GattDeviceService service;
+
+                    try
                     {
-                        _rxChar = c;
+                        service = await GetService(serviceGuid).ConfigureAwait(false);
                     }
-                    else if (c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse) ||
-                             c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write))
+                    catch (ButtplugDeviceException aEx)
                     {
-                        _txChar = c;
+                        // Log, then rethrow.
+                        _bpLogger.Error(aEx.Message);
+                        throw;
+                    }
+
+                    var chrResult = await service.GetCharacteristicsAsync();
+                    if (chrResult.Status != GattCommunicationStatus.Success)
+                    {
+                        throw new ButtplugDeviceException(_bpLogger,
+                            $"Cannot connect to characteristics for {serviceGuid} of {_bleDevice.Name}.");
+                    }
+
+                    foreach (var chr in chrResult.Characteristics)
+                    {
+                        foreach (var indexChr in characteristicInfo.Value)
+                        {
+                            if (chr.Uuid != indexChr.Value)
+                            {
+                                continue;
+                            }
+
+                            if (_indexedChars.ContainsKey(indexChr.Key))
+                            {
+                                // We've somehow doubled up endpoint names. Freak out.
+                                throw new ButtplugDeviceException(_bpLogger, $"Found repeated endpoint name {indexChr.Key} on {Name}");
+                            }
+
+                            _bpLogger.Debug($"Found characteristic {indexChr.Key} {chr.Uuid} ({_bleDevice.Name})");
+                            _indexedChars.Add(indexChr.Key, chr);
+                        }
                     }
                 }
             }
 
-            if (_rxChar == null && _txChar == null && _indexedChars == null)
+            if (_indexedChars == null)
             {
-                var err = $"No characteristics to connect to for device {Name}";
-                _bpLogger.Error(err);
-                throw new Exception(err);
+                throw new ButtplugDeviceException(_bpLogger, $"No characteristics to connect to for device {Name}");
+            }
+        }
+
+        private async Task AddDefaultCharacteristics(List<Guid> aServices)
+        {
+            GattDeviceService service = null;
+            foreach (var ser in aServices)
+            {
+                try
+                {
+                    service = await GetService(ser).ConfigureAwait(false);
+                }
+                catch (ButtplugDeviceException)
+                {
+                    // In this case, we may have a whole bunch of services that aren't valid for a
+                    // device and only one that is. We can ignore the exception, and throw if we
+                    // don't get anything from any service in the list.
+                }
             }
 
-            _bleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
+            if (service == null)
+            {
+                throw new ButtplugDeviceException(_bpLogger, $"No valid service found for default characteristics of {Name}");
+            }
+
+            var chrResult = await service.GetCharacteristicsAsync();
+            if (chrResult.Status != GattCommunicationStatus.Success)
+            {
+                throw new ButtplugDeviceException(_bpLogger,
+                    $"Cannot connect to characteristics for {service.Uuid} of {_bleDevice.Name}.");
+            }
+
+            var chrs = chrResult.Characteristics;
+
+            foreach (var c in chrs)
+            {
+                if (c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read) ||
+                    c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify) ||
+                    c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
+                {
+                    if (_indexedChars.ContainsKey(Endpoints.Rx))
+                    {
+                        throw new ButtplugDeviceException(_bpLogger,
+                            $"Too many possible rx characteristics on service {service.Uuid} of {_bleDevice.Name}.");
+                    }
+
+                    _indexedChars[Endpoints.Rx] = c;
+                }
+                else if (c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse) ||
+                         c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write))
+                {
+                    if (_indexedChars.ContainsKey(Endpoints.Tx))
+                    {
+                        throw new ButtplugDeviceException(_bpLogger,
+                            $"Too many possible tx characteristics on service {service.Uuid} of {_bleDevice.Name}.");
+                    }
+
+                    _indexedChars[Endpoints.Tx] = c;
+                }
+            }
         }
 
         public async Task SubscribeToUpdatesAsync()
         {
-            await SubscribeToUpdatesAsync(_rxChar).ConfigureAwait(false);
+            await SubscribeToUpdatesAsync(_indexedChars[Endpoints.Rx]).ConfigureAwait(false);
         }
 
-        public async Task SubscribeToUpdatesAsync(uint aIndex)
+        public async Task SubscribeToUpdatesAsync(string aChrName)
         {
-            if (_indexedChars == null)
+            if (!_indexedChars.ContainsKey(aChrName))
             {
-                _bpLogger.Error("SubscribeToUpdates using indexed characteristics called with no indexed characteristics available");
-                return;
+                throw new ButtplugDeviceException(_bpLogger, $"SubscribeToUpdates using indexed characteristics called with invalid index {aChrName} on {_bleDevice.Name}.");
             }
 
-            if (!_indexedChars.ContainsKey(aIndex))
-            {
-                _bpLogger.Error("SubscribeToUpdates using indexed characteristics called with invalid index");
-                return;
-            }
-
-            await SubscribeToUpdatesAsync(_indexedChars[aIndex]).ConfigureAwait(false);
+            await SubscribeToUpdatesAsync(_indexedChars[aChrName]).ConfigureAwait(false);
         }
 
         private async Task SubscribeToUpdatesAsync(GattCharacteristic aCharacteristic)
         {
-            if (aCharacteristic == null)
-            {
-                _bpLogger.Error("Null characteristic passed to SubscribeToUpdates");
-                return;
-            }
+            ButtplugUtils.ArgumentNotNull(aCharacteristic, nameof(aCharacteristic));
 
             if (!aCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify) &&
                 !aCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
             {
-                _bpLogger.Error($"Cannot subscribe to BLE updates from {Name}: No Notify characteristic found.");
-                return;
+                throw new ButtplugDeviceException(_bpLogger, $"Cannot subscribe to BLE updates from {Name}: No Notify characteristic found.");
             }
 
             if (aCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
@@ -155,7 +240,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     GattClientCharacteristicConfigurationDescriptorValue.Notify);
                 if (status != GattCommunicationStatus.Success)
                 {
-                    _bpLogger.Error($"Cannot subscribe to BLE notify updates from {Name}: Failed Request {status}");
+                    throw new ButtplugDeviceException(_bpLogger, $"Cannot subscribe to BLE notify updates from {Name}: Failed Request {status}");
                 }
             }
 
@@ -165,7 +250,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     GattClientCharacteristicConfigurationDescriptorValue.Indicate);
                 if (status != GattCommunicationStatus.Success)
                 {
-                    _bpLogger.Error($"Cannot subscribe to BLE indicate updates from {Name}: Failed Request {status}");
+                    throw new ButtplugDeviceException(_bpLogger, $"Cannot subscribe to BLE indicate updates from {Name}: Failed Request {status}");
                 }
             }
 
@@ -184,38 +269,28 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         private void BluetoothNotifyReceivedHandler(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
             CryptographicBuffer.CopyToByteArray(args.CharacteristicValue, out var bytes);
-            BluetoothNotifyReceived?.Invoke(this, new BluetoothNotifyEventArgs(bytes));
+            DataReceived?.Invoke(this, new ButtplugDeviceDataEventArgs("rx", bytes));
         }
 
         public async Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
-            if (_txChar == null)
-            {
-                throw new ButtplugDeviceException(_bpLogger, "WriteValue using txChar called with no txChar available", aMsgId);
-            }
-
-            return await WriteValueAsync(aMsgId, _txChar, aValue, aWriteWithResponse, aToken).ConfigureAwait(false);
+            return await WriteValueAsync(aMsgId, Endpoints.Tx, aValue, aWriteWithResponse, aToken).ConfigureAwait(false);
         }
 
         [ItemNotNull]
         public async Task<ButtplugMessage> WriteValueAsync(uint aMsgId,
-            uint aIndex,
+            string aChrName,
             byte[] aValue,
             bool aWriteWithResponse,
             CancellationToken aToken)
         {
-            if (_indexedChars == null)
-            {
-                throw new ButtplugDeviceException(_bpLogger, "WriteValue using indexed characteristics called with no indexed characteristics available", aMsgId);
-            }
-
-            if (!_indexedChars.ContainsKey(aIndex))
+            if (!_indexedChars.ContainsKey(aChrName))
             {
                 throw new ButtplugDeviceException(_bpLogger,
-                    "WriteValue using indexed characteristics called with invalid index", aMsgId);
+                    $"WriteValue using indexed characteristics called with invalid index {aChrName} on {Name}", aMsgId);
             }
 
-            return await WriteValueAsync(aMsgId, _indexedChars[aIndex], aValue, aWriteWithResponse, aToken).ConfigureAwait(false);
+            return await WriteValueAsync(aMsgId, _indexedChars[aChrName], aValue, aWriteWithResponse, aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> WriteValueAsync(uint aMsgId,
@@ -264,30 +339,18 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         public async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken)
         {
-            if (_rxChar == null)
-            {
-                throw new ButtplugDeviceException(_bpLogger,
-                    "ReadValue using rxChar called with no rxChar available", aMsgId);
-            }
-
-            return await ReadValueAsync(aMsgId, _rxChar, aToken).ConfigureAwait(false);
+            return await ReadValueAsync(aMsgId, Endpoints.Rx, aToken).ConfigureAwait(false);
         }
 
-        public async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, uint aIndex, CancellationToken aToken)
+        public async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, string aChrName, CancellationToken aToken)
         {
-            if (_indexedChars == null)
-            {
-                throw new ButtplugDeviceException(_bpLogger,
-                    "ReadValue using indexed characteristics called with no indexed characteristics available", aMsgId);
-            }
-
-            if (!_indexedChars.ContainsKey(aIndex))
+            if (!_indexedChars.ContainsKey(aChrName))
             {
                 throw new ButtplugDeviceException(_bpLogger,
                     "ReadValue using indexed characteristics called with invalid index", aMsgId);
             }
 
-            return await ReadValueAsync(aMsgId, _indexedChars[aIndex], aToken).ConfigureAwait(false);
+            return await ReadValueAsync(aMsgId, _indexedChars[aChrName], aToken).ConfigureAwait(false);
         }
 
         private async Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, GattCharacteristic aChar, CancellationToken aToken)
@@ -304,8 +367,6 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         public void Disconnect()
         {
             DeviceRemoved?.Invoke(this, new EventArgs());
-            _txChar = null;
-            _rxChar = null;
             _indexedChars.Clear();
 
             _bleDevice.Dispose();

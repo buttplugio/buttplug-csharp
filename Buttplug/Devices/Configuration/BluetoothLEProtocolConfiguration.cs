@@ -6,12 +6,13 @@ namespace Buttplug.Devices.Configuration
 {
     public class BluetoothLEProtocolConfiguration : IProtocolConfiguration
     {
-        public readonly List<string> Names = new List<string>();
-        public readonly List<Guid> Services = new List<Guid>();
+        public readonly List<string> Names;
+        public readonly List<Guid> Services;
+
         /// <summary>
         /// Dictionary of service to characteristic name/Guid dictionary.
         /// </summary>
-        public readonly Dictionary<Guid, Dictionary<string, Guid>> Characteristics = new Dictionary<Guid, Dictionary<string, Guid>>();
+        public readonly Dictionary<Guid, Dictionary<string, Guid>> Characteristics;
 
         public BluetoothLEProtocolConfiguration(IEnumerable<string> aNames,
             IEnumerable<Guid> aServices = null,
@@ -19,15 +20,12 @@ namespace Buttplug.Devices.Configuration
         {
             Names = aNames.ToList();
 
-            if (aServices != null)
-            {
-                Services = aServices.ToList();
-            }
+            Services = aServices != null ? aServices.ToList() : new List<Guid>();
 
             // TODO Fail on similarly named characteristics
 
             // TODO Fail on devices with multiple services without characteristic lists
-            Characteristics = aCharacteristics;
+            Characteristics = aCharacteristics ?? new Dictionary<Guid, Dictionary<string, Guid>>();
         }
 
         internal BluetoothLEProtocolConfiguration(BluetoothLEIdentifier aId, Dictionary<Guid, Dictionary<string, Guid>> aConfig)
