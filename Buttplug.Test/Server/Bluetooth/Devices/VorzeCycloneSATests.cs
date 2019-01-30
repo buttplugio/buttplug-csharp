@@ -20,7 +20,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     {
         private string _deviceName = "CycSA";
         private byte _commandPrefix = 0x01;
-        private VorzeSA.CommandType _commandType = VorzeSA.CommandType.Rotate;
+        private VorzeSAProtocol.CommandType _commandType = VorzeSAProtocol.CommandType.Rotate;
 
         [Test]
         public async Task TestAllowedMessages()

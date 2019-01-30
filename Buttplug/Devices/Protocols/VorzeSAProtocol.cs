@@ -1,44 +1,19 @@
-﻿// <copyright file="VorzeSA.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="VorzeSAProtocol.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class VorzeSABluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-        }
-
-        public Guid[] Services { get; } = { new Guid("40ee1111-63ec-4b7f-8ce7-712efd55b90e") };
-
-        public string[] Names { get; } = { "CycSA", "UFOSA", "Bach smart" };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            { (uint)Chrs.Tx, new Guid("40ee2222-63ec-4b7f-8ce7-712efd55b90e") },
-        };
-
-        public string[] NamePrefixes { get; } = { };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new VorzeSA(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class VorzeSA : ButtplugBluetoothDevice
+    internal class VorzeSAProtocol : ButtplugDeviceProtocol
     {
         private bool _clockwise = true;
         private uint _speed;
@@ -49,6 +24,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             UFO = 2,
             Bach = 6,
         }
+
         public enum CommandType
         {
             Rotate = 1,
@@ -58,13 +34,11 @@ namespace Buttplug.Server.Bluetooth.Devices
         private DeviceType _deviceType = DeviceType.CycloneOrUnknown;
         private CommandType _commandType = CommandType.Rotate;
 
-        public VorzeSA(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface,
-                       IBluetoothDeviceInfo aInfo)
+        public VorzeSAProtocol(IButtplugLogManager aLogManager,
+                       IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    "Vorze SA Unknown",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             switch (aInterface.Name)
             {
@@ -121,7 +95,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValueAsync(aMsg.Id,
-                (uint)VorzeSABluetoothInfo.Chrs.Tx,
+                Endpoints.Tx,
                 new byte[] { (byte)_deviceType, (byte)_commandType, 0 }, false, aToken).ConfigureAwait(false);
         }
 
@@ -148,7 +122,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
             return await Interface.WriteValueAsync(aMsg.Id,
-                (uint)VorzeSABluetoothInfo.Chrs.Tx,
+                Endpoints.Tx,
                 new byte[] { (byte)_deviceType, (byte)_commandType, rawSpeed }, false, aToken).ConfigureAwait(false);
         }
 
@@ -182,7 +156,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValueAsync(aMsg.Id,
-                (uint)VorzeSABluetoothInfo.Chrs.Tx,
+                Endpoints.Tx,
                 new[] { (byte)_deviceType, (byte)_commandType, (byte)_speed }, false, aToken).ConfigureAwait(false);
         }
     }

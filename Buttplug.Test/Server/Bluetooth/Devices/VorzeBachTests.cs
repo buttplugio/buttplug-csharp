@@ -20,7 +20,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     {
         private string _deviceName = "Bach smart";
         private byte _commandPrefix = 0x06;
-        private VorzeSA.CommandType _commandType = VorzeSA.CommandType.Vibrate;
+        private VorzeSAProtocol.CommandType _commandType = VorzeSAProtocol.CommandType.Vibrate;
 
         [Test]
         public async Task TestAllowedMessages()
