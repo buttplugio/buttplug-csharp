@@ -11,6 +11,8 @@ namespace Buttplug.Devices
 
         event EventHandler DeviceRemoved;
 
+        string Name { get; }
+
         string Address { get; }
 
         bool Connected { get; }
