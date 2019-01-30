@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Buttplug.Core;
 using Buttplug.Devices.Protocols;
+using Buttplug.Server.Bluetooth.Devices;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -37,6 +38,7 @@ namespace Buttplug.Devices.Configuration
         protected DeviceConfigurationManager()
         {
             AddProtocol("lovense", typeof(LovenseProtocol));
+            AddProtocol("kiiroo-v2", typeof(FleshlightLaunch));
             // todo We need a way to be able to turn off xinput, in case the protocol is blacklisted?
             AddProtocol("xinput", typeof(XInputProtocol));
         }
