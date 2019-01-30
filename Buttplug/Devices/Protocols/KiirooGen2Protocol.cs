@@ -1,4 +1,4 @@
-﻿// <copyright file="FleshlightLaunch.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="KiirooGen2Protocol.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -17,7 +17,10 @@ using JetBrains.Annotations;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class FleshlightLaunch : ButtplugDeviceProtocol
+    /// <summary>
+    ///  Protocol for the fleshlight launch and Onyx 2.
+    /// </summary>
+    internal class KiirooGen2Protocol : ButtplugDeviceProtocol
     {
         private static Dictionary<string, string> _brandNames = new Dictionary<string, string>
         {
@@ -27,7 +30,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private double _lastPosition;
 
-        public FleshlightLaunch([NotNull] IButtplugLogManager aLogManager,
+        public KiirooGen2Protocol([NotNull] IButtplugLogManager aLogManager,
             IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                 "Kiiroo V2 Protocol Device",
