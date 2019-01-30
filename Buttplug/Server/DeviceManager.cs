@@ -97,7 +97,7 @@ namespace Buttplug.Server
             var duplicates = from x in _devices
                              where x.Value.Identifier == aEvent.Device.Identifier
                              select x;
-            if (duplicates.Any() && (duplicates.Count() > 1 || duplicates.First().Value.IsConnected))
+            if (duplicates.Any() && (duplicates.Count() > 1 || duplicates.First().Value.Connected))
             {
                 _bpLogger.Debug($"Already have device {aEvent.Device.Name} in Devices list");
                 return;
@@ -206,7 +206,7 @@ namespace Buttplug.Server
                     var errorMsg = string.Empty;
                     foreach (var d in _devices.ToList())
                     {
-                        if (!d.Value.IsConnected)
+                        if (!d.Value.Connected)
                         {
                             continue;
                         }
@@ -229,7 +229,7 @@ namespace Buttplug.Server
                     throw new ButtplugDeviceException(_bpLogger, errorMsg, aMsg.Id);
                 case RequestDeviceList _:
                     _bpLogger.Debug("Got RequestDeviceList Message");
-                    var msgDevices = _devices.Where(aDevice => aDevice.Value.IsConnected)
+                    var msgDevices = _devices.Where(aDevice => aDevice.Value.Connected)
                         .Select(aDevice => new DeviceMessageInfo(
                             aDevice.Key,
                             aDevice.Value.Name,
