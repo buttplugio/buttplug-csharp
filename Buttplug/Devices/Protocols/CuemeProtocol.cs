@@ -11,38 +11,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
-using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class CuemeBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-        }
-
-        public Guid[] Services { get; } = { new Guid("0000fff0-0000-1000-8000-00805f9b34fb") };
-
-        public string[] NamePrefixes { get; } = { "FUNCODE_" };
-
-        public string[] Names { get; } = { };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            { (uint)Chrs.Tx, new Guid("0000fff1-0000-1000-8000-00805f9b34fb") },
-        };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Cueme(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class Cueme : ButtplugBluetoothDevice
+    internal class CuemeProtocol : ButtplugDeviceProtocol
     {
         internal struct CuemeType
         {
@@ -68,13 +43,11 @@ namespace Buttplug.Server.Bluetooth.Devices
         private readonly System.Timers.Timer _updateValueTimer = new System.Timers.Timer();
         private CancellationTokenSource _stopUpdateCommandSource = new CancellationTokenSource();
 
-        public Cueme(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface,
-                       IBluetoothDeviceInfo aInfo)
+        public CuemeProtocol(IButtplugLogManager aLogManager,
+                             IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    "Cueme Unknown",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             var bits = aInterface.Name.Split('_');
             if (bits.Length == 3 && uint.TryParse(bits[2], out var typeNum) && DevInfos.ContainsKey(typeNum))
@@ -111,11 +84,6 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private async void CuemeUpdateHandler(object aEvent, ElapsedEventArgs aArgs)
         {
-            if (aArgs == null && !_updateValueTimer.Enabled)
-            {
-                _updateValueTimer.Enabled = true;
-            }
-
             if (_vibratorSpeeds.SequenceEqual(NullSpeed))
             {
                 _updateValueTimer.Enabled = false;
@@ -130,7 +98,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             // We'll have to use an internal token here since this is timer triggered.
             if (await Interface.WriteValueAsync(ButtplugConsts.DefaultMsgId,
-                (uint)CuemeBluetoothInfo.Chrs.Tx, new[] { data },
+                Endpoints.Tx, new[] { data },
                 false, _stopUpdateCommandSource.Token).ConfigureAwait(false) is Error)
             {
                 BpLogger.Error($"Cannot send update to Cueme {_devInfo.Name}, device may stick on a single vibrator.");
@@ -206,6 +174,11 @@ namespace Buttplug.Server.Bluetooth.Devices
             _vibratorSpeeds = newVibratorSpeeds;
 
             CuemeUpdateHandler(null, null);
+
+            if (!_updateValueTimer.Enabled)
+            {
+                _updateValueTimer.Enabled = true;
+            }
 
             return Task.FromResult(new Ok(aMsg.Id) as ButtplugMessage);
         }
