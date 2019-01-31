@@ -37,8 +37,20 @@ namespace Buttplug.Devices.Configuration
 
         protected DeviceConfigurationManager()
         {
+            // Names in this list must match the device config file keys.
             AddProtocol("lovense", typeof(LovenseProtocol));
-            AddProtocol("kiiroo-v2", typeof(FleshlightLaunch));
+            AddProtocol("kiiroo-v2", typeof(KiirooGen2Protocol));
+            AddProtocol("cueme", typeof(CuemeProtocol));
+            AddProtocol("kiiroo-v1", typeof(KiirooGen1Protocol));
+            AddProtocol("kiiroo-v2-vibrator", typeof(KiirooGen2VibeProtocol));
+            AddProtocol("libo", typeof(LiBoProtocol));
+            AddProtocol("magic-motion", typeof(MagicMotionProtocol));
+            AddProtocol("mysteryvibe", typeof(MysteryVibeProtocol));
+            AddProtocol("picobong", typeof(PicobongProtocol));
+            AddProtocol("vibratissimo", typeof(VibratissimoProtocol));
+            AddProtocol("vorze-sa", typeof(VorzeSAProtocol));
+            AddProtocol("wevibe", typeof(WeVibeProtocol));
+            AddProtocol("youcups", typeof(YoucupsProtocol));
             // todo We need a way to be able to turn off xinput, in case the protocol is blacklisted?
             AddProtocol("xinput", typeof(XInputProtocol));
         }
