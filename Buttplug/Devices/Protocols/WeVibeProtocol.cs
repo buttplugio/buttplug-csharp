@@ -11,57 +11,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class WeVibeBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
-        public Guid[] Services { get; } = { new Guid("f000bb03-0451-4000-b000-000000000000") };
-
-        public string[] NamePrefixes { get; } = { };
-
-        public string[] Names { get; } =
-        {
-            "Cougar",
-            "4 Plus",
-            "4plus",
-            "Bloom",
-            "classic",
-            "Classic",
-            "Ditto",
-            "Gala",
-            "Jive",
-            "Nova",
-            "NOVAV2",
-            "Pivot",
-            "Rave",
-            "Sync",
-            "Verge",
-            "Wish",
-        };
-
-        // WeVibe causes the characteristic detector to misidentify characteristics. Do not remove these.
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            // tx characteristic
-            { (uint)Chrs.Tx, new Guid("f000c000-0451-4000-b000-000000000000") },
-            { (uint)Chrs.Rx, new Guid("f000b000-0451-4000-b000-000000000000") },
-        };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new WeVibe(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class WeVibe : ButtplugBluetoothDevice
+    internal class WeVibeProtocol : ButtplugDeviceProtocol
     {
         private static readonly string[] DualVibes =
         {
@@ -79,13 +33,11 @@ namespace Buttplug.Server.Bluetooth.Devices
         private readonly uint _vibratorCount = 1;
         private readonly double[] _vibratorSpeed = { 0, 0 };
 
-        public WeVibe(IButtplugLogManager aLogManager,
-                      IBluetoothDeviceInterface aInterface,
-                      IBluetoothDeviceInfo aInfo)
+        public WeVibeProtocol(IButtplugLogManager aLogManager,
+                              IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    $"WeVibe {aInterface.Name}",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             if (DualVibes.Contains(aInterface.Name))
             {
@@ -145,7 +97,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                 data[5] = 0x00;
             }
 
-            return await Interface.WriteValueAsync(aMsg.Id, (uint)WeVibeBluetoothInfo.Chrs.Tx, data, false, aToken).ConfigureAwait(false);
+            return await Interface.WriteValueAsync(aMsg.Id, Endpoints.Tx, data, false, aToken).ConfigureAwait(false);
         }
     }
 }
