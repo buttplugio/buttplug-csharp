@@ -1,4 +1,4 @@
-// <copyright file="MagicMotion.cs" company="Nonpolynomial Labs LLC">
+// <copyright file="MagicMotionProtocol.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -11,55 +11,15 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class MagicMotionBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-        }
-
-        /*
-         * ToDo: Rx on other service
-         * Service UUID: 6f468792-f91f-11e3-a847-b2227cce2b54
-         * Char UUID: 6f468bfc-f91f-11e3-a847-b2227cce2b54
-         */
-
-        public Guid[] Services { get; } = { new Guid("78667579-7b48-43db-b8c5-7928a6b0a335") };
-
-        public string[] NamePrefixes { get; } = { };
-
-        public string[] Names { get; } =
-        {
-            "Smart Mini Vibe",
-            "Flamingo",
-            "Eidolon",
-            "Smart Bean", // Kegel Twins/Master
-            "Magic Cell", // Dante/Candy
-            "Magic Wand",
-            "Krush", // Kegel Master re-branded for LoveLife
-        };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            // tx characteristic
-            { (uint)Chrs.Tx, new Guid("78667579-a914-49a4-8333-aa3c0cd8fedc") },
-        };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new MagicMotion(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class MagicMotion : ButtplugBluetoothDevice
+    internal class MagicMotionProtocol : ButtplugDeviceProtocol
     {
         private readonly double[] _vibratorSpeeds = { 0, 0 };
 
-        internal enum MagicMotionProtocol
+        internal enum MagicMotionProtocolType
         {
             Protocol1,
             Protocol2,
@@ -71,7 +31,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             public string Brand;
             public string Name;
             public uint VibeCount;
-            public MagicMotionProtocol Protocol;
+            public MagicMotionProtocolType Protocol;
             public byte MaxSpeed;
         }
 
@@ -85,7 +45,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         Brand = "MagicMotion",
                         Name = "Smart Mini Vibe",
                         VibeCount = 1,
-                        Protocol = MagicMotionProtocol.Protocol1,
+                        Protocol = MagicMotionProtocolType.Protocol1,
                         MaxSpeed = 0x64,
                     }
                 },
@@ -96,7 +56,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         Brand = "MagicMotion",
                         Name = "Flamingo",
                         VibeCount = 1,
-                        Protocol = MagicMotionProtocol.Protocol1,
+                        Protocol = MagicMotionProtocolType.Protocol1,
                         MaxSpeed = 0x64,
                     }
                 },
@@ -108,7 +68,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         Brand = "MagicMotion",
                         Name = "Dante/Candy",
                         VibeCount = 1,
-                        Protocol = MagicMotionProtocol.Protocol1,
+                        Protocol = MagicMotionProtocolType.Protocol1,
                         MaxSpeed = 0x64,
                     }
                 },
@@ -119,7 +79,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         Brand = "MagicMotion",
                         Name = "Eidolon",
                         VibeCount = 2,
-                        Protocol = MagicMotionProtocol.Protocol2,
+                        Protocol = MagicMotionProtocolType.Protocol2,
                         MaxSpeed = 0x64,
                     }
                 },
@@ -131,7 +91,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         Brand = "MagicMotion",
                         Name = "Kegel",
                         VibeCount = 1,
-                        Protocol = MagicMotionProtocol.Protocol1,
+                        Protocol = MagicMotionProtocolType.Protocol1,
                         MaxSpeed = 0x64,
                     }
                 },
@@ -143,7 +103,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         Brand = "MagicMotion",
                         Name = "Wand",
                         VibeCount = 1,
-                        Protocol = MagicMotionProtocol.Protocol1,
+                        Protocol = MagicMotionProtocolType.Protocol1,
                         MaxSpeed = 0x64,
                     }
                 },
@@ -155,7 +115,7 @@ namespace Buttplug.Server.Bluetooth.Devices
                         Brand = "LoveLife",
                         Name = "Krush",
                         VibeCount = 1,
-                        Protocol = MagicMotionProtocol.Protocol3,
+                        Protocol = MagicMotionProtocolType.Protocol3,
                         MaxSpeed = 0x4d,
                     }
                 },
@@ -163,13 +123,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private readonly MagicMotionType _devInfo;
 
-        public MagicMotion(IButtplugLogManager aLogManager,
-                           IBluetoothDeviceInterface aInterface,
-                           IBluetoothDeviceInfo aInfo)
+        public MagicMotionProtocol(IButtplugLogManager aLogManager,
+                           IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    $"Unknown MagicMotion Device ({aInterface.Name})",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             if (DevInfos.ContainsKey(aInterface.Name))
             {
@@ -224,12 +182,12 @@ namespace Buttplug.Server.Bluetooth.Devices
             byte[] data;
             switch (_devInfo.Protocol)
             {
-            case MagicMotionProtocol.Protocol1:
+            case MagicMotionProtocolType.Protocol1:
                 data = new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 };
                 data[9] = Convert.ToByte(_vibratorSpeeds[0] * _devInfo.MaxSpeed);
                 break;
 
-            case MagicMotionProtocol.Protocol2:
+            case MagicMotionProtocolType.Protocol2:
                 data = new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00, 0x04, 0x08, 0x00, 0x64, 0x01 };
                 data[9] = Convert.ToByte(_vibratorSpeeds[0] * _devInfo.MaxSpeed);
 
@@ -240,7 +198,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
                 break;
 
-            case MagicMotionProtocol.Protocol3:
+            case MagicMotionProtocolType.Protocol3:
                 data = new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x46, 0x46, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 };
                 data[9] = Convert.ToByte(_vibratorSpeeds[0] * _devInfo.MaxSpeed);
                 break;
@@ -252,7 +210,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             }
 
             return await Interface.WriteValueAsync(aMsg.Id,
-                (uint)MagicMotionBluetoothInfo.Chrs.Tx,
+                Endpoints.Tx,
                 data, false, aToken).ConfigureAwait(false);
         }
     }
