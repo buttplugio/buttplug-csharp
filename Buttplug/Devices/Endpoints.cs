@@ -21,5 +21,11 @@
         /// Generic name for devices that have a firmware loading endpoint.
         /// </summary>
         public static string Firmware = "firmware";
+
+        public static string TxMode = "txmode";
+
+        public static string TxVibrate = "txvibrate";
+
+        public static string TxShock = "txshock";
     }
 }

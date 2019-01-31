@@ -13,40 +13,11 @@ using System.Timers;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class MysteryVibeBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            ModeControl = 0,
-            MotorControl = 1,
-        }
-
-        public Guid[] Services { get; } = { new Guid("f0006900-110c-478b-b74b-6f403b364a9c") };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            { (uint)Chrs.ModeControl, new Guid("f0006901-110c-478B-B74B-6F403B364A9C") },
-            { (uint)Chrs.MotorControl, new Guid("f0006903-110c-478B-B74B-6F403B364A9C") },
-        };
-
-        public string[] NamePrefixes { get; } = { };
-
-        public string[] Names { get; } =
-        {
-            "MV Crescendo",
-        };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new MysteryVibe(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class MysteryVibe : ButtplugBluetoothDevice
+    internal class MysteryVibeProtocol : ButtplugDeviceProtocol
     {
         internal static readonly byte[] NullSpeed = { 0, 0, 0, 0, 0, 0 };
 
@@ -60,13 +31,11 @@ namespace Buttplug.Server.Bluetooth.Devices
         private byte[] _vibratorSpeeds = NullSpeed;
         private CancellationTokenSource _stopUpdateCommandSource = new CancellationTokenSource();
 
-        public MysteryVibe(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface,
-                       IBluetoothDeviceInfo aInfo)
+        public MysteryVibeProtocol(IButtplugLogManager aLogManager,
+                       IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    "MysteryVibe Crescendo",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             // Create a new timer that wont fire any events just yet
             _updateValueTimer.Interval = DelayTimeMS;
@@ -86,7 +55,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             // Kick Vibrator into motor control mode, just copying what the app sends when you go to
             // create pattern mode.
             return await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
-                (uint)MysteryVibeBluetoothInfo.Chrs.ModeControl,
+                Endpoints.TxMode,
                 new byte[] { 0x43, 0x02, 0x00 }, true, aToken).ConfigureAwait(false);
         }
 
@@ -109,7 +78,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             // We'll have to use an internal token here since this is timer triggered.
             if (await Interface.WriteValueAsync(ButtplugConsts.DefaultMsgId,
-                (uint)MysteryVibeBluetoothInfo.Chrs.MotorControl,
+                Endpoints.TxVibrate,
                 _vibratorSpeeds, false, _stopUpdateCommandSource.Token).ConfigureAwait(false) is Error)
             {
                 BpLogger.Error($"Cannot send update to {Name}, device may stop moving.");

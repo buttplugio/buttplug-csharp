@@ -71,7 +71,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             var data = new[] { Convert.ToByte(mode) };
 
             return await Interface.WriteValueAsync(aMsg.Id,
-                "txvibrate", // String literal matches value in the device config file.
+                Endpoints.TxVibrate,
                 data, false, aToken).ConfigureAwait(false);
         }
     }
