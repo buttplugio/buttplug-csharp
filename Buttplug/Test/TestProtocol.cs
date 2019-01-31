@@ -19,13 +19,14 @@ using Buttplug.Devices;
 namespace Buttplug.Test
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
-    public class TestDevice : ButtplugDevice
+    public class TestProtocol : ButtplugDeviceProtocol
     {
         public double V1;
         public double V2;
 
-        public TestDevice(IButtplugLogManager aLogManager, string aName, string aIdentifier = null)
-            : base(aLogManager, aName, aIdentifier ?? aName)
+        public TestProtocol(IButtplugLogManager aLogManager,
+            IButtplugDeviceImpl aInterface)
+            : base(aLogManager, "Test Device", aInterface)
         {
             AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
             AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 2 });
@@ -81,16 +82,6 @@ namespace Buttplug.Test
             }
 
             return HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex, speeds, cmdMsg.Id), aToken);
-        }
-
-        public void RemoveDevice()
-        {
-            InvokeDeviceRemoved();
-        }
-
-        public override void Disconnect()
-        {
-            RemoveDevice();
         }
     }
 }

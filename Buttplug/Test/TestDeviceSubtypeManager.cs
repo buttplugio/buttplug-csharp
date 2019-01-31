@@ -9,6 +9,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Buttplug.Core.Logging;
+using Buttplug.Devices;
 using Buttplug.Server;
 using JetBrains.Annotations;
 
@@ -18,7 +19,7 @@ namespace Buttplug.Test
     public class TestDeviceSubtypeManager : DeviceSubtypeManager
     {
         [CanBeNull]
-        public readonly TestDevice Device;
+        public readonly ButtplugDevice Device;
 
         public bool StartScanningCalled { get; private set; }
 
@@ -29,7 +30,7 @@ namespace Buttplug.Test
         {
         }
 
-        public TestDeviceSubtypeManager([NotNull] TestDevice aDevice)
+        public TestDeviceSubtypeManager([NotNull] ButtplugDevice aDevice)
             : base(new ButtplugLogManager())
         {
             Device = aDevice;
@@ -57,7 +58,7 @@ namespace Buttplug.Test
             return StartScanningCalled && !StopScanningCalled;
         }
 
-        public void AddDevice(TestDevice dev)
+        public void AddDevice(ButtplugDevice dev)
         {
             InvokeDeviceAdded(new DeviceAddedEventArgs(dev));
         }
