@@ -1,75 +1,28 @@
-﻿// <copyright file="LiBo.cs" company="Nonpolynomial Labs LLC">
-// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
-// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
-// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+﻿// <copyright file="LiBoProtocol.cs" company="Nonpolynomial Labs LLC">
+//     Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+//     Copyright (c) Nonpolynomial Labs LLC. All rights reserved. Licensed under the BSD 3-Clause
+//     license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class LiBoBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            WriteShock = 0,
-            WriteVibrate,
-            ReadBattery,
-        }
-
-        public Guid[] Services { get; } =
-        {
-            new Guid("00006000-0000-1000-8000-00805f9b34fb"), // Write Service
-
-            // TODO Commenting out battery service until we can handle multiple services.
-
-            // new Guid("00006050-0000-1000-8000-00805f9b34fb"), // Read service (battery)
-        };
-
-        public string[] NamePrefixes { get; } = { };
-
-        public string[] Names { get; } =
-        {
-            "PiPiJing",
-        };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            // tx1 characteristic
-            { (uint)Chrs.WriteShock, new Guid("00006001-0000-1000-8000-00805f9b34fb") }, // Shock
-
-            // tx2 characteristic
-            { (uint)Chrs.WriteVibrate, new Guid("00006002-0000-1000-8000-00805f9b34fb") }, // VibeMode
-            /*
-            // rx characteristic
-            { (uint)Chrs.ReadBattery,  new Guid("00006051-0000-1000-8000-00805f9b34fb") }, // Read for battery level
-            */
-        };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new LiBo(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class LiBo : ButtplugBluetoothDevice
+    internal class LiBoProtocol : ButtplugDeviceProtocol
     {
         private readonly uint _vibratorCount = 1;
         private readonly double[] _vibratorSpeed = { 0 };
 
-        public LiBo(IButtplugLogManager aLogManager,
-                      IBluetoothDeviceInterface aInterface,
-                      IBluetoothDeviceInfo aInfo)
+        public LiBoProtocol(IButtplugLogManager aLogManager,
+                      IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    $"LiBo ({aInterface.Name})",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
             AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount });
@@ -118,7 +71,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             var data = new[] { Convert.ToByte(mode) };
 
             return await Interface.WriteValueAsync(aMsg.Id,
-                (uint)LiBoBluetoothInfo.Chrs.WriteVibrate,
+                "txvibrate", // String literal matches value in the device config file.
                 data, false, aToken).ConfigureAwait(false);
         }
     }
