@@ -1,4 +1,4 @@
-﻿// <copyright file="Picobong.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="PicobongProtocol.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -10,50 +10,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class PicobongBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            Rx,
-        }
-
-        public Guid[] Services { get; } = { new Guid("0000fff0-0000-1000-8000-00805f9b34fb") };
-
-        public string[] NamePrefixes { get; } = { };
-
-        public string[] Names { get; } =
-        {
-            "Blow hole",
-            "Picobong Male Toy",
-            "Diver",
-            "Picobong Egg",
-            "Life guard",
-            "Picobong Ring",
-            "Surfer",
-            "Picobong Butt Plug",
-            "Egg driver",
-            "Surfer_plug",
-        };
-
-        // WeVibe causes the characteristic detector to misidentify characteristics. Do not remove these.
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            // tx characteristic
-            { (uint)Chrs.Tx, new Guid("0000fff1-0000-1000-8000-00805f9b34fb") },
-        };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Picobong(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class Picobong : ButtplugBluetoothDevice
+    internal class PicobongProtocol : ButtplugDeviceProtocol
     {
         private static readonly Dictionary<string, string> NameMap = new Dictionary<string, string>()
         {
@@ -71,13 +32,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private double _vibratorSpeed = 0;
 
-        public Picobong(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface,
-            IBluetoothDeviceInfo aInfo)
+        public PicobongProtocol(IButtplugLogManager aLogManager,
+            IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                 $"Picobong {aInterface.Name}",
-                aInterface,
-                aInfo)
+                aInterface)
         {
             if (NameMap.ContainsKey(Name))
             {
@@ -126,7 +85,7 @@ namespace Buttplug.Server.Bluetooth.Devices
 
             var data = new byte[] { 0x01, speedInt > 0 ? (byte)0x01 : (byte)0xff, Convert.ToByte(speedInt) };
 
-            return await Interface.WriteValueAsync(aMsg.Id, (uint)PicobongBluetoothInfo.Chrs.Tx, data, false, aToken).ConfigureAwait(false);
+            return await Interface.WriteValueAsync(aMsg.Id, Endpoints.Tx, data, false, aToken).ConfigureAwait(false);
         }
     }
 }
