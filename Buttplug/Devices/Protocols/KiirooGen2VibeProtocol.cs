@@ -1,4 +1,4 @@
-﻿// <copyright file="KiirooGen2Vibe.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="KiirooGen2VibeProtocol.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -10,55 +10,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
     // ReSharper disable once InconsistentNaming
-    internal class KiirooGen2VibeBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-            RxTouch = 1,
-            RxAccel = 2,
-        }
-
-        public static string[] NamesInfo =
-        {
-            "Pearl2",
-            "Fuse",
-            "Virtual Blowbot",
-            "Titan",
-        };
-
-        public string[] Names { get; } = NamesInfo;
-
-        public string[] NamePrefixes { get; } = { };
-
-        public Guid[] Services { get; } = { new Guid("88f82580-0000-01e6-aace-0002a5d5c51b") };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            // tx
-            { (uint)Chrs.Tx, new Guid("88f82581-0000-01e6-aace-0002a5d5c51b") },
-
-            // rx (touch: 3 zone bitmask)
-            { (uint)Chrs.RxTouch, new Guid("88f82582-0000-01e6-aace-0002a5d5c51b") },
-
-            // rx (accelerometer?)
-            { (uint)Chrs.RxAccel, new Guid("88f82584-0000-01e6-aace-0002a5d5c51b") },
-        };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new KiirooGen2Vibe(aLogManager, aInterface, this);
-        }
-    }
-
-    // ReSharper disable once InconsistentNaming
-    internal class KiirooGen2Vibe : ButtplugBluetoothDevice
+    internal class KiirooGen2VibeProtocol : ButtplugDeviceProtocol
     {
         private readonly double[] _vibratorSpeeds = { 0, 0, 0 };
 
@@ -112,13 +70,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private KiirooGen2VibeType _devInfo;
 
-        public KiirooGen2Vibe([NotNull] IButtplugLogManager aLogManager,
-                      [NotNull] IBluetoothDeviceInterface aInterface,
-                      [NotNull] IBluetoothDeviceInfo aInfo)
+        public KiirooGen2VibeProtocol([NotNull] IButtplugLogManager aLogManager,
+                      [NotNull] IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    "Kiiroo Unknown",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             if (DevInfos.ContainsKey(aInterface.Name))
             {
@@ -179,7 +135,7 @@ namespace Buttplug.Server.Bluetooth.Devices
             };
 
             return await Interface.WriteValueAsync(aMsg.Id,
-                (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx,
+                Endpoints.Tx,
                 data, false, aToken).ConfigureAwait(false);
         }
     }
