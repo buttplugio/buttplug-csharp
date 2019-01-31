@@ -110,7 +110,7 @@ namespace Buttplug.Client.Test
             await _client.StopScanningAsync();
             await WaitForEvent();
         }
-
+        /*
         [Test]
         public async Task TestDeviceMessageRaw()
         {
@@ -153,7 +153,7 @@ namespace Buttplug.Client.Test
             _subtypeMgr.Device.V1.Should().Be(0.0);
             _subtypeMgr.Device.V2.Should().Be(0.5);
         }
-
+        */
         [Test]
         public async Task TestDeviceRemovalEvent()
         {

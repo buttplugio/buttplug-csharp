@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
@@ -22,13 +23,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     internal class LiBoTest
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<LiBoBluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<LiBoBluetoothInfo>();
-            await testUtil.SetupTest("PiPiJing");
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<LiBoProtocol>("PiPiJing");
         }
 
         [Test]
@@ -48,17 +49,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestStopDeviceCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 2 }, (uint)LiBoBluetoothInfo.Chrs.WriteVibrate),
+                    (new byte[] { 2 }, Endpoints.TxVibrate),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
             expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 0 }, (uint)LiBoBluetoothInfo.Chrs.WriteVibrate),
+                    (new byte[] { 0 }, Endpoints.TxVibrate),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -68,9 +69,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestSingleMotorVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 2 }, (uint)LiBoBluetoothInfo.Chrs.WriteVibrate),
+                    (new byte[] { 2 }, Endpoints.TxVibrate),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -80,9 +81,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 2 }, (uint)LiBoBluetoothInfo.Chrs.WriteVibrate),
+                    (new byte[] { 2 }, Endpoints.TxVibrate),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);

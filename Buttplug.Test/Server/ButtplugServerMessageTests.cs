@@ -74,7 +74,7 @@ namespace Buttplug.Server.Test
             }
 
             _server.MessageReceived += ScanningFinishedHandler;
-            _server.SendMessageAsync(new StopScanning());
+            await _server.SendMessageAsync(new StopScanning());
             await finishTask.Task;
 
             // Now we should be able to call StartScanning again.

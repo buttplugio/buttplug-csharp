@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
@@ -24,13 +25,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class YoucupsTests
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<YoucupsBluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<YoucupsBluetoothInfo>();
-            await testUtil.SetupTest("Youcups");
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<YoucupsProtocol>("Youcups");
         }
 
         [Test]
@@ -50,17 +51,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestStopDeviceCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,4?"), (uint)YoucupsBluetoothInfo.Chrs.Tx),
+                    (Encoding.ASCII.GetBytes("$SYS,4?"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
             expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,0?"), (uint)YoucupsBluetoothInfo.Chrs.Tx),
+                    (Encoding.ASCII.GetBytes("$SYS,0?"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -70,9 +71,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestSingleMotorVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,4?"), (uint)YoucupsBluetoothInfo.Chrs.Tx),
+                    (Encoding.ASCII.GetBytes("$SYS,4?"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -82,9 +83,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,4?"), (uint)YoucupsBluetoothInfo.Chrs.Tx),
+                    (Encoding.ASCII.GetBytes("$SYS,4?"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);

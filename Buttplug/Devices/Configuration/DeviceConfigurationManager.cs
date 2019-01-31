@@ -29,11 +29,11 @@ namespace Buttplug.Devices.Configuration
 
         // Types and Configurations are kept in separate dictionaries, as there may be cases where we
         // have a protocol but no matching configuration, or vice versa.
-        private readonly Dictionary<string, Type> _protocolTypes = new Dictionary<string, Type>();
-        private readonly Dictionary<string, List<IProtocolConfiguration>> _protocolConfigs = new Dictionary<string, List<IProtocolConfiguration>>();
+        protected readonly Dictionary<string, Type> _protocolTypes = new Dictionary<string, Type>();
+        protected readonly Dictionary<string, List<IProtocolConfiguration>> _protocolConfigs = new Dictionary<string, List<IProtocolConfiguration>>();
 
-        private readonly List<IProtocolConfiguration> _whiteList = new List<IProtocolConfiguration>();
-        private readonly List<IProtocolConfiguration> _blackList = new List<IProtocolConfiguration>();
+        protected readonly List<IProtocolConfiguration> _whiteList = new List<IProtocolConfiguration>();
+        protected readonly List<IProtocolConfiguration> _blackList = new List<IProtocolConfiguration>();
 
         protected DeviceConfigurationManager()
         {

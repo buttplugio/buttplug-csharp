@@ -17,10 +17,10 @@ namespace Buttplug.Devices
     public class ButtplugDevice : IButtplugDevice
     {
         [NotNull]
-        private readonly IButtplugDeviceProtocol _protocol;
+        protected readonly IButtplugDeviceProtocol _protocol;
 
         [NotNull]
-        private readonly IButtplugDeviceImpl _device;
+        protected readonly IButtplugDeviceImpl _device;
 
         /// <inheritdoc />
         public string Name => _protocol.Name;

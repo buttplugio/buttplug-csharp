@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
@@ -23,13 +24,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class VibratissimoTests
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<VibratissimoBluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<VibratissimoBluetoothInfo>();
-            await testUtil.SetupTest("Vibratissimo");
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<VibratissimoProtocol>("Vibratissimo");
         }
 
         [Test]
@@ -48,19 +49,19 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public async Task TestSingleMotorVibrateCmd()
         {
-            var expected = new List<(byte[], uint)>()
+            var expected = new List<(byte[], string)>()
             {
-                (new byte[] { 0x03, 0xff }, (uint)VibratissimoBluetoothInfo.Chrs.TxMode),
-                (new byte[] { 0x80, 0x00 }, (uint)VibratissimoBluetoothInfo.Chrs.TxSpeed),
+                (new byte[] { 0x03, 0xff }, Endpoints.TxMode),
+                (new byte[] { 0x80, 0x00 }, Endpoints.TxVibrate),
             };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
             await testUtil.TestDeviceMessageNoop(new SingleMotorVibrateCmd(4, 0.5));
 
-            expected = new List<(byte[], uint)>()
+            expected = new List<(byte[], string)>()
             {
-                (new byte[] { 0x03, 0xff }, (uint)VibratissimoBluetoothInfo.Chrs.TxMode),
-                (new byte[] { 0xff, 0x00 }, (uint)VibratissimoBluetoothInfo.Chrs.TxSpeed),
+                (new byte[] { 0x03, 0xff }, Endpoints.TxMode),
+                (new byte[] { 0xff, 0x00 }, Endpoints.TxVibrate),
             };
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 1), expected, false);
         }
@@ -68,18 +69,18 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public async Task TestStopDeviceCmd()
         {
-            var expected = new List<(byte[], uint)>()
+            var expected = new List<(byte[], string)>()
             {
-                (new byte[] { 0x03, 0xff }, (uint)VibratissimoBluetoothInfo.Chrs.TxMode),
-                (new byte[] { 0x80, 0x00 }, (uint)VibratissimoBluetoothInfo.Chrs.TxSpeed),
+                (new byte[] { 0x03, 0xff }, Endpoints.TxMode),
+                (new byte[] { 0x80, 0x00 }, Endpoints.TxVibrate),
             };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
-            expected = new List<(byte[], uint)>()
+            expected = new List<(byte[], string)>()
             {
-                (new byte[] { 0x03, 0xff }, (uint)VibratissimoBluetoothInfo.Chrs.TxMode),
-                (new byte[] { 0x00, 0x00 }, (uint)VibratissimoBluetoothInfo.Chrs.TxSpeed),
+                (new byte[] { 0x03, 0xff }, Endpoints.TxMode),
+                (new byte[] { 0x00, 0x00 }, Endpoints.TxVibrate),
             };
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
         }
@@ -87,10 +88,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public async Task TestVibrateCmd()
         {
-            var expected = new List<(byte[], uint)>()
+            var expected = new List<(byte[], string)>()
             {
-                (new byte[] { 0x03, 0xff }, (uint)VibratissimoBluetoothInfo.Chrs.TxMode),
-                (new byte[] { 0x80, 0x00 }, (uint)VibratissimoBluetoothInfo.Chrs.TxSpeed),
+                (new byte[] { 0x03, 0xff }, Endpoints.TxMode),
+                (new byte[] { 0x80, 0x00 }, Endpoints.TxVibrate),
             };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);

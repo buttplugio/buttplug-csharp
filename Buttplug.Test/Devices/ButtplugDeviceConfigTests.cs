@@ -30,16 +30,16 @@ namespace Buttplug.Test.Devices
         public void TestDeviceConfigMatching()
         {
             DeviceConfigurationManager.LoadBaseConfigurationFromResource();
-            var protocol = DeviceConfigurationManager.Manager.FindProtocol(new BluetoothLEProtocolConfiguration("LVS-Test"));
-            protocol.Name.Should().Be("LovenseProtocol");
+            var factory = DeviceConfigurationManager.Manager.Find(new BluetoothLEProtocolConfiguration("LVS-Test"));
+            factory.Config.Should().Be("LovenseProtocol");
         }
 
         [Test]
         public void TestDeviceConfigNoMatch()
         {
             DeviceConfigurationManager.LoadBaseConfigurationFromResource();
-            var protocol = DeviceConfigurationManager.Manager.FindProtocol(new BluetoothLEProtocolConfiguration("Whatever"));
-            protocol.Should().BeNull();
+            var factory = DeviceConfigurationManager.Manager.Find(new BluetoothLEProtocolConfiguration("Whatever"));
+            factory.Should().BeNull();
         }
     }
 }

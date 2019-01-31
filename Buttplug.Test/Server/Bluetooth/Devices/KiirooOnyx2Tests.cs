@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
@@ -23,13 +24,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class KiirooOnyx2Tests
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<KiirooOnyx2BluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<KiirooOnyx2BluetoothInfo>();
-            await testUtil.SetupTest("Onyx2");
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<KiirooGen2Protocol>("Onyx2");
         }
 
         [Test]
@@ -46,9 +47,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public async Task TestInitialize()
         {
-            await testUtil.TestDeviceInitialize(new List<(byte[], uint)>()
+            await testUtil.TestDeviceInitialize(new List<(byte[], string)>()
             {
-                (new byte[] { 0x0 }, (uint)KiirooOnyx2BluetoothInfo.Chrs.Cmd),
+                (new byte[] { 0x0 }, Endpoints.Firmware),
             }, true);
         }
 
@@ -59,9 +60,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestFleshlightLaunchFW12Cmd()
         {
             await testUtil.TestDeviceMessage(new FleshlightLaunchFW12Cmd(4, 50, 50),
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 50, 50 }, (uint)KiirooOnyx2BluetoothInfo.Chrs.Tx),
+                    (new byte[] { 50, 50 }, Endpoints.Tx),
                 }, false);
         }
 
@@ -87,9 +88,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 new LinearCmd.VectorSubcommand(0, 500, 0.5),
             });
             await testUtil.TestDeviceMessage(msg,
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 50, 20 }, (uint)KiirooOnyx2BluetoothInfo.Chrs.Tx),
+                    (new byte[] { 50, 20 }, Endpoints.Tx),
                 }, false);
         }
 

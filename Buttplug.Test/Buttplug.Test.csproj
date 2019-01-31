@@ -82,6 +82,8 @@
     <Compile Include="Core\ButtplugExceptionTests.cs" />
     <Compile Include="Core\ButtplugJsonMessageParserTests.cs" />
     <Compile Include="Core\ButtplugMessagesTests.cs" />
+    <Compile Include="Devices\ButtplugDeviceConfigTests.cs" />
+    <Compile Include="Server\Bluetooth\Devices\CuemeTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\FleshlightLaunchTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\GeneralDeviceTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\KiirooGen2VibeTests.cs" />
@@ -91,23 +93,20 @@
     <Compile Include="Server\Bluetooth\Devices\LiBoTest.cs" />
     <Compile Include="Server\Bluetooth\Devices\LovenseTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\MagicMotionTests.cs" />
-    <Compile Include="Server\Bluetooth\Devices\CuemeTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\MysteryVibeTests.cs" />
+    <Compile Include="Server\Bluetooth\Devices\PicobongTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VibratissimoTests.cs" />
+    <Compile Include="Server\Bluetooth\Devices\VorzeBachTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VorzeCycloneSATests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VorzeSATests.cs" />
-    <Compile Include="Server\Bluetooth\Devices\VorzeBachTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\VorzeUFOSATests.cs" />
     <Compile Include="Server\Bluetooth\Devices\WeVibeTests.cs" />
-    <Compile Include="Server\Bluetooth\Devices\PicobongTests.cs" />
     <Compile Include="Server\Bluetooth\Devices\YoucupsTests.cs" />
-    <Compile Include="Server\ButtplugBluetoothDeviceTests.cs" />
+    <Compile Include="Server\ButtplugDeviceConfigurationManagerTests.cs" />
     <Compile Include="Server\ButtplugServerMessageTests.cs" />
     <Compile Include="Server\ButtplugServerTests.cs" />
-    <Compile Include="Server\TestBluetoothDeviceInterface.cs" />
-    <Compile Include="Server\TestBluetoothSubtypeManager.cs" />
     <Compile Include="Server\TestLoggingServer.cs" />
-    <Compile Include="Server\Util\BluetoothDeviceTestUtils.cs" />
+    <Compile Include="Server\Util\ProtocolTestUtils.cs" />
     <Compile Include="Server\Util\FleshlightHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>

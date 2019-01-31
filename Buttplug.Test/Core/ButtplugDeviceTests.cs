@@ -12,9 +12,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Test;
 using FluentAssertions;
 using NUnit.Framework;
@@ -28,7 +28,9 @@ namespace Buttplug.Core.Test
         [Test]
         public async Task TestBaseDevice()
         {
-            var dev = new TestDevice(new ButtplugLogManager(), "testDev")
+            var logMgr = new ButtplugLogManager();
+            var devImpl = new TestDeviceImpl(logMgr, "Device");
+            var dev = new ButtplugDevice(logMgr, new TestProtocol(logMgr, devImpl), devImpl)
             {
                 Index = 2,
             };
@@ -43,14 +45,10 @@ namespace Buttplug.Core.Test
             dev.Awaiting(async aDevice => await aDevice.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken))).Should().Throw<ButtplugDeviceException>();
         }
 
-        protected class TestDeviceDoubleAdd : TestDevice
+        protected class TestProtocolDoubleAdd : TestProtocol
         {
-            public TestDeviceDoubleAdd(ButtplugLogManager aLogger)
-                : base(aLogger, "DoubleAdd")
-            {
-            }
-
-            public void DoubleAdd()
+            public TestProtocolDoubleAdd(ButtplugLogManager aLogger, IButtplugDeviceImpl aDevice)
+                : base(aLogger, aDevice)
             {
                 // Add HandleRotateCmd twice, should throw
                 AddMessageHandler<RotateCmd>(HandleRotateCmd);
@@ -66,8 +64,8 @@ namespace Buttplug.Core.Test
         [Test]
         public void TestFunctionDoubleAdd()
         {
-            var device = new TestDeviceDoubleAdd(new ButtplugLogManager());
-            Action act = () => device.DoubleAdd();
+            var logMgr = new ButtplugLogManager();
+            Action act = () => new TestProtocolDoubleAdd(logMgr, new TestDeviceImpl(logMgr, "Test"));
             act.Should().Throw<ArgumentException>();
         }
     }

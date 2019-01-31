@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
@@ -24,13 +25,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class KiirooVibratorTests
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<KiirooBluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<KiirooBluetoothInfo>();
-            await testUtil.SetupTest("PEARL");
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<KiirooGen1Protocol>("PEARL");
         }
 
         [Test]
@@ -51,17 +52,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestStopDeviceCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("2,\n"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("2,\n"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
             expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("0,\n"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("0,\n"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -71,9 +72,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestSingleMotorVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("2,\n"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("2,\n"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -83,9 +84,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("2,\n"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("2,\n"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
@@ -101,9 +102,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestKiirooCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("3,\n"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("3,\n"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new KiirooCmd(4, 3), expected, false);

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
@@ -22,12 +23,12 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class VorzeSATests
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<VorzeSABluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         internal async Task TestAllowedMessages(string aDeviceName, VorzeSAProtocol.CommandType aCommandType)
         {
-            testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-            await testUtil.SetupTest(aDeviceName);
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<VorzeSAProtocol>(aDeviceName);
 
             if (aCommandType == VorzeSAProtocol.CommandType.Rotate)
             {
@@ -57,24 +58,24 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
 
         internal async Task TestStopDeviceCmd(string aDeviceName, byte aPrefix, VorzeSAProtocol.CommandType aCommandType)
         {
-            testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-            await testUtil.SetupTest(aDeviceName);
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<VorzeSAProtocol>(aDeviceName);
             var expected = new byte[] { aPrefix, (byte)aCommandType, 50 };
 
             if (aCommandType == VorzeSAProtocol.CommandType.Rotate)
             {
                 await testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
-                    new List<(byte[], uint)>()
+                    new List<(byte[], string)>()
                     {
-                        (expected, (uint) VorzeSABluetoothInfo.Chrs.Tx),
+                        (expected, Endpoints.Tx),
                     }, false);
             }
             else if (aCommandType == VorzeSAProtocol.CommandType.Vibrate)
             {
                 await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), 
-                    new List<(byte[], uint)>()
+                    new List<(byte[], string)>()
                     {
-                        (expected, (uint) VorzeSABluetoothInfo.Chrs.Tx),
+                        (expected, Endpoints.Tx),
                     }, false);
             }
             else
@@ -85,104 +86,104 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             expected = new byte[] { aPrefix, (byte)aCommandType, 0 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4),
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                        (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                        (expected, Endpoints.Tx),
                 }, false);
         }
 
         public async Task TestVorzeA10CycloneCmd(string aDeviceName, byte aPrefix)
         {
-            testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-            await testUtil.SetupTest(aDeviceName);
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<VorzeSAProtocol>(aDeviceName);
             var expected = new byte[] { aPrefix, 0x1, 50 };
 
             await testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, false),
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, Endpoints.Tx),
                 }, false);
 
             expected = new byte[] { aPrefix, 0x1, 50 + 128 };
 
             await testUtil.TestDeviceMessage(new VorzeA10CycloneCmd(4, 50, true),
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, Endpoints.Tx),
                 }, false);
         }
 
         public async Task TestRotateCmd(string aDeviceName, byte aPrefix)
         {
-            testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-            await testUtil.SetupTest(aDeviceName);
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<VorzeSAProtocol>(aDeviceName);
             var expected = new byte[] { aPrefix, 0x1, 50 };
 
             await testUtil.TestDeviceMessage(
                 RotateCmd.Create(4, 1, 0.5, false, 1),
-                new List<(byte[], uint)>
+                new List<(byte[], string)>
                 {
-                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, Endpoints.Tx),
                 }, false);
 
             expected = new byte[] { aPrefix, 0x1, 50 + 128 };
 
             await testUtil.TestDeviceMessage(
                 RotateCmd.Create(4, 1, 0.5, true, 1),
-                new List<(byte[], uint)>
+                new List<(byte[], string)>
                 {
-                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, Endpoints.Tx),
                 }, false);
         }
 
         public async Task TestSingleMotorVibrateCmd(string aDeviceName, byte aPrefix)
         {
-            testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-            await testUtil.SetupTest(aDeviceName);
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<VorzeSAProtocol>(aDeviceName);
             var expected = new byte[] { aPrefix, 0x03, 50 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), 
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, Endpoints.Tx),
                 }, false);
 
             expected = new byte[] { aPrefix, 0x03, 25 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.25),
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, Endpoints.Tx),
                 }, false);
         }
 
         public async Task TestVibrateCmd(string aDeviceName, byte aPrefix)
         {
-            testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-            await testUtil.SetupTest(aDeviceName);
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<VorzeSAProtocol>(aDeviceName);
             var expected = new byte[] { aPrefix, 0x3, 50 };
 
             await testUtil.TestDeviceMessage(
                 VibrateCmd.Create(4, 1, 0.5, 1),
-                new List<(byte[], uint)>
+                new List<(byte[], string)>
                 {
-                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, Endpoints.Tx),
                 }, false);
 
             expected = new byte[] { aPrefix, 0x3, 25 };
 
             await testUtil.TestDeviceMessage(
                 VibrateCmd.Create(4, 1, 0.25, 1),
-                new List<(byte[], uint)>
+                new List<(byte[], string)>
                 {
-                    (expected, (uint)VorzeSABluetoothInfo.Chrs.Tx),
+                    (expected, Endpoints.Tx),
                 }, false);
         }
 
         internal async Task TestInvalidCmds(string aDeviceName, VorzeSAProtocol.CommandType aCommandType)
         {
-            testUtil = new BluetoothDeviceTestUtils<VorzeSABluetoothInfo>();
-            await testUtil.SetupTest(aDeviceName);
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<VorzeSAProtocol>(aDeviceName);
             if (aCommandType == VorzeSAProtocol.CommandType.Rotate)
             {
                 testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 0));

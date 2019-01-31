@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
@@ -9,62 +10,103 @@ using Buttplug.Devices;
 
 namespace Buttplug.Test
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class TestDeviceImpl : ButtplugDeviceImpl
     {
-        public override event EventHandler<ButtplugDeviceDataEventArgs> DataReceived;
+        public override string Name { get; }
+
+        public class WriteData
+        {
+            public uint MsgId;
+            public byte[] Value;
+            public string Endpoint;
+            public bool WriteWithResponse;
+        }
+
+        public class ReadData
+        {
+            public byte[] Value;
+        }
+
+        public override string Address { get; }
+        public override bool Connected { get; }
+
+        public List<WriteData> LastWritten = new List<WriteData>();
+        public Dictionary<string, List<byte[]>> ExpectedRead = new Dictionary<string, List<byte[]>>();
 
         public override event EventHandler DeviceRemoved;
 
-        public override string Name { get; }
+        public event EventHandler ValueWritten;
 
-        public override string Address { get; }
+#pragma warning disable CS0067 // Unused event (We'll use it once we have more notifications)
+        public override event EventHandler<ButtplugDeviceDataEventArgs> DataReceived;
+#pragma warning restore CS0067
 
-        private bool _connected;
+        public bool Removed;
 
-        public override bool Connected => _connected;
-
-        public TestDeviceImpl(IButtplugLogManager aLogManager)
-            : base(aLogManager)
+        public TestDeviceImpl(IButtplugLogManager aLogManager, string aName)
+           : base(aLogManager)
         {
-            Name = "Test Device";
-            Address = "Test";
-            _connected = true;
+            Name = aName;
+            Address = new Random().Next(0, 100).ToString();
+            Removed = false;
+            DeviceRemoved += (obj, args) => { Removed = true; };
         }
 
-        public override void Disconnect()
+        public void AddExpectedRead(string aCharacteristicIndex, byte[] aValue)
         {
-            _connected = false;
+            if (!ExpectedRead.ContainsKey(aCharacteristicIndex))
+            {
+                ExpectedRead.Add(aCharacteristicIndex, new List<byte[]>());
+            }
+
+            ExpectedRead[aCharacteristicIndex].Add(aValue);
         }
 
         public override Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
-            throw new NotImplementedException();
+            return WriteValueAsync(aMsgId, Endpoints.Tx, aValue, aWriteWithResponse, aToken);
         }
 
-        public override Task<ButtplugMessage> WriteValueAsync(uint aMsgId, string aEndpointName, byte[] aValue, bool aWriteWithResponse,
-            CancellationToken aToken)
+        public override Task<ButtplugMessage> WriteValueAsync(uint aMsgId, string aEndpoint, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
-            throw new NotImplementedException();
+            LastWritten.Add(new WriteData()
+            {
+                Value = (byte[])aValue.Clone(),
+                MsgId = aMsgId,
+                Endpoint = aEndpoint,
+                WriteWithResponse = aWriteWithResponse,
+            });
+            ValueWritten?.Invoke(this, new EventArgs());
+            return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
         }
 
         public override Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken)
         {
-            throw new NotImplementedException();
+            var value = ExpectedRead[ExpectedRead.Keys.ToArray()[0]].ElementAt(0);
+            ExpectedRead[ExpectedRead.Keys.ToArray()[0]].RemoveAt(0);
+            return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), value));
         }
 
         public override Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, string aEndpointName, CancellationToken aToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), new byte[] { }));
         }
 
+        // noop for tests
         public override Task SubscribeToUpdatesAsync()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public override Task SubscribeToUpdatesAsync(string aEndpointName)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
+        }
+
+        public override void Disconnect()
+        {
+            DeviceRemoved?.Invoke(this, new EventArgs());
         }
     }
 }

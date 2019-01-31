@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
@@ -24,13 +25,13 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class KiirooOnyx1Tests
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<KiirooBluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<KiirooBluetoothInfo>();
-            await testUtil.SetupTest("ONYX");
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<KiirooGen1Protocol>("ONYX");
         }
 
         [Test]
@@ -48,10 +49,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         [Test]
         public async Task TestInitialize()
         {
-            await testUtil.TestDeviceInitialize(new List<(byte[], uint)>()
+            await testUtil.TestDeviceInitialize(new List<(byte[], string)>()
             {
-                (new byte[] { 0x01, 0x00 }, (uint)KiirooBluetoothInfo.Chrs.Cmd),
-                (new byte[] { 0x30, 0x2c }, (uint)KiirooBluetoothInfo.Chrs.Tx),
+                (new byte[] { 0x01, 0x00 }, Endpoints.Command),
+                (new byte[] { 0x30, 0x2c }, Endpoints.Tx),
             }, true, false);
         }
 
@@ -64,18 +65,18 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         {
             var msg = new FleshlightLaunchFW12Cmd(4, 35, 23);
             await testUtil.TestDeviceMessageDelayed(msg,
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("1,\n"), (uint)KiirooBluetoothInfo.Chrs.Tx),
-                    (Encoding.ASCII.GetBytes("2,\n"), (uint)KiirooBluetoothInfo.Chrs.Tx),
-                    (Encoding.ASCII.GetBytes("3,\n"), (uint)KiirooBluetoothInfo.Chrs.Tx),
+                    (Encoding.ASCII.GetBytes("1,\n"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("2,\n"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("3,\n"), Endpoints.Tx),
                 }, false, 400);
 
             msg = new FleshlightLaunchFW12Cmd(4, 30, 51);
             await testUtil.TestDeviceMessageDelayed(msg,
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("2,\n"), (uint)KiirooBluetoothInfo.Chrs.Tx),
+                    (Encoding.ASCII.GetBytes("2,\n"), Endpoints.Tx),
                 }, false, 500);
         }
 
@@ -83,9 +84,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestStopDeviceCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("0,\n"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("0,\n"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessageDelayed(new StopDeviceCmd(4), expected, false, 1000);
@@ -99,11 +100,11 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 new LinearCmd.VectorSubcommand(0, 500, 0.25),
             });
             await testUtil.TestDeviceMessageDelayed(msg,
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("1,\n"), (uint)KiirooBluetoothInfo.Chrs.Tx),
-                    (Encoding.ASCII.GetBytes("2,\n"), (uint)KiirooBluetoothInfo.Chrs.Tx),
-                    (Encoding.ASCII.GetBytes("3,\n"), (uint)KiirooBluetoothInfo.Chrs.Tx),
+                    (Encoding.ASCII.GetBytes("1,\n"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("2,\n"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("3,\n"), Endpoints.Tx),
                 }, false, 500);
 
             msg = new LinearCmd(4, new List<LinearCmd.VectorSubcommand>
@@ -111,9 +112,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 new LinearCmd.VectorSubcommand(0, 400, 0.5),
             });
             await testUtil.TestDeviceMessageDelayed(msg,
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("2,\n"), (uint)KiirooBluetoothInfo.Chrs.Tx),
+                    (Encoding.ASCII.GetBytes("2,\n"), Endpoints.Tx),
                 }, false, 500);
         }
 
@@ -146,9 +147,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestKiirooCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("3,\n"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("3,\n"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new KiirooCmd(4, 3), expected, false);

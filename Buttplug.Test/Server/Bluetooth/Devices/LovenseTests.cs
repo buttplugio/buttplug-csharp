@@ -11,7 +11,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
-using Buttplug.Server.Bluetooth.Devices;
+using Buttplug.Devices;
+using Buttplug.Devices.Protocols;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -22,16 +23,16 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class LovenseVibratorTests
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<LovenseBluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<LovenseBluetoothInfo>();
+            testUtil = new ProtocolTestUtils();
 
             // Just leave name the same as the prefix, we'll set device type via initialize.
-            await testUtil.SetupTest("LVS", false);
-            testUtil.AddExpectedRead(testUtil.NoCharacteristic, Encoding.ASCII.GetBytes("W:39:000000000000"));
+            await testUtil.SetupTest<LovenseProtocol>("LVS", false);
+            testUtil.AddExpectedRead(Endpoints.Tx, Encoding.ASCII.GetBytes("W:39:000000000000"));
             await testUtil.Initialize();
         }
 
@@ -58,17 +59,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestStopDeviceCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Vibrate:10;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Vibrate:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
             expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Vibrate:0;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Vibrate:0;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -78,9 +79,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestSingleMotorVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Vibrate:10;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Vibrate:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -90,9 +91,9 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Vibrate:10;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Vibrate:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
@@ -109,16 +110,16 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class LovenseDualVibratorTests
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<LovenseBluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<LovenseBluetoothInfo>();
+            testUtil = new ProtocolTestUtils();
 
             // Just leave name the same as the prefix, we'll set device type via initialize.
-            await testUtil.SetupTest("LVS", false);
-            testUtil.AddExpectedRead(testUtil.NoCharacteristic, Encoding.ASCII.GetBytes("P:39:000000000000"));
+            await testUtil.SetupTest<LovenseProtocol>("LVS", false);
+            testUtil.AddExpectedRead(Endpoints.Tx, Encoding.ASCII.GetBytes("P:39:000000000000"));
             await testUtil.Initialize();
         }
 
@@ -145,19 +146,19 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestStopDeviceCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Vibrate1:10;"), testUtil.NoCharacteristic),
-                    (Encoding.ASCII.GetBytes("Vibrate2:10;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Vibrate1:10;"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate2:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
             expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Vibrate1:0;"), testUtil.NoCharacteristic),
-                    (Encoding.ASCII.GetBytes("Vibrate2:0;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Vibrate1:0;"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate2:0;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -167,10 +168,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestSingleMotorVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Vibrate1:10;"), testUtil.NoCharacteristic),
-                    (Encoding.ASCII.GetBytes("Vibrate2:10;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Vibrate1:10;"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate2:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -180,10 +181,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Vibrate1:10;"), testUtil.NoCharacteristic),
-                    (Encoding.ASCII.GetBytes("Vibrate2:10;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Vibrate1:10;"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate2:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 2), expected, false);
@@ -200,16 +201,16 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
     public class LovenseRotatorTests
     {
         [NotNull]
-        private BluetoothDeviceTestUtils<LovenseBluetoothInfo> testUtil;
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new BluetoothDeviceTestUtils<LovenseBluetoothInfo>();
+            testUtil = new ProtocolTestUtils();
 
             // Just leave name the same as the prefix, we'll set device type via initialize.
-            await testUtil.SetupTest("LVS", false);
-            testUtil.AddExpectedRead(testUtil.NoCharacteristic, Encoding.ASCII.GetBytes("A:13:000000000000"));
+            await testUtil.SetupTest<LovenseProtocol>("LVS", false);
+            testUtil.AddExpectedRead(Endpoints.Tx, Encoding.ASCII.GetBytes("A:13:000000000000"));
             await testUtil.Initialize();
         }
 
@@ -237,17 +238,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestStopDeviceCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Rotate:10;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Rotate:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 1), expected, false);
 
             expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Rotate:0;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Rotate:0;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -257,17 +258,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task TestRotateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("Rotate:10;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("Rotate:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 1), expected, false);
 
             expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("RotateChange;"), testUtil.NoCharacteristic),
+                    (Encoding.ASCII.GetBytes("RotateChange;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 1), expected, false);

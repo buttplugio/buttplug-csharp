@@ -17,6 +17,7 @@ using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Core.Test;
+using Buttplug.Devices;
 using Buttplug.Test;
 using FluentAssertions;
 using NUnit.Framework;
@@ -128,7 +129,7 @@ namespace Buttplug.Server.Test
         [Test]
         public async Task TestAddListRemoveDevices()
         {
-            var d = new TestDevice(new ButtplugLogManager(), "TestDevice");
+            var d = new TestDevice("TestDevice");
             var msgarray = d.AllowedMessageTypes;
             var enumerable = msgarray as Type[] ?? msgarray.ToArray();
             enumerable.Length.Should().Be(3);

@@ -14,10 +14,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Server.Bluetooth;
+using Buttplug.Devices;
+using Buttplug.Test;
 using FluentAssertions;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -25,33 +25,25 @@ using NUnit.Framework;
 namespace Buttplug.Server.Test.Util
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
-    public interface IBluetoothDeviceGeneralTestUtils
+    public interface IProtocolTestUtils
     {
-        Task SetupTest(string aDeviceName, bool aShouldInitialize = false);
-
-        void TestDeviceInfo();
+        Task SetupTest<T>(string aDeviceName, bool aShouldInitialize = false) where T : IButtplugDeviceProtocol;
 
         Task TestDeviceMessageNoop(ButtplugDeviceMessage aOutgoingMessage);
     }
 
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
-    public class BluetoothDeviceTestUtils<T> : IBluetoothDeviceGeneralTestUtils
-        where T : IBluetoothDeviceInfo, new()
+    public class ProtocolTestUtils : IProtocolTestUtils
     {
-        public readonly uint NoCharacteristic = 0xffffffff;
-        private IBluetoothDeviceInfo bleInfo;
-        private TestBluetoothDeviceInterface bleIface;
-        private IButtplugDevice bleDevice;
+        private TestDeviceImpl _testImpl;
+        private IButtplugDevice _testDevice;
 
-        public async Task SetupTest(string aDeviceName, bool aShouldInitialize = true)
+        public async Task SetupTest<T>(string aDeviceName, bool aShouldInitialize = true)
+        where T : IButtplugDeviceProtocol
         {
-            bleInfo = new T();
-
-            // Assume for now that we're using a device's nameprefix as its actual name if we have one.
-            (bleInfo.Names.Length > 0 ? bleInfo.Names : bleInfo.NamePrefixes).Should().Contain(aDeviceName);
-
-            bleIface = new TestBluetoothDeviceInterface(aDeviceName);
-            bleDevice = bleInfo.CreateDevice(new ButtplugLogManager(), bleIface);
+            var logMgr = new ButtplugLogManager();
+            _testImpl = new TestDeviceImpl(logMgr, aDeviceName);
+            _testDevice = new ButtplugDevice(logMgr, typeof(T), _testImpl);
 
             if (!aShouldInitialize)
             {
@@ -63,37 +55,23 @@ namespace Buttplug.Server.Test.Util
 
         public async Task Initialize()
         {
-            (await bleDevice.InitializeAsync()).Should().BeOfType<Ok>();
-            bleIface.LastWritten.Clear();
+            (await _testDevice.InitializeAsync()).Should().BeOfType<Ok>();
+            _testImpl.LastWritten.Clear();
         }
 
-        public void AddExpectedRead(uint aCharacteristic, byte[] aValue)
+        public void AddExpectedRead(string aCharacteristic, byte[] aValue)
         {
-            bleIface.AddExpectedRead(aCharacteristic, aValue);
+            _testImpl.AddExpectedRead(aCharacteristic, aValue);
         }
 
         private void Clear()
         {
-            bleIface.LastWritten.Clear();
+            _testImpl.LastWritten.Clear();
         }
 
         public void TestDeviceName(string aExpectedName)
         {
-            bleDevice.Name.Should().Be(aExpectedName);
-        }
-
-        public void TestDeviceInfo()
-        {
-            var info = new T();
-
-            // Device should have at least one service.
-            info.Services.Should().NotBeNull();
-            info.Services.Any().Should().BeTrue();
-
-            // Device should have a name or nameprefix
-            (info.Names.Length > 0 || info.NamePrefixes.Length > 0).Should().BeTrue();
-
-            // TODO Device info chrs and characteristics dict should match
+            _testDevice.Name.Should().Be(aExpectedName);
         }
 
         public void TestDeviceAllowedMessages([NotNull] Dictionary<Type, uint> aExpectedMessageArgs)
@@ -101,52 +79,49 @@ namespace Buttplug.Server.Test.Util
             Clear();
 
             // If we've updated a class with new messages, but haven't updated the device, fail.
-            bleDevice.AllowedMessageTypes.Count().Should().Be(aExpectedMessageArgs.Count);
+            _testDevice.AllowedMessageTypes.Count().Should().Be(aExpectedMessageArgs.Count);
             foreach (var item in aExpectedMessageArgs)
             {
-                bleDevice.AllowedMessageTypes.Should().Contain(item.Key);
-                bleDevice.GetMessageAttrs(item.Key).Should().NotBeNull();
+                _testDevice.AllowedMessageTypes.Should().Contain(item.Key);
+                _testDevice.GetMessageAttrs(item.Key).Should().NotBeNull();
                 if (item.Value == 0)
                 {
-                    bleDevice.GetMessageAttrs(item.Key).FeatureCount.Should().BeNull();
+                    _testDevice.GetMessageAttrs(item.Key).FeatureCount.Should().BeNull();
                 }
                 else
                 {
-                    bleDevice.GetMessageAttrs(item.Key).FeatureCount.Should().Be(item.Value);
+                    _testDevice.GetMessageAttrs(item.Key).FeatureCount.Should().Be(item.Value);
                 }
             }
         }
 
-        private void TestPacketMatching(IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse, bool aStrict = true)
+        private void TestPacketMatching(IEnumerable<(byte[], string)> aExpectedBytes, bool aWriteWithResponse, bool aStrict = true)
         {
             // ExpectedBytes should have the same number of packets as LastWritten
             if (aStrict)
             {
-                bleIface.LastWritten.Count.Should().Be(aExpectedBytes.Count());
+                _testImpl.LastWritten.Count.Should().Be(aExpectedBytes.Count());
 
                 // Since the expected values and lastWritten in interface should be lock-stepped, we can
                 // merge them and iterate through everything at once.
-                var checkSeq = aExpectedBytes.Zip(bleIface.LastWritten, (first, second) => (first, second));
-                foreach (var ((bytes, chr), lastWritten) in checkSeq)
+                var checkSeq = aExpectedBytes.Zip(_testImpl.LastWritten, (first, second) => (first, second));
+                foreach (var ((bytes, endpoint), lastWritten) in checkSeq)
                 {
                     lastWritten.Value.Should().Equal(bytes);
                     lastWritten.WriteWithResponse.Should().Be(aWriteWithResponse);
-                    if (chr != NoCharacteristic)
-                    {
-                        lastWritten.Characteristic.Should().Be(chr);
-                    }
+                    lastWritten.Endpoint.Should().Be(endpoint);
                 }
             }
             else
             {
-                foreach (var (bytes, chr) in aExpectedBytes)
+                foreach (var (bytes, endpoint) in aExpectedBytes)
                 {
                     var matched = false;
-                    foreach (var lastWritten in bleIface.LastWritten)
+                    foreach (var lastWritten in _testImpl.LastWritten)
                     {
                         if (!lastWritten.Value.SequenceEqual(bytes) ||
                             lastWritten.WriteWithResponse != aWriteWithResponse ||
-                            (chr != NoCharacteristic && chr != lastWritten.Characteristic))
+                            endpoint != lastWritten.Endpoint)
                         {
                             continue;
                         }
@@ -159,16 +134,15 @@ namespace Buttplug.Server.Test.Util
                     if (!matched)
                     {
                         msg = "Expected:\n";
-                        foreach (var (bytes2, chr2) in aExpectedBytes)
+                        foreach (var (bytes2, endpoint2) in aExpectedBytes)
                         {
-                            var c = chr2 == NoCharacteristic ? "?" : chr2.ToString();
-                            msg += $"{BitConverter.ToString(bytes2)} {c} {aWriteWithResponse}\n";
+                            msg += $"{BitConverter.ToString(bytes2)} {endpoint2} {aWriteWithResponse}\n";
                         }
 
                         msg += "\nActual:\n";
-                        foreach (var lastWritten in bleIface.LastWritten)
+                        foreach (var lastWritten in _testImpl.LastWritten)
                         {
-                            msg += $"{BitConverter.ToString(lastWritten.Value)} {lastWritten.Characteristic} {lastWritten.WriteWithResponse}\n";
+                            msg += $"{BitConverter.ToString(lastWritten.Value)} {lastWritten.Endpoint} {lastWritten.WriteWithResponse}\n";
                         }
                     }
 
@@ -177,50 +151,50 @@ namespace Buttplug.Server.Test.Util
             }
         }
 
-        public async Task TestDeviceInitialize(IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse, bool aStrict = true)
+        public async Task TestDeviceInitialize(IEnumerable<(byte[], string)> aExpectedBytes, bool aWriteWithResponse, bool aStrict = true)
         {
             Clear();
-            (await bleDevice.InitializeAsync()).Should().BeOfType<Ok>();
+            (await _testDevice.InitializeAsync()).Should().BeOfType<Ok>();
 
             TestPacketMatching(aExpectedBytes, aWriteWithResponse, aStrict);
         }
 
         // Testing timing with delays is a great way to get intermittent errors, but here we are. Sadness.
-        public async Task TestDeviceMessageOnWrite(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
+        public async Task TestDeviceMessageOnWrite(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], string)> aExpectedBytes, bool aWriteWithResponse)
         {
             Clear();
-            (await bleDevice.ParseMessageAsync(aOutgoingMessage)).Should().BeOfType<Ok>();
+            (await _testDevice.ParseMessageAsync(aOutgoingMessage)).Should().BeOfType<Ok>();
             var resetEvent = new ManualResetEvent(false);
-            bleIface.ValueWritten += (aObj, aArgs) => { resetEvent.Set(); };
+            _testImpl.ValueWritten += (aObj, aArgs) => { resetEvent.Set(); };
             resetEvent.WaitOne(1000);
             TestPacketMatching(aExpectedBytes, aWriteWithResponse);
         }
 
-        public async Task TestDeviceMessage(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse)
+        public async Task TestDeviceMessage(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], string)> aExpectedBytes, bool aWriteWithResponse)
         {
             Clear();
-            (await bleDevice.ParseMessageAsync(aOutgoingMessage)).Should().BeOfType<Ok>();
+            (await _testDevice.ParseMessageAsync(aOutgoingMessage)).Should().BeOfType<Ok>();
 
             TestPacketMatching(aExpectedBytes, aWriteWithResponse);
         }
 
-        public async Task TestDeviceMessageDelayed(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], uint)> aExpectedBytes, bool aWriteWithResponse, uint aMilliseconds)
+        public async Task TestDeviceMessageDelayed(ButtplugDeviceMessage aOutgoingMessage, IEnumerable<(byte[], string)> aExpectedBytes, bool aWriteWithResponse, uint aMilliseconds)
         {
             Clear();
-            (await bleDevice.ParseMessageAsync(aOutgoingMessage)).Should().BeOfType<Ok>();
+            (await _testDevice.ParseMessageAsync(aOutgoingMessage)).Should().BeOfType<Ok>();
             Thread.Sleep(new TimeSpan(0, 0, 0, 0, (int)aMilliseconds));
             TestPacketMatching(aExpectedBytes, aWriteWithResponse, false);
         }
 
         public async Task TestDeviceMessageNoop(ButtplugDeviceMessage aOutgoingMessage)
         {
-            await TestDeviceMessage(aOutgoingMessage, new List<(byte[], uint)>(), false);
+            await TestDeviceMessage(aOutgoingMessage, new List<(byte[], string)>(), false);
         }
 
         public void TestInvalidDeviceMessage(ButtplugDeviceMessage aOutgoingMessage)
         {
             Clear();
-            bleDevice.Awaiting(async aDev => await aDev.ParseMessageAsync(aOutgoingMessage)).Should().Throw<ButtplugDeviceException>();
+            _testDevice.Awaiting(async aDev => await aDev.ParseMessageAsync(aOutgoingMessage)).Should().Throw<ButtplugDeviceException>();
         }
 
         public void TestInvalidVibrateCmd(uint aNumVibes)

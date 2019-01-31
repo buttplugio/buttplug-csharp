@@ -9,8 +9,10 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
 using Buttplug.Server.Test.Util;
 using JetBrains.Annotations;
@@ -22,13 +24,12 @@ namespace Buttplug.Test.Server.Bluetooth.Devices
     [TestFixture]
     public class CuemeTests
     {
-        [NotNull]
-        private readonly BluetoothDeviceTestUtils<CuemeBluetoothInfo> _testUtil = new BluetoothDeviceTestUtils<CuemeBluetoothInfo>();
+        [NotNull] private readonly ProtocolTestUtils _testUtil = new ProtocolTestUtils();
 
         [SetUp]
         public async Task Init()
         {
-            await _testUtil.SetupTest("FUNCODE_");
+            await _testUtil.SetupTest<CuemeProtocol>("FUNCODE_");
         }
 
         [Test]
@@ -48,17 +49,17 @@ namespace Buttplug.Test.Server.Bluetooth.Devices
         public async Task TestStopDeviceCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x17 }, _testUtil.NoCharacteristic),
+                    (new byte[] { 0x17 }, Endpoints.Tx),
                 };
 
             await _testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
             expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x00 }, _testUtil.NoCharacteristic),
+                    (new byte[] { 0x00 }, Endpoints.Tx),
                 };
 
             await _testUtil.TestDeviceMessageOnWrite(new StopDeviceCmd(4), expected, false);
@@ -68,9 +69,9 @@ namespace Buttplug.Test.Server.Bluetooth.Devices
         public async Task TestSingleMotorVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x17 }, _testUtil.NoCharacteristic),
+                    (new byte[] { 0x17 }, Endpoints.Tx),
                 };
 
             await _testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -80,9 +81,9 @@ namespace Buttplug.Test.Server.Bluetooth.Devices
         public async Task TestVibrateCmd()
         {
             var expected =
-                new List<(byte[], uint)>()
+                new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x17 }, _testUtil.NoCharacteristic),
+                    (new byte[] { 0x17 }, Endpoints.Tx),
                 };
 
             await _testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 4), expected, false);
