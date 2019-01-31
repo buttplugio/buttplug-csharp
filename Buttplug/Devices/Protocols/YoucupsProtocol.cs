@@ -11,39 +11,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Bluetooth.Devices
 {
-    internal class YoucupsBluetoothInfo : IBluetoothDeviceInfo
-    {
-        public enum Chrs : uint
-        {
-            Tx = 0,
-        }
-
-        public Guid[] Services { get; } = { new Guid("0000fee9-0000-1000-8000-00805f9b34fb") };
-
-        public string[] NamePrefixes { get; } = { };
-
-        public string[] Names { get; } =
-        {
-            // Warrior II
-            "Youcups",
-        };
-
-        public Dictionary<uint, Guid> Characteristics { get; } = new Dictionary<uint, Guid>()
-        {
-            { (uint)Chrs.Tx, new Guid("d44bc439-abfd-45a2-b575-925416129600") },
-        };
-
-        public IButtplugDevice CreateDevice(IButtplugLogManager aLogManager,
-            IBluetoothDeviceInterface aInterface)
-        {
-            return new Youcups(aLogManager, aInterface, this);
-        }
-    }
-
-    internal class Youcups : ButtplugBluetoothDevice
+    internal class YoucupsProtocol : ButtplugDeviceProtocol
     {
         private static readonly Dictionary<string, string> FriendlyNames = new Dictionary<string, string>
         {
@@ -52,13 +24,11 @@ namespace Buttplug.Server.Bluetooth.Devices
 
         private double _vibratorSpeed;
 
-        public Youcups(IButtplugLogManager aLogManager,
-                       IBluetoothDeviceInterface aInterface,
-                       IBluetoothDeviceInfo aInfo)
+        public YoucupsProtocol(IButtplugLogManager aLogManager,
+                               IButtplugDeviceImpl aInterface)
             : base(aLogManager,
                    "Youcups Unknown",
-                   aInterface,
-                   aInfo)
+                   aInterface)
         {
             if (FriendlyNames.ContainsKey(aInterface.Name))
             {
