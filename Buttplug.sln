@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.07.FullPr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.CLI", "Buttplug.Server.CLI\Buttplug.Server.CLI.csproj", "{F4726B66-2E07-4805-97B8-A8A4BD80E257}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.UwpHidManager", "Buttplug.Server.Managers.UwpHidManager\Buttplug.Server.Managers.UwpHidManager.csproj", "{08E834D5-F54B-4B5E-983A-975D7D011D76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -199,6 +201,14 @@ Global
 		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
+		{08E834D5-F54B-4B5E-983A-975D7D011D76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08E834D5-F54B-4B5E-983A-975D7D011D76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08E834D5-F54B-4B5E-983A-975D7D011D76}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{08E834D5-F54B-4B5E-983A-975D7D011D76}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
+		{08E834D5-F54B-4B5E-983A-975D7D011D76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08E834D5-F54B-4B5E-983A-975D7D011D76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08E834D5-F54B-4B5E-983A-975D7D011D76}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
+		{08E834D5-F54B-4B5E-983A-975D7D011D76}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
