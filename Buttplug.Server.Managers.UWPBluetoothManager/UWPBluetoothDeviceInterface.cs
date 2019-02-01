@@ -250,14 +250,14 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             if (_bleDevice?.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
             {
-                DeviceRemoved?.Invoke(this, new EventArgs());
+                InvokeDeviceRemoved();
             }
         }
 
         private void BluetoothNotifyReceivedHandler(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
             CryptographicBuffer.CopyToByteArray(args.CharacteristicValue, out var bytes);
-            DataReceived?.Invoke(this, new ButtplugDeviceDataEventArgs("rx", bytes));
+            InvokeDataReceived(new ButtplugDeviceDataEventArgs("rx", bytes));
         }
 
         public override async Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
@@ -354,7 +354,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         public override void Disconnect()
         {
-            DeviceRemoved?.Invoke(this, new EventArgs());
+            InvokeDeviceRemoved();
             _indexedChars.Clear();
 
             _bleDevice.Dispose();
