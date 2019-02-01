@@ -109,8 +109,9 @@ namespace Buttplug.Client.Test
             await _client.StopScanningAsync();
             await WaitForEvent();
         }
-        /*
+        
         [Test]
+        [Ignore("Doesn't compile under new system, need to figure out device exposure")]
         public async Task TestDeviceMessageRaw()
         {
             await _client.ConnectAsync();
@@ -122,13 +123,15 @@ namespace Buttplug.Client.Test
             device.Awaiting(async aDevice => await aDevice.SendMessageAsync(new FleshlightLaunchFW12Cmd(0, 0, 0))).Should().Throw<ButtplugDeviceException>();
 
             // Shouldn't throw.
-            await _client.Devices[0].SendMessageAsync(new SingleMotorVibrateCmd(0, 0.5));
+            await device.SendMessageAsync(new SingleMotorVibrateCmd(0, 0.5));
 
-            _subtypeMgr.Device.V1.Should().Be(0.5);
-            _subtypeMgr.Device.V2.Should().Be(0.5);
+            // todo Expose V1/V2 again
+            // device.V1.Should().Be(0.5);
+            // device.V2.Should().Be(0.5);
         }
 
         [Test]
+        [Ignore("Doesn't compile under new system, need to figure out device exposure")]
         public async Task TestDeviceMessageHelper()
         {
             await _client.ConnectAsync();
@@ -143,16 +146,17 @@ namespace Buttplug.Client.Test
             // Shouldn't throw.
             await _client.Devices[0].SendVibrateCmd(0.5);
 
-            _subtypeMgr.Device.V1.Should().Be(0.5);
-            _subtypeMgr.Device.V2.Should().Be(0.5);
+            // TODO expose V1/V2 again
+            //_subtypeMgr.Device.V1.Should().Be(0.5);
+            //_subtypeMgr.Device.V2.Should().Be(0.5);
 
             // Shouldn't throw.
             await _client.Devices[0].SendVibrateCmd(new[] { 0.0, 0.5 } );
 
-            _subtypeMgr.Device.V1.Should().Be(0.0);
-            _subtypeMgr.Device.V2.Should().Be(0.5);
+            //_subtypeMgr.Device.V1.Should().Be(0.0);
+            //_subtypeMgr.Device.V2.Should().Be(0.5);
         }
-        */
+
         [Test]
         public async Task TestDeviceRemovalEvent()
         {

@@ -67,18 +67,17 @@ namespace Buttplug.Test.Devices.Protocols
         }
 
         // TODO Test currently fails because we will send repeated packets to the launch. See #402.
-        /*
         [Test]
+        [Ignore("Fails because we don't do what we say we're going to. See #402.")]
         public async Task TestRepeatedFleshlightLaunchFW12Cmd()
         {
             await testUtil.TestDeviceMessage(new FleshlightLaunchFW12Cmd(4, 50, 50),
-                new List<byte[]>()
+                new List<(byte[], string)>()
                 {
-                    new byte[2] { 50, 50 },
-                }, (uint)FleshlightLaunchBluetoothInfo.Chrs.Tx, false);
+                    (new byte[2] { 50, 50 }, Endpoints.Tx)
+                }, false);
             await testUtil.TestDeviceMessageNoop(new FleshlightLaunchFW12Cmd(4, 50, 50));
         }
-        */
 
         [Test]
         public async Task TestVectorCmd()

@@ -21,6 +21,7 @@ namespace Buttplug.Test.Devices
         }
 
         [Test]
+        [Ignore("Need to rewrite configuration format to include protocol names")]
         public void TestDeviceConfigMatching()
         {
             DeviceConfigurationManager.LoadBaseConfigurationFromResource();
