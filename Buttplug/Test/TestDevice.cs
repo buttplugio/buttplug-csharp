@@ -4,7 +4,7 @@ using Buttplug.Devices;
 
 namespace Buttplug.Test
 {
-    class TestDevice : ButtplugDevice
+    public class TestDevice : ButtplugDevice
     {
         public TestDevice(IButtplugLogManager aManager, Type aProtocol, string aName)
         : base(aManager, aProtocol, new TestDeviceImpl(aManager, aName))
