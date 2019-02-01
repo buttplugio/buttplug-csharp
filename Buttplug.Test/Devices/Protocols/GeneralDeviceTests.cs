@@ -13,7 +13,7 @@ using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test.Bluetooth.Devices
+namespace Buttplug.Test.Devices.Protocols
 {
     // Each of the tests in this class is run on every bluetooth device class we know of, as listed
     // in the BluetoothSubtypeManager. Saves having to repeat the code on every device specific test,

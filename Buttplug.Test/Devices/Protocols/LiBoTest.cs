@@ -1,4 +1,4 @@
-﻿// <copyright file="MysteryVibeTests.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="LiBoTest.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -9,37 +9,37 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
-using Buttplug.Server.Test.Util;
+using Buttplug.Test.Devices.Protocols.Utils;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace Buttplug.Test.Server.Bluetooth.Devices
+namespace Buttplug.Test.Devices.Protocols
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
-    [TestFixture]
-    public class CuemeTests
+    internal class LiBoTest
     {
-        [NotNull] private readonly ProtocolTestUtils _testUtil = new ProtocolTestUtils();
+        [NotNull]
+        private ProtocolTestUtils testUtil;
 
         [SetUp]
         public async Task Init()
         {
-            await _testUtil.SetupTest<CuemeProtocol>("FUNCODE_");
+            testUtil = new ProtocolTestUtils();
+            await testUtil.SetupTest<LiBoProtocol>("PiPiJing");
         }
 
         [Test]
         public void TestAllowedMessages()
         {
-            _testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
+            testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
             {
                 { typeof(StopDeviceCmd), 0 },
                 { typeof(SingleMotorVibrateCmd), 0 },
-                { typeof(VibrateCmd), 4 },
+                { typeof(VibrateCmd), 1 },
             });
         }
 
@@ -51,18 +51,18 @@ namespace Buttplug.Test.Server.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x17 }, Endpoints.Tx),
+                    (new byte[] { 2 }, Endpoints.TxVibrate),
                 };
 
-            await _testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
+            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
             expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x00 }, Endpoints.Tx),
+                    (new byte[] { 0 }, Endpoints.TxVibrate),
                 };
 
-            await _testUtil.TestDeviceMessageOnWrite(new StopDeviceCmd(4), expected, false);
+            await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
         }
 
         [Test]
@@ -71,10 +71,10 @@ namespace Buttplug.Test.Server.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x17 }, Endpoints.Tx),
+                    (new byte[] { 2 }, Endpoints.TxVibrate),
                 };
 
-            await _testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
+            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
         }
 
         [Test]
@@ -83,16 +83,16 @@ namespace Buttplug.Test.Server.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x17 }, Endpoints.Tx),
+                    (new byte[] { 2 }, Endpoints.TxVibrate),
                 };
 
-            await _testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 4), expected, false);
+            await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
         }
 
         [Test]
         public void TestInvalidVibrateCmd()
         {
-            _testUtil.TestInvalidVibrateCmd(6);
+            testUtil.TestInvalidVibrateCmd(1);
         }
     }
 }

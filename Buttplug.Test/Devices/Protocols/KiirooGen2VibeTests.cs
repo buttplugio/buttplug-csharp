@@ -10,16 +10,15 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
-using Buttplug.Server.Test.Util;
+using Buttplug.Test.Devices.Protocols.Utils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test.Bluetooth.Devices
+namespace Buttplug.Test.Devices.Protocols
 {
     // This info class represents multiple device types, so we can't call setup for our test utils
     // here, they need to be generated per-loop.

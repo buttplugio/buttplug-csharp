@@ -9,39 +9,36 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
-using Buttplug.Server.Test.Util;
+using Buttplug.Test.Devices.Protocols.Utils;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test.Bluetooth.Devices
+namespace Buttplug.Test.Devices.Protocols
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
-    public class MysteryVibeTests
+    public class CuemeTests
     {
-        [NotNull]
-        private ProtocolTestUtils testUtil;
+        [NotNull] private readonly ProtocolTestUtils _testUtil = new ProtocolTestUtils();
 
         [SetUp]
         public async Task Init()
         {
-            testUtil = new ProtocolTestUtils();
-            await testUtil.SetupTest<MysteryVibeProtocol>("MV Crescendo");
+            await _testUtil.SetupTest<CuemeProtocol>("FUNCODE_");
         }
 
         [Test]
         public void TestAllowedMessages()
         {
-            testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
+            _testUtil.TestDeviceAllowedMessages(new Dictionary<System.Type, uint>()
             {
                 { typeof(StopDeviceCmd), 0 },
                 { typeof(SingleMotorVibrateCmd), 0 },
-                { typeof(VibrateCmd), 6 },
+                { typeof(VibrateCmd), 4 },
             });
         }
 
@@ -53,18 +50,18 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (Enumerable.Repeat((byte)(MysteryVibeProtocol.MaxSpeed * 0.5), 6).ToArray(), Endpoints.TxVibrate),
+                    (new byte[] { 0x17 }, Endpoints.Tx),
                 };
 
-            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
+            await _testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
 
             expected =
                 new List<(byte[], string)>()
                 {
-                    (MysteryVibeProtocol.NullSpeed, Endpoints.TxVibrate),
+                    (new byte[] { 0x00 }, Endpoints.Tx),
                 };
 
-            await testUtil.TestDeviceMessageOnWrite(new StopDeviceCmd(4), expected, false);
+            await _testUtil.TestDeviceMessageOnWrite(new StopDeviceCmd(4), expected, false);
         }
 
         [Test]
@@ -73,10 +70,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (Enumerable.Repeat((byte)(MysteryVibeProtocol.MaxSpeed * 0.5), 6).ToArray(), Endpoints.TxVibrate),
+                    (new byte[] { 0x17 }, Endpoints.Tx),
                 };
 
-            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
+            await _testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
         }
 
         [Test]
@@ -85,16 +82,16 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (Enumerable.Repeat((byte)(MysteryVibeProtocol.MaxSpeed * 0.5), 6).ToArray(), Endpoints.TxVibrate),
+                    (new byte[] { 0x17 }, Endpoints.Tx),
                 };
 
-            await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 6), expected, false);
+            await _testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 4), expected, false);
         }
 
         [Test]
         public void TestInvalidVibrateCmd()
         {
-            testUtil.TestInvalidVibrateCmd(6);
+            _testUtil.TestInvalidVibrateCmd(6);
         }
     }
 }

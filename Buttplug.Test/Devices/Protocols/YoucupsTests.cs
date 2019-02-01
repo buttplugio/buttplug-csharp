@@ -14,15 +14,15 @@ using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
-using Buttplug.Server.Test.Util;
+using Buttplug.Test.Devices.Protocols.Utils;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test.Bluetooth.Devices
+namespace Buttplug.Test.Devices.Protocols
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
-    public class PicobongTests
+    public class YoucupsTests
     {
         [NotNull]
         private ProtocolTestUtils testUtil;
@@ -31,7 +31,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task Init()
         {
             testUtil = new ProtocolTestUtils();
-            await testUtil.SetupTest<PicobongProtocol>("Diver");
+            await testUtil.SetupTest<YoucupsProtocol>("Youcups");
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x01, 0x01, 0x05 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("$SYS,4?"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -61,7 +61,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x01, 0xff, 0x00 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("$SYS,0?"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -73,7 +73,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x01, 0x01, 0x05 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("$SYS,4?"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -85,7 +85,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x01, 0x01, 0x05 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("$SYS,4?"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);

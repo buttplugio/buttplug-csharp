@@ -1,4 +1,4 @@
-﻿// <copyright file="YoucupsTests.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="MysteryVibeTests.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -9,20 +9,20 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
 using Buttplug.Server.Bluetooth.Devices;
-using Buttplug.Server.Test.Util;
+using Buttplug.Test.Devices.Protocols.Utils;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test.Bluetooth.Devices
+namespace Buttplug.Test.Devices.Protocols
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
-    public class YoucupsTests
+    public class MysteryVibeTests
     {
         [NotNull]
         private ProtocolTestUtils testUtil;
@@ -31,7 +31,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task Init()
         {
             testUtil = new ProtocolTestUtils();
-            await testUtil.SetupTest<YoucupsProtocol>("Youcups");
+            await testUtil.SetupTest<MysteryVibeProtocol>("MV Crescendo");
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             {
                 { typeof(StopDeviceCmd), 0 },
                 { typeof(SingleMotorVibrateCmd), 0 },
-                { typeof(VibrateCmd), 1 },
+                { typeof(VibrateCmd), 6 },
             });
         }
 
@@ -53,7 +53,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,4?"), Endpoints.Tx),
+                    (Enumerable.Repeat((byte)(MysteryVibeProtocol.MaxSpeed * 0.5), 6).ToArray(), Endpoints.TxVibrate),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -61,10 +61,10 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             expected =
                 new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,0?"), Endpoints.Tx),
+                    (MysteryVibeProtocol.NullSpeed, Endpoints.TxVibrate),
                 };
 
-            await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
+            await testUtil.TestDeviceMessageOnWrite(new StopDeviceCmd(4), expected, false);
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,4?"), Endpoints.Tx),
+                    (Enumerable.Repeat((byte)(MysteryVibeProtocol.MaxSpeed * 0.5), 6).ToArray(), Endpoints.TxVibrate),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -85,16 +85,16 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (Encoding.ASCII.GetBytes("$SYS,4?"), Endpoints.Tx),
+                    (Enumerable.Repeat((byte)(MysteryVibeProtocol.MaxSpeed * 0.5), 6).ToArray(), Endpoints.TxVibrate),
                 };
 
-            await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
+            await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 6), expected, false);
         }
 
         [Test]
         public void TestInvalidVibrateCmd()
         {
-            testUtil.TestInvalidVibrateCmd(1);
+            testUtil.TestInvalidVibrateCmd(6);
         }
     }
 }

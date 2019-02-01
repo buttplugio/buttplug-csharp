@@ -9,7 +9,7 @@ using Buttplug.Server.Util;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test
+namespace Buttplug.Test.Devices.Protocols.Utils
 {
     [TestFixture]
     public class FleshlightHelperTests

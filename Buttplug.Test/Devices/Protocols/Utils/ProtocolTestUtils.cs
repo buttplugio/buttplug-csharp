@@ -22,7 +22,7 @@ using FluentAssertions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test.Util
+namespace Buttplug.Test.Devices.Protocols.Utils
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public interface IProtocolTestUtils

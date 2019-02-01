@@ -1,4 +1,4 @@
-﻿// <copyright file="MagicMotionTests.cs" company="Nonpolynomial Labs LLC">
+﻿// <copyright file="LovenseTests.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -8,20 +8,19 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
-using Buttplug.Server.Bluetooth.Devices;
-using Buttplug.Server.Test.Util;
+using Buttplug.Devices.Protocols;
+using Buttplug.Test.Devices.Protocols.Utils;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
-namespace Buttplug.Server.Test.Bluetooth.Devices
+namespace Buttplug.Test.Devices.Protocols
 {
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
-    public class MagicMotionSingleVibeTests
+    public class LovenseVibratorTests
     {
         [NotNull]
         private ProtocolTestUtils testUtil;
@@ -30,7 +29,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task Init()
         {
             testUtil = new ProtocolTestUtils();
-            await testUtil.SetupTest<MagicMotionProtocol>("Smart Mini Vibe");
+
+            // Just leave name the same as the prefix, we'll set device type via initialize.
+            await testUtil.SetupTest<LovenseProtocol>("LVS", false);
+            testUtil.AddExpectedRead(Endpoints.Tx, Encoding.ASCII.GetBytes("W:39:000000000000"));
+            await testUtil.Initialize();
+        }
+
+        [Test]
+        public void TestDeviceName()
+        {
+            testUtil.TestDeviceName("Lovense Domi v39");
         }
 
         [Test]
@@ -41,18 +50,18 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 { typeof(StopDeviceCmd), 0 },
                 { typeof(SingleMotorVibrateCmd), 0 },
                 { typeof(VibrateCmd), 1 },
+                { typeof(LovenseCmd), 0 },
             });
         }
 
         // StopDeviceCmd noop test handled in GeneralDeviceTests
-
         [Test]
         public async Task TestStopDeviceCmd()
         {
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x32, 0x64, 0x00 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -60,7 +69,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate:0;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -72,7 +81,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x32, 0x64, 0x00 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -84,7 +93,7 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x32, 0x32, 0x00, 0x04, 0x08, 0x32, 0x64, 0x00 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
@@ -97,9 +106,8 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
     }
 
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
-    public class MagicMotionDualVibeTests
+    public class LovenseDualVibratorTests
     {
         [NotNull]
         private ProtocolTestUtils testUtil;
@@ -108,7 +116,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task Init()
         {
             testUtil = new ProtocolTestUtils();
-            await testUtil.SetupTest<MagicMotionProtocol>("Eidolon");
+
+            // Just leave name the same as the prefix, we'll set device type via initialize.
+            await testUtil.SetupTest<LovenseProtocol>("LVS", false);
+            testUtil.AddExpectedRead(Endpoints.Tx, Encoding.ASCII.GetBytes("P:39:000000000000"));
+            await testUtil.Initialize();
+        }
+
+        [Test]
+        public void TestDeviceName()
+        {
+            testUtil.TestDeviceName("Lovense Edge v39");
         }
 
         [Test]
@@ -119,18 +137,19 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 { typeof(StopDeviceCmd), 0 },
                 { typeof(SingleMotorVibrateCmd), 0 },
                 { typeof(VibrateCmd), 2 },
+                { typeof(LovenseCmd), 0 },
             });
         }
 
         // StopDeviceCmd noop test handled in GeneralDeviceTests
-
         [Test]
         public async Task TestStopDeviceCmd()
         {
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x32, 0x64, 0x00, 0x04, 0x08, 0x32, 0x64, 0x01 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate1:10;"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate2:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -138,7 +157,8 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00, 0x04, 0x08, 0x00, 0x64, 0x01 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate1:0;"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate2:0;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -150,7 +170,8 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x32, 0x64, 0x00, 0x04, 0x08, 0x32, 0x64, 0x01 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate1:10;"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate2:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -162,7 +183,8 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x10, 0xff, 0x04, 0x0a, 0x32, 0x0a, 0x00, 0x04, 0x08, 0x32, 0x64, 0x00, 0x04, 0x08, 0x32, 0x64, 0x01 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate1:10;"), Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Vibrate2:10;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 2), expected, false);
@@ -175,10 +197,8 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         }
     }
 
-    
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
-    public class LoveLifeKrushTests
+    public class LovenseRotatorTests
     {
         [NotNull]
         private ProtocolTestUtils testUtil;
@@ -187,7 +207,17 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
         public async Task Init()
         {
             testUtil = new ProtocolTestUtils();
-            await testUtil.SetupTest<MagicMotionProtocol>("Krush");
+
+            // Just leave name the same as the prefix, we'll set device type via initialize.
+            await testUtil.SetupTest<LovenseProtocol>("LVS", false);
+            testUtil.AddExpectedRead(Endpoints.Tx, Encoding.ASCII.GetBytes("A:13:000000000000"));
+            await testUtil.Initialize();
+        }
+
+        [Test]
+        public void TestDeviceName()
+        {
+            testUtil.TestDeviceName("Lovense Nora v13");
         }
 
         [Test]
@@ -198,59 +228,62 @@ namespace Buttplug.Server.Test.Bluetooth.Devices
                 { typeof(StopDeviceCmd), 0 },
                 { typeof(SingleMotorVibrateCmd), 0 },
                 { typeof(VibrateCmd), 1 },
+                { typeof(RotateCmd), 1 },
+                { typeof(LovenseCmd), 0 },
             });
         }
 
         // StopDeviceCmd noop test handled in GeneralDeviceTests
-
         [Test]
         public async Task TestStopDeviceCmd()
         {
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x46, 0x46, 0x00, 0x04, 0x08, 0x26, 0x64, 0x00 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Rotate:10;"), Endpoints.Tx),
                 };
 
-            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
+            await testUtil.TestDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 1), expected, false);
 
             expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x46, 0x46, 0x00, 0x04, 0x08, 0x00, 0x64, 0x00 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Rotate:0;"), Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
         }
 
         [Test]
-        public async Task TestSingleMotorVibrateCmd()
+        public async Task TestRotateCmd()
         {
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x46, 0x46, 0x00, 0x04, 0x08, 0x26, 0x64, 0x00 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("Rotate:10;"), Endpoints.Tx),
                 };
 
-            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
-        }
+            await testUtil.TestDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 1), expected, false);
 
-        [Test]
-        public async Task TestVibrateCmd()
-        {
-            var expected =
+            expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0x0b, 0xff, 0x04, 0x0a, 0x46, 0x46, 0x00, 0x04, 0x08, 0x26, 0x64, 0x00 }, Endpoints.Tx),
+                    (Encoding.ASCII.GetBytes("RotateChange;"), Endpoints.Tx),
                 };
 
-            await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
+            await testUtil.TestDeviceMessage(RotateCmd.Create(4, 1, 0.5, false, 1), expected, false);
         }
 
         [Test]
         public void TestInvalidVibrateCmd()
         {
-            testUtil.TestInvalidVibrateCmd(2);
+            testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 0));
+            testUtil.TestInvalidDeviceMessage(RotateCmd.Create(4, 1, 0.5, true, 2));
+            testUtil.TestInvalidDeviceMessage(
+                new VibrateCmd(4, new List<VibrateCmd.VibrateSubcommand>()
+                {
+                    new VibrateCmd.VibrateSubcommand(0xffffffff, 0.5),
+                }));
         }
     }
 }
