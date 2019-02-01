@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Buttplug.Devices.Configuration;
-using Buttplug.Devices.Protocols;
+﻿using Buttplug.Devices.Configuration;
 using FluentAssertions;
 using NUnit.Framework;
 

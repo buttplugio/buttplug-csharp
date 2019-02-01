@@ -10,7 +10,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Buttplug.Core.Logging;
 using Buttplug.Devices;
 using FluentAssertions;
 using NUnit.Framework;

@@ -12,9 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Client.Test;
 using Buttplug.Core.Logging;
-using Buttplug.Core.Test;
 using Buttplug.Server.Connectors.IPCServer;
-using Buttplug.Server.Test;
 using Buttplug.Test;
 using NUnit.Framework;
 

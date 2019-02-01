@@ -8,9 +8,6 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Buttplug.Core.Logging;
-using Buttplug.Core.Messages;
 using NUnit.Framework;
 
 namespace Buttplug.Test.Devices.Protocols

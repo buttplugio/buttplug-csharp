@@ -12,7 +12,6 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System.Diagnostics.CodeAnalysis;
-using Buttplug.Test;
 
 namespace Buttplug.Test.Server
 {

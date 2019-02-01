@@ -17,10 +17,8 @@ using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
-using Buttplug.Test;
 using FluentAssertions;
 using JetBrains.Annotations;
-using NUnit.Framework;
 
 namespace Buttplug.Test.Devices.Protocols.Utils
 {
