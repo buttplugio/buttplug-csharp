@@ -60,9 +60,12 @@ namespace Buttplug.Devices
             [NotNull] IButtplugDeviceProtocol aProtocol,
             [NotNull] IButtplugDeviceImpl aDevice)
         {
+            // Protocol can be null if activator construction from type constructor fails
+            ButtplugUtils.ArgumentNotNull(aProtocol, nameof(aProtocol));
             _protocol = aProtocol;
             _device = aDevice;
             BpLogger = aLogManager.GetLogger(GetType());
+            _device.DeviceRemoved += OnDeviceRemoved;
         }
 
         /// <summary>
@@ -74,18 +77,12 @@ namespace Buttplug.Devices
         public ButtplugDevice([NotNull] IButtplugLogManager aLogManager,
             [NotNull] Type aProtocolType,
             [NotNull] IButtplugDeviceImpl aDevice)
-        {
-            _device = aDevice;
+        : this(aLogManager,
             // A lot of trust happening in the structure of protocol constructors here.
             // todo should probably document the many ways this can throw.
-            _protocol = (IButtplugDeviceProtocol)Activator.CreateInstance(aProtocolType, aLogManager, _device);
-            if (_protocol == null)
-            {
-                // Treat it like we just tried to reference the protocol.
-                throw new NullReferenceException("Protocol generation did not generate a valid protocol");
-            }
-
-            BpLogger = aLogManager.GetLogger(GetType());
+            (IButtplugDeviceProtocol)Activator.CreateInstance(aProtocolType, aLogManager, aDevice),
+            aDevice)
+        {
         }
 
         public static ButtplugDevice Create<T>(IButtplugLogManager aLogManager,
@@ -124,6 +121,11 @@ namespace Buttplug.Devices
         public void Disconnect()
         {
             _device.Disconnect();
+        }
+
+        protected void OnDeviceRemoved(object aObj, EventArgs aArgs)
+        {
+            InvokeDeviceRemoved();
         }
 
         /// <summary>

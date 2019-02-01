@@ -13,8 +13,6 @@ namespace Buttplug.Test
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class TestDeviceImpl : ButtplugDeviceImpl
     {
-        public override string Name { get; }
-
         public class WriteData
         {
             public uint MsgId;
@@ -28,21 +26,16 @@ namespace Buttplug.Test
             public byte[] Value;
         }
 
-        public override string Address { get; }
-        public override bool Connected { get; }
-
         public List<WriteData> LastWritten = new List<WriteData>();
         public Dictionary<string, List<byte[]>> ExpectedRead = new Dictionary<string, List<byte[]>>();
 
-        public override event EventHandler DeviceRemoved;
-
         public event EventHandler ValueWritten;
 
-#pragma warning disable CS0067 // Unused event (We'll use it once we have more notifications)
-        public override event EventHandler<ButtplugDeviceDataEventArgs> DataReceived;
-#pragma warning restore CS0067
-
         public bool Removed;
+
+        private bool _connected;
+
+        public override bool Connected => _connected;
 
         public TestDeviceImpl(IButtplugLogManager aLogManager, string aName)
            : base(aLogManager)
@@ -50,6 +43,7 @@ namespace Buttplug.Test
             Name = aName;
             Address = new Random().Next(0, 100).ToString();
             Removed = false;
+            _connected = true;
             DeviceRemoved += (obj, args) => { Removed = true; };
         }
 
@@ -106,7 +100,8 @@ namespace Buttplug.Test
 
         public override void Disconnect()
         {
-            DeviceRemoved?.Invoke(this, new EventArgs());
+            _connected = false;
+            InvokeDeviceRemoved();
         }
     }
 }

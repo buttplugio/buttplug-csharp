@@ -1,7 +1,7 @@
-﻿using Buttplug.Core.Messages;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core.Messages;
 using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 
@@ -9,17 +9,18 @@ namespace Buttplug.Devices
 {
     public abstract class ButtplugDeviceImpl : IButtplugDeviceImpl
     {
-        public abstract event EventHandler<ButtplugDeviceDataEventArgs> DataReceived;
+        public event EventHandler<ButtplugDeviceDataEventArgs> DataReceived;
 
-        public abstract event EventHandler DeviceRemoved;
+        public event EventHandler DeviceRemoved;
 
-        public abstract string Name { get; }
+        public string Name { get; protected set; }
 
-        public abstract string Address { get; }
+        public string Address { get; protected set; }
 
+        /// <summary>
+        /// Connected is abstract, as implementing classes may use it as a computed property.
+        /// </summary>
         public abstract bool Connected { get; }
-
-        public abstract void Disconnect();
 
         [NotNull]
         protected readonly IButtplugLog BpLogger;
@@ -43,5 +44,17 @@ namespace Buttplug.Devices
         public abstract Task SubscribeToUpdatesAsync();
 
         public abstract Task SubscribeToUpdatesAsync(string aEndpointName);
+
+        public abstract void Disconnect();
+
+        protected void InvokeDeviceRemoved()
+        {
+            DeviceRemoved?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected void InvokeDataReceived(ButtplugDeviceDataEventArgs aArgs)
+        {
+            DataReceived?.Invoke(this, aArgs);
+        }
     }
 }

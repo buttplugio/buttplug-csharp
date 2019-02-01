@@ -24,8 +24,6 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
     internal class UWPBluetoothDeviceInterface : ButtplugDeviceImpl
     {
-        public override string Name => _bleDevice.Name;
-
         private readonly Dictionary<string, GattCharacteristic> _indexedChars = new Dictionary<string, GattCharacteristic>();
 
         [NotNull]
@@ -37,12 +35,6 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         [CanBeNull]
         private BluetoothLEDevice _bleDevice;
 
-        public override event EventHandler<ButtplugDeviceDataEventArgs> DataReceived;
-
-        public override event EventHandler DeviceRemoved;
-
-        public override string Address => _bleDevice.BluetoothAddress.ToString();
-
         public override bool Connected => _bleDevice != null && _bleDevice.ConnectionStatus == BluetoothConnectionStatus.Connected;
 
         protected UWPBluetoothDeviceInterface(
@@ -51,7 +43,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         : base(aLogManager)
         {
             _bleDevice = aDevice;
-
+            Name = _bleDevice.Name;
+            Address = _bleDevice.BluetoothAddress.ToString();
             _bleDevice.ConnectionStatusChanged += ConnectionStatusChangedHandler;
         }
 

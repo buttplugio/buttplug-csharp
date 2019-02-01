@@ -28,6 +28,7 @@ namespace Buttplug.Test
             IButtplugDeviceImpl aInterface)
             : base(aLogManager, "Test Device", aInterface)
         {
+            Name = aInterface.Name;
             AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
             AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 2 });
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);

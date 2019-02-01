@@ -25,7 +25,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             _device = aDevice;
         }
 
-        public Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse,
+        public override Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse,
             CancellationToken aToken)
         {
             if (aValue.Length != 4)
@@ -47,9 +47,42 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
         }
 
+        public override bool Connected => _device != null;
+
         public override void Disconnect()
         {
             _device = null;
+        }
+
+        // Unused for Gamepad controllers currently.
+        public override Task<ButtplugMessage> WriteValueAsync(uint aMsgId, string aEndpointName, byte[] aValue, bool aWriteWithResponse,
+            CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Unused for Gamepad controllers currently.
+        public override Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Unused for Gamepad controllers currently.
+        public override Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, string aEndpointName, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Unused for Gamepad controllers currently.
+        public override Task SubscribeToUpdatesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        // Unused for Gamepad controllers currently.
+        public override Task SubscribeToUpdatesAsync(string aEndpointName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Buttplug.Test
 
         public void RemoveDevice()
         {
+            _device.Disconnect();
             InvokeDeviceRemoved();
         }
     }
