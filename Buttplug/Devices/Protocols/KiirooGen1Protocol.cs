@@ -11,11 +11,10 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Devices;
 using Buttplug.Server.Util;
 using JetBrains.Annotations;
 
-namespace Buttplug.Server.Bluetooth.Devices
+namespace Buttplug.Devices.Protocols
 {
     internal class KiirooGen1Protocol : ButtplugDeviceProtocol
     {

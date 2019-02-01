@@ -6,7 +6,7 @@
 
 using JetBrains.Annotations;
 
-namespace Buttplug.Server.Connectors.IPCServer
+namespace Buttplug.Server.Connectors
 {
     public class IPCConnectionEventArgs
     {

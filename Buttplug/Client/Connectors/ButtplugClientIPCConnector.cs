@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
-namespace Buttplug.Client.Connectors.IPCConnector
+namespace Buttplug.Client.Connectors
 {
     public class ButtplugClientIPCConnector : ButtplugRemoteJSONConnector, IButtplugClientConnector
     {

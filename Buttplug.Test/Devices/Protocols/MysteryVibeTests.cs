@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
-using Buttplug.Server.Bluetooth.Devices;
+using Buttplug.Devices.Protocols;
 using Buttplug.Test.Devices.Protocols.Utils;
 using JetBrains.Annotations;
 using NUnit.Framework;

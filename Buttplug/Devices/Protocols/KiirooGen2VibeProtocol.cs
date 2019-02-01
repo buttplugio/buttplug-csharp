@@ -10,10 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Devices;
 using JetBrains.Annotations;
 
-namespace Buttplug.Server.Bluetooth.Devices
+namespace Buttplug.Devices.Protocols
 {
     // ReSharper disable once InconsistentNaming
     internal class KiirooGen2VibeProtocol : ButtplugDeviceProtocol

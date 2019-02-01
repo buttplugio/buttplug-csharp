@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using Buttplug.Core;
 using Buttplug.Devices.Protocols;
-using Buttplug.Server.Bluetooth.Devices;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 

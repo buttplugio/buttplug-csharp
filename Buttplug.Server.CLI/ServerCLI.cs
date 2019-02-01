@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Buttplug.Server.Connectors.WebsocketServer;
 using Buttplug.Server;
-using Buttplug.Server.Connectors.IPCServer;
+using Buttplug.Server.Connectors;
 using Google.Protobuf;
 
 namespace Buttplug.Server.CLI

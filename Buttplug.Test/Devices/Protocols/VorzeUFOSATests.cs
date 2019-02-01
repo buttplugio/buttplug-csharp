@@ -9,7 +9,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Buttplug.Server.Bluetooth.Devices;
+using Buttplug.Devices.Protocols;
 using NUnit.Framework;
 
 namespace Buttplug.Test.Devices.Protocols
