@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.XI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.WinUSBManager", "Buttplug.Server.Managers.WinUSBManager\Buttplug.Server.Managers.WinUSBManager.csproj", "{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.HidManager", "Buttplug.Server.Managers.HidManager\Buttplug.Server.Managers.HidManager.csproj", "{83574729-6EB4-43E9-B7CC-AC5725380038}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client.Connectors.WebsocketConnector.Test", "Buttplug.Client.Connectors.WebsocketConnector.Test\Buttplug.Client.Connectors.WebsocketConnector.Test.csproj", "{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Connectors.WebsocketServer", "Buttplug.Server.Connectors.WebsocketServer\Buttplug.Server.Connectors.WebsocketServer.csproj", "{048D9ED5-6AD4-4BF7-A372-709F795D70FD}"
@@ -77,12 +75,6 @@ Global
 		{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F5DAB4B-184B-4B7E-9F40-339C7F5E216F}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83574729-6EB4-43E9-B7CC-AC5725380038}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
