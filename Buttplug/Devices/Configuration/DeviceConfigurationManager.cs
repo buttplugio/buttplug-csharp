@@ -143,6 +143,25 @@ namespace Buttplug.Devices.Configuration
             _blackList.Add(aConfiguration);
         }
 
+        public IEnumerable<ButtplugDeviceFactory> GetAllFactoriesOfType<T>()
+        where T : IProtocolConfiguration
+        {
+            var factories = new List<ButtplugDeviceFactory>();
+            foreach (var protocolConfigs in _protocolConfigs)
+            {
+                foreach (var deviceConfig in protocolConfigs.Value)
+                {
+                    // todo we should probably log if we fail this check.
+                    if (deviceConfig is T && _protocolTypes.ContainsKey(protocolConfigs.Key))
+                    {
+                        factories.Add(new ButtplugDeviceFactory(deviceConfig, _protocolTypes[protocolConfigs.Key]));
+                    }
+                }
+            }
+
+            return factories;
+        }
+
         public ButtplugDeviceFactory Find(IProtocolConfiguration aConfig)
         {
             if (_whiteList.Any())

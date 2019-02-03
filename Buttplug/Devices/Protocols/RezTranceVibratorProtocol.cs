@@ -9,29 +9,22 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using MadWizard.WinUSBNet;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Managers.WinUSBManager
 {
-    internal class RezTranceVibratorDevice : ButtplugDevice
+    internal class RezTranceVibratorProtocol : ButtplugDeviceProtocol
     {
         private static uint _vibratorCount = 1;
-        private USBDevice _device;
 
-        public RezTranceVibratorDevice(IButtplugLogManager aLogManager, USBDevice aDevice, uint aIndex)
-            : base(aLogManager, "Trancevibrator " + aIndex, "Trancevibrator " + aIndex)
+        public RezTranceVibratorProtocol(IButtplugLogManager aLogManager, ButtplugDeviceImpl aDevice)
+            : base(aLogManager, "Trancevibrator", aDevice)
         {
-            _device = aDevice;
             AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
             AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes { FeatureCount = 1 });
-        }
-
-        public override void Disconnect()
-        {
         }
 
         private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -40,7 +33,7 @@ namespace Buttplug.Server.Managers.WinUSBManager
             return HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken);
         }
 
-        private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+        private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = CheckMessageHandler<VibrateCmd>(aMsg);
 
@@ -59,17 +52,11 @@ namespace Buttplug.Server.Managers.WinUSBManager
                         cmdMsg.Id);
                 }
 
-                var speed = (byte)Math.Floor(v.Speed * 255);
-                _device.ControlOut(
-                    0x02 << 5 | // Vendor Type
-                    0x01 | // Interface Recipient
-                    0x00, // Out Enpoint
-                    1,
-                    speed,
-                    0);
+                await Interface.WriteValueAsync(Endpoints.TxVendorControl, new[] { (byte)Math.Floor(v.Speed * 255) },
+                     aToken);
             }
 
-            return Task.FromResult<ButtplugMessage>(new Ok(aMsg.Id));
+            return new Ok(aMsg.Id);
         }
 
         private Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)

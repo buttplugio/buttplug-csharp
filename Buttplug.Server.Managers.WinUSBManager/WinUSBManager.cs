@@ -6,6 +6,7 @@
 
 using System;
 using Buttplug.Core.Logging;
+using Buttplug.Devices.Configuration;
 using MadWizard.WinUSBNet;
 using Microsoft.Win32;
 
@@ -21,90 +22,92 @@ namespace Buttplug.Server.Managers.WinUSBManager
 
         public override void StartScanning()
         {
-            BpLogger.Info("WinUSBManager start scanning");
-            var deviceKey =
-                Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Enum\USB\VID_0B49&PID_064F");
-            if (deviceKey == null)
+            foreach (var factory in DeviceConfigurationManager.Manager.GetAllFactoriesOfType<USBProtocolConfiguration>())
             {
-                BpLogger.Debug("No TranceVibrator Devices found in registry.");
-                InvokeScanningFinished();
-                return;
-            }
+                BpLogger.Info("WinUSBManager start scanning");
+                var deviceKey =
+                    Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Enum\USB\VID_0B49&PID_064F");
+                if (deviceKey == null)
+                {
+                    BpLogger.Debug("No TranceVibrator Devices found in registry.");
+                    InvokeScanningFinished();
+                    return;
+                }
 
-            var deviceKeyNames = deviceKey.GetSubKeyNames();
-            if (deviceKeyNames.Length == 0)
-            {
-                BpLogger.Debug("No TranceVibrator Devices with drivers found in registry.");
-                InvokeScanningFinished();
-                return;
-            }
+                var deviceKeyNames = deviceKey.GetSubKeyNames();
+                if (deviceKeyNames.Length == 0)
+                {
+                    BpLogger.Debug("No TranceVibrator Devices with drivers found in registry.");
+                    InvokeScanningFinished();
+                    return;
+                }
 
-            var deviceSubKey = deviceKey.OpenSubKey(deviceKeyNames[0]);
-            if (deviceSubKey == null)
-            {
-                BpLogger.Debug("No TranceVibrator Devices with drivers subkeys found in registry.");
-                InvokeScanningFinished();
-                return;
-            }
+                var deviceSubKey = deviceKey.OpenSubKey(deviceKeyNames[0]);
+                if (deviceSubKey == null)
+                {
+                    BpLogger.Debug("No TranceVibrator Devices with drivers subkeys found in registry.");
+                    InvokeScanningFinished();
+                    return;
+                }
 
-            var deviceParameters = deviceSubKey.OpenSubKey("Device Parameters");
-            if (deviceParameters == null)
-            {
-                BpLogger.Debug("No TranceVibrator Devices with drivers parameters found in registry.");
-                InvokeScanningFinished();
-                return;
-            }
+                var deviceParameters = deviceSubKey.OpenSubKey("Device Parameters");
+                if (deviceParameters == null)
+                {
+                    BpLogger.Debug("No TranceVibrator Devices with drivers parameters found in registry.");
+                    InvokeScanningFinished();
+                    return;
+                }
 
-            var deviceRegistryObject = deviceParameters.GetValue("DeviceInterfaceGUIDs", string.Empty);
-            string deviceGuid = string.Empty;
-            if (deviceRegistryObject == null)
-            {
-                BpLogger.Debug("No TranceVibrator Devices Driver GUIDs found in registry.");
-                InvokeScanningFinished();
-                return;
-            }
+                var deviceRegistryObject = deviceParameters.GetValue("DeviceInterfaceGUIDs", string.Empty);
+                string deviceGuid = string.Empty;
+                if (deviceRegistryObject == null)
+                {
+                    BpLogger.Debug("No TranceVibrator Devices Driver GUIDs found in registry.");
+                    InvokeScanningFinished();
+                    return;
+                }
 
-            try
-            {
-                var guidStrings = (string[])deviceRegistryObject;
-                deviceGuid = guidStrings[0];
-            }
-            catch (Exception)
-            {
                 try
                 {
-                    // Some versions of Zadig, the registry key writes as a string, not a string array?
-                    deviceGuid = (string)deviceRegistryObject;
+                    var guidStrings = (string[])deviceRegistryObject;
+                    deviceGuid = guidStrings[0];
                 }
                 catch (Exception)
                 {
-                    BpLogger.Error("Cannot cast device GUID from registry value, cannot connect to Trancevibe.");
+                    try
+                    {
+                        // Some versions of Zadig, the registry key writes as a string, not a string array?
+                        deviceGuid = (string)deviceRegistryObject;
+                    }
+                    catch (Exception)
+                    {
+                        BpLogger.Error("Cannot cast device GUID from registry value, cannot connect to Trancevibe.");
+                    }
                 }
-            }
 
-            if (deviceGuid.Length == 0)
-            {
-                BpLogger.Error("Cannot find device GUID from registry value, cannot connect to Trancevibe.");
-                return;
-            }
+                if (deviceGuid.Length == 0)
+                {
+                    BpLogger.Error("Cannot find device GUID from registry value, cannot connect to Trancevibe.");
+                    return;
+                }
 
-            // Only valid for our Trancevibrator install
-            var devices = USBDevice.GetDevices(deviceGuid);
-            if (devices == null || devices.Length == 0)
-            {
-                BpLogger.Error("No USB Device found!");
-                InvokeScanningFinished();
-                return;
-            }
+                // Only valid for our Trancevibrator install
+                var devices = USBDevice.GetDevices(deviceGuid);
+                if (devices == null || devices.Length == 0)
+                {
+                    BpLogger.Error("No USB Device found!");
+                    InvokeScanningFinished();
+                    return;
+                }
 
-            uint index = 0;
-            foreach (var deviceinfo in devices)
-            {
-                var device = new USBDevice(deviceinfo);
-                BpLogger.Debug("Found TranceVibrator Device");
-                var tvDevice = new RezTranceVibratorDevice(LogManager, device, index);
-                index += 1;
-                InvokeDeviceAdded(new DeviceAddedEventArgs(tvDevice));
+                uint index = 0;
+                foreach (var deviceinfo in devices)
+                {
+                    var device = new USBDevice(deviceinfo);
+                    BpLogger.Debug("Found TranceVibrator Device");
+                    var bpDevice = factory.CreateDevice(LogManager, new WinUSBDeviceImpl(LogManager, device)).Result;
+                    InvokeDeviceAdded(new DeviceAddedEventArgs(bpDevice));
+                }
             }
 
             InvokeScanningFinished();

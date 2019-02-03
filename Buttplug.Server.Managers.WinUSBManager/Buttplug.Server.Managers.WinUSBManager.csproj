@@ -45,7 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RezTranceVibratorDevice.cs" />
+    <Compile Include="WinUSBDeviceImpl.cs" />
     <Compile Include="WinUSBManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

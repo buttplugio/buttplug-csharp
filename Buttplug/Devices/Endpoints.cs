@@ -27,5 +27,7 @@
         public static string TxVibrate = "txvibrate";
 
         public static string TxShock = "txshock";
+
+        public static string TxVendorControl = "txvendorcontrol";
     }
 }
