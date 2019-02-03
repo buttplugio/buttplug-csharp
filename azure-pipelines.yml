@@ -29,10 +29,10 @@ variables:
 steps:
 - task: NuGetToolInstaller@0
 
-# Get codecov 
-- powershell: choco install -y -r --no-progress resharper-clt.portable
-  condition: eq( variables['Agent.OS'], 'Windows_NT' )
-  displayName: Get Windows dependencies (resharper)
+# Get codecov, resharper, etc.
+# - powershell: choco install -y -r --no-progress resharper-clt.portable
+#   condition: eq( variables['Agent.OS'], 'Windows_NT' )
+#   displayName: Get Windows dependencies (resharper)
     
 - task: NuGetCommand@2
   inputs:
@@ -44,12 +44,15 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- powershell: |
-    InspectCode.exe --output=resharper-clt-output.xml --project="Buttplug*" Buttplug.sln;
-    $result = [xml](Get-Content .\resharper-clt-output.xml)
-    $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
-  condition: eq( variables['Agent.OS'], 'Windows_NT' )
-  displayName: Run resharper warnings
+
+# Run Resharper
+# Running it works, outputing warnings doesn't.
+# - powershell: |
+#     InspectCode.exe --output=resharper-clt-output.xml --project="Buttplug*" Buttplug.sln;
+#     $result = [xml](Get-Content .\resharper-clt-output.xml)
+#     $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
+#   condition: eq( variables['Agent.OS'], 'Windows_NT' )
+#   displayName: Run resharper warnings
 
 - task: VSTest@2
   inputs:
