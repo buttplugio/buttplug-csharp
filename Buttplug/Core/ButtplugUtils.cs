@@ -42,7 +42,7 @@ namespace Buttplug.Core
         /// </summary>
         /// <param name="argumentName">Name of the argument.</param>
         /// <param name="argument">The argument.</param>
-        /// <remarks>https://stackoverflow.com/questions/29184887/best-way-to-check-for-null-parameters-guard-clauses</remarks>
+        /// <remarks>https://stackoverflow.com/questions/29184887/best-way-to-check-for-null-parameters-guard-clauses.</remarks>
         [DebuggerStepThrough]
         [ContractAnnotation("halt <= argument:null")]
         public static void ArgumentNotNull(object aArgument, [InvokerParameterName] string aArgumentName)
@@ -56,7 +56,7 @@ namespace Buttplug.Core
         /// <summary>
         /// Gets embedded license files in assemblies.
         /// </summary>
-        /// <param name="aResourceName">Resource to retrieve</param>
+        /// <param name="aResourceName">Resource to retrieve.</param>
         /// <returns>String of all licenses for assembly dependencies.</returns>
         // ReSharper disable once UnusedMember.Global
         public static string GetLicense(Assembly aAssembly, string aResourceName)

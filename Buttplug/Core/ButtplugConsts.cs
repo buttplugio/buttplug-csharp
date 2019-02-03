@@ -1,7 +1,7 @@
 ﻿namespace Buttplug.Core
 {
     /// <summary>
-    /// Buttplug library constants
+    /// Buttplug library constants.
     /// </summary>
     public static class ButtplugConsts
     {

@@ -1,15 +1,20 @@
-﻿using Buttplug.Core.Logging;
-using Buttplug.Core.Messages;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NJsonSchema;
+﻿// <copyright file="ButtplugJsonMessageParser.cs" company="Nonpolynomial Labs LLC">
+//     Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+//     Copyright (c) Nonpolynomial Labs LLC. All rights reserved. Licensed under the BSD 3-Clause
+//     license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using Buttplug.Core.Logging;
+using Buttplug.Core.Messages;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NJsonSchema;
 
 namespace Buttplug.Core
 {
@@ -21,22 +26,26 @@ namespace Buttplug.Core
         /// <summary>
         /// Map of message names to message types.
         /// </summary>
-        [NotNull] private readonly Dictionary<string, Type> _messageTypes;
+        [NotNull]
+        private readonly Dictionary<string, Type> _messageTypes;
 
         /// <summary>
         /// Logger for reporting information and errors.
         /// </summary>
-        [NotNull] private readonly IButtplugLog _bpLogger;
+        [NotNull]
+        private readonly IButtplugLog _bpLogger;
 
         /// <summary>
         /// Schema object, for checking message validity against the spec schema.
         /// </summary>
-        [NotNull] private readonly JsonSchema4 _schema;
+        [NotNull]
+        private readonly JsonSchema4 _schema;
 
         /// <summary>
         /// Serializes/deserializes object to/from JSON.
         /// </summary>
-        [NotNull] private readonly JsonSerializer _serializer;
+        [NotNull]
+        private readonly JsonSerializer _serializer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugJsonMessageParser"/> class.
@@ -75,8 +84,8 @@ namespace Buttplug.Core
         /// <summary>
         /// Deserializes Buttplug messages from JSON into an array of <see cref="ButtplugMessage"/> objects.
         /// </summary>
-        /// <param name="aJsonMsg">String containing one or more Buttplug messages in JSON format</param>
-        /// <returns>Enumerable of <see cref="ButtplugMessage"/> objects</returns>
+        /// <param name="aJsonMsg">String containing one or more Buttplug messages in JSON format.</param>
+        /// <returns>Enumerable of <see cref="ButtplugMessage"/> objects.</returns>
         [NotNull]
         public IEnumerable<ButtplugMessage> Deserialize(string aJsonMsg)
         {
@@ -159,6 +168,7 @@ namespace Buttplug.Core
                 throw new ButtplugMessageException(_bpLogger,
                     $"Type {aMsgType.Name} is not a subclass of ButtplugMessage");
             }
+
             var msgName = ButtplugMessage.GetName(aMsgType);
             try
             {
@@ -181,6 +191,7 @@ namespace Buttplug.Core
                     throw new ButtplugMessageException(_bpLogger,
                         $"Could not create message for JSON {aObject}: {e.Message}");
                 }
+
                 return DeserializeAs(aObject, prevType);
             }
         }
@@ -189,9 +200,9 @@ namespace Buttplug.Core
         /// Serializes a single <see cref="ButtplugMessage"/> object into a JSON string for a
         /// specified version of the schema.
         /// </summary>
-        /// <param name="aMsg"><see cref="ButtplugMessage"/> object</param>
-        /// <param name="aClientSchemaVersion">Target schema version</param>
-        /// <returns>JSON string representing a Buttplug message</returns>
+        /// <param name="aMsg"><see cref="ButtplugMessage"/> object.</param>
+        /// <param name="aClientSchemaVersion">Target schema version.</param>
+        /// <returns>JSON string representing a Buttplug message.</returns>
         public string Serialize([NotNull] ButtplugMessage aMsg, uint aClientSchemaVersion)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
@@ -205,6 +216,7 @@ namespace Buttplug.Core
                 throw new ButtplugMessageException(_bpLogger,
                     "Message cannot be converted to JSON.", aMsg.Id);
             }
+
             var msgArray = new JArray { jsonMsg };
 
             // Shove our JSON objects through the schema validator, just to make sure it'll be
@@ -217,6 +229,7 @@ namespace Buttplug.Core
                     "Message does not conform to schema: " + string.Join(", ",
                         errors.Select(aErr => aErr?.ToString()).ToArray()), aMsg.Id);
             }
+
             _bpLogger.Trace($"Message serialized to: {jsonMsg.ToString(Formatting.None)}", true);
             return msgArray.ToString(Formatting.None);
         }
@@ -225,9 +238,9 @@ namespace Buttplug.Core
         /// Serializes a collection of ButtplugMessage objects into a JSON string for a specified
         /// version of the schema.
         /// </summary>
-        /// <param name="aMsgs">A collection of ButtplugMessage objects</param>
-        /// <param name="aClientSchemaVersion">The target schema version</param>
-        /// <returns>A JSON string representing one or more Buttplug messages</returns>
+        /// <param name="aMsgs">A collection of ButtplugMessage objects.</param>
+        /// <param name="aClientSchemaVersion">The target schema version.</param>
+        /// <returns>A JSON string representing one or more Buttplug messages.</returns>
         public string Serialize([NotNull] IEnumerable<ButtplugMessage> aMsgs, uint aClientSchemaVersion)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
@@ -239,6 +252,7 @@ namespace Buttplug.Core
                 {
                     continue;
                 }
+
                 msgArray.Add(obj);
             }
 

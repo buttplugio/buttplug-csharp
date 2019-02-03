@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -53,7 +52,7 @@ namespace Buttplug.Devices
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugDevice"/> class.
         /// </summary>
-        /// <param name="aLogManager">The log manager</param>
+        /// <param name="aLogManager">The log manager.</param>
         /// <param name="aDevice">The device implementation (Bluetooth, USB, etc).</param>
         /// <param name="aProtocol">The device protocol (Lovense, Launch, etc).</param>
         public ButtplugDevice([NotNull] IButtplugLogManager aLogManager,
@@ -71,9 +70,9 @@ namespace Buttplug.Devices
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugDevice"/> class.
         /// </summary>
-        /// <param name="aLogManager">The log manager</param>
+        /// <param name="aLogManager">The log manager.</param>
         /// <param name="aDevice">The device implementation (Bluetooth, USB, etc).</param>
-        /// <param name="aProtocolType">A Type for a protocol, which we will create an instance of</param>
+        /// <param name="aProtocolType">A Type for a protocol, which we will create an instance of.</param>
         public ButtplugDevice([NotNull] IButtplugLogManager aLogManager,
             [NotNull] Type aProtocolType,
             [NotNull] IButtplugDeviceImpl aDevice)

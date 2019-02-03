@@ -20,7 +20,7 @@ namespace Buttplug.Devices.Protocols
     public static class ErostekET312ProtocolConsts
     {
         /// <summary>
-        ///  Range 0x0000 - 0x00ff - Last page of Flash ROM (read only)
+        ///  Range 0x0000 - 0x00ff - Last page of Flash ROM (read only).
         /// </summary>
         public enum Flash : uint
         {
@@ -37,7 +37,7 @@ namespace Buttplug.Devices.Protocols
         ///
         ///  Please note that these definitions only include locations
         ///  obviously useful in controlling the device. Please refer to
-        ///  buttshock-protocol-docs for a more complete list of
+        ///  buttshock-protocol-docs for a more complete list of.
         /// </summary>
         public enum RAM : uint
         {
@@ -283,7 +283,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        ///  Range 0x8000 - 0x81ff - Complete MAP of Microcontroller EEPROM (read/write)
+        ///  Range 0x8000 - 0x81ff - Complete MAP of Microcontroller EEPROM (read/write).
         /// </summary>
         public enum EEPROM : uint
         {
@@ -321,7 +321,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible bit field values for SystemFlags
+        /// Possible bit field values for SystemFlags.
         /// </summary>
         [Flags]
         public enum SystemFlags : byte
@@ -333,7 +333,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible bit field values for SlaveFlags
+        /// Possible bit field values for SlaveFlags.
         /// </summary>
         [Flags]
         public enum SlaveFlags : byte
@@ -343,7 +343,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible bit field values for RuntimeFlags
+        /// Possible bit field values for RuntimeFlags.
         /// </summary>
         [Flags]
         public enum RuntimeFlags : byte
@@ -358,7 +358,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible values for MenuState
+        /// Possible values for MenuState.
         /// </summary>
         public enum MenuState : byte
         {
@@ -367,7 +367,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Commands to be executed via BoxCommand1 and BoxCommand2
+        /// Commands to be executed via BoxCommand1 and BoxCommand2.
         /// </summary>
         public enum BoxCommand : byte
         {
@@ -409,7 +409,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible values for all Mode Selection settings
+        /// Possible values for all Mode Selection settings.
         /// </summary>
         public enum Mode : byte
         {
@@ -443,7 +443,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible bit field values for OutputFlags
+        /// Possible bit field values for OutputFlags.
         /// </summary>
         [Flags]
         public enum OutputFlags : byte
@@ -457,7 +457,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible bit field values for all "Gate Select" settings
+        /// Possible bit field values for all "Gate Select" settings.
         /// </summary>
         [Flags]
         public enum Gate : byte
@@ -473,7 +473,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible bit field values for Frequency/Width/Intensity Ramp "AtMin" and "AtMax" settings
+        /// Possible bit field values for Frequency/Width/Intensity Ramp "AtMin" and "AtMax" settings.
         /// </summary>
         [Flags]
         public enum Ramp : byte
@@ -485,7 +485,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible bit field values for Frequency/Width/Intensity Select settings
+        /// Possible bit field values for Frequency/Width/Intensity Select settings.
         /// </summary>
         [Flags]
         public enum Select : byte
@@ -510,7 +510,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible bit field values for PowerLevel and PowerLevelNV
+        /// Possible bit field values for PowerLevel and PowerLevelNV.
         /// </summary>
         public enum PowerLevel : byte
         {
@@ -520,7 +520,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Possible bit field values for PowerSupply
+        /// Possible bit field values for PowerSupply.
         /// </summary>
         [Flags]
         public enum PowerSupply : byte
@@ -530,7 +530,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Serial Port Commands (Client -> Box)
+        /// Serial Port Commands (Client -> Box).
         /// </summary>
         public enum SerialCommand : byte
         {
@@ -543,7 +543,7 @@ namespace Buttplug.Devices.Protocols
         }
 
         /// <summary>
-        /// Serial Port Responses (Box -> Client)
+        /// Serial Port Responses (Box -> Client).
         /// </summary>
         public enum SerialResponse : byte
         {

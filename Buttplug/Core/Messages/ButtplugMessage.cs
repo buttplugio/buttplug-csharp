@@ -27,7 +27,7 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugMessage"/> class.
         /// </summary>
-        /// <param name="aId">Message ID</param>
+        /// <param name="aId">Message ID.</param>
         protected ButtplugMessage(uint aId)
         {
             Id = aId;
@@ -36,10 +36,10 @@ namespace Buttplug.Core.Messages
         private static Dictionary<Type, ButtplugMessageMetadata> _metadataCache = new Dictionary<Type, ButtplugMessageMetadata>();
 
         /// <summary>
-        /// Gets a certain ButtplugMessageMetadata attributes for a ButtplugMessage
+        /// Gets a certain ButtplugMessageMetadata attributes for a ButtplugMessage.
         /// </summary>
-        /// <typeparam name="T">Return type expected </typeparam>
-        /// <param name="aMsgType">Type to get attribute from</param>
+        /// <typeparam name="T">Return type expected. </typeparam>
+        /// <param name="aMsgType">Type to get attribute from.</param>
         /// <param name="aFunc">Lambda that returns the required attribute.</param>
         /// <returns>Attribute requested.</returns>
         /// <exception cref="ArgumentNullException">Thrown if aMsgType or aFunc is null.</exception>

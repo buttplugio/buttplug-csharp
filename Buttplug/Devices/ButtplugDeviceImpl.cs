@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Buttplug.Core.Messages;
 using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 

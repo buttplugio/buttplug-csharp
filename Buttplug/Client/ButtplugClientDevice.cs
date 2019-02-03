@@ -95,6 +95,7 @@ namespace Buttplug.Client
                 {
                     throw new ButtplugDeviceException($"Message type {msg.Key} does not exist.");
                 }
+
                 AllowedMessages[msgType] = msg.Value;
             }
         }

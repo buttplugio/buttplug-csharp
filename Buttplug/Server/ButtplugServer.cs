@@ -57,7 +57,8 @@ namespace Buttplug.Server
         [NotNull]
         protected readonly IButtplugLogManager BpLogManager;
 
-        [CanBeNull] private string _clientName;
+        [CanBeNull]
+        private string _clientName;
 
         /// <summary>
         /// Actual logger object, creates and stores log messages.

@@ -47,6 +47,7 @@ namespace Buttplug.Server.Managers.WinUSBManager
             {
                 throw new ButtplugDeviceException(BpLogger, $"Unknown endpoint {aEndpointName}");
             }
+
             return Task.CompletedTask;
         }
 

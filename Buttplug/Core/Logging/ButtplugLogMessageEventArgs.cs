@@ -18,8 +18,8 @@ namespace Buttplug.Core.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugLogMessageEventArgs"/> class.
         /// </summary>
-        /// <param name="aLogLevel">Log level</param>
-        /// <param name="aMessage">Log message</param>
+        /// <param name="aLogLevel">Log level.</param>
+        /// <param name="aMessage">Log message.</param>
         public ButtplugLogMessageEventArgs(ButtplugLogLevel aLogLevel, string aMessage)
         {
             LogMessage = new Log(aLogLevel, aMessage);

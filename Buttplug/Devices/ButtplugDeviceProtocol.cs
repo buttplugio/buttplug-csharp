@@ -1,4 +1,10 @@
-﻿using System;
+﻿// <copyright file="ButtplugDeviceProtocol.cs" company="Nonpolynomial Labs LLC">
+//     Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+//     Copyright (c) Nonpolynomial Labs LLC. All rights reserved. Licensed under the BSD 3-Clause
+//     license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -27,7 +33,8 @@ namespace Buttplug.Devices
         [NotNull]
         protected readonly IButtplugLog BpLogger;
 
-        [NotNull] protected IButtplugDeviceImpl Interface;
+        [NotNull]
+        protected IButtplugDeviceImpl Interface;
 
         /// <inheritdoc />
         public IEnumerable<Type> AllowedMessageTypes => MsgFuncs.Keys;
@@ -80,8 +87,8 @@ namespace Buttplug.Devices
         /// Having this as a generic with a type constraint rather than a type parameter means we get
         /// type checking at compile/roslyn time.
         /// </remarks>
-        /// <typeparam name="T">ButtplugDeviceMsg deriving type</typeparam>
-        /// <param name="aFunction">Handler for the message type</param>
+        /// <typeparam name="T">ButtplugDeviceMsg deriving type.</typeparam>
+        /// <param name="aFunction">Handler for the message type.</param>
         /// <param name="aAttrs">MessageAttribute parameters, assuming the message type has any.</param>
         protected void AddMessageHandler<T>(Func<ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> aFunction,
             MessageAttributes aAttrs = null) where T : ButtplugDeviceMessage
@@ -105,8 +112,10 @@ namespace Buttplug.Devices
                 {
                     throw new ButtplugDeviceException(BpLogger, $"{aMsg.GetType().Name} requires 1 subcommand for this device, {aCmdList.Count()} present.", aMsg.Id);
                 }
+
                 throw new ButtplugDeviceException(BpLogger, $"{aMsg.GetType().Name} requires between 1 and {aLimitValue} subcommands for this device, {aCmdList.Count()} present.", aMsg.Id);
             }
+
             foreach (var cmd in aCmdList)
             {
                 if (cmd.Index >= aLimitValue)
@@ -128,18 +137,21 @@ namespace Buttplug.Devices
                 CheckGenericSubcommandList(cmdMsg, cmdMsg.Speeds, aLimitValue);
                 return actualMsg;
             }
+
             if (typeof(T) == typeof(RotateCmd))
             {
                 var cmdMsg = actualMsg as RotateCmd;
                 CheckGenericSubcommandList(cmdMsg, cmdMsg.Rotations, aLimitValue);
                 return actualMsg;
             }
+
             if (typeof(T) == typeof(LinearCmd))
             {
                 var cmdMsg = actualMsg as LinearCmd;
                 CheckGenericSubcommandList(cmdMsg, cmdMsg.Vectors, aLimitValue);
                 return actualMsg;
             }
+
             throw new ButtplugMessageException("CheckGenericMessageHandler only works with generic (VibrateCmd/RotateCmd/etc) messages.", aMsg.Id);
         }
     }

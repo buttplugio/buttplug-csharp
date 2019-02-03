@@ -24,8 +24,8 @@ namespace Buttplug.Core.Logging
         /// Gets a <see cref="ButtplugLog"/> for the specified type. Used for creating loggers specific to
         /// class types, so the types can be prepended to the log message for tracing.
         /// </summary>
-        /// <param name="aType">Type that this logger will be for</param>
-        /// <returns>Logger object</returns>
+        /// <param name="aType">Type that this logger will be for.</param>
+        /// <returns>Logger object.</returns>
         [NotNull]
         IButtplugLog GetLogger(Type aType);
     }

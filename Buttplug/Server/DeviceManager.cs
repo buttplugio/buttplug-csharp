@@ -4,10 +4,6 @@
 //     license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using Buttplug.Core;
-using Buttplug.Core.Logging;
-using Buttplug.Core.Messages;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +11,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Buttplug.Core;
+using Buttplug.Core.Logging;
+using Buttplug.Core.Messages;
 using Buttplug.Devices;
+using JetBrains.Annotations;
 
 namespace Buttplug.Server
 {
@@ -276,12 +276,14 @@ namespace Buttplug.Server
             {
                 throw new ButtplugDeviceException(_bpLogger, "Device scanning already in progress.");
             }
+
             _isScanning = true;
 
             if (!_managers.Any())
             {
                 throw new ButtplugDeviceException(_bpLogger, "No DeviceSubtypeManagers available to scan with.");
             }
+
             _sentFinished = false;
 
             // Use a non-blocking guard around our calls to start scanning, to make sure that if all
@@ -295,6 +297,7 @@ namespace Buttplug.Server
             {
                 _isStartingScan = false;
             }
+
             // Now actually call ScanningFinishedHandler. If everything already finished but was
             // ignored because our guard was live, it'll fire ScanningFinished. Otherwise, it'll just bail.
             ScanningFinishedHandler(this, null);

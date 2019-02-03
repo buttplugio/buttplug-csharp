@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
-using Buttplug.Core.Messages;
 using Buttplug.Devices;
 
 namespace Buttplug.Test

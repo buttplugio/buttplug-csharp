@@ -3,9 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Buttplug.Client.Connectors.WebsocketConnector;
 using Buttplug.Core;
-using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 
 // Tutorial file, disable ConfigureAwait checking since it's an actual program.

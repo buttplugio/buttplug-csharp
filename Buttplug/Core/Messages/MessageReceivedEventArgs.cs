@@ -15,7 +15,7 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageReceivedEventArgs"/> class.
         /// </summary>
-        /// <param name="aMessage">Buttplug message that was received</param>
+        /// <param name="aMessage">Buttplug message that was received.</param>
         public MessageReceivedEventArgs(ButtplugMessage aMessage)
         {
             Message = aMessage;

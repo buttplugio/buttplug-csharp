@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Buttplug.Devices.Configuration
+﻿namespace Buttplug.Devices.Configuration
 {
     class NullProtocolConfiguration : IProtocolConfiguration
     {

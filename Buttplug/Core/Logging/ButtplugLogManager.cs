@@ -26,6 +26,7 @@ namespace Buttplug.Core.Logging
             {
                 throw new ArgumentNullException(nameof(aMsg));
             }
+
             if (aMsg.LogMessage.LogLevel <= Level)
             {
                 LogMessageReceived?.Invoke(aObject, aMsg);

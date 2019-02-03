@@ -14,7 +14,8 @@ namespace Buttplug.Client.Connectors
         public event EventHandler Disconnected;
 
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-        [NotNull] private readonly object _sendLock = new object();
+        [NotNull]
+        private readonly object _sendLock = new object();
 
         /// <summary>
         /// Used for dispatching events to the owning application context.
@@ -111,6 +112,7 @@ namespace Buttplug.Client.Connectors
                             _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
                             return;
                         }
+
                         continue;
                     }
 
@@ -122,6 +124,7 @@ namespace Buttplug.Client.Connectors
 
                 ReceiveMessages(msg);
             }
+
             _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
         }
     }

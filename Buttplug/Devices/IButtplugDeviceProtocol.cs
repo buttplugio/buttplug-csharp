@@ -27,7 +27,7 @@ namespace Buttplug.Devices
         /// Checks to see whether a message is supported by the device that implements this
         /// interface. If the message is supported, executes the handler for that message.
         /// </summary>
-        /// <param name="aMsg">Device message to handle</param>
+        /// <param name="aMsg">Device message to handle.</param>
         /// <param name="aToken">Cancellation token to stop message parsing action externally.</param>
         /// <returns>Response, usually <see cref="Ok"/> or <see cref="Error"/>, but can be other types.</returns>
         [NotNull]
@@ -45,7 +45,7 @@ namespace Buttplug.Devices
         /// Retrieves the message attributes for the device associated with this message. Used for
         /// retrieving information about feature counts in device command messages, etc...
         /// </summary>
-        /// <param name="aMsg">Message type to fetch attributes for</param>
+        /// <param name="aMsg">Message type to fetch attributes for.</param>
         [NotNull]
         MessageAttributes GetMessageAttrs(Type aMsg);
     }
