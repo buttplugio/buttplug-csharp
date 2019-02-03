@@ -9,18 +9,6 @@ pr:
       - master
       - dev
 
-# strategy:
-#   matrix:
-#     linux:
-#       imageName: 'ubuntu-16.04'
-#     mac:
-#       imageName: 'macos-10.13'
-#     windows:
-#       imageName: 'vs2017-win2016'      
-
-# pool:
-#   vmImage: $(imageName)
-
 variables:
   solution: 'Buttplug.sln'
   buildPlatform: 'Any CPU'
@@ -57,6 +45,10 @@ jobs:
         inputs:
           command: 'build'
           arguments: '--configuration ReleaseStandard -f netstandard2.0'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
   - job: MacOS
     pool:
       vmImage: 'macos-10.13'
@@ -66,18 +58,10 @@ jobs:
         inputs:
           restoreSolution: '$(solution)'
       - task: DotNetCoreCLI@2
-        condition: ne( variables['Agent.OS'], 'Windows_NT' )
         inputs:
           command: 'build'
           arguments: '--configuration ReleaseStandard -f netstandard2.0'
-  
-# Run Resharper
-# Running it works, outputing warnings doesn't.
-# - powershell: |
-#     InspectCode.exe --output=resharper-clt-output.xml --project="Buttplug*" Buttplug.sln;
-#     $result = [xml](Get-Content .\resharper-clt-output.xml)
-#     $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
-#   condition: eq( variables['Agent.OS'], 'Windows_NT' )
-#   displayName: Run resharper warnings
-
-
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
