@@ -53,15 +53,14 @@ namespace Buttplug.Devices.Protocols
             _vibratorSpeed = v.Speed;
 
             var data = new byte[] { 0x03, 0xff };
-            await Interface.WriteValueAsync(aMsg.Id,
-                Endpoints.TxMode,
+            await Interface.WriteValueAsync(Endpoints.TxMode,
                 data, false, aToken).ConfigureAwait(false);
 
             data[0] = Convert.ToByte(_vibratorSpeed * byte.MaxValue);
             data[1] = 0x00;
-            return await Interface.WriteValueAsync(aMsg.Id,
-                Endpoints.TxVibrate,
+            await Interface.WriteValueAsync(Endpoints.TxVibrate,
                 data, false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Buttplug.Devices.Protocols
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
-        public override async Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
+        public override async Task InitializeAsync(CancellationToken aToken)
         {
             BpLogger.Trace($"Initializing {Name}");
 
@@ -59,19 +59,14 @@ namespace Buttplug.Devices.Protocols
             Interface.DataReceived += NotifyReceived;
 
             // Retrieving device type info for identification.
-            var writeMsg = await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId, Encoding.ASCII.GetBytes("DeviceType;"), true, aToken).ConfigureAwait(false);
-            if (writeMsg is Error)
-            {
-                BpLogger.Error($"Error requesting device info from Lovense {Name}");
-                return writeMsg;
-            }
+            await Interface.WriteValueAsync(Encoding.ASCII.GetBytes("DeviceType;"), true, aToken).ConfigureAwait(false);
 
             var deviceInfoString = string.Empty;
             try
             {
-                var (msg, result) =
-                    await Interface.ReadValueAsync(ButtplugConsts.SystemMsgId, aToken).ConfigureAwait(false);
-                if (msg is Ok && result.Length > 0)
+                var result =
+                    await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
+                if (result.Length > 0)
                 {
                     deviceInfoString = Encoding.ASCII.GetString(result);
                 }
@@ -149,8 +144,6 @@ namespace Buttplug.Devices.Protocols
 
             // Common messages.
             AddCommonMessages();
-
-            return new Ok(ButtplugConsts.SystemMsgId);
         }
 
         private void AddCommonMessages()
@@ -202,23 +195,19 @@ namespace Buttplug.Devices.Protocols
 
                 _vibratorSpeeds[v.Index] = v.Speed;
                 var vId = _vibratorCount == 1 ? string.Empty : string.Empty + (v.Index + 1);
-                var res = await Interface.WriteValueAsync(aMsg.Id,
+                await Interface.WriteValueAsync(
                     Encoding.ASCII.GetBytes($"Vibrate{vId}:{(int)(_vibratorSpeeds[v.Index] * 20)};"), false, aToken).ConfigureAwait(false);
-
-                if (!(res is Ok))
-                {
-                    return res;
-                }
             }
 
-            return new Ok(cmdMsg.Id);
+            return new Ok(aMsg.Id);
         }
 
         private async Task<ButtplugMessage> HandleLovenseCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = CheckMessageHandler<LovenseCmd>(aMsg);
 
-            return await Interface.WriteValueAsync(aMsg.Id, Encoding.ASCII.GetBytes(cmdMsg.Command), false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(Encoding.ASCII.GetBytes(cmdMsg.Command), false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -230,7 +219,7 @@ namespace Buttplug.Devices.Protocols
             if (_clockwise != vi.Clockwise)
             {
                 _clockwise = !_clockwise;
-                await Interface.WriteValueAsync(aMsg.Id,
+                await Interface.WriteValueAsync(
                     Encoding.ASCII.GetBytes("RotateChange;"), false, aToken).ConfigureAwait(false);
             }
 
@@ -241,8 +230,9 @@ namespace Buttplug.Devices.Protocols
 
             _rotateSpeed = vi.Speed;
 
-            return await Interface.WriteValueAsync(aMsg.Id,
+            await Interface.WriteValueAsync(
                 Encoding.ASCII.GetBytes($"Rotate:{(int)(_rotateSpeed * 20)};"), false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
     }
 }

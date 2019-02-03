@@ -46,13 +46,13 @@ namespace Buttplug.Devices.Protocols
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
-        public override async Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
+        public override async Task InitializeAsync(CancellationToken aToken)
         {
             BpLogger.Trace($"Initializing {Name}");
 
             // Kick Vibrator into motor control mode, just copying what the app sends when you go to
             // create pattern mode.
-            return await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
+            await Interface.WriteValueAsync(
                 Endpoints.TxMode,
                 new byte[] { 0x43, 0x02, 0x00 }, true, aToken).ConfigureAwait(false);
         }
@@ -75,10 +75,14 @@ namespace Buttplug.Devices.Protocols
             }
 
             // We'll have to use an internal token here since this is timer triggered.
-            if (await Interface.WriteValueAsync(ButtplugConsts.DefaultMsgId,
-                Endpoints.TxVibrate,
-                _vibratorSpeeds, false, _stopUpdateCommandSource.Token).ConfigureAwait(false) is Error)
+            try
             {
+                await Interface.WriteValueAsync(Endpoints.TxVibrate,
+                    _vibratorSpeeds, false, _stopUpdateCommandSource.Token).ConfigureAwait(false);
+            }
+            catch (ButtplugException ex)
+            {
+                // todo We should do more here.
                 BpLogger.Error($"Cannot send update to {Name}, device may stop moving.");
                 _updateValueTimer.Enabled = false;
             }

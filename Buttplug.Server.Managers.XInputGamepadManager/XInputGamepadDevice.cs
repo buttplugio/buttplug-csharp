@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
-using Buttplug.Core.Messages;
 using Buttplug.Devices;
 using SharpDX.XInput;
 
@@ -19,18 +18,20 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
     {
         private Controller _device;
 
+        public override bool Connected => _device != null;
+
         public XInputGamepadDevice(IButtplugLogManager aLogManager, Controller aDevice)
             : base(aLogManager)
         {
             _device = aDevice;
         }
 
-        public override Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse,
+        public override Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse,
             CancellationToken aToken)
         {
             if (aValue.Length != 4)
             {
-                throw new ButtplugDeviceException(BpLogger, "XInput requires 4 byte inputs.", aMsgId);
+                throw new ButtplugDeviceException(BpLogger, "XInput requires 4 byte inputs.");
             }
 
             // This assumes we're getting the values in the correct endianness for the platform when
@@ -43,11 +44,8 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
 
             _device.SetVibration(v);
 
-            // Nothing to await here.
-            return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
+            return Task.CompletedTask;
         }
-
-        public override bool Connected => _device != null;
 
         public override void Disconnect()
         {
@@ -55,20 +53,25 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
         }
 
         // Unused for Gamepad controllers currently.
-        public override Task<ButtplugMessage> WriteValueAsync(uint aMsgId, string aEndpointName, byte[] aValue, bool aWriteWithResponse,
-            CancellationToken aToken)
+        public override Task WriteValueAsync(string aEndpointName, byte[] aValue, CancellationToken aToken)
         {
             throw new NotImplementedException();
         }
 
         // Unused for Gamepad controllers currently.
-        public override Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken)
+        public override Task WriteValueAsync(string aEndpointName, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
             throw new NotImplementedException();
         }
 
         // Unused for Gamepad controllers currently.
-        public override Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, string aEndpointName, CancellationToken aToken)
+        public override Task<byte[]> ReadValueAsync(CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Unused for Gamepad controllers currently.
+        public override Task<byte[]> ReadValueAsync(string aEndpointName, CancellationToken aToken)
         {
             throw new NotImplementedException();
         }
@@ -81,6 +84,12 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
 
         // Unused for Gamepad controllers currently.
         public override Task SubscribeToUpdatesAsync(string aEndpointName)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Unused for Gamepad controllers currently.
+        public override Task WriteValueAsync(byte[] aValue, CancellationToken aToken)
         {
             throw new NotImplementedException();
         }

@@ -88,14 +88,11 @@ namespace Buttplug.Devices.Protocols
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug("Stopping Device " + Name);
-            if (_speed == 0)
-            {
-                return new Ok(aMsg.Id);
-            }
 
-            return await Interface.WriteValueAsync(aMsg.Id,
+            await Interface.WriteValueAsync(
                 Endpoints.Tx,
                 new byte[] { (byte)_deviceType, (byte)_commandType, 0 }, false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
 
         private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -120,9 +117,9 @@ namespace Buttplug.Devices.Protocols
             _speed = cmdMsg.Speed;
 
             var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
-            return await Interface.WriteValueAsync(aMsg.Id,
-                Endpoints.Tx,
+            await Interface.WriteValueAsync(Endpoints.Tx,
                 new byte[] { (byte)_deviceType, (byte)_commandType, rawSpeed }, false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -154,9 +151,9 @@ namespace Buttplug.Devices.Protocols
                 return new Ok(cmdMsg.Id);
             }
 
-            return await Interface.WriteValueAsync(aMsg.Id,
-                Endpoints.Tx,
+            await Interface.WriteValueAsync(Endpoints.Tx,
                 new[] { (byte)_deviceType, (byte)_commandType, (byte)_speed }, false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Buttplug.Core.Test
                 Index = 2,
             };
 
-            (await dev.InitializeAsync(default(CancellationToken))).Should().BeOfType<Ok>();
+            await dev.InitializeAsync(default(CancellationToken));
 
             (await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken))).Should().BeOfType<Ok>();
 

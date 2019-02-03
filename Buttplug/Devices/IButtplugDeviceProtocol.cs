@@ -39,7 +39,7 @@ namespace Buttplug.Devices
         /// </summary>
         /// <returns>Response, usually <see cref="Ok"/> or <see cref="Error"/>.</returns>
         [NotNull]
-        Task<ButtplugMessage> InitializeAsync(CancellationToken aToken = default(CancellationToken));
+        Task InitializeAsync(CancellationToken aToken = default(CancellationToken));
 
         /// <summary>
         /// Retrieves the message attributes for the device associated with this message. Used for

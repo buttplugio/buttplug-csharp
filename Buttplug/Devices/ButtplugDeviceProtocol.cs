@@ -67,7 +67,7 @@ namespace Buttplug.Devices
             return await MsgFuncs[aMsg.GetType()].Function.Invoke(aMsg, aToken).ConfigureAwait(false);
         }
 
-        public virtual Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
+        public virtual Task InitializeAsync(CancellationToken aToken)
         {
             return Task.FromResult<ButtplugMessage>(new Ok(ButtplugConsts.SystemMsgId));
         }

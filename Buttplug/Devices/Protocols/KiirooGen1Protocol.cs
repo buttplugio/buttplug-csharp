@@ -53,25 +53,23 @@ namespace Buttplug.Devices.Protocols
             // no-op, but required for the Onyx to work
         }
 
-        public override async Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
+        public override async Task InitializeAsync(CancellationToken aToken)
         {
             // Start listening for incoming
             Interface.DataReceived += OnDataReceived;
             await Interface.SubscribeToUpdatesAsync(Endpoints.Rx).ConfigureAwait(false);
 
             // Mode select
-            await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
-                Endpoints.Command,
+            await Interface.WriteValueAsync(Endpoints.Command,
                 new byte[] { 0x01, 0x00 }, true, aToken).ConfigureAwait(false);
 
             // Set to start position
-            await Interface.WriteValueAsync(ButtplugConsts.SystemMsgId,
-                Endpoints.Tx,
+            await Interface.WriteValueAsync(Endpoints.Tx,
                 new byte[] { 0x30, 0x2c }, true, aToken).ConfigureAwait(false);
 
             if (Interface.Name != "ONYX")
             {
-                return new Ok(ButtplugConsts.SystemMsgId);
+                return;
             }
 
             // Onyx specific
@@ -83,8 +81,6 @@ namespace Buttplug.Devices.Protocols
 
             _currentTime = DateTime.Now;
             _onyxTimer = new Timer(OnOnyxTimer, null, 500, 500);
-
-            return new Ok(ButtplugConsts.SystemMsgId);
         }
 
         private async void OnOnyxTimer(object state)
@@ -128,11 +124,8 @@ namespace Buttplug.Devices.Protocols
                 }
             }
 
-            var res = await HandleKiirooRawCmd(new KiirooCmd(0, Convert.ToUInt32(_currentPosition * 4), ButtplugConsts.SystemMsgId), default(CancellationToken)).ConfigureAwait(false);
-            if (res is Error err)
-            {
-                BpLogger.Error(err.ErrorMessage);
-            }
+            // todo What if this throws?
+            await HandleKiirooRawCmd(new KiirooCmd(0, Convert.ToUInt32(_currentPosition * 4), ButtplugConsts.SystemMsgId), default(CancellationToken)).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -154,8 +147,9 @@ namespace Buttplug.Devices.Protocols
         {
             var cmdMsg = CheckMessageHandler<KiirooCmd>(aMsg);
 
-            return await Interface.WriteValueAsync(cmdMsg.Id, Endpoints.Tx,
+            await Interface.WriteValueAsync(Endpoints.Tx,
                 Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"), false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)

@@ -19,13 +19,17 @@ namespace Buttplug.Devices
 
         void Disconnect();
 
-        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
+        Task WriteValueAsync(byte[] aValue, CancellationToken aToken);
 
-        Task<ButtplugMessage> WriteValueAsync(uint aMsgId, string aEndpointName, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
+        Task WriteValueAsync(string aEndpointName, byte[] aValue, CancellationToken aToken);
 
-        Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken);
+        Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
 
-        Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, string aEndpointName, CancellationToken aToken);
+        Task WriteValueAsync(string aEndpointName, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken);
+
+        Task<byte[]> ReadValueAsync(CancellationToken aToken);
+
+        Task<byte[]> ReadValueAsync(string aEndpointName, CancellationToken aToken);
 
         Task SubscribeToUpdatesAsync();
 

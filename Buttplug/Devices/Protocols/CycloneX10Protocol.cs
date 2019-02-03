@@ -34,7 +34,7 @@ namespace Buttplug.Devices.Protocols
             return await HandleVorzeA10CycloneCmd(new VorzeA10CycloneCmd(aMsg.DeviceIndex, 0, _clockwise, aMsg.Id), aToken).ConfigureAwait(false);
         }
 
-        private Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+        private async Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = CheckMessageHandler<RotateCmd>(aMsg);
 
@@ -63,7 +63,7 @@ namespace Buttplug.Devices.Protocols
 
             if (!changed)
             {
-                return Task.FromResult<ButtplugMessage>(new Ok(cmdMsg.Id));
+                return new Ok(cmdMsg.Id);
             }
 
             // todo These comments don't match the actual settings below?!?!?!
@@ -76,14 +76,15 @@ namespace Buttplug.Devices.Protocols
             data[7] += Convert.ToByte(_clockwise ? 0 : 1);
             data[8] += Convert.ToByte(_speed * 10);
 
-            return Interface.WriteValueAsync(aMsg.Id, data, false, aToken);
+            await Interface.WriteValueAsync(data, false, aToken);
+            return new Ok(aMsg.Id);
         }
 
-        private Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+        private async Task<ButtplugMessage> HandleVorzeA10CycloneCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = CheckMessageHandler<VorzeA10CycloneCmd>(aMsg);
 
-            return HandleRotateCmd(new RotateCmd(cmdMsg.DeviceIndex,
+            return await HandleRotateCmd(new RotateCmd(cmdMsg.DeviceIndex,
                 new List<RotateCmd.RotateSubcommand>
                 {
                     new RotateCmd.RotateSubcommand(0, Convert.ToDouble(cmdMsg.Speed) / 99, cmdMsg.Clockwise),

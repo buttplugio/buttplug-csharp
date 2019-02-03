@@ -53,7 +53,7 @@ namespace Buttplug.Test.Devices.Protocols.Utils
 
         public async Task Initialize()
         {
-            (await _testDevice.InitializeAsync()).Should().BeOfType<Ok>();
+            await _testDevice.InitializeAsync();
             _testImpl.LastWritten.Clear();
         }
 
@@ -152,7 +152,7 @@ namespace Buttplug.Test.Devices.Protocols.Utils
         public async Task TestDeviceInitialize(IEnumerable<(byte[], string)> aExpectedBytes, bool aWriteWithResponse, bool aStrict = true)
         {
             Clear();
-            (await _testDevice.InitializeAsync()).Should().BeOfType<Ok>();
+            await _testDevice.InitializeAsync();
 
             TestPacketMatching(aExpectedBytes, aWriteWithResponse, aStrict);
         }

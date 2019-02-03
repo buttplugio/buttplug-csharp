@@ -64,8 +64,9 @@ namespace Buttplug.Devices.Protocols
 
             _vibratorSpeed = v.Speed;
 
-            return await Interface.WriteValueAsync(aMsg.Id,
+            await Interface.WriteValueAsync(
                 Encoding.ASCII.GetBytes($"$SYS,{(int)(_vibratorSpeed * 8),1}?"), false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
     }
 }

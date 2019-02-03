@@ -211,14 +211,15 @@ namespace Buttplug.Server
                             continue;
                         }
 
-                        var r = await d.Value.ParseMessageAsync(new StopDeviceCmd(d.Key, aMsg.Id), aToken).ConfigureAwait(false);
-                        if (r is Ok)
+                        try
                         {
-                            continue;
+                            await d.Value.ParseMessageAsync(new StopDeviceCmd(d.Key, aMsg.Id), aToken).ConfigureAwait(false);
                         }
-
-                        isOk = false;
-                        errorMsg += $"{(r as Error).ErrorMessage}; ";
+                        catch (ButtplugDeviceException e)
+                        {
+                            isOk = false;
+                            errorMsg += $"{e.Message}; ";
+                        }
                     }
 
                     if (isOk)
@@ -239,13 +240,13 @@ namespace Buttplug.Server
                 // If it's a device message, it's most likely not ours.
                 case ButtplugDeviceMessage m:
                     _bpLogger.Trace($"Sending {aMsg.GetType().Name} to device index {m.DeviceIndex}");
-                    if (_devices.ContainsKey(m.DeviceIndex))
+                    if (!_devices.ContainsKey(m.DeviceIndex))
                     {
-                        return await _devices[m.DeviceIndex].ParseMessageAsync(m, aToken).ConfigureAwait(false);
+                        throw new ButtplugDeviceException(_bpLogger,
+                            $"Dropping message for unknown device index {m.DeviceIndex}", id);
                     }
 
-                    throw new ButtplugDeviceException(_bpLogger,
-                        $"Dropping message for unknown device index {m.DeviceIndex}", id);
+                    return await _devices[m.DeviceIndex].ParseMessageAsync(m, aToken).ConfigureAwait(false);
             }
 
             throw new ButtplugMessageException(_bpLogger, $"Message type {aMsg.GetType().Name} unhandled by this server.", id);

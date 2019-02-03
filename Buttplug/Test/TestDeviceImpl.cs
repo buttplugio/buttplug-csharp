@@ -57,34 +57,43 @@ namespace Buttplug.Test
             ExpectedRead[aCharacteristicIndex].Add(aValue);
         }
 
-        public override Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
+        public override async Task WriteValueAsync(byte[] aValue, CancellationToken aToken)
         {
-            return WriteValueAsync(aMsgId, Endpoints.Tx, aValue, aWriteWithResponse, aToken);
+            await WriteValueAsync(Endpoints.Tx, aValue, false, aToken);
         }
 
-        public override Task<ButtplugMessage> WriteValueAsync(uint aMsgId, string aEndpoint, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
+        public override async Task WriteValueAsync(string aEndpointName, byte[] aValue, CancellationToken aToken)
+        {
+            await WriteValueAsync(aEndpointName, aValue, false, aToken);
+        }
+
+        public override async Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
+        {
+            await WriteValueAsync(Endpoints.Tx, aValue, aWriteWithResponse, aToken);
+        }
+
+        public override Task WriteValueAsync(string aEndpoint, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
         {
             LastWritten.Add(new WriteData()
             {
                 Value = (byte[])aValue.Clone(),
-                MsgId = aMsgId,
                 Endpoint = aEndpoint,
                 WriteWithResponse = aWriteWithResponse,
             });
             ValueWritten?.Invoke(this, new EventArgs());
-            return Task.FromResult<ButtplugMessage>(new Ok(aMsgId));
+            return Task.CompletedTask;
         }
 
-        public override Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken)
+        public override Task<byte[]> ReadValueAsync(CancellationToken aToken)
         {
             var value = ExpectedRead[ExpectedRead.Keys.ToArray()[0]].ElementAt(0);
             ExpectedRead[ExpectedRead.Keys.ToArray()[0]].RemoveAt(0);
-            return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), value));
+            return Task.FromResult(value);
         }
 
-        public override Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, string aEndpointName, CancellationToken aToken)
+        public override async Task<byte[]> ReadValueAsync(string aEndpointName, CancellationToken aToken)
         {
-            return Task.FromResult<(ButtplugMessage, byte[])>((new Ok(aMsgId), new byte[] { }));
+            return await ReadValueAsync(aToken);
         }
 
         // noop for tests

@@ -112,9 +112,9 @@ namespace Buttplug.Devices
         }
 
         /// <inheritdoc />
-        public virtual Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
+        public virtual async Task InitializeAsync(CancellationToken aToken)
         {
-            return _protocol.InitializeAsync(aToken);
+            await _protocol.InitializeAsync(aToken);
         }
 
         /// <inheritdoc />

@@ -96,9 +96,13 @@ namespace Buttplug.Devices.Protocols
             }
 
             // We'll have to use an internal token here since this is timer triggered.
-            if (await Interface.WriteValueAsync(ButtplugConsts.DefaultMsgId,
-                Endpoints.Tx, new[] { data },
-                false, _stopUpdateCommandSource.Token).ConfigureAwait(false) is Error)
+            try
+            {
+                // todo This throw doesn't actually go anywhere. This should bubble upward.
+                await Interface.WriteValueAsync(Endpoints.Tx, new[] { data },
+                false, _stopUpdateCommandSource.Token).ConfigureAwait(false);
+            }
+            catch (ButtplugDeviceException ex)
             {
                 BpLogger.Error($"Cannot send update to Cueme {_devInfo.Name}, device may stick on a single vibrator.");
                 _updateValueTimer.Enabled = false;

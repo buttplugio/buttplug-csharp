@@ -133,9 +133,9 @@ namespace Buttplug.Devices.Protocols
                 (byte)Convert.ToUInt16(_vibratorSpeeds[_devInfo.VibeOrder[2]] * 100),
             };
 
-            return await Interface.WriteValueAsync(aMsg.Id,
-                Endpoints.Tx,
+            await Interface.WriteValueAsync(Endpoints.Tx,
                 data, false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
     }
 }

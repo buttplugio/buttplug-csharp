@@ -46,7 +46,7 @@ namespace Buttplug.Devices.Protocols
             return HandleVibrateCmd(new VibrateCmd(cmdMsg.DeviceIndex, speeds, cmdMsg.Id), aToken);
         }
 
-        private Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+        private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, 2);
 
@@ -64,7 +64,8 @@ namespace Buttplug.Devices.Protocols
             speedBytes.AddRange(BitConverter.GetBytes((ushort)(_vibratorSpeeds[0] * ushort.MaxValue)));
             speedBytes.AddRange(BitConverter.GetBytes((ushort)(_vibratorSpeeds[1] * ushort.MaxValue)));
 
-            return Interface.WriteValueAsync(aMsg.Id, speedBytes.ToArray(), false, aToken);
+            await Interface.WriteValueAsync(speedBytes.ToArray(), false, aToken);
+            return new Ok(aMsg.Id);
         }
     }
 }

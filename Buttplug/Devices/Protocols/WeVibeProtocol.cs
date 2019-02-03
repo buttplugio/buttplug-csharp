@@ -95,7 +95,8 @@ namespace Buttplug.Devices.Protocols
                 data[5] = 0x00;
             }
 
-            return await Interface.WriteValueAsync(aMsg.Id, Endpoints.Tx, data, false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(Endpoints.Tx, data, false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
     }
 }

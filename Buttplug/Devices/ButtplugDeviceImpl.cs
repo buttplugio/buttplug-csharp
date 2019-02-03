@@ -30,15 +30,21 @@ namespace Buttplug.Devices
             BpLogger = aLogManager.GetLogger(GetType());
         }
 
-        public abstract Task<ButtplugMessage> WriteValueAsync(uint aMsgId, byte[] aValue, bool aWriteWithResponse,
+        public abstract Task WriteValueAsync(byte[] aValue,
             CancellationToken aToken);
 
-        public abstract Task<ButtplugMessage> WriteValueAsync(uint aMsgId, string aEndpointName, byte[] aValue,
+        public abstract Task WriteValueAsync(string aEndpointName, byte[] aValue,
+            CancellationToken aToken);
+
+        public abstract Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse,
+            CancellationToken aToken);
+
+        public abstract Task WriteValueAsync(string aEndpointName, byte[] aValue,
             bool aWriteWithResponse, CancellationToken aToken);
 
-        public abstract Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, CancellationToken aToken);
+        public abstract Task<byte[]> ReadValueAsync(CancellationToken aToken);
 
-        public abstract Task<(ButtplugMessage, byte[])> ReadValueAsync(uint aMsgId, string aEndpointName,
+        public abstract Task<byte[]> ReadValueAsync(string aEndpointName,
             CancellationToken aToken);
 
         public abstract Task SubscribeToUpdatesAsync();

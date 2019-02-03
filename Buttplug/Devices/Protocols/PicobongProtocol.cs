@@ -84,7 +84,8 @@ namespace Buttplug.Devices.Protocols
 
             var data = new byte[] { 0x01, speedInt > 0 ? (byte)0x01 : (byte)0xff, Convert.ToByte(speedInt) };
 
-            return await Interface.WriteValueAsync(aMsg.Id, Endpoints.Tx, data, false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(Endpoints.Tx, data, false, aToken).ConfigureAwait(false);
+            return new Ok(aMsg.Id);
         }
     }
 }
