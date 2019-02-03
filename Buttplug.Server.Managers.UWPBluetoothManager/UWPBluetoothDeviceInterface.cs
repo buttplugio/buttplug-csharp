@@ -77,16 +77,17 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
         protected async Task InitializeDevice(BluetoothLEProtocolConfiguration aConfig)
         {
-            // If we don't have any characteristic configuration, assume we're using characteristic detection.
-            if (aConfig.Characteristics.Count == 0)
+            foreach (var serviceInfo in aConfig.Services)
             {
-                await AddDefaultCharacteristics(aConfig.Services).ConfigureAwait(false);
-            }
-            else
-            {
-                foreach (var characteristicInfo in aConfig.Characteristics)
+                // If we don't have any characteristic configuration, assume we're using
+                // characteristic detection.
+                if (serviceInfo.Value == null || serviceInfo.Value.Count == 0)
                 {
-                    var serviceGuid = characteristicInfo.Key;
+                    await AddDefaultCharacteristics(serviceInfo.Key).ConfigureAwait(false);
+                }
+                else
+                {
+                    var serviceGuid = serviceInfo.Key;
 
                     GattDeviceService service;
 
@@ -96,9 +97,10 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     }
                     catch (ButtplugDeviceException aEx)
                     {
-                        // Log, then rethrow.
-                        BpLogger.Error(aEx.Message);
-                        throw;
+                        // In this case, we may have a whole bunch of services that aren't valid for
+                        // a device and only one that is. We can ignore the exception here, and throw
+                        // later if we don't get anything from any service in the list.
+                        continue;
                     }
 
                     var chrResult = await service.GetCharacteristicsAsync();
@@ -110,7 +112,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 
                     foreach (var chr in chrResult.Characteristics)
                     {
-                        foreach (var indexChr in characteristicInfo.Value)
+                        foreach (var indexChr in serviceInfo.Value)
                         {
                             if (chr.Uuid != indexChr.Value)
                             {
@@ -136,26 +138,27 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
         }
 
-        private async Task AddDefaultCharacteristics(List<Guid> aServices)
+        private async Task AddDefaultCharacteristics(Guid aServiceGuid)
         {
-            GattDeviceService service = null;
-            foreach (var ser in aServices)
+            GattDeviceService service;
+            try
             {
-                try
-                {
-                    service = await GetService(ser).ConfigureAwait(false);
-                }
-                catch (ButtplugDeviceException)
-                {
-                    // In this case, we may have a whole bunch of services that aren't valid for a
-                    // device and only one that is. We can ignore the exception, and throw if we
-                    // don't get anything from any service in the list.
-                }
+                service = await GetService(aServiceGuid).ConfigureAwait(false);
+            }
+            catch (ButtplugDeviceException)
+            {
+                // In this case, we may have a whole bunch of services that aren't valid for a device
+                // and only one that is. We can ignore the exception here, and throw later if we
+                // don't get anything from any service in the list.
+                return;
             }
 
-            if (service == null)
+            // In the case we have multiple services that exist on a device, and no characteristics
+            // defined for them, throw, because otherwise we'll end up assigning colliding endpoints.
+            if (_indexedChars.ContainsKey(Endpoints.Rx) || _indexedChars.ContainsKey(Endpoints.Tx))
             {
-                throw new ButtplugDeviceException(BpLogger, $"No valid service found for default characteristics of {Name}");
+                throw new ButtplugDeviceException(BpLogger,
+                    $"Default characteristics already assigned for {_bleDevice.Name}.");
             }
 
             var chrResult = await service.GetCharacteristicsAsync();

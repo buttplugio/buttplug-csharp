@@ -66,30 +66,32 @@ namespace Buttplug.Devices.Configuration
                 .Build();
 
             var configObject = deserializer.Deserialize<DeviceConfigurationFile>(input);
-            foreach (var protocolInfo in configObject.Protocols)
+            foreach (var protocolDefinition in configObject.Protocols)
             {
-                var protocolName = protocolInfo.Key;
-                var protocolId = protocolInfo.Value?.Identifier;
-                var protocolConfig = protocolInfo.Value?.Configuration;
-                if (protocolId?.Btle != null)
+                var protocolName = protocolDefinition.Key;
+                var protocolInfo = protocolDefinition.Value;
+
+                if (protocolInfo?.Btle != null)
                 {
-                    var btleProtocolConfig = new BluetoothLEProtocolConfiguration(protocolId.Btle, protocolConfig?.Btle);
+                    var btleProtocolConfig = new BluetoothLEProtocolConfiguration(protocolInfo.Btle);
                     AddProtocolConfig(protocolName, btleProtocolConfig);
                 }
 
-                if (protocolId?.Hid != null)
+                if (protocolInfo?.Hid != null)
                 {
-                    var hidProtocolConfig = new HIDProtocolConfiguration(protocolId.Hid, protocolConfig?.Hid);
+                    var hidProtocolConfig = new HIDProtocolConfiguration(protocolInfo.Hid);
                     AddProtocolConfig(protocolName, hidProtocolConfig);
                 }
 
-                if (protocolId?.Serial != null)
+                if (protocolInfo?.Serial != null)
                 {
+                    var serialProtocolConfig = new SerialProtocolConfiguration(protocolInfo.Serial);
+                    AddProtocolConfig(protocolName, serialProtocolConfig);
                 }
 
-                if (protocolId?.Usb != null)
+                if (protocolInfo?.Usb != null)
                 {
-                    var usbProtocolConfig = new USBProtocolConfiguration(protocolId.Usb, protocolConfig?.Usb);
+                    var usbProtocolConfig = new USBProtocolConfiguration(protocolInfo.Usb);
                     AddProtocolConfig(protocolName, usbProtocolConfig);
                 }
             }

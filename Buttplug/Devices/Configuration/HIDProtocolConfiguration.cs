@@ -11,7 +11,7 @@
             ProductId = aProductId;
         }
 
-        internal HIDProtocolConfiguration(HIDIdentifier aId, HIDConfiguration aConfig)
+        internal HIDProtocolConfiguration(HIDInfo aId)
         {
             VendorId = aId.VendorId;
             ProductId = aId.ProductId;

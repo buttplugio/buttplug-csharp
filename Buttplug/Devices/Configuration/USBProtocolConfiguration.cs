@@ -11,10 +11,10 @@
             ProductId = aProductId;
         }
 
-        internal USBProtocolConfiguration(USBIdentifier aId, USBConfiguration aConfig)
+        internal USBProtocolConfiguration(USBInfo aInfo)
         {
-            VendorId = aId.VendorId;
-            ProductId = aId.ProductId;
+            VendorId = aInfo.VendorId;
+            ProductId = aInfo.ProductId;
         }
 
         public bool Matches(IProtocolConfiguration aConfig)

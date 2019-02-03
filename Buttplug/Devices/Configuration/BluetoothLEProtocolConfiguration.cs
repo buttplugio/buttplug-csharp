@@ -7,29 +7,25 @@ namespace Buttplug.Devices.Configuration
     public class BluetoothLEProtocolConfiguration : IProtocolConfiguration
     {
         public readonly List<string> Names;
-        public readonly List<Guid> Services;
-
-        /// <summary>
-        /// Dictionary of service to characteristic name/Guid dictionary.
-        /// </summary>
-        public readonly Dictionary<Guid, Dictionary<string, Guid>> Characteristics;
+        public readonly Dictionary<Guid, Dictionary<string, Guid>> Services;
 
         public BluetoothLEProtocolConfiguration(IEnumerable<string> aNames,
-            IEnumerable<Guid> aServices = null,
-            Dictionary<Guid, Dictionary<string, Guid>> aCharacteristics = null)
+            Dictionary<Guid, Dictionary<string, Guid>> aServices = null)
         {
             Names = aNames.ToList();
 
-            Services = aServices != null ? aServices.ToList() : new List<Guid>();
+            Services = aServices ?? new Dictionary<Guid, Dictionary<string, Guid>>();
 
             // TODO Fail on similarly named characteristics
 
-            // TODO Fail on devices with multiple services without characteristic lists
-            Characteristics = aCharacteristics ?? new Dictionary<Guid, Dictionary<string, Guid>>();
+            // TODO Fail on devices with multiple services without characteristic lists.
+            //
+            // Should we really do this here though? Lovense has a ton of services but only one will
+            // ever be live. Shouldn't this be handled elsewhere, maybe in endpoint setup for devices?
         }
 
-        internal BluetoothLEProtocolConfiguration(BluetoothLEIdentifier aId, Dictionary<Guid, Dictionary<string, Guid>> aConfig)
-            : this(aId.Names, aId.Services, aConfig)
+        internal BluetoothLEProtocolConfiguration(BluetoothLEInfo aInfo)
+            : this(aInfo.Names, aInfo.Services)
         {
         }
 

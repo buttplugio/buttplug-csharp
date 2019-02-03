@@ -18,6 +18,11 @@ namespace Buttplug.Devices.Configuration
             StopBits = aStopBits;
         }
 
+        internal SerialProtocolConfiguration(SerialInfo aConfig)
+            : this(aConfig.BaudRate, aConfig.Parity, aConfig.StopBits)
+        {
+        }
+
         public void AddPortId(string aPortName)
         {
             Ports.Add(aPortName);
