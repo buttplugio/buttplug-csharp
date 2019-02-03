@@ -9,50 +9,68 @@ pr:
       - master
       - dev
 
-strategy:
-  matrix:
-    linux:
-      imageName: 'ubuntu-16.04'
-    mac:
-      imageName: 'macos-10.13'
-    windows:
-      imageName: 'vs2017-win2016'      
+# strategy:
+#   matrix:
+#     linux:
+#       imageName: 'ubuntu-16.04'
+#     mac:
+#       imageName: 'macos-10.13'
+#     windows:
+#       imageName: 'vs2017-win2016'      
 
-pool:
-  vmImage: $(imageName)
+# pool:
+#   vmImage: $(imageName)
 
 variables:
   solution: 'Buttplug.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
-  - task: NuGetToolInstaller@0
-
-  # Get codecov, resharper, etc.
-  # - powershell: choco install -y -r --no-progress resharper-clt.portable
-  #   condition: eq( variables['Agent.OS'], 'Windows_NT' )
-  #   displayName: Get Windows dependencies (resharper)
-  - task: NuGetCommand@2
-    inputs:
-      restoreSolution: '$(solution)'
-  - task: VSBuild@1
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    inputs:
-      solution: '$(solution)'
-      platform: '$(buildPlatform)'
-      configuration: '$(buildConfiguration)'
-  - task: VSTest@2
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    inputs:
-      platform: '$(buildPlatform)'
-      configuration: '$(buildConfiguration)'
-  - task: DotNetCoreCLI@2
-    condition: ne( variables['Agent.OS'], 'Windows_NT' )
-    inputs:
-      command: 'build'
-      arguments: '--configuration ReleaseStandard -f netstandard2.0'
-      
+jobs:
+  - job: Windows
+    pool:
+      vmImage: 'vs2017-win2016'
+    steps:
+      - task: NuGetToolInstaller@0
+      - task: NuGetCommand@2
+        inputs:
+          restoreSolution: '$(solution)'
+      - task: VSBuild@1
+        inputs:
+          solution: '$(solution)'
+          platform: '$(buildPlatform)'
+          configuration: '$(buildConfiguration)'
+      - task: VSTest@2
+        inputs:
+          platform: '$(buildPlatform)'
+          configuration: '$(buildConfiguration)'
+  - job: Linux
+    pool:
+      vmImage: 'ubuntu-16.04'
+    steps:
+      - task: NuGetToolInstaller@0
+      - task: NuGetCommand@2
+        inputs:
+          restoreSolution: '$(solution)'
+      - task: DotNetCoreCLI@2
+        condition: ne( variables['Agent.OS'], 'Windows_NT' )
+        inputs:
+          command: 'build'
+          arguments: '--configuration ReleaseStandard -f netstandard2.0'
+  - job: MacOS
+    pool:
+      vmImage: 'macos-10.13'
+    steps:
+      - task: NuGetToolInstaller@0
+      - task: NuGetCommand@2
+        inputs:
+          restoreSolution: '$(solution)'
+      - task: DotNetCoreCLI@2
+        condition: ne( variables['Agent.OS'], 'Windows_NT' )
+        inputs:
+          command: 'build'
+          arguments: '--configuration ReleaseStandard -f netstandard2.0'
+  
 # Run Resharper
 # Running it works, outputing warnings doesn't.
 # - powershell: |
