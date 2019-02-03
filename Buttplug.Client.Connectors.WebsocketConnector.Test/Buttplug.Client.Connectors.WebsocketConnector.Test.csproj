@@ -76,7 +76,7 @@
       <Name>Buttplug.Server.Connectors.WebsocketServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug.Test\Buttplug.Test.csproj">
-      <Project>{e8caf510-c33e-40c4-a084-e1f0f099be3b}</Project>
+      <Project>{b38515d6-8efa-49a6-a9ff-8385461185dd}</Project>
       <Name>Buttplug.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\Buttplug\Buttplug.csproj">
