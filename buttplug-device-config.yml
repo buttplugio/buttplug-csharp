@@ -44,29 +44,6 @@ connection-info-types:
   - usb
   - hid
 
-# This is the list of possible protocols. Buttplug servers implement
-# these protocols. Servers scan for devices (based on the information
-# given below) and match the device with the protocol to present
-# control to the user.
-
-# protocols:
-#   - lovense
-#   - xinput
-#   - erostek-et312
-#   - erostek-et232
-#   - wevibe
-#   - vorze-sa
-#   - vorze-cyclone
-#   - kiiroo-v1
-#   - kiiroo-v2
-#   - libo
-#   - magic-motion
-#   - mysteryvibe
-#   - picobong
-#   - vibratissimo
-#   - youcups
-#   - trancevibrator
-
 # Now for the actual protocol definitions. This is gonna get wild, so
 # I'll keep a list of rules that you can refer to up here.
 #
@@ -91,7 +68,8 @@ connection-info-types:
 #   "tx"), as mentioned above.
 #
 # - Similarly for USB, we'll test endpoints for r/w flags when no
-#   endpoint handles are passed.
+#   endpoint handles are passed. We assume all USB devices have a
+#   vendor control endpoint for Trancevibrator reasons.
 #
 # - A "btle" connection info with multiple service listings can mean
 #   one of two things. Either we expect the device to be identifiable
@@ -112,38 +90,38 @@ connection-info-types:
 #   really keep a standard for that, we just define which devices we
 #   may know about here. File an issue on the library you're using.
 #
-# - Serial info here is for default device configuration.
+# - Serial info here is for default device configuration. Port names
+#   will have to be added by the user in the user device config file.
 
 
 
 protocols:
   
   lovense:
-    id:
-      # Lovense is special. Special in oh so many ways.
-      #
-      # Lovense have changed BLE name formats at least once. For this
-      # generic device, we just use the largest wildcard we can. We do
-      # our name and capabilities finding in the protocol
-      # implementation, because we have to query the device after
-      # connection.
-      #
-      # The service uuids change constantly. This list is overly
-      # exhaustive, because we have to specify services in WebBluetooth
-      # and can't wildcard them. We'll add more as we find them.
-      btle:
-        names:
-          - LVS-*
-        services:
-          - 0000fff0-0000-1000-8000-00805f9b34fb
-          - 6e400001-b5a3-f393-e0a9-e50e24dcca9e
-          - 50300001-0024-4bd4-bbd5-a6920e4c5653
-          - 57300001-0023-4bd4-bbd5-a6920e4c5653
-          - 5a300001-0024-4bd4-bbd5-a6920e4c5653
-          - 50300001-0023-4bd4-bbd5-a6920e4c5653
-          - 53300001-0023-4bd4-bbd5-a6920e4c5653
-          - 5a300001-0023-4bd4-bbd5-a6920e4c5653
-          - 4f300001-0023-4bd4-bbd5-a6920e4c5653
+    # Lovense is special. Special in oh so many ways.
+    #
+    # Lovense have changed BLE name formats at least once. For this
+    # generic device, we just use the largest wildcard we can. We do
+    # our name and capabilities finding in the protocol
+    # implementation, because we have to query the device after
+    # connection.
+    #
+    # The service uuids change constantly. This list is overly
+    # exhaustive, because we have to specify services in WebBluetooth
+    # and can't wildcard them. We'll add more as we find them.
+    btle:
+      names:
+        - LVS-*
+      services:
+        0000fff0-0000-1000-8000-00805f9b34fb: null
+        6e400001-b5a3-f393-e0a9-e50e24dcca9e: null
+        50300001-0024-4bd4-bbd5-a6920e4c5653: null
+        57300001-0023-4bd4-bbd5-a6920e4c5653: null
+        5a300001-0024-4bd4-bbd5-a6920e4c5653: null
+        50300001-0023-4bd4-bbd5-a6920e4c5653: null
+        53300001-0023-4bd4-bbd5-a6920e4c5653: null
+        5a300001-0023-4bd4-bbd5-a6920e4c5653: null
+        4f300001-0023-4bd4-bbd5-a6920e4c5653: null
 
   xinput:
     # This will actually be ANY gamepad that supports XInput. XInput
@@ -155,139 +133,113 @@ protocols:
     null
 
   libo:
-    id:
       btle:
         names:
           - PiPiJing
         services:
           # Write Service
-          - 00006000-0000-1000-8000-00805f9b34fb
+          00006000-0000-1000-8000-00805f9b34fb:
+            txshock: 00006001-0000-1000-8000-00805f9b34fb
+            txvibrate: 00006002-0000-1000-8000-00805f9b34fb
           # Read Service (battery)
-          # - 00006050-0000-1000-8000-00805f9b34fb
-    config:
-      btle:
-        00006000-0000-1000-8000-00805f9b34fb:
-          txshock: 00006001-0000-1000-8000-00805f9b34fb
-          txvibrate: 00006002-0000-1000-8000-00805f9b34fb
-        # 00006050-0000-1000-8000-00805f9b34fb:
-        #   battery: 00006051-0000-1000-8000-00805f9b34fb
+          # 00006050-0000-1000-8000-00805f9b34fb:
+          #   battery: 00006051-0000-1000-8000-00805f9b34fb
   magic-motion:
-    id:
-      btle:
-        names:
-          - Smart Mini Vibe
-          - Flamingo
-          - Eidolon
-          - Smart Bean
-          - Magic Cell
-          - Magic Wand
-          - Krush
-        services:
-          - 78667579-7b48-43db-b8c5-7928a6b0a335
+    btle:
+      names:
+        - Smart Mini Vibe
+        - Flamingo
+        - Eidolon
+        - Smart Bean
+        - Magic Cell
+        - Magic Wand
+        - Krush
+      services:
+        78667579-7b48-43db-b8c5-7928a6b0a335: null
   mysteryvibe:
-    id:
-      btle:
-        names:
-          - MV Crescendo
-        services:
-          - f0006900-110c-478b-b74b-6f403b364a9c
-    config:
-      btle:
+    btle:
+      names:
+        - MV Crescendo
+      services:
         f0006900-110c-478B-B74B-6F403B364A9C:
           txmode: f0006901-110c-478B-B74B-6F403B364A9C
           txvibrate: f0006903-110c-478B-B74B-6F403B364A9C
   picobong:
-    id:
-      btle:
-        names:
-          - Blow hole
-          - Picobong Male Toy
-          - Diver
-          - Picobong Egg
-          - Life guard
-          - Picobong Ring
-          - Surfer
-          - Picobong Butt Plug
-          - Egg driver
-          - Surfer_plug
-        services:
-          - 0000fff0-0000-1000-8000-00805f9b34fb
+    btle:
+      names:
+        - Blow hole
+        - Picobong Male Toy
+        - Diver
+        - Picobong Egg
+        - Life guard
+        - Picobong Ring
+        - Surfer
+        - Picobong Butt Plug
+        - Egg driver
+        - Surfer_plug
+      services:
+        0000fff0-0000-1000-8000-00805f9b34fb: null
   vibratissimo:
-    id:
-      btle:
-        names:
-          - Vibratissimo
-        services:
-          - 00001523-1212-efde-1523-785feabcd123
-    config:
-      btle:
+    btle:
+      names:
+        - Vibratissimo
+      services:
         00001523-1212-efde-1523-785feabcd123:
           txmode: 00001524-1212-efde-1523-785feabcd123
           txvibrate: 00001526-1212-efde-1523-785feabcd123
           rx: 00001527-1212-efde-1523-785feabcd123
   wevibe:
-    id:
-      btle:
-        names:
-          - Cougar
-          - 4 Plus
-          - 4plus
-          - Bloom
-          - classic
-          - Classic
-          - Ditto
-          - Gala
-          - Jive
-          - Nova
-          - NOVAV2
-          - Pivot
-          - Rave
-          - Sync
-          - Verge
-          - Wish
-        services:
-          - f000bb03-0451-4000-b000-000000000000
+    btle:
+      names:
+        - Cougar
+        - 4 Plus
+        - 4plus
+        - Bloom
+        - classic
+        - Classic
+        - Ditto
+        - Gala
+        - Jive
+        - Nova
+        - NOVAV2
+        - Pivot
+        - Rave
+        - Sync
+        - Verge
+        - Wish
+      services:
+        f000bb03-0451-4000-b000-000000000000: null
   youcups:
-    id:
-      btle:
-        names:
-          - Youcups
-        services:
-          - 0000fee9-0000-1000-8000-00805f9b34fb
+    btle:
+      names:
+        - Youcups
+      services:
+        0000fee9-0000-1000-8000-00805f9b34fb: null
   cueme:
-    id:
-      btle:
-        names:
-          - FUNCODE_1 # Men's Underwear
-          - FUNCODE_2 # Bra
-          - FUNCODE_3 # Women's Underwear
-        services:
-          - 0000fff0-0000-1000-8000-00805f9b34fb
+    btle:
+      names:
+        - FUNCODE_1 # Men's Underwear
+        - FUNCODE_2 # Bra
+        - FUNCODE_3 # Women's Underwear
+      services:
+        0000fff0-0000-1000-8000-00805f9b34fb: null
   kiiroo-v2-vibrator:
-    id:
-      btle:
-        names:
-          - Pearl2
-          - Fuse
-          - Virtual Blowbot
-          - Titan
-        services:
-          - 88f82580-0000-01e6-aace-0002a5d5c51b
-    config:
-      btle:
+    btle:
+      names:
+        - Pearl2
+        - Fuse
+        - Virtual Blowbot
+        - Titan
+      services:
         88f82580-0000-01e6-aace-0002a5d5c51b:
           tx: 88f82581-0000-01e6-aace-0002a5d5c51b
           rxtouch: 88f82582-0000-01e6-aace-0002a5d5c51b
           rxaccel: 88f82584-0000-01e6-aace-0002a5d5c51b
   kiiroo-v2:
-    id:
-      btle:
-        names:
-          - Launch
-        services:
-          - 88f80580-0000-01e6-aace-0002a5d5c51b
-    config:
-      btle:
+    btle:
+      names:
+        - Launch
+      services:
         88f80580-0000-01e6-aace-0002a5d5c51b:
           tx: 88f80581-0000-01e6-aace-0002a5d5c51b
           rx: 88f80582-0000-01e6-aace-0002a5d5c51b
@@ -296,35 +248,29 @@ protocols:
           firmware: 88f80583-0000-01e6-aace-0002a5d5c51b
         
   erostek-et312:
-    config:
-      serial:
-        baud-rate: 19200
-        data-bits: 8
-        parity: N
-        stop-bits: 1
+    serial:
+      # Port names are defined in user configs
+      baud-rate: 19200
+      data-bits: 8
+      parity: N
+      stop-bits: 1
 
   vorze-cyclone-x:
-    id:
-      hid:
-        vendor-id: 0x0483
-        product-id: 0x5750
+    hid:
+      vendor-id: 0x0483
+      product-id: 0x5750
 
   rez-trancevibrator:
-    id: 
-      usb:
-        vendor-id: 0xb49
-        product-id: 0x064f
+    usb:
+      vendor-id: 0xb49
+      product-id: 0x064f
 
   kiiroo-v1:
-    id:
-      btle:
-        names:
-          - ONYX
-          - PEARL
-        services:
-          - 49535343-fe7d-4ae5-8fa9-9fafd205e455
-    config:
-      btle:
+    btle:
+      names:
+        - ONYX
+        - PEARL
+      services:
         49535343-fe7d-4ae5-8fa9-9fafd205e455:
           rx: 49535343-1e4d-4bd9-ba61-23c647249616
           tx: 49535343-8841-43f4-a8d4-ecbe34729bb3
@@ -332,14 +278,13 @@ protocols:
           cmd2: 49535343-6daa-4d02-abf6-19569aca69fe
 
   vorze-sa:
-    id: 
-      btle:
-        names:
-          - CYCSA
-          - Bach smart
-          - UFOSA
-        services:
-          - 40ee1111-63ec-4b7f-8ce7-712efd55b90e
+    btle:
+      names:
+        - CYCSA
+        - Bach smart
+        - UFOSA
+      services:
+        40ee1111-63ec-4b7f-8ce7-712efd55b90e: null
   # nintendo-joycon:
   #   names:
   #     en-us: Nintendo Joycon
