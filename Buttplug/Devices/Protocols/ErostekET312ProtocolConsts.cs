@@ -12,12 +12,12 @@ using System.Diagnostics.CodeAnalysis;
 // ReSharper disable IdentifierTypo
 // ReSharper disable CommentTypo
 
-namespace Buttplug.Server.Managers.SerialPortManager
+namespace Buttplug.Devices.Protocols
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1602:EnumerationItemsMustBeDocumented", Justification = "Need to figure out regex to turn these into docs.")]
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Based on 3rd party documentation.")]
     [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Based on 3rd party documentation.")]
-    public static class ET312Consts
+    public static class ErostekET312ProtocolConsts
     {
         /// <summary>
         ///  Range 0x0000 - 0x00ff - Last page of Flash ROM (read only)

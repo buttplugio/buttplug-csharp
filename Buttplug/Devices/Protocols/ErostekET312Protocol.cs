@@ -5,61 +5,19 @@
 // </copyright>
 
 using System;
-using System.IO;
-using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
-using Buttplug.Core.Devices;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Server.Util;
 using Timer = System.Timers.Timer;
 
-namespace Buttplug.Server.Managers.SerialPortManager
+namespace Buttplug.Devices.Protocols
 {
-    public class ErostekET312SerialDeviceFactory : ButtplugSerialDeviceFactory
-    {
-        public override IButtplugDevice CreateDevice(IButtplugLogManager aLogManager, string aPortName)
-        {
-            var serialPort = new SerialPort(aPortName)
-            {
-                ReadTimeout = 200,
-                WriteTimeout = 200,
-                BaudRate = 19200,
-                Parity = Parity.None,
-                StopBits = StopBits.One,
-                DataBits = 8,
-                Handshake = Handshake.None,
-            };
-            try
-            {
-                serialPort.Open();
-            }
-            catch (Exception ex)
-            {
-                if (ex is UnauthorizedAccessException
-                    || ex is ArgumentOutOfRangeException
-                    || ex is ArgumentException
-                    || ex is IOException)
-                {
-                    // This port is inaccessible. Possibly because a device detected earlier is
-                    // already using it, or because our required parameters are not supported
-
-                    aLogManager.GetLogger(GetType()).Warn($"Cannot use serial port: {ex.Message}");
-                    return null;
-                }
-
-                throw;
-            }
-
-            return new ErostekET312Device(aLogManager, serialPort);
-        }
-    }
-
-    public class ErostekET312Device : ButtplugSerialDevice
+    public class ErostekET312Protocol : ButtplugDeviceProtocol
     {
         private byte _boxKey;
         private SemaphoreSlim _lock = new SemaphoreSlim(1);
@@ -72,12 +30,12 @@ namespace Buttplug.Server.Managers.SerialPortManager
         private double _increment;
         private double _fade;
 
-        public ErostekET312Device(IButtplugLogManager aLogManager, SerialPort aPort)
-        : base(aLogManager, $"Erostek ET312 - {aPort.PortName}", aPort.PortName, aPort)
+        public ErostekET312Protocol(IButtplugLogManager aLogManager, IButtplugDeviceImpl aDevice)
+        : base(aLogManager, $"Erostek ET312 - {aDevice.Name}", aDevice)
         {
         }
 
-        public override async Task<ButtplugMessage> InitializeAsync(CancellationToken aToken)
+        public override async Task InitializeAsync(CancellationToken aToken)
         {
             BpLogger.Info("Attempting Synch");
             _boxKey = 0;
@@ -89,42 +47,42 @@ namespace Buttplug.Server.Managers.SerialPortManager
                 // not synched yet.
                 await SendCommand(new byte[]
                 {
-                    (byte)ET312Consts.SerialCommand.Read, // read byte command
+                    (byte)ErostekET312ProtocolConsts.SerialCommand.Read, // read byte command
                     0, // address high byte
                     0, // address low byte
-                }).ConfigureAwait(false);
+                }, aToken).ConfigureAwait(false);
 
-                var result = await ReadAsync(1, aToken).ConfigureAwait(false);
+                var result = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
 
-                if (result.Length == 1 && result[0] == ((byte)ET312Consts.SerialResponse.Read | 0x20))
+                if (result.Length == 1 && result[0] == ((byte)ErostekET312ProtocolConsts.SerialResponse.Read | 0x20))
                 {
-                    await InitUnsynced().ConfigureAwait(false);
+                    await InitUnsynced(aToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    await InitSynced().ConfigureAwait(false);
+                    await InitSynced(aToken).ConfigureAwait(false);
                 }
 
                 // Setup box for remote control
-                await Execute((byte)ET312Consts.BoxCommand.FavouriteMode).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelAGateSelect, (byte)ET312Consts.Gate.Off).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelBGateSelect, (byte)ET312Consts.Gate.Off).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelAIntensitySelect, (byte)ET312Consts.Select.Static).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelBIntensitySelect, (byte)ET312Consts.Select.Static).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelAIntensity, 0).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelBIntensity, 0).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelARampValue, 255).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelAFrequencySelect, (byte)ET312Consts.Select.MA).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelBFrequencySelect, (byte)ET312Consts.Select.MA).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelAWidthSelect, (byte)ET312Consts.Select.Advanced).ConfigureAwait(false);
-                await Poke((uint)ET312Consts.RAM.ChannelBWidthSelect, (byte)ET312Consts.Select.Advanced).ConfigureAwait(false);
+                await Execute((byte)ErostekET312ProtocolConsts.BoxCommand.FavouriteMode, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelAGateSelect, (byte)ErostekET312ProtocolConsts.Gate.Off, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelBGateSelect, (byte)ErostekET312ProtocolConsts.Gate.Off, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelAIntensitySelect, (byte)ErostekET312ProtocolConsts.Select.Static, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelBIntensitySelect, (byte)ErostekET312ProtocolConsts.Select.Static, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelAIntensity, 0, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelBIntensity, 0, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelARampValue, 255, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelAFrequencySelect, (byte)ErostekET312ProtocolConsts.Select.MA, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelBFrequencySelect, (byte)ErostekET312ProtocolConsts.Select.MA, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelAWidthSelect, (byte)ErostekET312ProtocolConsts.Select.Advanced, aToken).ConfigureAwait(false);
+                await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelBWidthSelect, (byte)ErostekET312ProtocolConsts.Select.Advanced, aToken).ConfigureAwait(false);
 
                 // WriteLCD has its own lock.
                 _lock.Release();
 
                 // Let the user know we're in control now
-                await WriteLCD("Buttplug", 8).ConfigureAwait(false);
-                await WriteLCD("----------------", 64).ConfigureAwait(false);
+                await WriteLCD("Buttplug", 8, aToken).ConfigureAwait(false);
+                await WriteLCD("----------------", 64, aToken).ConfigureAwait(false);
 
                 // We're now ready to receive events
                 AddMessageHandler<FleshlightLaunchFW12Cmd>(HandleFleshlightLaunchCmd);
@@ -145,83 +103,80 @@ namespace Buttplug.Server.Managers.SerialPortManager
                 BpLogger.Error("Synch with ET312 Failed");
 
                 // Release the lock before disconnecting
-                await DisconnectInternal(false).ConfigureAwait(false);
+                await DisconnectInternal(false, default(CancellationToken)).ConfigureAwait(false);
 
-                if (ex is ErostekET312CommunicationException
-                    || ex is InvalidOperationException
+                if (ex is InvalidOperationException
                     || ex is TimeoutException)
                 {
-                    throw new ErostekET312HandshakeException("Failed to set up communications with device.");
+                    throw new ButtplugDeviceException(BpLogger, "Failed to initialize device.");
                 }
 
                 throw;
             }
-
-            return new Ok(ButtplugConsts.SystemMsgId);
         }
 
-        private async Task InitUnsynced()
+        private async Task InitUnsynced(CancellationToken aToken)
         {
             // It worked! Discard the rest of the response
-            await ReadAsync(2).ConfigureAwait(false);
+            await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
 
             // Commence handshake
             BpLogger.Info("Encryption is not yet set up. Send Handshake.");
 
             await SendCommand(new byte[]
             {
-                (byte)ET312Consts.SerialCommand.KeyExchange, // synch command
+                (byte)ErostekET312ProtocolConsts.SerialCommand.KeyExchange, // synch command
                 0, // our key
-            }).ConfigureAwait(false);
+            }, aToken).ConfigureAwait(false);
 
             // Receive box key
             // byte 0 - return code
             // byte 1 - box key
             // byte 2 - checksum
-            var recBuffer = await ReadAsync(3).ConfigureAwait(false);
+            var recBuffer = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
 
             // Response valid?
-            if (recBuffer[0] != ((byte)ET312Consts.SerialResponse.KeyExchange | 0x20))
+            if (recBuffer[0] != ((byte)ErostekET312ProtocolConsts.SerialResponse.KeyExchange | 0x20))
             {
-                throw new ErostekET312CommunicationException("Unexpected return code from device.");
+                throw new ButtplugDeviceException(BpLogger, "Unexpected return code from device.");
             }
 
             if (recBuffer[2] != Checksum(recBuffer))
             {
-                throw new ErostekET312CommunicationException("Checksum error in reply from device.");
+                throw new ButtplugDeviceException(BpLogger, "Checksum error in reply from device.");
             }
 
             _boxKey = (byte)(recBuffer[1] ^ 0x55);
 
             // Override the random box key with our own (0x10) so we can reconnect to an already
             // synched box without having to guess the box key
-            await Poke((uint)ET312Consts.RAM.BoxKey, 0x10).ConfigureAwait(false);
+            await Poke((uint)ErostekET312ProtocolConsts.RAM.BoxKey, 0x10, aToken).ConfigureAwait(false);
             _boxKey = 0x10;
 
             BpLogger.Info("Handshake with ET312 successful.");
         }
 
-        private async Task InitSynced()
+        private async Task InitSynced(CancellationToken aToken)
         {
             // Since the previous command looked like complete garbage to the box send a string of 0s
             // to get the command parser back in sync
-            Clear();
+            // Clear();
             for (var i = 0; i < 11; i++)
             {
-                await WriteAsync(new[] { (byte)ET312Consts.SerialCommand.Sync }).ConfigureAwait(false);
+                await Interface.WriteValueAsync(new[] { (byte)ErostekET312ProtocolConsts.SerialCommand.Sync }, aToken).ConfigureAwait(false);
 
                 try
                 {
                     // This read will fail at least once, so we can't use ReadAsync here since it
                     // doesn't currently provide a timeout. However, we can expose ReadByte() on the
                     // backing stream and use that.
-                    var errByte = ReadByte();
-                    if (errByte == -1)
+                    var errByte = await Interface.ReadValueAsync(aToken);
+                    if (errByte.Length == 0 || errByte[0] == -1)
                     {
                         continue;
                     }
 
-                    if (errByte == (byte)ET312Consts.SerialResponse.Error)
+                    if (errByte[0] == (byte)ErostekET312ProtocolConsts.SerialResponse.Error)
                     {
                         break;
                     }
@@ -235,40 +190,34 @@ namespace Buttplug.Server.Managers.SerialPortManager
             // Try reading from RAM with our pre-set box key of 0x10 - if this fails, the device is
             // in an unknown state, throw an exception.
             _boxKey = 0x10;
-            await Peek((uint)ET312Consts.Flash.BoxModel).ConfigureAwait(false);
+            await Peek((uint)ErostekET312ProtocolConsts.Flash.BoxModel, aToken).ConfigureAwait(false);
 
             // If we got this far we're back in business!
             BpLogger.Info("Encryption already set up. No handshake required.");
         }
 
-        ~ErostekET312Device()
-        {
-            Disconnect();
-        }
-
-        private async Task DisconnectInternal(bool aShouldReset)
+        private async Task DisconnectInternal(bool aShouldReset, CancellationToken aToken)
         {
             if (_updateTimer != null)
             {
                 _updateTimer.Enabled = false;
             }
 
-            if (!IsConnected)
+            if (!Interface.Connected)
             {
                 return;
             }
 
             try
             {
-                await _lock.WaitAsync().ConfigureAwait(false);
+                await _lock.WaitAsync(aToken).ConfigureAwait(false);
 
                 if (aShouldReset)
                 {
-                    await ResetBox().ConfigureAwait(false);
+                    await ResetBox(aToken).ConfigureAwait(false);
                 }
 
-                base.Disconnect();
-                InvokeDeviceRemoved();
+                Interface.Disconnect();
             }
             finally
             {
@@ -276,14 +225,8 @@ namespace Buttplug.Server.Managers.SerialPortManager
             }
         }
 
-        /// Reset the box to defaults when application closes
-        public override void Disconnect()
-        {
-            DisconnectInternal(true).Wait();
-        }
-
         // Calculates a box command checksum, sets command length and encrypts the message
-        private async Task SendCommand(byte[] buffer)
+        private async Task SendCommand(byte[] buffer, CancellationToken aToken)
         {
             if (buffer.Length > 16)
             {
@@ -309,7 +252,7 @@ namespace Buttplug.Server.Managers.SerialPortManager
             }
 
             // Send message to box
-            await WriteAsync(buffer).ConfigureAwait(false);
+            await Interface.WriteValueAsync(buffer, aToken).ConfigureAwait(false);
         }
 
         // Calculates a box command checksum, sets command length and encrypts the message We assume
@@ -332,64 +275,64 @@ namespace Buttplug.Server.Managers.SerialPortManager
 
         // Read one byte from the device
         // ReSharper disable once UnusedMethodReturnValue.Local
-        private async Task<byte> Peek(uint address)
+        private async Task<byte> Peek(uint address, CancellationToken aToken)
         {
             await SendCommand(new[]
             {
-                (byte)ET312Consts.SerialCommand.Read, // read byte command
+                (byte)ErostekET312ProtocolConsts.SerialCommand.Read, // read byte command
                 (byte)((address & 0xff00) >> 8), // address high byte
                 (byte)(address & 0x00ff), // address low byte
-            }).ConfigureAwait(false);
+            }, aToken).ConfigureAwait(false);
 
             // byte 0 - return code
             // byte 1 - content of requested address
             // byte 2 - checksum
-            var recBuffer = await ReadAsync(3).ConfigureAwait(false);
+            var recBuffer = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
 
             // If the response is not of the expected type or Checksum doesn't match consider
             // ourselves de-synchronized. Calling Code should treat the device as disconnected
-            if (recBuffer[0] != ((byte)ET312Consts.SerialResponse.Read | 0x20))
+            if (recBuffer[0] != ((byte)ErostekET312ProtocolConsts.SerialResponse.Read | 0x20))
             {
-                throw new ErostekET312CommunicationException("Unexpected return code from device.");
+                throw new ButtplugDeviceException(BpLogger, "Unexpected return code from device.");
             }
 
             if (recBuffer[2] != Checksum(recBuffer))
             {
-                throw new ErostekET312CommunicationException("Checksum error in reply from device.");
+                throw new ButtplugDeviceException(BpLogger, "Checksum error in reply from device.");
             }
 
             return recBuffer[1];
         }
 
-        private async Task Poke(uint address, byte value)
+        private async Task Poke(uint address, byte value, CancellationToken aToken)
         {
             await SendCommand(new[]
             {
-                (byte)ET312Consts.SerialCommand.Write,          // write byte command
+                (byte)ErostekET312ProtocolConsts.SerialCommand.Write,          // write byte command
                 (byte)((address & 0xff00) >> 8),    // address high byte
                 (byte)(address & 0x00ff),           // address low byte
                 value,                              // value
-            }).ConfigureAwait(false);
+            }, aToken).ConfigureAwait(false);
 
             // If the response is not ACK, consider ourselves de-synchronized. Calling Code should
             // treat the device as disconnected
-            var statusByte = await ReadAsync(1).ConfigureAwait(false);
-            if (statusByte.Length != 1 || statusByte[0] != (byte)ET312Consts.SerialResponse.OK)
+            var statusByte = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
+            if (statusByte.Length != 1 || statusByte[0] != (byte)ErostekET312ProtocolConsts.SerialResponse.OK)
             {
-                throw new ErostekET312CommunicationException("Unexpected return code from device.");
+                throw new ButtplugDeviceException(BpLogger, "Unexpected return code from device.");
             }
         }
 
         // Execute box command
-        private async Task Execute(byte command)
+        private async Task Execute(byte command, CancellationToken aToken)
         {
-            await Poke((uint)ET312Consts.RAM.BoxCommand1, command).ConfigureAwait(false);
+            await Poke((uint)ErostekET312ProtocolConsts.RAM.BoxCommand1, command, aToken).ConfigureAwait(false);
             Thread.Sleep(18);
         }
 
         // Write Message to the LCD display
         // ReSharper disable once InconsistentNaming
-        private async Task WriteLCD(string message, int offset)
+        private async Task WriteLCD(string message, int offset, CancellationToken aToken)
         {
             var buffer = Encoding.ASCII.GetBytes(message);
             for (var c = 0; c < buffer.Length; c++)
@@ -397,9 +340,9 @@ namespace Buttplug.Server.Managers.SerialPortManager
                 try
                 {
                     await _lock.WaitAsync().ConfigureAwait(false);
-                    await Poke((uint)ET312Consts.RAM.WriteLCDParameter, buffer[c]).ConfigureAwait(false);
-                    await Poke((uint)ET312Consts.RAM.WriteLCDPosition, (byte)(offset + c)).ConfigureAwait(false);
-                    await Execute((byte)ET312Consts.BoxCommand.LCDWriteCharacter).ConfigureAwait(false);
+                    await Poke((uint)ErostekET312ProtocolConsts.RAM.WriteLCDParameter, buffer[c], aToken).ConfigureAwait(false);
+                    await Poke((uint)ErostekET312ProtocolConsts.RAM.WriteLCDPosition, (byte)(offset + c), aToken).ConfigureAwait(false);
+                    await Execute((byte)ErostekET312ProtocolConsts.BoxCommand.LCDWriteCharacter, aToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -410,15 +353,15 @@ namespace Buttplug.Server.Managers.SerialPortManager
 
         // Warm Start the Box
         // ReSharper disable once UnusedMethodReturnValue.Local
-        private async Task<byte> ResetBox()
+        private async Task<byte> ResetBox(CancellationToken aToken)
         {
             await SendCommand(new byte[]
             {
-                (byte)ET312Consts.SerialCommand.Reset,          // reset command
+                (byte)ErostekET312ProtocolConsts.SerialCommand.Reset,          // reset command
                 0x55,                               // parameter for reset is always 0x55
-            }).ConfigureAwait(false);
+            }, aToken).ConfigureAwait(false);
 
-            var retBuf = await ReadAsync(1).ConfigureAwait(false);
+            var retBuf = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
             return retBuf[0];
         }
 
@@ -463,17 +406,17 @@ namespace Buttplug.Server.Managers.SerialPortManager
                         correctedA = correctedB = 0;
                     }
 
-                    await Poke((uint)ET312Consts.RAM.ChannelAIntensity,
-                        (byte)correctedA).ConfigureAwait(false); // Channel A: Set intensity value
-                    await Poke((uint)ET312Consts.RAM.ChannelBIntensity,
-                        (byte)correctedB).ConfigureAwait(false); // Channel B: Set intensity value
+                    await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelAIntensity,
+                        (byte)correctedA, default(CancellationToken)).ConfigureAwait(false); // Channel A: Set intensity value
+                    await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelBIntensity,
+                        (byte)correctedB, default(CancellationToken)).ConfigureAwait(false); // Channel B: Set intensity value
                 }
                 catch (Exception ex)
                 {
                     _lock.Release();
-                    await DisconnectInternal(false).ConfigureAwait(false);
+                    await DisconnectInternal(false, default(CancellationToken)).ConfigureAwait(false);
 
-                    if (ex is ErostekET312CommunicationException
+                    if (ex is ButtplugDeviceException
                         || ex is InvalidOperationException
                         || ex is TimeoutException)
                     {
@@ -510,8 +453,8 @@ namespace Buttplug.Server.Managers.SerialPortManager
                 await _lock.WaitAsync(aToken).ConfigureAwait(false);
                 try
                 {
-                    await Poke((uint)ET312Consts.RAM.ChannelAIntensity, 0x00).ConfigureAwait(false); // Channel A: Set intensity value
-                    await Poke((uint)ET312Consts.RAM.ChannelBIntensity, 0x00).ConfigureAwait(false); // Channel B: Set intensity value
+                    await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelAIntensity, 0x00, aToken).ConfigureAwait(false); // Channel A: Set intensity value
+                    await Poke((uint)ErostekET312ProtocolConsts.RAM.ChannelBIntensity, 0x00, aToken).ConfigureAwait(false); // Channel B: Set intensity value
                     _position = 0;
                     _speed = 0;
                     _increment = 0;
@@ -520,9 +463,9 @@ namespace Buttplug.Server.Managers.SerialPortManager
                 catch (Exception ex)
                 {
                     _lock.Release();
-                    await DisconnectInternal(false).ConfigureAwait(false);
+                    await DisconnectInternal(false, aToken).ConfigureAwait(false);
 
-                    if (ex is ErostekET312CommunicationException
+                    if (ex is ButtplugDeviceException
                         || ex is InvalidOperationException
                         || ex is TimeoutException)
                     {
