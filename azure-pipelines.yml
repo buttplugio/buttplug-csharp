@@ -27,24 +27,32 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: NuGetToolInstaller@0
+  - task: NuGetToolInstaller@0
 
-# Get codecov, resharper, etc.
-# - powershell: choco install -y -r --no-progress resharper-clt.portable
-#   condition: eq( variables['Agent.OS'], 'Windows_NT' )
-#   displayName: Get Windows dependencies (resharper)
-    
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-
+  # Get codecov, resharper, etc.
+  # - powershell: choco install -y -r --no-progress resharper-clt.portable
+  #   condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  #   displayName: Get Windows dependencies (resharper)
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: '$(solution)'
+  - task: VSBuild@1
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    inputs:
+      solution: '$(solution)'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+  - task: VSTest@2
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    inputs:
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+  - task: DotNetCoreCLI@2
+    condition: ne( variables['Agent.OS'], 'Windows_NT' )
+    inputs:
+      command: 'build'
+      arguments: '--configuration ReleaseStandard -f netstandard2.0'
+      
 # Run Resharper
 # Running it works, outputing warnings doesn't.
 # - powershell: |
@@ -54,8 +62,4 @@ steps:
 #   condition: eq( variables['Agent.OS'], 'Windows_NT' )
 #   displayName: Run resharper warnings
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
 
