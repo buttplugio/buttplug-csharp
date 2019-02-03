@@ -66,7 +66,7 @@ namespace Buttplug.Server.Connectors
         {
             while (!aToken.IsCancellationRequested)
             {
-                var pipeServer = new NamedPipeServerStream(aPipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+                var pipeServer = new NamedPipeServerStream(aPipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
                 await pipeServer.WaitForConnectionAsync(aToken).ConfigureAwait(false);
                 if (!pipeServer.IsConnected)
                 {
