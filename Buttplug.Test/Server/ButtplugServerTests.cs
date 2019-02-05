@@ -250,21 +250,21 @@ namespace Buttplug.Server.Test
         [Test]
         public async Task TestPing()
         {
-            var server = new TestServer(100);
+            var server = new TestServer(500);
             var msg = await server.SendMessageAsync(new RequestServerInfo("TestClient"));
             msg.Should().BeOfType<ServerInfo>();
 
             // Timeout is set to 100ms
             for (int i = 0; i < 8; i++)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(100);
                 (await server.SendMessageAsync(new Ping())).Should().BeOfType<Ok>();
             }
 
             // If we're still getting OK, we've survived 400ms
 
             // Now lets ensure we can actually timeout
-            Thread.Sleep(150);
+            Thread.Sleep(600);
             server.Awaiting(async aServer => await aServer.SendMessageAsync(new Ping())).Should().Throw<ButtplugPingException>();
         }
 
