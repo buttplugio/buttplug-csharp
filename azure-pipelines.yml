@@ -45,11 +45,11 @@ jobs:
         inputs:
           command: 'build'
           arguments: '--configuration ReleaseStandard -f netstandard2.0'
-      # Turn off tests 'til I can figure out why nunit stalls
-      # - task: DotNetCoreCLI@2
-      #   inputs:
-      #     command: 'test'
-      #     arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
+      # IPC Tests are turned off for this platform, as they time out.
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
   - job: MacOS
     pool:
       vmImage: 'macos-10.13'
@@ -62,8 +62,8 @@ jobs:
         inputs:
           command: 'build'
           arguments: '--configuration ReleaseStandard -f netstandard2.0'
-      # Turn off tests 'til I can figure out why nunit stalls
-      # - task: DotNetCoreCLI@2
-      #   inputs:
-      #     command: 'test'
-      #     arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
+      # IPC Tests are turned off for this platform, as they time out.
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
