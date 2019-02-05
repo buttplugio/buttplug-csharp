@@ -62,8 +62,8 @@ jobs:
         inputs:
           command: 'build'
           arguments: '--configuration ReleaseStandard -f netstandard2.0'
-      # IPC Tests are turned off for this platform, as they time out.
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'test'
-          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
+      # Timed tests on mac die constantly, just turn off mac tests for right now and trust we're covering windows/linux
+      # - task: DotNetCoreCLI@2
+      #   inputs:
+      #     command: 'test'
+      #     arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
