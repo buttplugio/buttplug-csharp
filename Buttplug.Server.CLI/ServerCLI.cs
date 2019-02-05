@@ -115,6 +115,9 @@ namespace Buttplug.Server.CLI
             {
                 var server = new ButtplugIPCServer();
                 server.StartServer(ServerFactory, aOptions.PipeServer);
+                var wait = new TaskCompletionSource<bool>();
+                server.ConnectionClosed += (aSender, aArgs) => { wait.SetResult(true); };
+                wait.Task.Wait();
             }
         }
     }
