@@ -20,15 +20,19 @@ jobs:
       vmImage: 'vs2017-win2016'
     steps:
       - task: NuGetToolInstaller@0
+        displayName: "Install Platform Dependencies"
       - task: NuGetCommand@2
+        displayName: "Restore Project"
         inputs:
           restoreSolution: '$(solution)'
       - task: VSBuild@1
+        displayName: "Build Project"
         inputs:
           solution: '$(solution)'
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
       - task: VSTest@2
+        displayName: "Test Project"
         inputs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
@@ -37,11 +41,14 @@ jobs:
       vmImage: 'ubuntu-16.04'
     steps:
       - task: NuGetToolInstaller@0
+        displayName: "Install Platform Dependencies"
       - task: NuGetCommand@2
+        displayName: "Restore Project"
         inputs:
           restoreSolution: '$(solution)'
       - task: DotNetCoreCLI@2
         condition: ne( variables['Agent.OS'], 'Windows_NT' )
+        displayName: "Build Project"
         inputs:
           command: 'build'
           arguments: '--configuration ReleaseStandard -f netstandard2.0'
@@ -55,15 +62,20 @@ jobs:
       vmImage: 'macos-10.13'
     steps:
       - task: NuGetToolInstaller@0
+        displayName: "Install Platform Dependencies"
       - task: NuGetCommand@2
+        displayName: "Restore Project"
         inputs:
           restoreSolution: '$(solution)'
       - task: DotNetCoreCLI@2
+        displayName: "Build Project"
         inputs:
           command: 'build'
           arguments: '--configuration ReleaseStandard -f netstandard2.0'
       # Timed tests on mac die constantly, just turn off mac tests for right now and trust we're covering windows/linux
-      # - task: DotNetCoreCLI@2
-      #   inputs:
-      #     command: 'test'
-      #     arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
+      - task: DotNetCoreCLI@2
+        condition: false
+        displayName: "Test Project (Skipped due to timing issues on MacOS)"
+        inputs:
+          command: 'test'
+          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard -f netcoreapp2.1'
