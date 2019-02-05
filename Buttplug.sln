@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.CLI", "Butt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.HidSharpManager", "Buttplug.Server.Managers.HidSharpManager\Buttplug.Server.Managers.HidSharpManager.csproj", "{5EA497FA-C0E1-4ED5-A5E6-A18CF9847170}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Test", "Buttplug.Test\Buttplug.Test.csproj", "{B38515D6-8EFA-49A6-A9FF-8385461185DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Test", "Buttplug.Test\Buttplug.Test.csproj", "{A773EBBF-45BE-4411-986D-907EC25A11D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
