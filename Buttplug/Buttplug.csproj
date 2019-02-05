@@ -1,10 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+      <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' "> 
+      <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+  </PropertyGroup>
   <PropertyGroup>
     <PackageId />
     <RootNamespace>Buttplug</RootNamespace>
     <AssemblyName>Buttplug</AssemblyName>
-    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
 
     <Title>Buttplug</Title>
     <Product>Buttplug</Product>

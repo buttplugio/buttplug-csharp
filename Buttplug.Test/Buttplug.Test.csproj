@@ -1,8 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;net47</TargetFrameworks>
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+      <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' "> 
+      <TargetFrameworks>netcoreapp2.1;net47</TargetFrameworks>
+  </PropertyGroup>
 
+  <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
@@ -24,7 +29,8 @@
     <ProjectReference Include="..\Buttplug\Buttplug.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="  '$(Framework)' != 'net47' ">
+  <!-- IPC Tests break on non-windows platforms -->
+  <ItemGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <Compile Remove=".\Client\ButtplugClientIPCConnectorTests.cs" />
   </ItemGroup>
 </Project>
