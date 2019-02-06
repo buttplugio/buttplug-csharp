@@ -23,25 +23,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Connectors.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug", "Buttplug\Buttplug.csproj", "{6DC84B42-8492-4F92-A988-6D4B371D4F30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.CLI", "Buttplug.Server.CLI\Buttplug.Server.CLI.csproj", "{F4726B66-2E07-4805-97B8-A8A4BD80E257}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.HidSharpManager", "Buttplug.Server.Managers.HidSharpManager\Buttplug.Server.Managers.HidSharpManager.csproj", "{5EA497FA-C0E1-4ED5-A5E6-A18CF9847170}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Test", "Buttplug.Test\Buttplug.Test.csproj", "{A773EBBF-45BE-4411-986D-907EC25A11D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.01.EmbeddedClientSetup", "Buttplug.Examples.01.EmbeddedClientSetup\Buttplug.Examples.01.EmbeddedClientSetup.csproj", "{CDB0CDA2-2432-4B00-A900-DE3D4FA1AFCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Examples.01.EmbeddedClientSetup", "Buttplug.Examples.01.EmbeddedClientSetup\Buttplug.Examples.01.EmbeddedClientSetup.csproj", "{CDB0CDA2-2432-4B00-A900-DE3D4FA1AFCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.02.WebsocketClientSetup", "Buttplug.Examples.02.WebsocketClientSetup\Buttplug.Examples.02.WebsocketClientSetup.csproj", "{E3A82D3A-BAFB-4620-B907-E02C64BE7211}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Examples.02.WebsocketClientSetup", "Buttplug.Examples.02.WebsocketClientSetup\Buttplug.Examples.02.WebsocketClientSetup.csproj", "{E3A82D3A-BAFB-4620-B907-E02C64BE7211}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.03.ConnectionLifetimesAndPingTimers", "Buttplug.Examples.03.ConnectionLifetimesAndPingTimers\Buttplug.Examples.03.ConnectionLifetimesAndPingTimers.csproj", "{1F4C9A20-36A9-4871-A0C4-5BD354B628F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Examples.03.ConnectionLifetimesAndPingTimers", "Buttplug.Examples.03.ConnectionLifetimesAndPingTimers\Buttplug.Examples.03.ConnectionLifetimesAndPingTimers.csproj", "{1F4C9A20-36A9-4871-A0C4-5BD354B628F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.04.DeviceEnumeration", "Buttplug.Examples.04.DeviceEnumeration\Buttplug.Examples.04.DeviceEnumeration.csproj", "{189E77C2-CB26-4310-B486-3AB75CE87095}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Examples.04.DeviceEnumeration", "Buttplug.Examples.04.DeviceEnumeration\Buttplug.Examples.04.DeviceEnumeration.csproj", "{189E77C2-CB26-4310-B486-3AB75CE87095}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.05.DeviceControl", "Buttplug.Examples.05.DeviceControl\Buttplug.Examples.05.DeviceControl.csproj", "{185F2DE4-036E-403C-B6D2-A2B1CA758CEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Examples.05.DeviceControl", "Buttplug.Examples.05.DeviceControl\Buttplug.Examples.05.DeviceControl.csproj", "{185F2DE4-036E-403C-B6D2-A2B1CA758CEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.06.LoggingAndErrorHandling", "Buttplug.Examples.06.LoggingAndErrorHandling\Buttplug.Examples.06.LoggingAndErrorHandling.csproj", "{966D3B3E-38EF-4581-BFF6-768A7E475F41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Examples.06.LoggingAndErrorHandling", "Buttplug.Examples.06.LoggingAndErrorHandling\Buttplug.Examples.06.LoggingAndErrorHandling.csproj", "{966D3B3E-38EF-4581-BFF6-768A7E475F41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Examples.07.FullProgram", "Buttplug.Examples.07.FullProgram\Buttplug.Examples.07.FullProgram.csproj", "{554248C5-A152-40A0-88E1-0BEEF14F575A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Examples.07.FullProgram", "Buttplug.Examples.07.FullProgram\Buttplug.Examples.07.FullProgram.csproj", "{554248C5-A152-40A0-88E1-0BEEF14F575A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.CLI", "Buttplug.Server.CLI\Buttplug.Server.CLI.csproj", "{6B62C7A4-8712-4A0E-9ABF-4D4F3D8F0895}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,12 +109,6 @@ Global
 		{6DC84B42-8492-4F92-A988-6D4B371D4F30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6DC84B42-8492-4F92-A988-6D4B371D4F30}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{6DC84B42-8492-4F92-A988-6D4B371D4F30}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
-		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4726B66-2E07-4805-97B8-A8A4BD80E257}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{5EA497FA-C0E1-4ED5-A5E6-A18CF9847170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5EA497FA-C0E1-4ED5-A5E6-A18CF9847170}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EA497FA-C0E1-4ED5-A5E6-A18CF9847170}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
@@ -187,6 +181,14 @@ Global
 		{554248C5-A152-40A0-88E1-0BEEF14F575A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{554248C5-A152-40A0-88E1-0BEEF14F575A}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{554248C5-A152-40A0-88E1-0BEEF14F575A}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
+		{6B62C7A4-8712-4A0E-9ABF-4D4F3D8F0895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B62C7A4-8712-4A0E-9ABF-4D4F3D8F0895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B62C7A4-8712-4A0E-9ABF-4D4F3D8F0895}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B62C7A4-8712-4A0E-9ABF-4D4F3D8F0895}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
+		{6B62C7A4-8712-4A0E-9ABF-4D4F3D8F0895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B62C7A4-8712-4A0E-9ABF-4D4F3D8F0895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B62C7A4-8712-4A0E-9ABF-4D4F3D8F0895}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
+		{6B62C7A4-8712-4A0E-9ABF-4D4F3D8F0895}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
