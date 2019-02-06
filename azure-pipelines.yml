@@ -42,6 +42,8 @@ jobs:
           copy-item *.md docs\articles\
           docfx docs\docfx.json
         displayName: Documentation Generation
+        condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+
   - job: Linux
     pool:
       vmImage: 'ubuntu-16.04'
