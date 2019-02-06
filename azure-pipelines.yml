@@ -36,6 +36,12 @@ jobs:
         inputs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
+      - powershell: |
+          cinst -y docfx
+          copy-item README.md docs\index.md
+          copy-item *.md docs\articles\
+          docfx docs\docfx.json
+        displayName: Documentation Generation
   - job: Linux
     pool:
       vmImage: 'ubuntu-16.04'

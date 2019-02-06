@@ -3,59 +3,19 @@
     {
       "src": [
         {
-          "src": "../Buttplug.Core",
+          "src": "..",
           "files": [
-            "**.csproj"
+            "Buttplug/**.csproj"
           ],
           "exclude": [
             "**/obj/**",
             "**/bin/**",
-	    "gh-pages/**"
-	  ]
+	          "gh-pages/**"
+	        ]
         }
       ],
-      "dest": "api/Buttplug.Core",
+      "dest": "api",
       "disableGitFeatures": false,
-      "properties": {
-        "TargetFramework": "netstandard2.0"
-      }
-    },
-    {
-      "src": [
-        {
-          "src": "../Buttplug.Client",
-          "files": [
-            "**.csproj"
-          ],
-          "exclude": [
-            "**/obj/**",
-            "**/bin/**",
-	    "gh-pages/**"
-	  ]
-        }
-      ],
-      "dest": "api/Buttplug.Client",
-      "disableGitFeatures": false,
-      "properties": {
-        "TargetFramework": "netstandard2.0"
-      }
-    },
-    {
-      "src": [
-        {
-          "src": "../Buttplug.Server",
-          "files": [
-            "**.csproj"
-          ],
-          "exclude": [
-            "**/obj/**",
-            "**/bin/**",
-	    "gh-pages/**"
-	  ]
-        }
-      ],
-      "dest": "api/Buttplug.Server",
-      "disableGitFeatures": true,
       "properties": {
         "TargetFramework": "netstandard2.0"
       }
@@ -67,7 +27,8 @@
         "files": [
           "api/**.yml",
           "api/index.md"
-        ]
+        ],
+        "src": ".."
       },
       {
         "files": "*.md",
