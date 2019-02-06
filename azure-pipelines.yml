@@ -53,6 +53,7 @@ jobs:
           arguments: '--configuration ReleaseStandard'
       # IPC Tests are turned off for this platform, as they time out.
       - task: DotNetCoreCLI@2
+        displayName: "Test Project"
         inputs:
           command: 'test'
           arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard'
