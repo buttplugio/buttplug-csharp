@@ -13,5 +13,9 @@
     <ProjectReference Include="..\Buttplug.Client.Connectors.WebsocketConnector\Buttplug.Client.Connectors.WebsocketConnector.csproj" />
     <ProjectReference Include="..\Buttplug\Buttplug.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.NETCore.App" Version="2.1.0" />
+  </ItemGroup>
+
 
 </Project>
