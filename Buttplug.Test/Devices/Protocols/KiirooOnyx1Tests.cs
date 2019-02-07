@@ -93,6 +93,7 @@ namespace Buttplug.Test.Devices.Protocols
         }
 
         [Test]
+        [Ignore("Times out intermittently, needs a rewrite.")]
         public async Task TestVectorCmd()
         {
             var msg = new LinearCmd(4, new List<LinearCmd.VectorSubcommand>
