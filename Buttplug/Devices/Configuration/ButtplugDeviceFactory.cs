@@ -9,7 +9,9 @@ namespace Buttplug.Devices.Configuration
     {
         public IProtocolConfiguration Config { get; }
 
-        private Type _protocolType;
+        public string ProtocolName => _protocolType.Name;
+
+        private readonly Type _protocolType;
 
         public ButtplugDeviceFactory(IProtocolConfiguration aConfig, Type aProtocolType)
         {

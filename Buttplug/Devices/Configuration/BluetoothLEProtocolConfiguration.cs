@@ -1,27 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Buttplug.Core;
 
 namespace Buttplug.Devices.Configuration
 {
     public class BluetoothLEProtocolConfiguration : IProtocolConfiguration
     {
-        public readonly List<string> Names;
-        public readonly Dictionary<Guid, Dictionary<string, Guid>> Services;
+        public List<string> Names = new List<string>();
+        public Dictionary<Guid, Dictionary<string, Guid>> Services;
 
         public BluetoothLEProtocolConfiguration(IEnumerable<string> aNames,
             Dictionary<Guid, Dictionary<string, Guid>> aServices = null)
         {
-            Names = aNames.ToList();
+            Names = aNames?.ToList() ?? Names;
 
             Services = aServices ?? new Dictionary<Guid, Dictionary<string, Guid>>();
 
-            // TODO Fail on similarly named characteristics
-
-            // TODO Fail on devices with multiple services without characteristic lists.
-            //
-            // Should we really do this here though? Lovense has a ton of services but only one will
-            // ever be live. Shouldn't this be handled elsewhere, maybe in endpoint setup for devices?
+            // TODO Fail on similarly named characteristics in same service.
         }
 
         internal BluetoothLEProtocolConfiguration(BluetoothLEInfo aInfo)
@@ -67,6 +63,38 @@ namespace Buttplug.Devices.Configuration
 
             // TODO Put in advertised service checking, but that hasn't really been needed so far.
             return false;
+        }
+
+        public void Merge(IProtocolConfiguration aConfig)
+        {
+            if (!(aConfig is BluetoothLEProtocolConfiguration bleConfig))
+            {
+                throw new ArgumentException();
+            }
+
+            if (bleConfig.Names != null)
+            {
+                var overlap = bleConfig.Names.Intersect(Names);
+                if (overlap.Any())
+                {
+                    throw new ButtplugDeviceException($"User and Device configs have repeated BLE names: {overlap}");
+                }
+
+                Names = Names.Union(bleConfig.Names).ToList();
+            }
+
+            if (bleConfig.Services != null)
+            {
+                foreach (var service in bleConfig.Services)
+                {
+                    if (Services.ContainsKey(service.Key))
+                    {
+                        throw new ButtplugDeviceException($"User and Device configs have repeated BLE services: {service.Key}");
+                    }
+
+                    Services.Add(service.Key, service.Value);
+                }
+            }
         }
     }
 }

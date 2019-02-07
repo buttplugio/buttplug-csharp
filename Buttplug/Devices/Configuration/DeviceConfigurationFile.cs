@@ -53,5 +53,7 @@ namespace Buttplug.Devices.Configuration
         public char Parity { get; set; }
 
         public byte StopBits { get; set; }
+
+        public List<string> Ports { get; set; }
     }
 }

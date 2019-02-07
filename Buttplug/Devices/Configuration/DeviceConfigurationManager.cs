@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using Buttplug.Core;
@@ -56,20 +57,21 @@ namespace Buttplug.Devices.Configuration
             AddProtocol("xinput", typeof(XInputProtocol));
         }
 
-        protected void LoadBaseConfigurationFromResourceInternal()
+        private void LoadOrAppendConfigurationObject(string aConfigFile, bool aCanAddProtocols = true)
         {
-            var deviceConfig = ButtplugUtils.GetStringFromFileResource("Buttplug.buttplug-device-config.yml");
-            var input = new StringReader(deviceConfig);
-
             var deserializer = new DeserializerBuilder()
                 .WithNamingConvention(new HyphenatedNamingConvention())
                 .Build();
-
-            var configObject = deserializer.Deserialize<DeviceConfigurationFile>(input);
+            var configObject = deserializer.Deserialize<DeviceConfigurationFile>(aConfigFile);
             foreach (var protocolDefinition in configObject.Protocols)
             {
                 var protocolName = protocolDefinition.Key;
                 var protocolInfo = protocolDefinition.Value;
+
+                if (!aCanAddProtocols && !_protocolConfigs.ContainsKey(protocolName))
+                {
+                    throw new ButtplugDeviceException("Cannot add protocols in user configuration files.");
+                }
 
                 if (protocolInfo?.Btle != null)
                 {
@@ -103,12 +105,15 @@ namespace Buttplug.Devices.Configuration
         public static void LoadBaseConfigurationFromResource()
         {
             _manager = new DeviceConfigurationManager();
-            _manager.LoadBaseConfigurationFromResourceInternal();
+            var deviceConfig = ButtplugUtils.GetStringFromFileResource("Buttplug.buttplug-device-config.yml");
+            _manager.LoadOrAppendConfigurationObject(deviceConfig);
         }
 
         public static void LoadBaseConfigurationFile(string aFileName)
         {
             _manager = new DeviceConfigurationManager();
+            var deviceConfig = File.ReadAllText(aFileName);
+            _manager.LoadOrAppendConfigurationObject(deviceConfig);
         }
 
         /// <summary>
@@ -118,6 +123,13 @@ namespace Buttplug.Devices.Configuration
         /// <param name="aFileName">Path to the user configuration file.</param>
         public void LoadUserConfigurationFile(string aFileName)
         {
+            var deviceConfig = File.ReadAllText(aFileName);
+            LoadUserConfigurationString(deviceConfig);
+        }
+
+        public void LoadUserConfigurationString(string aConfigString)
+        {
+            LoadOrAppendConfigurationObject(aConfigString, false);
         }
 
         public void AddProtocol(string aProtocolName, Type aProtocolType)
@@ -130,6 +142,12 @@ namespace Buttplug.Devices.Configuration
             if (!_protocolConfigs.ContainsKey(aProtocolName))
             {
                 _protocolConfigs.Add(aProtocolName, new List<IProtocolConfiguration>());
+            }
+
+            if (_protocolConfigs[aProtocolName].Any())
+            {
+                var config = _protocolConfigs[aProtocolName].Find(aX => aX.GetType() == aConfiguration.GetType());
+                config?.Merge(aConfiguration);
             }
 
             _protocolConfigs[aProtocolName].Add(aConfiguration);
@@ -221,6 +239,14 @@ namespace Buttplug.Devices.Configuration
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Clears the manager. Used for testing only.
+        /// </summary>
+        internal static void Clear()
+        {
+            _manager = null;
         }
     }
 }

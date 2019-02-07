@@ -1,4 +1,6 @@
-﻿namespace Buttplug.Devices.Configuration
+﻿using System;
+
+namespace Buttplug.Devices.Configuration
 {
     public class USBProtocolConfiguration : IProtocolConfiguration
     {
@@ -20,6 +22,11 @@
         public bool Matches(IProtocolConfiguration aConfig)
         {
             return aConfig is USBProtocolConfiguration usbConfig && usbConfig.ProductId == ProductId && usbConfig.VendorId == VendorId;
+        }
+
+        public void Merge(IProtocolConfiguration aConfig)
+        {
+            throw new NotImplementedException("No valid implementation of configuration merging for USB");
         }
     }
 }

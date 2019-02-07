@@ -1,4 +1,6 @@
-﻿namespace Buttplug.Devices.Configuration
+﻿using System;
+
+namespace Buttplug.Devices.Configuration
 {
     public class HIDProtocolConfiguration : IProtocolConfiguration
     {
@@ -20,6 +22,11 @@
         public bool Matches(IProtocolConfiguration aConfig)
         {
             return aConfig is HIDProtocolConfiguration hidConfig && hidConfig.ProductId == ProductId && hidConfig.VendorId == VendorId;
+        }
+
+        public void Merge(IProtocolConfiguration aConfig)
+        {
+            throw new NotImplementedException("No valid implementation of configuration merging for HID");
         }
     }
 }
