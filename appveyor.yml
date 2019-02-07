@@ -1,0 +1,181 @@
+branches:
+  only:
+    - /master|^\d+\.\d+\.\d+$|dev/
+
+configuration:
+  - Debug
+  - Release
+
+# Removing ubuntu builds for the time being because they slow things
+# down on Appveyor due to slow VM provisioning. Should move to Travis.
+image:
+  - Visual Studio 2017
+# - Ubuntu
+
+skip_branch_with_pr: true
+  
+environment:
+  # Enable for RDP connections to failing build VMs
+  # APPVEYOR_RDP_PASSWORD:
+  #   secure: DelQKdq2M0hQqWTJcBPrnhwyekAAg3BGg4DVB7zGCg0=
+  sentry_api_url:
+    secure: grqYfjT9kMwONAdl/iwYcI7NOEd8ounzFFehZIWX3I3y1oiIa7F4GrZJKNqWcucEhyyn9SpAnXiheKAJU/kl0nFT7QUlnXplEE9c/krbWDEy0mSMy5DaFv1+MijZ5hjm
+  git_access_token:
+    secure: SvHymEaf8z/NGLTrYUeI3PutAKTLiWlQtT0LVuVTkPGSG1uWXsF22ySBx4o/sRH1
+  git_email: build@appveyor.com
+  git_user: Appveyor Build
+  DISCORD_WEBHOOK_URL:
+    secure: 0N/+OHOE9ePrZMtAS0kfQfqrM+zqQgYqpR5N9GHmEbipmWshAzRcTkfA1inZGNE8aijVzDT78LVZrwFZbhaU4YEd9rfuTbgD600v6GnunBroFmTfeFXlLHDvB7WzFwU6ZqibKN7I6rD/tgt675wK77mDtDdAetqTrinwLdINTn8=
+  
+# Taken from https://boblokerse.github.io/2015/11/03/GitVersion-versioning-made-easy-and-dry/
+install:
+  - cmd: ver
+  - cmd: set
+  - ps: |
+      if ($isWindows) {
+        get-childitem c:\tools\nunit3 -rec | where {!$_.PSIsContainer} | select-object FullName
+        choco install -y -r --no-progress resharper-clt.portable
+      }
+  - ps: |
+      function gitVersion() {
+        $env:newhash=git rev-parse HEAD
+        $env:shorthash=git rev-parse --short HEAD
+        If ($env:APPVEYOR_REPO_TAG -eq $TRUE) {
+          $env:newVersion="$env:APPVEYOR_REPO_TAG_NAME.$env:APPVEYOR_BUILD_NUMBER"
+          $env:appveyor_info_version="$env:APPVEYOR_REPO_TAG_NAME"
+        } Else {
+          # We'll only tag on master for this repo, so just assume
+          # we'll find the last tag based on whatever head we're on.
+          $gitVersion=git describe --tags --abbrev=0 HEAD
+          $env:newVersion="$gitVersion.$env:APPVEYOR_BUILD_NUMBER"
+          $env:appveyor_info_version="$env:newVersion-$env:APPVEYOR_REPO_BRANCH"
+        }      
+        $env:appveyor_build_version="$env:newVersion"
+        appveyor UpdateBuild -Version "$env:newVersion"
+        
+        $regex = [regex]"AssemblyGitVersion\(.*\)"
+        Get-ChildItem $env.APPVEYOR_BUILD_FOLDER AssemblyInfo.* -recurse | Foreach-Object {
+          $c = ($_ | Get-Content)
+          $c = [regex]::replace($c -join "`r`n", $regex,"AssemblyGitVersion(`"$env:APPVEYOR_REPO_COMMIT`")")
+          $c | Set-Content $_.FullName
+        }
+        write-host "Using hash for build version: $env:newhash"
+        write-host "Update appveyor build version to: $env:appveyor_build_version"
+        write-host "Update appveyor info version to: $env:appveyor_info_version"
+      }
+      gitVersion
+      
+# patch the assembly version, but only in our own directories
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: $(appveyor_build_version)
+  assembly_file_version: $(appveyor_build_version)
+  assembly_informational_version: $(appveyor_info_version)
+  
+# Patch <PackageVersion> in new .csproj files
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: $(appveyor_info_version)
+  package_version: $(appveyor_info_version)
+  assembly_version: $(appveyor_build_version)
+  file_version: $(appveyor_build_version)
+  informational_version: $(appveyor_info_version)
+
+# Automatically register private account and/or project AppVeyor NuGet feeds.
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
+
+before_build:
+  - nuget restore
+
+build:
+  project: Buttplug.sln
+  publish_nuget: true
+  parallel: true
+  verbosity: minimal
+
+# Turn off ubuntu builds for now, as they're WAY too slow on appveyor.
+# for:
+#   -
+#     matrix:
+#       only:
+#         - image: Ubuntu
+#           configuration: Debug
+#     build_script:
+#       - dotnet build --configuration DebugStandard
+#   -
+#     matrix:
+#       only:
+#         - image: Ubuntu
+#           configuration: Release
+#     build_script:
+#       - dotnet build --configuration ReleaseStandard
+  
+after_build:
+  - ps: |
+      if ($isWindows) {
+        InspectCode.exe --output=resharper-clt-output.xml --project="Buttplug*" Buttplug.sln;
+        $result = [xml](Get-Content .\resharper-clt-output.xml)
+        $result.Report.Issues.ChildNodes | ForEach-Object {$project = $_.Name; $_.ChildNodes | ForEach-Object {Add-AppveyorCompilationMessage -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
+      }
+
+test_script:
+  - ps: |
+      if ($isWindows) {
+        .\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -returntargetcode -register:user -target:"$env:SYSTEMDRIVE\Tools\NUnit3\nunit3-console.exe" -targetargs:"Buttplug.Test\bin\$env:CONFIGURATION\Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test\bin\$env:CONFIGURATION\Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=myresults.xml;format=AppVeyor" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs" -filter:"+[*]* -[nunit*]*"
+      }
+
+after_test:
+  - ps: |
+      If (($env:CONFIGURATION -imatch "Debug") -and $isWindows) {
+        $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
+        Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+        bash codecov.sh -f "coverage.xml" -X gcov
+      }
+
+# Enable for RDP connections to failing build VMs
+# on_finish:
+#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+# Discord webhook
+on_success:
+  - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+  - ps: write-host "Sending success message to discord webhook"
+  - ps: ./send.ps1 success $env:DISCORD_WEBHOOK_URL
+on_failure:
+  - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+  - ps: write-host "Sending failure message to discord webhook"
+  - ps: ./send.ps1 failure $env:DISCORD_WEBHOOK_URL
+    
+cache:
+  - packages -> **\packages.config
+  # Cache chocolatey packages
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
+
+deploy:
+  - provider: NuGet
+    api_key:
+      secure: vUJ4hlf8iKu6epmN7F68KkVFQUqGE0Fe0i6kYeKAj85ZRTVy3EOmX6M68oi3me0R
+    skip_symbols: true
+    artifact: /.*\.nupkg/
+    on:
+      branch: master
+      appveyor_repo_tag: false
+      configuration: release
+      appveyor_repo_provider: github
+      appveyor_repo_name: buttplugio/buttplug-csharp
+  - provider: NuGet
+    api_key:
+      secure: vUJ4hlf8iKu6epmN7F68KkVFQUqGE0Fe0i6kYeKAj85ZRTVy3EOmX6M68oi3me0R
+    skip_symbols: true
+    artifact: /.*\.nupkg/
+    on:
+      appveyor_repo_tag: true
+      configuration: release
+      appveyor_repo_provider: github
+      appveyor_repo_name: buttplugio/buttplug-csharp

@@ -15,9 +15,15 @@ variables:
   buildConfiguration: 'Release'
 
 jobs:
-  - job: Windows
+  - job: "Windows"
     pool:
       vmImage: 'vs2017-win2016'
+    strategy:
+      matrix:
+        Debug:
+          buildConfiguration: Debug
+        Release:
+          buildConfiguration: Release
     steps:
       - task: NuGetToolInstaller@0
         displayName: "Install Platform Dependencies"
@@ -44,9 +50,15 @@ jobs:
         displayName: Documentation Generation
         condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
 
-  - job: Linux
+  - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
+    strategy:
+      matrix:
+        Debug:
+          buildConfiguration: Debug
+        Release:
+          buildConfiguration: Release
     steps:
       - task: NuGetToolInstaller@0
         displayName: "Install Platform Dependencies"
@@ -58,16 +70,22 @@ jobs:
         displayName: "Build Project"
         inputs:
           command: 'build'
-          arguments: '--configuration ReleaseStandard'
+          arguments: '--configuration $(buildConfiguration)Standard'
       # IPC Tests are turned off for this platform, as they time out.
       - task: DotNetCoreCLI@2
         displayName: "Test Project"
         inputs:
           command: 'test'
-          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard'
-  - job: MacOS
+          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration $(buildConfiguration)Standard'
+  - job: "MacOS"
     pool:
       vmImage: 'macos-10.13'
+    strategy:
+      matrix:
+        Debug:
+          buildConfiguration: Debug
+        Release:
+          buildConfiguration: Release
     steps:
       - task: NuGetToolInstaller@0
         displayName: "Install Platform Dependencies"
@@ -79,11 +97,11 @@ jobs:
         displayName: "Build Project"
         inputs:
           command: 'build'
-          arguments: '--configuration ReleaseStandard'
+          arguments: '--configuration $(buildConfiguration)Standard'
       # Timed tests on mac die constantly, just turn off mac tests for right now and trust we're covering windows/linux
       - task: DotNetCoreCLI@2
         condition: false
         displayName: "Test Project (Skipped due to timing issues on MacOS)"
         inputs:
           command: 'test'
-          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration ReleaseStandard'
+          arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration $(buildConfiguration)Standard'
