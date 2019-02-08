@@ -61,6 +61,13 @@ jobs:
           docfx docs\docfx.json
         displayName: Documentation Generation
         condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+      - task: DotNetCoreCLI@2
+        displayName: "Publish Project"
+        inputs:
+          publishWebProjects: false
+          zipAfterPublish: true
+          command: 'publish'
+          arguments: '--configuration $(buildConfiguration) -r win-x64 -f net47 --self-contained true --output $(Build.ArtifactStagingDirectory)/cli Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
   - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
@@ -88,6 +95,13 @@ jobs:
         inputs:
           command: 'test'
           arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration $(buildConfiguration)Standard'
+      - task: DotNetCoreCLI@2
+        displayName: "Publish Project"
+        inputs:
+          publishWebProjects: false
+          zipAfterPublish: true
+          command: 'publish'
+          arguments: '--configuration $(buildConfiguration)Standard -r linux-x64 --self-contained true --output $(Build.ArtifactStagingDirectory)/cli Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
   - job: "MacOS"
     pool:
       vmImage: 'macos-10.13'
@@ -115,3 +129,10 @@ jobs:
         inputs:
           command: 'test'
           arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration $(buildConfiguration)Standard'
+      - task: DotNetCoreCLI@2
+        displayName: "Publish Project"
+        inputs:
+          publishWebProjects: false
+          zipAfterPublish: true
+          command: 'publish'
+          arguments: '--configuration $(buildConfiguration)Standard -r osx-x64 --self-contained true --output $(Build.ArtifactStagingDirectory)/cli Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
