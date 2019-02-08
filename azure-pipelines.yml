@@ -111,8 +111,7 @@ jobs:
           arguments: '--configuration $(buildConfiguration)Standard'
       # Timed tests on mac die constantly, just turn off mac tests for right now and trust we're covering windows/linux
       - task: DotNetCoreCLI@2
-        condition: false
-        displayName: "Test Project (Skipped due to timing issues on MacOS)"
+        displayName: "Test Project"
         inputs:
           command: 'test'
           arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration $(buildConfiguration)Standard'
