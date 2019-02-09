@@ -60,9 +60,22 @@ jobs:
           copy-item *.md docs\articles\
           docfx docs\docfx.json
         displayName: Documentation Generation
-        condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
+      - task: ArchiveFiles@2
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
+        displayName: "Archive Documentation Artifacts"
+        inputs:
+          rootFolderOrFile: "docs/gh-pages"
+          includeRootFolder: true
+          archiveType: "zip"
+          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(Build.BuildId).zip"
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Documentation Artifacts"
+        inputs:
+          pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(Build.BuildId).zip"
+          artifactName: "buttplug-csharp-docs"
       - task: DotNetCoreCLI@2
-        displayName: "Publish Project"
+        displayName: "Publish CLI Arifacts"
         inputs:
           publishWebProjects: false
           zipAfterPublish: true
@@ -70,8 +83,8 @@ jobs:
           arguments: '--configuration $(buildConfiguration) -r win-x64 -f net47 --self-contained true --output $(Build.ArtifactStagingDirectory)/cli Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
       - task: PublishBuildArtifacts@1
         inputs:
-          pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: drop
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)/cli'
+          artifactName: "win-cli-$(buildConfiguration)"
   - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
@@ -109,7 +122,7 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: drop
+          artifactName: "linux-cli-$(buildConfiguration)"
   - job: "MacOS"
     pool:
       vmImage: 'macos-10.13'
@@ -147,4 +160,4 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: drop
+          artifactName: "macos-cli-$(buildConfiguration)"
