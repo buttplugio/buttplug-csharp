@@ -7,6 +7,9 @@ namespace Buttplug.Server.CLI
         [Option("name", Default = "Buttplug Server", HelpText = "Name of server to pass to connecting clients.")]
         public string ServerName { get; set; }
 
+        [Option("version", HelpText = "Print version and exit")]
+        public bool Version { get; set; }
+
         [Option("configfile", HelpText = "Configuration file")]
         public string ConfigFile { get; set; }
 

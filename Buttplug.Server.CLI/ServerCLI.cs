@@ -58,6 +58,14 @@ namespace Buttplug.Server.CLI
 
         public void RunServer(Options aOptions)
         {
+            if (aOptions.Version)
+            {
+                Console.WriteLine(int.Parse(ThisAssembly.Git.Commits) == 0
+                    ? ThisAssembly.Git.BaseTag
+                    : ThisAssembly.Git.Tag);
+                return;
+            }
+
             if (aOptions.PipeGUI != null)
             {
                 // Set up IPC Pipe and wait for connection before continuing, so any errors will show

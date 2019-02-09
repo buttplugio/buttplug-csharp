@@ -7,9 +7,12 @@ namespace Buttplug.Server.CLI
         private static void Main(string[] args)
         {
             var server = new ServerCLI();
-
-            Parser.Default.ParseArguments<Options>(args)
-                .WithParsed(server.RunServer);
+            var parser = new Parser(with =>
+            {
+                with.EnableDashDash = true;
+                with.AutoVersion = false;
+            });
+            parser.ParseArguments<Options>(args).WithParsed(server.RunServer);
         }
     }
 }
