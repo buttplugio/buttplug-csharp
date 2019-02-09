@@ -1,0 +1,17 @@
+﻿<Project InitialTargets="GitVersion;">
+  <Import Project="Version.targets"/>
+  <Target Name="CommonProjectProperties">
+    <PropertyGroup>
+      <RootNamespace>Buttplug</RootNamespace>
+      <Product>Buttplug</Product>
+      <Company>Nonpolynomial Labs LLC</Company>
+      <Authors>Nonpolynomial Labs LLC</Authors>
+      <Copyright>Nonpolynomial Labs LLC 2017-2019</Copyright>
+      <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
+      <RepositoryType>git</RepositoryType>
+      <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
+      <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
+      <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
+    </PropertyGroup>
+  </Target>
+</Project>

@@ -9,28 +9,15 @@
 
   <PropertyGroup>
     <PackageId />
-    <RootNamespace>Buttplug</RootNamespace>
     <AssemblyName>Buttplug.Server.Managers.HidSharpManager</AssemblyName>
 
     <Title>Buttplug HidSharp Subtype Manager</Title>
-    <Product>Buttplug</Product>
-    <Company>Nonpolynomial Labs LLC</Company>
-    <Authors>Nonpolynomial Labs LLC</Authors>
-    <Copyright>Copyright Nonpolynomial Labs LLC 2017-2019</Copyright>
     <Summary>Buttplug Server Hid Device and Serial Port Subtype Manager</Summary>
     <Description>Buttplug Server Hid Device and Serial Port Subtype Manager, based on the HidSharp Library. (.Net Framework 4.7+/.Net Standard 2.0)</Description>
 
-    <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
-    <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
-    <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
-
-    <!-- Versions are generated via GitInfo in AssemblyInfo.cs file -->
-
     <!-- Generate nuget packages and assembly files -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 
     <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->
     <IncludeSource>True</IncludeSource>
@@ -38,10 +25,6 @@
 
     <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\Buttplug.ProjectFiles\GlobalAssemblyInfo.cs" Link="GlobalAssemblyInfo.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="2.0.20">

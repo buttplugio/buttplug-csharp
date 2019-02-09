@@ -6,6 +6,7 @@
 
 using System.Reflection;
 
+[assembly: AssemblyProduct("Buttplug")]
 [assembly: AssemblyCompany("Nonpolynomial Labs LLC")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]

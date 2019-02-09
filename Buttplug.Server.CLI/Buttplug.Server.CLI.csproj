@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
+  <Import Project="..\Buttplug.ProjectFiles\CommonProjectProperties.targets" />
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
@@ -7,25 +8,13 @@
   </PropertyGroup>
   <PropertyGroup>
     <PackageId />
-    <RootNamespace>Buttplug</RootNamespace>
     <AssemblyName>Buttplug.Server.CLI</AssemblyName>
 
     <Title>Buttplug Server CLI</Title>
-    <Product>Buttplug</Product>
-    <Company>Nonpolynomial Labs LLC</Company>
-    <Authors>Nonpolynomial Labs LLC</Authors>
-    <Copyright>Copyright Nonpolynomial Labs LLC 2017-2019</Copyright>
     <Summary>Buttplug Server CLI</Summary>
     <Description>Server Command Line Interface for running Buttplug Websocket, IPC, etc Servers (.Net Framework 4.7+/.Net Standard 2.0)</Description>
 
-    <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
-    <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
-    <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
-
-    <!-- Don't generate assembly files, Versions are generated via GitInfo in AssemblyInfo.cs file  -->
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 
     <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <OutputType>Exe</OutputType>

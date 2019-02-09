@@ -43,6 +43,9 @@
     <None Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CommonProjectProperties.targets" />
+    <None Include="Version.targets" />
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="GlobalAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
