@@ -70,6 +70,8 @@ jobs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
       - task: PowerShell@2
+        displayName: Documentation Generation
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
         inputs:
           targetType: inline
           script: |
@@ -77,8 +79,6 @@ jobs:
             copy-item README.md docs\index.md
             copy-item *.md docs\articles\
             docfx docs\docfx.json
-        displayName: Documentation Generation
-        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
       - task: ArchiveFiles@2
         condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
         displayName: "Archive Documentation Artifacts"
@@ -88,6 +88,7 @@ jobs:
           archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitShortHash).zip"
           includeRootFolder: true
       - task: PublishBuildArtifacts@1
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
         displayName: "Publish Documentation Artifacts"
         inputs:
           pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitShortHash).zip"
@@ -180,7 +181,6 @@ jobs:
         inputs:
           command: 'build'
           arguments: '--configuration $(buildConfiguration)Standard'
-      # Timed tests on mac die constantly, just turn off mac tests for right now and trust we're covering windows/linux
       - task: DotNetCoreCLI@2
         displayName: "Test Project"
         inputs:
