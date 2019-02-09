@@ -22,15 +22,9 @@
     <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
     <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
 
-    <Version>1.0.0.0-dev</Version>
-    <PackageVersion>1.0.0.0-dev</PackageVersion>
-    <InformationalVersion>1.0.0.0-dev</InformationalVersion>
-    <FileVersion>1.0.0.0</FileVersion>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-
     <!-- Generate nuget packages and assembly files -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
     <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->
     <IncludeSource>True</IncludeSource>
@@ -43,9 +37,17 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>full</DebugType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Buttplug.ProjectFiles\GlobalAssemblyInfo.cs" Link="GlobalAssemblyInfo.cs" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="deniszykov.WebSocketListener" Version="4.2.4" />
+    <PackageReference Include="GitInfo" Version="2.0.20">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.9.0" />
   </ItemGroup>
   

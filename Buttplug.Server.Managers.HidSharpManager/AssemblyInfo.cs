@@ -10,6 +10,6 @@ using System.Runtime.CompilerServices;
 // Let test project see internals
 [assembly: InternalsVisibleTo("Buttplug.Test")]
 
-[assembly: AssemblyDescription("UWP Bluetooth (Windows 10 15063 Creators Update or Later) device support for Buttplug Servers. (.Net Framework 4.7+ only)")]
+[assembly: AssemblyDescription("HID (USB/Bluetooth/etc) and Serial Port Device Subtype Manager for Buttplug Servers.")]
 [assembly: AssemblyProduct("Buttplug")]
-[assembly: AssemblyTitle("Buttplug.Server.Managers.UWPBluetoothManager")]
+[assembly: AssemblyTitle("Buttplug.Server.Managers.HidSharpManager")]

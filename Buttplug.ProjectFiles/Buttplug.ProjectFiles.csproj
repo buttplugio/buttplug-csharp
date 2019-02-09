@@ -42,5 +42,15 @@
     <None Include="ButtplugCodeAnalysisRules.ruleset" />
     <None Include="stylecop.json" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GlobalAssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GitInfo">
+      <Version>2.0.20</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

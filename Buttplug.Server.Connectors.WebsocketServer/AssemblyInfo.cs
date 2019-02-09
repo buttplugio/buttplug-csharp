@@ -10,6 +10,6 @@ using System.Runtime.CompilerServices;
 // Let test project see internals
 [assembly: InternalsVisibleTo("Buttplug.Test")]
 
-[assembly: AssemblyDescription("UWP Bluetooth (Windows 10 15063 Creators Update or Later) device support for Buttplug Servers. (.Net Framework 4.7+ only)")]
+[assembly: AssemblyDescription("Websocket Connection Capabilities for Buttplug Servers. (.Net Framework 4.7+/.Net Standard 2.0)")]
 [assembly: AssemblyProduct("Buttplug")]
-[assembly: AssemblyTitle("Buttplug.Server.Managers.UWPBluetoothManager")]
+[assembly: AssemblyTitle("Buttplug.Servers.Connectos.WebsocketServer")]
