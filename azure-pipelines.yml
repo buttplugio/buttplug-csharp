@@ -25,6 +25,15 @@ jobs:
         Release:
           buildConfiguration: Release
     steps:
+      - task: Bash@3
+        displayName: "Set Up Build Variables"
+        inputs:
+          targetType: inline
+          script: |
+            gitshorthash=$(git describe --long --always --dirty)
+            echo "Git Short Hash: $gitshorthash"
+            echo "##vso[task.setvariable variable=gitShortHash]$gitshorthash"
+            echo "##vso[task.setvariable variable=cliBuildName]macos-cli-$(buildConfiguration)-$gitshorthash"
       - task: NuGetToolInstaller@0
         displayName: "Install Platform Dependencies"
       - task: NuGetCommand@2
@@ -38,14 +47,20 @@ jobs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
           maximumCpuCount: true
-      - script: |
-          cinst -y --no-progress opencover.portable nunit-console-runner codecov
-          OpenCover.Console.exe -returntargetcode -register:user -target:"nunit3-console.exe" -targetargs:"Buttplug.Test\bin\$(buildConfiguration)\net47\Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test\bin\$(buildConfiguration)\Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=myresults.xml" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs" -filter:"+[*]* -[nunit*]*"
+      - task: PowerShell@2
+        inputs:
+          targetType: inline
+          script: |
+            cinst -y --no-progress opencover.portable nunit-console-runner codecov
+            OpenCover.Console.exe -returntargetcode -register:user -target:"nunit3-console.exe" -targetargs:"Buttplug.Test\bin\$(buildConfiguration)\net47\Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test\bin\$(buildConfiguration)\Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=myresults.xml" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs" -filter:"+[*]* -[nunit*]*"
         displayName: 'Test with Code Coverage'
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Debug'))
       # Upload coverage to codecov.io
-      - script: |
-          codecov.exe -f "coverage.xml" -t $(CODECOV_TOKEN)
+      - task: PowerShell@2
+        inputs:
+          targetType: inline
+          script: |
+            codecov.exe -f \"coverage.xml\" -t $(CODECOV_TOKEN)
         displayName: Upload coverage to codecov.
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Debug'))
       - task: VSTest@2
@@ -54,11 +69,14 @@ jobs:
         inputs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
-      - powershell: |
-          cinst -y docfx
-          copy-item README.md docs\index.md
-          copy-item *.md docs\articles\
-          docfx docs\docfx.json
+      - task: PowerShell@2
+        inputs:
+          targetType: inline
+          script: |
+            cinst -y docfx
+            copy-item README.md docs\index.md
+            copy-item *.md docs\articles\
+            docfx docs\docfx.json
         displayName: Documentation Generation
         condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
       - task: ArchiveFiles@2
@@ -66,13 +84,13 @@ jobs:
         displayName: "Archive Documentation Artifacts"
         inputs:
           rootFolderOrFile: "docs/gh-pages"
-          includeRootFolder: true
           archiveType: "zip"
-          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(Build.BuildId).zip"
+          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitShortHash).zip"
+          includeRootFolder: true
       - task: PublishBuildArtifacts@1
         displayName: "Publish Documentation Artifacts"
         inputs:
-          pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(Build.BuildId).zip"
+          pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitShortHash).zip"
           artifactName: "buttplug-csharp-docs"
       - task: DotNetCoreCLI@2
         displayName: "Publish CLI Arifacts"
@@ -80,11 +98,11 @@ jobs:
           publishWebProjects: false
           zipAfterPublish: true
           command: 'publish'
-          arguments: '--configuration $(buildConfiguration) -r win-x64 -f net47 --self-contained true --output $(Build.ArtifactStagingDirectory)/cli Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
+          arguments: '--configuration $(buildConfiguration) -r win-x64 -f net47 --self-contained true --output $(Build.ArtifactStagingDirectory)/$(cliBuildName) Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
       - task: PublishBuildArtifacts@1
         inputs:
-          pathtoPublish: '$(Build.ArtifactStagingDirectory)/cli'
-          artifactName: "win-cli-$(buildConfiguration)"
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)/$(cliBuildName)'
+          artifactName: "$(cliBuildName)"
   - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
@@ -95,6 +113,15 @@ jobs:
         Release:
           buildConfiguration: Release
     steps:
+      - task: Bash@3
+        displayName: "Set Up Build Variables"
+        inputs:
+          targetType: inline
+          script: |
+            gitshorthash=$(git describe --long --always --dirty)
+            echo "Git Short Hash: $gitshorthash"
+            echo "##vso[task.setvariable variable=gitShortHash]$gitshorthash"
+            echo "##vso[task.setvariable variable=cliBuildName]macos-cli-$(buildConfiguration)-$gitshorthash"
       - task: NuGetToolInstaller@0
         displayName: "Install Platform Dependencies"
       - task: NuGetCommand@2
@@ -118,11 +145,11 @@ jobs:
           publishWebProjects: false
           zipAfterPublish: true
           command: 'publish'
-          arguments: '--configuration $(buildConfiguration)Standard -r linux-x64 --self-contained true --output $(Build.ArtifactStagingDirectory)/cli Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
+          arguments: '--configuration $(buildConfiguration)Standard -r linux-x64 --self-contained true --output $(Build.ArtifactStagingDirectory)/$(cliBuildName) Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
       - task: PublishBuildArtifacts@1
         inputs:
-          pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: "linux-cli-$(buildConfiguration)"
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)/$(cliBuildName)'
+          artifactName: "$(cliBuildName)"
   - job: "MacOS"
     pool:
       vmImage: 'macos-10.13'
@@ -133,6 +160,15 @@ jobs:
         Release:
           buildConfiguration: Release
     steps:
+      - task: Bash@3
+        displayName: "Set Up Build Variables"
+        inputs:
+          targetType: inline
+          script: |
+            gitshorthash=$(git describe --long --always --dirty)
+            echo "Git Short Hash: $gitshorthash"
+            echo "##vso[task.setvariable variable=gitShortHash]$gitshorthash"
+            echo "##vso[task.setvariable variable=cliBuildName]macos-cli-$(buildConfiguration)-$gitshorthash"
       - task: NuGetToolInstaller@0
         displayName: "Install Platform Dependencies"
       - task: NuGetCommand@2
@@ -156,8 +192,8 @@ jobs:
           publishWebProjects: false
           zipAfterPublish: true
           command: 'publish'
-          arguments: '--configuration $(buildConfiguration)Standard -r osx-x64 --self-contained true --output $(Build.ArtifactStagingDirectory)/cli Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
+          arguments: '--configuration $(buildConfiguration)Standard -r osx-x64 --self-contained true --output $(Build.ArtifactStagingDirectory)/$(cliBuildName) Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
       - task: PublishBuildArtifacts@1
         inputs:
-          pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: "macos-cli-$(buildConfiguration)"
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)/$(cliBuildName)'
+          artifactName: '$(cliBuildName)'
