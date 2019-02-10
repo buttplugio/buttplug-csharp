@@ -12,7 +12,7 @@ using SharpDX.XInput;
 
 namespace Buttplug.Server.Managers.XInputGamepadManager
 {
-    public class XInputGamepadManager : DeviceSubtypeManager
+    public class XInputGamepadManager : TimedScanDeviceSubtypeManager
     {
         public XInputGamepadManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
@@ -20,7 +20,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             BpLogger.Info("Loading XInput Gamepad Manager");
         }
 
-        public override void StartScanning()
+        protected override void RunScan()
         {
             BpLogger.Info("XInputGamepadManager start scanning");
             try
@@ -53,18 +53,6 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
                 BpLogger.Error($"Required DirectX DLL not found: {e.Message}\nThis probably means you need to install the DirectX Runtime from June 2010: https://www.microsoft.com/en-us/download/details.aspx?id=8109");
                 InvokeScanningFinished();
             }
-        }
-
-        public override void StopScanning()
-        {
-            // noop
-            BpLogger.Info("XInputGamepadManager stop scanning");
-        }
-
-        public override bool IsScanning()
-        {
-            // noop
-            return false;
         }
     }
 }

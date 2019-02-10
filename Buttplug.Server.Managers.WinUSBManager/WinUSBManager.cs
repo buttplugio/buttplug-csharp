@@ -12,7 +12,7 @@ using Microsoft.Win32;
 
 namespace Buttplug.Server.Managers.WinUSBManager
 {
-    public class WinUSBManager : DeviceSubtypeManager
+    public class WinUSBManager : TimedScanDeviceSubtypeManager
     {
         public WinUSBManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
@@ -20,7 +20,7 @@ namespace Buttplug.Server.Managers.WinUSBManager
             BpLogger.Info("Loading WinUSB Manager");
         }
 
-        public override void StartScanning()
+        protected override void RunScan()
         {
             foreach (var factory in DeviceConfigurationManager.Manager.GetAllFactoriesOfType<USBProtocolConfiguration>())
             {
@@ -111,17 +111,6 @@ namespace Buttplug.Server.Managers.WinUSBManager
             }
 
             InvokeScanningFinished();
-        }
-
-        public override void StopScanning()
-        {
-            // noop
-        }
-
-        public override bool IsScanning()
-        {
-            // noop
-            return false;
         }
     }
 }

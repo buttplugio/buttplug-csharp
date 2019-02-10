@@ -11,14 +11,14 @@ using HidSharp;
 
 namespace Buttplug.Server.Managers.HidSharpManager
 {
-    public class HidSharpManager : DeviceSubtypeManager
+    public class HidSharpManager : TimedScanDeviceSubtypeManager
     {
         public HidSharpManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
         {
         }
 
-        public override void StartScanning()
+        protected override void RunScan()
         {
             var devList = DeviceList.Local;
             var hidDevices = devList.GetHidDevices();
@@ -40,15 +40,6 @@ namespace Buttplug.Server.Managers.HidSharpManager
             {
                 Console.WriteLine(port.GetFriendlyName());
             }
-        }
-
-        public override void StopScanning()
-        {
-        }
-
-        public override bool IsScanning()
-        {
-            return false;
         }
     }
 }

@@ -328,11 +328,12 @@ namespace Buttplug.Server
             }
 
             // Within the assemblies, extract all subclasses of DeviceSubtypeManager, which are what
-            // we need to add here.
+            // we need to add here. Make sure we don't add abstract subclasses of
+            // DeviceSubtypeManager, liked TimedScanDeviceSubtypeManager.
             var types =
                 from a in AppDomain.CurrentDomain.GetAssemblies()
                 from t in a.GetTypes()
-                where t.IsSubclassOf(typeof(DeviceSubtypeManager))
+                where t.IsSubclassOf(typeof(DeviceSubtypeManager)) && !t.IsAbstract
                 select t;
 
             // Add new instances of all found types to the DeviceManager. All DeviceSubtypeManager
