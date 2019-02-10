@@ -95,7 +95,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     {
                         service = await GetService(serviceGuid).ConfigureAwait(false);
                     }
-                    catch (ButtplugDeviceException aEx)
+                    catch (ButtplugDeviceException)
                     {
                         // In this case, we may have a whole bunch of services that aren't valid for
                         // a device and only one that is. We can ignore the exception here, and throw

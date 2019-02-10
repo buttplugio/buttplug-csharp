@@ -1,4 +1,4 @@
-﻿<Project InitialTargets="GitVersion;">
+﻿<Project InitialTargets="SetVersions;">
   <Import Project="Version.targets"/>
   <Target Name="CommonProjectProperties">
     <PropertyGroup>

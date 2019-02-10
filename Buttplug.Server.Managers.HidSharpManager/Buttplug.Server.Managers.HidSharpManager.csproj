@@ -1,5 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
+  <Import Project="..\Buttplug.ProjectFiles\CommonProjectProperties.targets" />
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
       <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
