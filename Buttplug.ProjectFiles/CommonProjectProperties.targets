@@ -1,6 +1,21 @@
-﻿<Project InitialTargets="SetVersions;">
-  <Import Project="Version.targets"/>
-  <Target Name="CommonProjectProperties">
+﻿<!-- some parts taken from https://github.com/moq/moq/blob/master/src/build/Version.targets -->
+<Project>
+  <PropertyGroup Condition="'$(CI)' == ''">
+    <CI>false</CI>
+    <CI Condition="'$(TF_BUILD)' == 'true'">true</CI>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' != ''">$(SYSTEM_PULLREQUEST_TARGETBRANCH)</GitBranch>
+    <GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' == '' and '$(BUILD_SOURCEBRANCHNAME)' != ''">$(BUILD_SOURCEBRANCHNAME)</GitBranch>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GitThisAssemblyMetadata>true</GitThisAssemblyMetadata>
+    <GitIgnoreTagVersion>false</GitIgnoreTagVersion>
+    <GitSkipCache>true</GitSkipCache>
+  </PropertyGroup>
+  <Target Name="CommonProjectProperties"
+          DependsOnTargets="GitVersion"
+          Condition="'$(GitInfoImported)' == 'true' And '$(ExcludeRestorePackageImports)' != 'true'">
     <PropertyGroup>
       <RootNamespace>Buttplug</RootNamespace>
       <Product>Buttplug</Product>
@@ -12,6 +27,9 @@
       <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
       <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
       <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
+
+      <PackageVersion Condition="'$(GitBranch)' != 'master'">$(GitBaseTag)-$(GitBranch)-$(GitCommit)</PackageVersion>
+      <PackageVersion Condition="'$(GitBranch)' == 'master'">$(GitBaseTag)</PackageVersion>
     </PropertyGroup>
   </Target>
 </Project>
