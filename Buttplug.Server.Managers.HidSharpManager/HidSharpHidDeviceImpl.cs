@@ -14,14 +14,14 @@ using HidSharp;
 
 namespace Buttplug.Server.Managers.HidSharpManager
 {
-    public class HidSharpDeviceImpl : ButtplugDeviceImpl
+    public class HidSharpHidDeviceImpl : ButtplugDeviceImpl
     {
         private HidDevice _device;
         private HidStream _stream;
 
         public override bool Connected => _stream == null;
 
-        public HidSharpDeviceImpl(IButtplugLogManager aLogManager, HidDevice aDevice)
+        public HidSharpHidDeviceImpl(IButtplugLogManager aLogManager, HidDevice aDevice)
             : base(aLogManager)
         {
             _device = aDevice;
@@ -69,6 +69,16 @@ namespace Buttplug.Server.Managers.HidSharpManager
         }
 
         public override Task<byte[]> ReadValueAsync(string aEndpointName, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength, CancellationToken aToken)
         {
             throw new NotImplementedException();
         }

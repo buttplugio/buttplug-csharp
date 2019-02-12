@@ -198,6 +198,11 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
         }
 
+        public override Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task SubscribeToUpdatesAsync()
         {
             await SubscribeToUpdatesAsync(_indexedChars[Endpoints.Rx]).ConfigureAwait(false);
@@ -346,6 +351,11 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
 
             return await ReadValueAsync(_indexedChars[aChrName], aToken).ConfigureAwait(false);
+        }
+
+        public override Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task<byte[]> ReadValueAsync(GattCharacteristic aChar, CancellationToken aToken)

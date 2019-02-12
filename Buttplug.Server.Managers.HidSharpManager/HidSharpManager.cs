@@ -23,6 +23,7 @@ namespace Buttplug.Server.Managers.HidSharpManager
             var devList = DeviceList.Local;
             var hidDevices = devList.GetHidDevices();
             var serialDevices = devList.GetSerialDevices();
+            /*
             foreach (var device in hidDevices)
             {
                 var hidFinder = new HIDProtocolConfiguration((ushort)device.VendorID, (ushort)device.ProductID);
@@ -32,13 +33,35 @@ namespace Buttplug.Server.Managers.HidSharpManager
                     continue;
                 }
 
-                var bpDevice = factory.CreateDevice(LogManager, new HidSharpDeviceImpl(LogManager, device)).Result;
+                var bpDevice = factory.CreateDevice(LogManager, new HidSharpHidDeviceImpl(LogManager, device)).Result;
                 InvokeDeviceAdded(new DeviceAddedEventArgs(bpDevice));
             }
+            */
 
             foreach (var port in serialDevices)
             {
-                Console.WriteLine(port.GetFriendlyName());
+                var serialFinder = new SerialProtocolConfiguration(port.GetFileSystemName());
+                var factory = DeviceConfigurationManager.Manager.Find(serialFinder);
+                if (factory == null)
+                {
+                    continue;
+                }
+
+                SerialStream stream;
+                if (!port.TryOpen(out stream))
+                {
+                    continue;
+                }
+
+                var deviceConfig = factory.Config as SerialProtocolConfiguration;
+
+                stream.BaudRate = (int)deviceConfig.BaudRate;
+                stream.DataBits = (int)deviceConfig.DataBits;
+                stream.StopBits = (int)deviceConfig.StopBits;
+                stream.Parity = SerialParity.None;
+
+                var bpDevice = factory.CreateDevice(LogManager, new HidSharpSerialDeviceImpl(LogManager, stream)).Result;
+                InvokeDeviceAdded(new DeviceAddedEventArgs(bpDevice));
             }
         }
     }

@@ -52,7 +52,7 @@ namespace Buttplug.Devices.Protocols
                     0, // address low byte
                 }, aToken).ConfigureAwait(false);
 
-                var result = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
+                var result = await Interface.ReadValueAsync(1, aToken).ConfigureAwait(false);
 
                 if (result.Length == 1 && result[0] == ((byte)ErostekET312ProtocolConsts.SerialResponse.Read | 0x20))
                 {
@@ -118,7 +118,7 @@ namespace Buttplug.Devices.Protocols
         private async Task InitUnsynced(CancellationToken aToken)
         {
             // It worked! Discard the rest of the response
-            await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
+            await Interface.ReadValueAsync(2, aToken).ConfigureAwait(false);
 
             // Commence handshake
             BpLogger.Info("Encryption is not yet set up. Send Handshake.");
@@ -133,7 +133,7 @@ namespace Buttplug.Devices.Protocols
             // byte 0 - return code
             // byte 1 - box key
             // byte 2 - checksum
-            var recBuffer = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
+            var recBuffer = await Interface.ReadValueAsync(3, aToken).ConfigureAwait(false);
 
             // Response valid?
             if (recBuffer[0] != ((byte)ErostekET312ProtocolConsts.SerialResponse.KeyExchange | 0x20))
@@ -170,7 +170,7 @@ namespace Buttplug.Devices.Protocols
                     // This read will fail at least once, so we can't use ReadAsync here since it
                     // doesn't currently provide a timeout. However, we can expose ReadByte() on the
                     // backing stream and use that.
-                    var errByte = await Interface.ReadValueAsync(aToken);
+                    var errByte = await Interface.ReadValueAsync(1, aToken);
                     if (errByte.Length == 0 || errByte[0] == -1)
                     {
                         continue;
@@ -287,7 +287,7 @@ namespace Buttplug.Devices.Protocols
             // byte 0 - return code
             // byte 1 - content of requested address
             // byte 2 - checksum
-            var recBuffer = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
+            var recBuffer = await Interface.ReadValueAsync(3, aToken).ConfigureAwait(false);
 
             // If the response is not of the expected type or Checksum doesn't match consider
             // ourselves de-synchronized. Calling Code should treat the device as disconnected
@@ -316,7 +316,7 @@ namespace Buttplug.Devices.Protocols
 
             // If the response is not ACK, consider ourselves de-synchronized. Calling Code should
             // treat the device as disconnected
-            var statusByte = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
+            var statusByte = await Interface.ReadValueAsync(1, aToken).ConfigureAwait(false);
             if (statusByte.Length != 1 || statusByte[0] != (byte)ErostekET312ProtocolConsts.SerialResponse.OK)
             {
                 throw new ButtplugDeviceException(BpLogger, "Unexpected return code from device.");
@@ -361,7 +361,7 @@ namespace Buttplug.Devices.Protocols
                 0x55,                               // parameter for reset is always 0x55
             }, aToken).ConfigureAwait(false);
 
-            var retBuf = await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
+            var retBuf = await Interface.ReadValueAsync(1, aToken).ConfigureAwait(false);
             return retBuf[0];
         }
 

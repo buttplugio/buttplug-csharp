@@ -46,6 +46,11 @@ namespace Buttplug.Devices
         public abstract Task<byte[]> ReadValueAsync(string aEndpointName,
             CancellationToken aToken);
 
+        public abstract Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken);
+
+        public abstract Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength,
+            CancellationToken aToken);
+
         public abstract Task SubscribeToUpdatesAsync();
 
         public abstract Task SubscribeToUpdatesAsync(string aEndpointName);

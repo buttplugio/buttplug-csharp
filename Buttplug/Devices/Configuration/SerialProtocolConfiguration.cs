@@ -7,13 +7,15 @@ namespace Buttplug.Devices.Configuration
     public class SerialProtocolConfiguration : IProtocolConfiguration
     {
         public uint BaudRate;
+        public uint DataBits;
         public byte StopBits;
         public char ParityBit;
         public List<string> Ports = new List<string>();
 
-        public SerialProtocolConfiguration(uint aBaudRate, char aParityBit, byte aStopBits, List<string> aPorts)
+        public SerialProtocolConfiguration(uint aBaudRate, uint aDataBits, char aParityBit, byte aStopBits, List<string> aPorts)
         {
             BaudRate = aBaudRate;
+            DataBits = aDataBits;
             ParityBit = aParityBit;
             StopBits = aStopBits;
             Ports = aPorts ?? Ports;
@@ -26,7 +28,7 @@ namespace Buttplug.Devices.Configuration
         }
 
         internal SerialProtocolConfiguration(SerialInfo aConfig)
-            : this(aConfig.BaudRate, aConfig.Parity, aConfig.StopBits, aConfig.Ports)
+            : this(aConfig.BaudRate, aConfig.DataBits, aConfig.Parity, aConfig.StopBits, aConfig.Ports)
         {
         }
 

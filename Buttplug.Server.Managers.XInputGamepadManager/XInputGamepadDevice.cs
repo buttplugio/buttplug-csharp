@@ -76,6 +76,16 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             throw new NotImplementedException();
         }
 
+        public override Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
         // Unused for Gamepad controllers currently.
         public override Task SubscribeToUpdatesAsync()
         {

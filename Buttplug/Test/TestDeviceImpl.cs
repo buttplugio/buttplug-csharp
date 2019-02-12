@@ -95,6 +95,16 @@ namespace Buttplug.Test
             return await ReadValueAsync(aToken);
         }
 
+        public override Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength, CancellationToken aToken)
+        {
+            throw new NotImplementedException();
+        }
+
         // noop for tests
         public override Task SubscribeToUpdatesAsync()
         {
