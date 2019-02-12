@@ -52,7 +52,7 @@ jobs:
           targetType: inline
           script: |
             cinst -y --no-progress opencover.portable nunit-console-runner codecov
-            OpenCover.Console.exe -returntargetcode -register:user -target:"nunit3-console.exe" -targetargs:"Buttplug.Test\bin\$(buildConfiguration)\net47\Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test\bin\$(buildConfiguration)\Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=myresults.xml" -output:"coverage.xml" -excludebyfile:"*\*LibLog.cs" -filter:"+[*]* -[nunit*]*"
+            OpenCover.Console.exe -returntargetcode -register:user -target:"nunit3-console.exe" -targetargs:"Buttplug.Test/bin/$(buildConfiguration)/net47/Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test/bin/$(buildConfiguration)/Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=$(Build.ArtifactStagingDirectory)/myresults.xml" -output:"$(Build.ArtifactStagingDirectory)/coverage.xml" -excludebyfile:"*/*LibLog.cs" -filter:"+[*]* -[nunit*]*"
         displayName: 'Test with Code Coverage'
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Debug'))
       # Upload coverage to codecov.io
@@ -60,7 +60,7 @@ jobs:
         inputs:
           targetType: inline
           script: |
-            codecov.exe -f \"coverage.xml\" -t $(CODECOV_TOKEN)
+            codecov.exe -f "$(Build.ArtifactStagingDirectory)/coverage.xml" -t $(CODECOV_TOKEN)
         displayName: Upload coverage to codecov.
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Debug'))
       - task: VSTest@2
@@ -76,9 +76,9 @@ jobs:
           targetType: inline
           script: |
             cinst -y docfx
-            copy-item README.md docs\index.md
-            copy-item *.md docs\articles\
-            docfx docs\docfx.json
+            copy-item README.md docs/index.md
+            copy-item *.md docs/articles/
+            docfx docs/docfx.json
       - task: ArchiveFiles@2
         condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
         displayName: "Archive Documentation Artifacts"
