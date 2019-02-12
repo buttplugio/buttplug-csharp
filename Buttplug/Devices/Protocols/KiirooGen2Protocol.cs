@@ -47,9 +47,9 @@ namespace Buttplug.Devices.Protocols
 
         public override async Task InitializeAsync(CancellationToken aToken)
         {
-            await Interface.WriteValueAsync(Endpoints.Firmware,
-                new byte[] { 0 },
-                true, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(new byte[] { 0x0 },
+                new ButtplugDeviceWriteOptions { Endpoint = Endpoints.Firmware, WriteWithResponse = true },
+                aToken).ConfigureAwait(false);
         }
 
         private Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -79,8 +79,8 @@ namespace Buttplug.Devices.Protocols
 
             _lastPosition = Convert.ToDouble(cmdMsg.Position) / 99;
 
-            await Interface.WriteValueAsync(Endpoints.Tx,
-                new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed }, false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(new[] { (byte)cmdMsg.Position, (byte)cmdMsg.Speed },
+                aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
         }
     }

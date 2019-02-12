@@ -198,25 +198,15 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
         }
 
-        public override Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength, CancellationToken aToken)
+        public override async Task SubscribeToUpdatesAsyncInternal(ButtplugDeviceReadOptions aOptions)
         {
-            throw new NotImplementedException();
-        }
-
-        public override async Task SubscribeToUpdatesAsync()
-        {
-            await SubscribeToUpdatesAsync(_indexedChars[Endpoints.Rx]).ConfigureAwait(false);
-        }
-
-        public override async Task SubscribeToUpdatesAsync(string aChrName)
-        {
-            if (!_indexedChars.ContainsKey(aChrName))
+            if (!_indexedChars.ContainsKey(aOptions.Endpoint))
             {
-                throw new ButtplugDeviceException(BpLogger, $"SubscribeToUpdates using indexed characteristics called with invalid index {aChrName} on {_bleDevice.Name}.");
+                throw new ButtplugDeviceException(BpLogger, $"Endpoint {aOptions.Endpoint} does not exist on device {Name}.");
             }
-
-            await SubscribeToUpdatesAsync(_indexedChars[aChrName]).ConfigureAwait(false);
+            await SubscribeToUpdatesAsync(_indexedChars[aOptions.Endpoint]).ConfigureAwait(false);
         }
+
 
         private async Task SubscribeToUpdatesAsync(GattCharacteristic aCharacteristic)
         {
@@ -266,34 +256,18 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             InvokeDataReceived(new ButtplugDeviceDataEventArgs("rx", bytes));
         }
 
-        public override async Task WriteValueAsync(byte[] aValue, CancellationToken aToken)
-        {
-            await WriteValueAsync(aValue, false, aToken);
-        }
-
-        public override async Task WriteValueAsync(string aEndpointName, byte[] aValue, CancellationToken aToken)
-        {
-            await WriteValueAsync(aValue, false, aToken);
-        }
-
-        public override async Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
-        {
-            await WriteValueAsync(Endpoints.Tx, aValue, aWriteWithResponse, aToken).ConfigureAwait(false);
-        }
-
         [ItemNotNull]
-        public override async Task WriteValueAsync(string aChrName,
-            byte[] aValue,
-            bool aWriteWithResponse,
-            CancellationToken aToken)
+        public override async Task WriteValueAsyncInternal(byte[] aValue,
+            ButtplugDeviceWriteOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
         {
-            if (!_indexedChars.ContainsKey(aChrName))
+            if (!_indexedChars.ContainsKey(aOptions.Endpoint))
             {
                 throw new ButtplugDeviceException(BpLogger,
-                    $"WriteValue using indexed characteristics called with invalid index {aChrName} on {Name}");
+                    $"WriteValue using indexed characteristics called with invalid index {aOptions.Endpoint} on {Name}");
             }
 
-            await WriteValueAsync(_indexedChars[aChrName], aValue, aWriteWithResponse, aToken).ConfigureAwait(false);
+            await WriteValueAsync(_indexedChars[aOptions.Endpoint], aValue, aOptions.WriteWithResponse, aToken).ConfigureAwait(false);
         }
 
         private async Task WriteValueAsync(GattCharacteristic aChar,
@@ -337,25 +311,16 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             }
         }
 
-        public override async Task<byte[]> ReadValueAsync(CancellationToken aToken)
+        public override async Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
         {
-            return await ReadValueAsync(Endpoints.Rx, aToken).ConfigureAwait(false);
-        }
-
-        public override async Task<byte[]> ReadValueAsync(string aChrName, CancellationToken aToken)
-        {
-            if (!_indexedChars.ContainsKey(aChrName))
+            if (!_indexedChars.ContainsKey(aOptions.Endpoint))
             {
                 throw new ButtplugDeviceException(BpLogger,
                     "ReadValue using indexed characteristics called with invalid index");
             }
 
-            return await ReadValueAsync(_indexedChars[aChrName], aToken).ConfigureAwait(false);
-        }
-
-        public override Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
+            return await ReadValueAsync(_indexedChars[aOptions.Endpoint], aToken).ConfigureAwait(false);
         }
 
         private async Task<byte[]> ReadValueAsync(GattCharacteristic aChar, CancellationToken aToken)

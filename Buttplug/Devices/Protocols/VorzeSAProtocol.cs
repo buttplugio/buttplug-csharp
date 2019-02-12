@@ -89,9 +89,8 @@ namespace Buttplug.Devices.Protocols
         {
             BpLogger.Debug("Stopping Device " + Name);
 
-            await Interface.WriteValueAsync(
-                Endpoints.Tx,
-                new byte[] { (byte)_deviceType, (byte)_commandType, 0 }, false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(new byte[] { (byte)_deviceType, (byte)_commandType, 0 },
+                aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
         }
 
@@ -119,8 +118,8 @@ namespace Buttplug.Devices.Protocols
             _speed = cmdMsg.Speed;
 
             var rawSpeed = (byte)((byte)(_clockwise ? 1 : 0) << 7 | (byte)_speed);
-            await Interface.WriteValueAsync(Endpoints.Tx,
-                new byte[] { (byte)_deviceType, (byte)_commandType, rawSpeed }, false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(new[] { (byte)_deviceType, (byte)_commandType, rawSpeed },
+                aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
         }
 
@@ -155,8 +154,8 @@ namespace Buttplug.Devices.Protocols
 
             SentVibration = true;
 
-            await Interface.WriteValueAsync(Endpoints.Tx,
-                new[] { (byte)_deviceType, (byte)_commandType, (byte)_speed }, false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(new[] { (byte)_deviceType, (byte)_commandType, (byte)_speed },
+                aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
         }
     }

@@ -59,7 +59,9 @@ namespace Buttplug.Devices.Protocols
             Interface.DataReceived += NotifyReceived;
 
             // Retrieving device type info for identification.
-            await Interface.WriteValueAsync(Encoding.ASCII.GetBytes("DeviceType;"), true, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(Encoding.ASCII.GetBytes("DeviceType;"),
+                new ButtplugDeviceWriteOptions { WriteWithResponse = true },
+                aToken).ConfigureAwait(false);
 
             var deviceInfoString = string.Empty;
             try
@@ -196,7 +198,7 @@ namespace Buttplug.Devices.Protocols
                 _vibratorSpeeds[v.Index] = v.Speed;
                 var vId = _vibratorCount == 1 ? string.Empty : string.Empty + (v.Index + 1);
                 await Interface.WriteValueAsync(
-                    Encoding.ASCII.GetBytes($"Vibrate{vId}:{(int)(_vibratorSpeeds[v.Index] * 20)};"), false, aToken).ConfigureAwait(false);
+                    Encoding.ASCII.GetBytes($"Vibrate{vId}:{(int)(_vibratorSpeeds[v.Index] * 20)};"), aToken).ConfigureAwait(false);
             }
 
             return new Ok(aMsg.Id);
@@ -206,7 +208,7 @@ namespace Buttplug.Devices.Protocols
         {
             var cmdMsg = CheckMessageHandler<LovenseCmd>(aMsg);
 
-            await Interface.WriteValueAsync(Encoding.ASCII.GetBytes(cmdMsg.Command), false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(Encoding.ASCII.GetBytes(cmdMsg.Command), aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
         }
 
@@ -220,7 +222,7 @@ namespace Buttplug.Devices.Protocols
             {
                 _clockwise = !_clockwise;
                 await Interface.WriteValueAsync(
-                    Encoding.ASCII.GetBytes("RotateChange;"), false, aToken).ConfigureAwait(false);
+                    Encoding.ASCII.GetBytes("RotateChange;"), aToken).ConfigureAwait(false);
             }
 
             if (Math.Abs(_rotateSpeed - vi.Speed) < 0.0001 && SentRotation)
@@ -232,7 +234,7 @@ namespace Buttplug.Devices.Protocols
             _rotateSpeed = vi.Speed;
 
             await Interface.WriteValueAsync(
-                Encoding.ASCII.GetBytes($"Rotate:{(int)(_rotateSpeed * 20)};"), false, aToken).ConfigureAwait(false);
+                Encoding.ASCII.GetBytes($"Rotate:{(int)(_rotateSpeed * 20)};"), aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
         }
     }

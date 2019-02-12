@@ -52,9 +52,9 @@ namespace Buttplug.Devices.Protocols
 
             // Kick Vibrator into motor control mode, just copying what the app sends when you go to
             // create pattern mode.
-            await Interface.WriteValueAsync(
-                Endpoints.TxMode,
-                new byte[] { 0x43, 0x02, 0x00 }, true, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(new byte[] { 0x43, 0x02, 0x00 },
+                new ButtplugDeviceWriteOptions { Endpoint = Endpoints.TxMode, WriteWithResponse = true },
+                aToken).ConfigureAwait(false);
         }
 
         private void OnDeviceRemoved(object aEvent, EventArgs aArgs)
@@ -77,8 +77,9 @@ namespace Buttplug.Devices.Protocols
             // We'll have to use an internal token here since this is timer triggered.
             try
             {
-                await Interface.WriteValueAsync(Endpoints.TxVibrate,
-                    _vibratorSpeeds, false, _stopUpdateCommandSource.Token).ConfigureAwait(false);
+                await Interface.WriteValueAsync(_vibratorSpeeds,
+                    new ButtplugDeviceWriteOptions { Endpoint = Endpoints.TxVibrate },
+                    _stopUpdateCommandSource.Token).ConfigureAwait(false);
             }
             catch (ButtplugException ex)
             {

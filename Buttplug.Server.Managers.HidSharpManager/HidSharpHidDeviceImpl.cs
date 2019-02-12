@@ -36,59 +36,25 @@ namespace Buttplug.Server.Managers.HidSharpManager
             _device = null;
         }
 
-        public override async Task WriteValueAsync(byte[] aValue, CancellationToken aToken)
+        public override async Task WriteValueAsyncInternal(byte[] aValue,
+            ButtplugDeviceWriteOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
         {
+            // Both Hid and Serial only have one outgoing endpoint.
+            if (aOptions.Endpoint != Endpoints.Tx)
+            {
+                throw new ButtplugDeviceException(BpLogger, "HidDevice doesn't support any write endpoint except the default.");
+            }
             await _stream.WriteAsync(aValue, 0, aValue.Length, aToken).ConfigureAwait(false);
         }
 
-        public override async Task WriteValueAsync(string aEndpointName, byte[] aValue, CancellationToken aToken)
-        {
-            // Both Hid and Serial only have one outgoing endpoint.
-            if (aEndpointName != Endpoints.Tx)
-            {
-                throw new ButtplugDeviceException(BpLogger, "UwpHidDevice doesn't support any write endpoint except the default.");
-            }
-
-            await WriteValueAsync(aValue, aToken).ConfigureAwait(false);
-        }
-
-        public override async Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
-        {
-            await WriteValueAsync(aValue, aToken).ConfigureAwait(false);
-        }
-
-        public override async Task WriteValueAsync(string aEndpointName, byte[] aValue, bool aWriteWithResponse,
-            CancellationToken aToken)
-        {
-            await WriteValueAsync(aEndpointName, aValue, aToken).ConfigureAwait(false);
-        }
-
-        public override Task<byte[]> ReadValueAsync(CancellationToken aToken)
+        public override Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
 
-        public override Task<byte[]> ReadValueAsync(string aEndpointName, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task SubscribeToUpdatesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task SubscribeToUpdatesAsync(string aEndpointName)
+        public override Task SubscribeToUpdatesAsyncInternal(ButtplugDeviceReadOptions aOptions)
         {
             throw new NotImplementedException();
         }

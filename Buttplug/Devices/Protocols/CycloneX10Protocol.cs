@@ -77,7 +77,7 @@ namespace Buttplug.Devices.Protocols
             data[7] += Convert.ToByte(_clockwise ? 0 : 1);
             data[8] += Convert.ToByte(_speed * 10);
 
-            await Interface.WriteValueAsync(data, false, aToken);
+            await Interface.WriteValueAsync(data, aToken);
             return new Ok(aMsg.Id);
         }
 

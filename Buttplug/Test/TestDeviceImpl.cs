@@ -56,62 +56,30 @@ namespace Buttplug.Test
             ExpectedRead[aCharacteristicIndex].Add(aValue);
         }
 
-        public override async Task WriteValueAsync(byte[] aValue, CancellationToken aToken)
-        {
-            await WriteValueAsync(Endpoints.Tx, aValue, false, aToken);
-        }
-
-        public override async Task WriteValueAsync(string aEndpointName, byte[] aValue, CancellationToken aToken)
-        {
-            await WriteValueAsync(aEndpointName, aValue, false, aToken);
-        }
-
-        public override async Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
-        {
-            await WriteValueAsync(Endpoints.Tx, aValue, aWriteWithResponse, aToken);
-        }
-
-        public override Task WriteValueAsync(string aEndpoint, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
+        public override Task WriteValueAsyncInternal(byte[] aValue,
+            ButtplugDeviceWriteOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
         {
             LastWritten.Add(new WriteData()
             {
                 Value = (byte[])aValue.Clone(),
-                Endpoint = aEndpoint,
-                WriteWithResponse = aWriteWithResponse,
+                Endpoint = aOptions.Endpoint,
+                WriteWithResponse = aOptions.WriteWithResponse,
             });
             ValueWritten?.Invoke(this, new EventArgs());
             return Task.CompletedTask;
         }
 
-        public override Task<byte[]> ReadValueAsync(CancellationToken aToken)
+        public override Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
         {
+            // todo This doesn't test endpoints!
             var value = ExpectedRead[ExpectedRead.Keys.ToArray()[0]].ElementAt(0);
             ExpectedRead[ExpectedRead.Keys.ToArray()[0]].RemoveAt(0);
             return Task.FromResult(value);
         }
 
-        public override async Task<byte[]> ReadValueAsync(string aEndpointName, CancellationToken aToken)
-        {
-            return await ReadValueAsync(aToken);
-        }
-
-        public override Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        // noop for tests
-        public override Task SubscribeToUpdatesAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        public override Task SubscribeToUpdatesAsync(string aEndpointName)
+        public override Task SubscribeToUpdatesAsyncInternal(ButtplugDeviceReadOptions aOptions)
         {
             return Task.CompletedTask;
         }

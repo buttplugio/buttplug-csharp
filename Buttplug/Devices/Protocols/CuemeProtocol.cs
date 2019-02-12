@@ -99,8 +99,7 @@ namespace Buttplug.Devices.Protocols
             try
             {
                 // todo This throw doesn't actually go anywhere. This should bubble upward.
-                await Interface.WriteValueAsync(Endpoints.Tx, new[] { data },
-                false, _stopUpdateCommandSource.Token).ConfigureAwait(false);
+                await Interface.WriteValueAsync(new[] { data }, _stopUpdateCommandSource.Token).ConfigureAwait(false);
             }
             catch (ButtplugDeviceException ex)
             {

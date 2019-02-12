@@ -71,8 +71,9 @@ namespace Buttplug.Devices.Protocols
 
             var data = new[] { Convert.ToByte(mode) };
 
-            await Interface.WriteValueAsync(Endpoints.TxVibrate,
-                data, false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(data,
+                new ButtplugDeviceWriteOptions { Endpoint = Endpoints.TxVibrate },
+                aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
         }
     }

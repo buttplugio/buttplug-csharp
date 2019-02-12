@@ -52,8 +52,9 @@ namespace Buttplug.Server.Managers.WinUSBManager
                         cmdMsg.Id);
                 }
 
-                await Interface.WriteValueAsync(Endpoints.TxVendorControl, new[] { (byte)Math.Floor(v.Speed * 255) },
-                     aToken);
+                await Interface.WriteValueAsync(new[] { (byte)Math.Floor(v.Speed * 255) },
+                    new ButtplugDeviceWriteOptions { Endpoint = Endpoints.TxVendorControl },
+                    aToken).ConfigureAwait(false);
             }
 
             return new Ok(aMsg.Id);

@@ -29,31 +29,44 @@ namespace Buttplug.Devices
             BpLogger = aLogManager.GetLogger(GetType());
         }
 
-        public abstract Task WriteValueAsync(byte[] aValue,
-            CancellationToken aToken);
+        public Task WriteValueAsync(byte[] aValue,
+            CancellationToken aToken = default(CancellationToken))
+        {
+            return WriteValueAsyncInternal(aValue, new ButtplugDeviceWriteOptions(), aToken);
+        }
 
-        public abstract Task WriteValueAsync(string aEndpointName, byte[] aValue,
-            CancellationToken aToken);
+        public Task WriteValueAsync(byte[] aValue,
+            ButtplugDeviceWriteOptions aOptions = default(ButtplugDeviceWriteOptions),
+            CancellationToken aToken = default(CancellationToken))
+        {
+            return WriteValueAsyncInternal(aValue, aOptions ?? new ButtplugDeviceWriteOptions(), aToken);
+        }
 
-        public abstract Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse,
-            CancellationToken aToken);
+        public abstract Task WriteValueAsyncInternal(byte[] aValue,
+            ButtplugDeviceWriteOptions aOptions,
+            CancellationToken aToken = default(CancellationToken));
 
-        public abstract Task WriteValueAsync(string aEndpointName, byte[] aValue,
-            bool aWriteWithResponse, CancellationToken aToken);
+        public Task<byte[]> ReadValueAsync(CancellationToken aToken = default(CancellationToken))
+        {
+            return ReadValueAsync(default(ButtplugDeviceReadOptions), aToken);
+        }
 
-        public abstract Task<byte[]> ReadValueAsync(CancellationToken aToken);
+        public Task<byte[]> ReadValueAsync(ButtplugDeviceReadOptions aOptions = default(ButtplugDeviceReadOptions),
+            CancellationToken aToken = default(CancellationToken))
+        {
+            return ReadValueAsyncInternal(aOptions ?? new ButtplugDeviceReadOptions(), aToken);
+        }
 
-        public abstract Task<byte[]> ReadValueAsync(string aEndpointName,
-            CancellationToken aToken);
+        public abstract Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions,
+            CancellationToken aToken = default(CancellationToken));
 
-        public abstract Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken);
+        public Task SubscribeToUpdatesAsync(
+            ButtplugDeviceReadOptions aOptions = default(ButtplugDeviceReadOptions))
+        {
+            return SubscribeToUpdatesAsyncInternal(aOptions);
+        }
 
-        public abstract Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength,
-            CancellationToken aToken);
-
-        public abstract Task SubscribeToUpdatesAsync();
-
-        public abstract Task SubscribeToUpdatesAsync(string aEndpointName);
+        public abstract Task SubscribeToUpdatesAsyncInternal(ButtplugDeviceReadOptions aOptions);
 
         public abstract void Disconnect();
 

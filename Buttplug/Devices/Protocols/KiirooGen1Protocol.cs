@@ -57,15 +57,17 @@ namespace Buttplug.Devices.Protocols
         {
             // Start listening for incoming
             Interface.DataReceived += OnDataReceived;
-            await Interface.SubscribeToUpdatesAsync(Endpoints.Rx).ConfigureAwait(false);
+            await Interface.SubscribeToUpdatesAsync().ConfigureAwait(false);
 
             // Mode select
-            await Interface.WriteValueAsync(Endpoints.Command,
-                new byte[] { 0x01, 0x00 }, true, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(new byte[] { 0x01, 0x00 },
+                new ButtplugDeviceWriteOptions { Endpoint = Endpoints.Command, WriteWithResponse = true },
+                aToken).ConfigureAwait(false);
 
             // Set to start position
-            await Interface.WriteValueAsync(Endpoints.Tx,
-                new byte[] { 0x30, 0x2c }, true, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(new byte[] { 0x30, 0x2c },
+                new ButtplugDeviceWriteOptions { Endpoint = Endpoints.Tx, WriteWithResponse = true },
+                aToken).ConfigureAwait(false);
 
             if (Interface.Name != "ONYX")
             {
@@ -147,8 +149,8 @@ namespace Buttplug.Devices.Protocols
         {
             var cmdMsg = CheckMessageHandler<KiirooCmd>(aMsg);
 
-            await Interface.WriteValueAsync(Endpoints.Tx,
-                Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"), false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(Encoding.ASCII.GetBytes($"{cmdMsg.Position},\n"),
+                aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
         }
 

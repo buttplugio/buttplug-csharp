@@ -209,8 +209,7 @@ namespace Buttplug.Devices.Protocols
                     cmdMsg.Id);
             }
 
-            await Interface.WriteValueAsync(Endpoints.Tx,
-                data, false, aToken).ConfigureAwait(false);
+            await Interface.WriteValueAsync(data, aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
         }
     }

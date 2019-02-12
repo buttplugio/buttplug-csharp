@@ -34,83 +34,53 @@ namespace Buttplug.Server.Managers.HidSharpManager
             _device.Close();
         }
 
-        public override async Task WriteValueAsync(byte[] aValue, CancellationToken aToken)
+        public override async Task WriteValueAsyncInternal(byte[] aValue, ButtplugDeviceWriteOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
         {
-            await _device.WriteAsync(aValue, 0, aValue.Length, aToken);
-        }
-
-        public override async Task WriteValueAsync(string aEndpointName, byte[] aValue, CancellationToken aToken)
-        {
-            if (aEndpointName != Endpoints.Tx)
+            if (aOptions.Endpoint != Endpoints.Tx)
             {
                 throw new ButtplugDeviceException(BpLogger, "Device only supports the tx endpoint.");
             }
-            await WriteValueAsync(aValue, aToken);
+            await _device.WriteAsync(aValue, 0, aValue.Length, aToken);
         }
 
-        public override async Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
-        {
-            await WriteValueAsync(aValue, aToken);
-        }
-
-        public override async Task WriteValueAsync(string aEndpointName, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
-        {
-            await WriteValueAsync(aEndpointName, aValue, aToken);
-        }
-
-        public override async Task<byte[]> ReadValueAsync(CancellationToken aToken)
+        public override async Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
         {
             if (!_device.CanRead)
             {
                 return new byte[] { };
             }
 
-            //var bytesToRead = _device.Length;
-            var input = new byte[256];
-            var bytesRead = await _device.ReadAsync(input, 0, 256);
-            var bytesOut = new byte[bytesRead];
-            Array.Copy(input, bytesOut, bytesRead);
-            return input;
-        }
-
-        public override Task<byte[]> ReadValueAsync(string aEndpointName, CancellationToken aToken)
-        {
-            if (aEndpointName != Endpoints.Rx)
+            var oldTimeout = 0;
+            if (aOptions.Timeout < int.MaxValue)
             {
-                throw new ButtplugDeviceException(BpLogger, "Device only supports the rx endpoint.");
-            }
-
-            return ReadValueAsync(aToken);
-        }
-
-        public override async Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken)
-        {
-            if (!_device.CanRead)
-            {
-                return new byte[] { };
+                oldTimeout = _device.ReadTimeout;
+                _device.ReadTimeout = (int)aOptions.Timeout;
             }
 
             //var bytesToRead = _device.Length;
-            var input = new byte[aLength];
+            var input = new byte[aOptions.ReadLength];
             var readLength = 0;
-            while (readLength < aLength)
+            try
             {
-                readLength += await _device.ReadAsync(input, readLength, (int)aLength - readLength);
+                while (readLength < aOptions.ReadLength)
+                {
+                    readLength += await _device.ReadAsync(input, readLength, (int) aOptions.ReadLength - readLength);
+                }
             }
+            finally
+            {
+                if (aOptions.Timeout < int.MaxValue)
+                {
+                    _device.ReadTimeout = oldTimeout;
+                }
+            }
+
             return input;
         }
 
-        public override Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task SubscribeToUpdatesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task SubscribeToUpdatesAsync(string aEndpointName)
+        public override Task SubscribeToUpdatesAsyncInternal(ButtplugDeviceReadOptions aOptions)
         {
             throw new NotImplementedException();
         }

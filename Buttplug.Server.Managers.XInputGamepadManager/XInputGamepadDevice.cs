@@ -26,8 +26,9 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             _device = aDevice;
         }
 
-        public override Task WriteValueAsync(byte[] aValue, bool aWriteWithResponse,
-            CancellationToken aToken)
+        public override Task WriteValueAsyncInternal(byte[] aValue,
+            ButtplugDeviceWriteOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
         {
             if (aValue.Length != 4)
             {
@@ -47,61 +48,20 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             return Task.CompletedTask;
         }
 
+        public override Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions,
+            CancellationToken aToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task SubscribeToUpdatesAsyncInternal(ButtplugDeviceReadOptions aOptions)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Disconnect()
         {
             _device = null;
-        }
-
-        // Unused for Gamepad controllers currently.
-        public override Task WriteValueAsync(string aEndpointName, byte[] aValue, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        // Unused for Gamepad controllers currently.
-        public override Task WriteValueAsync(string aEndpointName, byte[] aValue, bool aWriteWithResponse, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        // Unused for Gamepad controllers currently.
-        public override Task<byte[]> ReadValueAsync(CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        // Unused for Gamepad controllers currently.
-        public override Task<byte[]> ReadValueAsync(string aEndpointName, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<byte[]> ReadValueAsync(uint aLength, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<byte[]> ReadValueAsync(string aEndpointName, uint aLength, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        // Unused for Gamepad controllers currently.
-        public override Task SubscribeToUpdatesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        // Unused for Gamepad controllers currently.
-        public override Task SubscribeToUpdatesAsync(string aEndpointName)
-        {
-            throw new NotImplementedException();
-        }
-
-        // Unused for Gamepad controllers currently.
-        public override Task WriteValueAsync(byte[] aValue, CancellationToken aToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }
