@@ -58,10 +58,12 @@ namespace Buttplug.Devices.Protocols
                 _vibratorSpeed[v.Index] = v.Speed;
             }
 
-            if (!changed)
+            if (!changed && SentVibration)
             {
                 return new Ok(cmdMsg.Id);
             }
+
+            SentVibration = true;
 
             // Map a 0 - 100% value to a 0 - 3 value since 0 * x == 0 this will turn off the vibe if
             // speed is 0.00

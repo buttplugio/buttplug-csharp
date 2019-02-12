@@ -169,7 +169,7 @@ namespace Buttplug.Devices.Protocols
                 newVibratorSpeeds[v.Index] = v.Speed;
             }
 
-            if (newVibratorSpeeds.SequenceEqual(_vibratorSpeeds))
+            if (newVibratorSpeeds.SequenceEqual(_vibratorSpeeds) && SentVibration)
             {
                 return Task.FromResult(new Ok(aMsg.Id) as ButtplugMessage);
             }
@@ -183,6 +183,7 @@ namespace Buttplug.Devices.Protocols
                 _updateValueTimer.Enabled = true;
             }
 
+            SentVibration = true;
             return Task.FromResult(new Ok(aMsg.Id) as ButtplugMessage);
         }
     }

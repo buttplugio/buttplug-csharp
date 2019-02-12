@@ -36,6 +36,10 @@ namespace Buttplug.Devices
         [NotNull]
         protected IButtplugDeviceImpl Interface;
 
+        protected bool SentVibration = false;
+        protected bool SentLinear = false;
+        protected bool SentRotation = false;
+
         /// <inheritdoc />
         public IEnumerable<Type> AllowedMessageTypes => MsgFuncs.Keys;
 

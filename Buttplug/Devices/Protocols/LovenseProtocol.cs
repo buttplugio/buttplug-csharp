@@ -223,11 +223,12 @@ namespace Buttplug.Devices.Protocols
                     Encoding.ASCII.GetBytes("RotateChange;"), false, aToken).ConfigureAwait(false);
             }
 
-            if (Math.Abs(_rotateSpeed - vi.Speed) < 0.0001)
+            if (Math.Abs(_rotateSpeed - vi.Speed) < 0.0001 && SentRotation)
             {
                 return new Ok(cmdMsg.Id);
             }
 
+            SentRotation = true;
             _rotateSpeed = vi.Speed;
 
             await Interface.WriteValueAsync(

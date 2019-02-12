@@ -61,11 +61,12 @@ namespace Buttplug.Devices.Protocols
                 _speed = i.Speed;
             }
 
-            if (!changed)
+            if (!changed && SentRotation)
             {
                 return new Ok(cmdMsg.Id);
             }
 
+            SentRotation = true;
             // todo These comments don't match the actual settings below?!?!?!
             // [6] pause 0x30 + 0-1
             // [7] speed 0x30 + 0-10

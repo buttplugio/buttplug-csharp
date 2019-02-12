@@ -173,11 +173,12 @@ namespace Buttplug.Devices.Protocols
                 _vibratorSpeeds[v.Index] = v.Speed;
             }
 
-            if (!changed)
+            if (!changed && SentVibration)
             {
                 return new Ok(cmdMsg.Id);
             }
 
+            SentVibration = true;
             byte[] data;
             switch (_devInfo.Protocol)
             {

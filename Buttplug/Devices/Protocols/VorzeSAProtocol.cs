@@ -108,10 +108,12 @@ namespace Buttplug.Devices.Protocols
         {
             var cmdMsg = CheckMessageHandler<VorzeA10CycloneCmd>(aMsg);
 
-            if (_clockwise == cmdMsg.Clockwise && _speed == cmdMsg.Speed)
+            if (_clockwise == cmdMsg.Clockwise && _speed == cmdMsg.Speed && SentRotation)
             {
                 return new Ok(cmdMsg.Id);
             }
+
+            SentRotation = true;
 
             _clockwise = cmdMsg.Clockwise;
             _speed = cmdMsg.Speed;
@@ -146,10 +148,12 @@ namespace Buttplug.Devices.Protocols
                 _speed = tmpSpeed;
             }
 
-            if (!changed)
+            if (!changed && SentVibration)
             {
                 return new Ok(cmdMsg.Id);
             }
+
+            SentVibration = true;
 
             await Interface.WriteValueAsync(Endpoints.Tx,
                 new[] { (byte)_deviceType, (byte)_commandType, (byte)_speed }, false, aToken).ConfigureAwait(false);

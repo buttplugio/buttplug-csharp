@@ -75,10 +75,12 @@ namespace Buttplug.Devices.Protocols
                 _vibratorSpeed[v.Index] = v.Speed;
             }
 
-            if (!changed)
+            if (!changed && SentVibration)
             {
                 return new Ok(cmdMsg.Id);
             }
+
+            SentVibration = true;
 
             var rSpeedInt = Convert.ToUInt16(_vibratorSpeed[0] * 15);
             var rSpeedExt = Convert.ToUInt16(_vibratorSpeed[_vibratorCount - 1] * 15);

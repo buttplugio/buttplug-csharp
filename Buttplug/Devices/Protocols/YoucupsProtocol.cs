@@ -57,10 +57,12 @@ namespace Buttplug.Devices.Protocols
             var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, 1);
             var v = cmdMsg.Speeds[0];
 
-            if (Math.Abs(v.Speed - _vibratorSpeed) < 0.001)
+            if (Math.Abs(v.Speed - _vibratorSpeed) < 0.001 && SentVibration)
             {
                 return new Ok(cmdMsg.Id);
             }
+
+            SentVibration = true;
 
             _vibratorSpeed = v.Speed;
 

@@ -179,11 +179,12 @@ namespace Buttplug.Devices.Protocols
                         cmdMsg.Id);
                 }
 
-                if (Math.Abs(_deviceSpeed - v.Speed) < 0.001)
+                if (Math.Abs(_deviceSpeed - v.Speed) < 0.001 && SentVibration)
                 {
                     return new Ok(cmdMsg.Id);
                 }
 
+                SentVibration = true;
                 _deviceSpeed = v.Speed;
             }
 

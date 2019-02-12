@@ -121,10 +121,13 @@ namespace Buttplug.Devices.Protocols
                 changed = true;
             }
 
-            if (!changed)
+
+            if (!changed && SentVibration)
             {
                 return new Ok(cmdMsg.Id);
             }
+
+            SentVibration = true;
 
             var data = new[]
             {

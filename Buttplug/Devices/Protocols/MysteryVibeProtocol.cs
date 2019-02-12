@@ -113,10 +113,12 @@ namespace Buttplug.Devices.Protocols
                 newVibratorSpeeds[v.Index] = (byte)(v.Speed * MaxSpeed);
             }
 
-            if (newVibratorSpeeds.SequenceEqual(_vibratorSpeeds))
+            if (newVibratorSpeeds.SequenceEqual(_vibratorSpeeds) && SentVibration)
             {
                 return Task.FromResult(new Ok(aMsg.Id) as ButtplugMessage);
             }
+
+            SentVibration = true;
 
             _vibratorSpeeds = newVibratorSpeeds;
 
