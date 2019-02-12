@@ -32,7 +32,7 @@ namespace Buttplug.Server.Test
                             typeof(IButtplugDeviceProtocol).IsAssignableFrom(aType)).ToList();
             types.Any().Should().BeTrue();
 
-            // todo Create a derived version of the DeviceConfigurationManager and check against the protocols we add 
+            // todo Create a derived version of the DeviceConfigurationManager and check against the protocols we add
             /*
             var b = new TestBluetoothSubtypeManager(new ButtplugLogManager());
             var d = b.GetDefaultDeviceInfoList();

@@ -109,7 +109,7 @@ namespace Buttplug.Client.Test
             await _client.StopScanningAsync();
             await WaitForEvent();
         }
-        
+
         [Test]
         [Ignore("Doesn't compile under new system, need to figure out device exposure")]
         public async Task TestDeviceMessageRaw()

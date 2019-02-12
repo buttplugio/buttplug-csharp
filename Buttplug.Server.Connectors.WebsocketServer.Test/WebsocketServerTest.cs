@@ -53,7 +53,7 @@ namespace Buttplug.Server.Connectors.WebsocketServer.Test
             await _client.ConnectAsync();
             await sem.WaitAsync();
         }
-        
+
         // Test that ConnectionClosed is fired when client closes connection.
         [Test]
         public async Task TestConnectionClosedEvent()

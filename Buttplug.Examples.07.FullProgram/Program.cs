@@ -39,7 +39,7 @@ namespace Buttplug.Examples._07.FullProgram
             // As usual, we start off with our connector setup. We really don't need access to the
             // connector this time, so we can just pass the created connector directly to the client.
             var client = new ButtplugClient("Example Client", new ButtplugEmbeddedConnector("Example Server"));
-            
+
             // If you want to use a websocket client and talk to a websocket server instead,
             // uncomment the following line and comment the one above out. Note you will need to turn
             // off TLS/SSL on the server.

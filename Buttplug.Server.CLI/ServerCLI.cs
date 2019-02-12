@@ -69,7 +69,7 @@ namespace Buttplug.Server.CLI
             if (aOptions.PipeGUI != null)
             {
                 // Set up IPC Pipe and wait for connection before continuing, so any errors will show
-                // up in the GUI. 
+                // up in the GUI.
                 _hasGuiPipe = true;
                 _guiPipe =
                     new NamedPipeClientStream(".", aOptions.PipeGUI, PipeDirection.InOut);
@@ -78,7 +78,7 @@ namespace Buttplug.Server.CLI
                     _guiPipe.Connect(100);
                 }
                 catch(TimeoutException)
-                { 
+                {
                     Console.WriteLine("Can't connect to GUI pipe! Exiting.");
                     return;
                 }

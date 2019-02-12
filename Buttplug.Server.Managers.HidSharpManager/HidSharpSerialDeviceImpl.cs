@@ -14,7 +14,7 @@ namespace Buttplug.Server.Managers.HidSharpManager
         private SerialStream _device;
         private bool _connected = true;
 
-        public HidSharpSerialDeviceImpl(IButtplugLogManager aLogManager, SerialStream aDevice) 
+        public HidSharpSerialDeviceImpl(IButtplugLogManager aLogManager, SerialStream aDevice)
             : base(aLogManager)
         {
             _device = aDevice;

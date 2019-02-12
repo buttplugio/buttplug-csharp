@@ -175,7 +175,7 @@ namespace Buttplug.Test.Devices.Protocols
         }
     }
 
-    
+
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     [TestFixture]
     public class LoveLifeKrushTests

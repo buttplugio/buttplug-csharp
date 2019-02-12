@@ -72,7 +72,7 @@ namespace Buttplug.Test.Devices.Protocols
             }
             else if (aCommandType == VorzeSAProtocol.CommandType.Vibrate)
             {
-                await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), 
+                await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5),
                     new List<(byte[], string)>()
                     {
                         (expected, Endpoints.Tx),
@@ -142,7 +142,7 @@ namespace Buttplug.Test.Devices.Protocols
             await testUtil.SetupTest<VorzeSAProtocol>(aDeviceName);
             var expected = new byte[] { aPrefix, 0x03, 50 };
 
-            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), 
+            await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5),
                 new List<(byte[], string)>()
                 {
                     (expected, Endpoints.Tx),

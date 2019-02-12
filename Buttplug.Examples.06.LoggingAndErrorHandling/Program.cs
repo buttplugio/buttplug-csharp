@@ -42,7 +42,7 @@ namespace Buttplug.Examples._06.LoggingAndErrorHandling
             // Let's go ahead, put our client/server together, and get connected.
             var connector = new ButtplugEmbeddedConnector("Example Server");
             var client = new ButtplugClient("Example Client", connector);
-            
+
             // We've set up our client and connector as usual, but we haven't called ConnectAsync()
             // yet. Let's call StartScanningAsync() and see what happens.
             try

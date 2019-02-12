@@ -111,7 +111,7 @@ namespace Buttplug.Examples._05.DeviceControl
             //
             // There's a couple of ways to send this message.
             var testClientDevice = client.Devices[0];
-            
+
 
             // We can use the convenience functions on ButtplugClientDevice to send the message. This
             // version sets all of the motors on a vibrating device to the same speed.
