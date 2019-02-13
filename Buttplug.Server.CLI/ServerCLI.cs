@@ -3,6 +3,7 @@ using System.IO.Pipes;
 using System.Threading.Tasks;
 using Buttplug.Client;
 using Buttplug.Core.Logging;
+using Buttplug.Devices.Configuration;
 using Buttplug.Server.Connectors.WebsocketServer;
 using Buttplug.Server.Connectors;
 using Google.Protobuf;
@@ -87,6 +88,20 @@ namespace Buttplug.Server.CLI
                 }
 
                 SendGuiMessage(new GuiMessage {Processstarted = new GuiMessage.Types.ProcessStarted()}).Wait();
+            }
+
+            if (aOptions.DeviceConfigFile != null)
+            {
+                DeviceConfigurationManager.LoadBaseConfigurationFile(aOptions.DeviceConfigFile);
+            }
+            else
+            {
+                DeviceConfigurationManager.LoadBaseConfigurationFromResource();
+            }
+
+            if (aOptions.UserDeviceConfigFile != null)
+            {
+                DeviceConfigurationManager.Manager.LoadUserConfigurationFile(aOptions.UserDeviceConfigFile);
             }
 
             if (aOptions.WebsocketServer && aOptions.IpcServer)

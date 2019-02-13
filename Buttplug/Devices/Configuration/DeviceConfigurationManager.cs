@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using Buttplug.Core;
@@ -34,6 +33,8 @@ namespace Buttplug.Devices.Configuration
 
         protected readonly List<IProtocolConfiguration> _whiteList = new List<IProtocolConfiguration>();
         protected readonly List<IProtocolConfiguration> _blackList = new List<IProtocolConfiguration>();
+
+        public static bool HasManager => _manager != null;
 
         protected DeviceConfigurationManager()
         {

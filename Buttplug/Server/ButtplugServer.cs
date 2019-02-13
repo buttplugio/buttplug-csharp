@@ -129,7 +129,10 @@ namespace Buttplug.Server
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished += ScanningFinishedHandler;
 
-            DeviceConfigurationManager.LoadBaseConfigurationFromResource();
+            if (!DeviceConfigurationManager.HasManager)
+            {
+                DeviceConfigurationManager.LoadBaseConfigurationFromResource();
+            }
         }
 
         private void DeviceMessageReceivedHandler([NotNull] object aObj, [NotNull] MessageReceivedEventArgs aMsg)
