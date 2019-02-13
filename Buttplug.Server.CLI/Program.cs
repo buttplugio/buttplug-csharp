@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System;
+using CommandLine;
 
 namespace Buttplug.Server.CLI
 {
@@ -11,6 +12,8 @@ namespace Buttplug.Server.CLI
             {
                 with.EnableDashDash = true;
                 with.AutoVersion = false;
+                with.AutoHelp = true;
+                with.HelpWriter = Console.Error;
             });
             parser.ParseArguments<Options>(args).WithParsed(server.RunServer);
         }
