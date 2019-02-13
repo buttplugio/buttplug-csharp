@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO.Pipes;
 using System.Threading.Tasks;
+using Buttplug.Client;
+using Buttplug.Core.Logging;
 using Buttplug.Server.Connectors.WebsocketServer;
 using Buttplug.Server.Connectors;
 using Google.Protobuf;
@@ -20,6 +22,7 @@ namespace Buttplug.Server.CLI
         class CLIServer : ButtplugServer
         {
             public DeviceManager DeviceManager => _deviceManager;
+            public IButtplugLogManager LogManager => BpLogManager;
 
             public CLIServer(string aServerName, uint aMaxPingTime, DeviceManager aDevMgr)
             : base(aServerName, aMaxPingTime, aDevMgr)
@@ -66,13 +69,13 @@ namespace Buttplug.Server.CLI
                 return;
             }
 
-            if (aOptions.PipeGUI != null)
+            if (aOptions.GuiPipe != null)
             {
                 // Set up IPC Pipe and wait for connection before continuing, so any errors will show
                 // up in the GUI.
                 _hasGuiPipe = true;
                 _guiPipe =
-                    new NamedPipeClientStream(".", aOptions.PipeGUI, PipeDirection.InOut);
+                    new NamedPipeClientStream(".", aOptions.GuiPipe, PipeDirection.InOut);
                 try
                 {
                     _guiPipe.Connect(100);
@@ -98,7 +101,15 @@ namespace Buttplug.Server.CLI
                 return;
             }
 
-            PrintGuiLog("Server now running!").Wait();
+            var logLevel = ButtplugLogLevel.Off;
+            if (aOptions.Log != null)
+            {
+                if (!Enum.TryParse(aOptions.Log, out logLevel))
+                {
+                    PrintGuiLog("ERROR: Invalid log level!").Wait();
+                    return;
+                }
+            }
 
             ButtplugServer ServerFactory()
             {
@@ -108,23 +119,33 @@ namespace Buttplug.Server.CLI
                     _deviceManager = server.DeviceManager;
                 }
 
+                if (logLevel != ButtplugLogLevel.Off)
+                {
+                    server.LogManager.AddLogListener(logLevel, async (aLogMsg) =>
+                    {
+                        await PrintGuiLog(aLogMsg.LogMessage);
+                    });
+                }
+
                 return server;
             }
 
             if (aOptions.WebsocketServer)
             {
                 var server = new ButtplugWebsocketServer();
-                server.StartServerAsync(ServerFactory, 1, aOptions.Port, true, true, aOptions.Host).Wait();
+                server.StartServerAsync(ServerFactory, 1, aOptions.Port, true, aOptions.WebsocketSecure, aOptions.Host).Wait();
                 var wait = new TaskCompletionSource<bool>();
                 server.ConnectionClosed += (aSender, aArgs) => { wait.SetResult(true); };
+                PrintGuiLog("Websocket Server now running...").Wait();
                 wait.Task.Wait();
             }
             else if (aOptions.IpcServer)
             {
                 var server = new ButtplugIPCServer();
-                server.StartServer(ServerFactory, aOptions.PipeServer);
+                server.StartServer(ServerFactory, aOptions.IpcPipe);
                 var wait = new TaskCompletionSource<bool>();
                 server.ConnectionClosed += (aSender, aArgs) => { wait.SetResult(true); };
+                PrintGuiLog("IPC Server now running...").Wait();
                 wait.Task.Wait();
             }
         }
