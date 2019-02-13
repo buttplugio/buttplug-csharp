@@ -1,4 +1,5 @@
 ﻿using System;
+using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
 namespace Buttplug.Core.Logging
@@ -10,17 +11,6 @@ namespace Buttplug.Core.Logging
     public interface IButtplugLogManager
     {
         /// <summary>
-        /// Called when a log message has been received.
-        /// </summary>
-        [CanBeNull]
-        event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
-
-        /// <summary>
-        /// Sets the log level to report.
-        /// </summary>
-        ButtplugLogLevel Level { get; set; }
-
-        /// <summary>
         /// Gets a <see cref="ButtplugLog"/> for the specified type. Used for creating loggers specific to
         /// class types, so the types can be prepended to the log message for tracing.
         /// </summary>
@@ -28,5 +18,10 @@ namespace Buttplug.Core.Logging
         /// <returns>Logger object.</returns>
         [NotNull]
         IButtplugLog GetLogger(Type aType);
+
+        void AddLogListener(ButtplugLogLevel aLevel, Action<Log> aListener);
+        void RemoveLogListener(Action<Log> aListener);
+
+        ButtplugLogLevel MaxLevel { get; }
     }
 }

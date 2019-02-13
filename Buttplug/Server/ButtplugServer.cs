@@ -128,7 +128,6 @@ namespace Buttplug.Server
             _bpLogger.Info("Finished setting up ButtplugServer");
             _deviceManager.DeviceMessageReceived += DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished += ScanningFinishedHandler;
-            BpLogManager.LogMessageReceived += LogMessageReceivedHandler;
 
             DeviceConfigurationManager.LoadBaseConfigurationFromResource();
         }
@@ -138,9 +137,9 @@ namespace Buttplug.Server
             MessageReceived?.Invoke(aObj, aMsg);
         }
 
-        private void LogMessageReceivedHandler([NotNull] object aObj, [NotNull] ButtplugLogMessageEventArgs aEvent)
+        private void LogMessageReceivedHandler([NotNull] Log aLogMsg)
         {
-            MessageReceived?.Invoke(aObj, new MessageReceivedEventArgs(aEvent.LogMessage));
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(aLogMsg));
         }
 
         private void ScanningFinishedHandler([NotNull] object aObj, EventArgs aEvent)
@@ -198,7 +197,7 @@ namespace Buttplug.Server
             switch (aMsg)
             {
                 case RequestLog m:
-                    BpLogManager.Level = m.LogLevel;
+                    BpLogManager.AddLogListener(m.LogLevel, LogMessageReceivedHandler);
                     return new Ok(id);
 
                 case Ping _:
@@ -245,7 +244,7 @@ namespace Buttplug.Server
             _deviceManager.StopScanning();
             _deviceManager.DeviceMessageReceived -= DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished -= ScanningFinishedHandler;
-            BpLogManager.LogMessageReceived -= LogMessageReceivedHandler;
+            BpLogManager.RemoveLogListener(LogMessageReceivedHandler);
         }
 
         [ItemNotNull]

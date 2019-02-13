@@ -68,7 +68,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             BpLogger.Debug("UWP Manager found working Bluetooth LE Adapter");
 
             // Only run radio information lookup if we're actually logging at the level it will show.
-            if (aLogManager.Level >= ButtplugLogLevel.Debug)
+            if (aLogManager.MaxLevel >= ButtplugLogLevel.Debug)
             {
                 // Do radio lookup in a background task, as the search query is very slow. TODO
                 // Should probably try and cancel this if it's still running on object destruction,

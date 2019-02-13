@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Buttplug.Core.Messages;
 using Buttplug.Logging;
 using JetBrains.Annotations;
 
@@ -8,28 +10,72 @@ namespace Buttplug.Core.Logging
     // ReSharper disable once InheritdocConsiderUsage
     public class ButtplugLogManager : IButtplugLogManager
     {
-        /// <inheritdoc cref="IButtplugLogManager"/>>
-        [CanBeNull]
-        public event EventHandler<ButtplugLogMessageEventArgs> LogMessageReceived;
+        /// <summary>
+        /// List of listeners and their respective log levels. Requires since using normal
+        /// EventHandlers would require extra logic on the event handler side.
+        /// </summary>
+        /// <remarks>
+        /// This could probably be optimized as a dictionary but not really worth it unless this
+        /// somehow becomes a performance issue.
+        /// </remarks>
+        private readonly List<(ButtplugLogLevel, Action<Log>)> _listeners = new List<(ButtplugLogLevel, Action<Log>)>();
 
-        /// <inheritdoc cref="IButtplugLogManager"/>>
-        public ButtplugLogLevel Level { get; set; }
+        /// <summary>
+        /// Records the highest level of message we want to receive. Optimization that allows us to
+        /// not have to traverse the listener array on levels no one is listening for.
+        /// </summary>
+        public ButtplugLogLevel MaxLevel { get; private set; } = ButtplugLogLevel.Off;
+
+        public void AddLogListener(ButtplugLogLevel aLevel, Action<Log> aListener)
+        {
+            RemoveLogListener(aListener);
+            if (aLevel == ButtplugLogLevel.Off)
+            {
+                return;
+            }
+
+            _listeners.Add((aLevel, aListener));
+            ResetMaxLevel();
+        }
+
+        public void RemoveLogListener(Action<Log> aListener)
+        {
+            var listener = _listeners.Find((x) => x.Item2 == aListener);
+            if (listener.Item2 != null)
+            {
+                _listeners.Remove(listener);
+                ResetMaxLevel();
+            }
+        }
+
+        private void ResetMaxLevel()
+        {
+            foreach (var listener in _listeners)
+            {
+                if (listener.Item1 > MaxLevel)
+                {
+                    MaxLevel = listener.Item1;
+                }
+            }
+        }
 
         private void LogMessageHandler([NotNull] object aObject, [NotNull] ButtplugLogMessageEventArgs aMsg)
         {
-            if (aObject == null)
+            ButtplugUtils.ArgumentNotNull(aObject, "aObject");
+            ButtplugUtils.ArgumentNotNull(aMsg, "aMsg");
+
+            // If no one is listening for this level of message, just bail.
+            if (MaxLevel < aMsg.LogMessage.LogLevel)
             {
-                throw new ArgumentNullException(nameof(aObject));
+                return;
             }
 
-            if (aMsg == null)
+            foreach (var listener in _listeners)
             {
-                throw new ArgumentNullException(nameof(aMsg));
-            }
-
-            if (aMsg.LogMessage.LogLevel <= Level)
-            {
-                LogMessageReceived?.Invoke(aObject, aMsg);
+                if (listener.Item1 >= aMsg.LogMessage.LogLevel)
+                {
+                    listener.Item2(aMsg.LogMessage);
+                }
             }
         }
 
