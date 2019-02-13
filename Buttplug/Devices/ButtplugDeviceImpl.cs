@@ -48,7 +48,7 @@ namespace Buttplug.Devices
 
         public Task<byte[]> ReadValueAsync(CancellationToken aToken = default(CancellationToken))
         {
-            return ReadValueAsync(default(ButtplugDeviceReadOptions), aToken);
+            return ReadValueAsync(new ButtplugDeviceReadOptions(), aToken);
         }
 
         public Task<byte[]> ReadValueAsync(ButtplugDeviceReadOptions aOptions = default(ButtplugDeviceReadOptions),
@@ -63,7 +63,7 @@ namespace Buttplug.Devices
         public Task SubscribeToUpdatesAsync(
             ButtplugDeviceReadOptions aOptions = default(ButtplugDeviceReadOptions))
         {
-            return SubscribeToUpdatesAsyncInternal(aOptions);
+            return SubscribeToUpdatesAsyncInternal(aOptions ?? new ButtplugDeviceReadOptions());
         }
 
         public abstract Task SubscribeToUpdatesAsyncInternal(ButtplugDeviceReadOptions aOptions);
