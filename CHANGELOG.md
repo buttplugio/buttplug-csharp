@@ -1,3 +1,26 @@
+# 0.4.0 (2019-02-12)
+
+## Features
+
+- Implemented external device configuration files and user device configuration files
+- Moved device protocols into base library
+- Rebuilt Device Subtype Managers to only handle device communications, not protocol specifics
+- Move CI to Azure Pipelines
+- Move all project files to MSBuild format
+- CI now builds Windows/Mac/Linux on all builds
+- Added CLI program, handles all server tasks
+- Moved TestDevice/Manager classes into main library
+- Switch to using HIDSharp for Serial/HID on all platforms
+- Added Hardware Support
+  - Lovelife Krush
+  - Cueme Underwear
+  
+## Bugfixes
+
+- Subtype Managers without continuous scanning will now poll for devices
+- Corrected MagicMotion protocol speed scaling
+- Devices no longer ignore stop commands if stop command is first command sent.
+
 # 0.3.3 (2019-01-13)
 
 ## Features

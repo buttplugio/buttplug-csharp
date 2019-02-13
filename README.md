@@ -131,9 +131,15 @@ The project should compile with Visual Studio 2017, Visual Studio on
 Mac (.Net Standard projects only), or Mono on linux (.Net Standard
 projects only).
 
-Note that for building using Visual Studio on Windows 7/8/10, the project
-requires the [Windows 10
-SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk) to be installed.
+Note that for building using Visual Studio on Windows 7/8/10, the
+project requires the [Windows 10
+SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk)
+to be installed.
+
+Note that some of the Windows 10 SDK links in the UWP Bluetooth
+Manager project are hard-linked to the C:\ drive. If your program
+files and SDKs are not on your C: drive, you may need to readjust
+these paths by hand.
 
 ## Client Software
 
