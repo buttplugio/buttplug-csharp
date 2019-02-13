@@ -23,7 +23,7 @@ namespace Buttplug.Server.Managers.HidSharpManager
             var devList = DeviceList.Local;
             var hidDevices = devList.GetHidDevices();
             var serialDevices = devList.GetSerialDevices();
-            /*
+
             foreach (var device in hidDevices)
             {
                 var hidFinder = new HIDProtocolConfiguration((ushort)device.VendorID, (ushort)device.ProductID);
@@ -36,7 +36,6 @@ namespace Buttplug.Server.Managers.HidSharpManager
                 var bpDevice = factory.CreateDevice(LogManager, new HidSharpHidDeviceImpl(LogManager, device)).Result;
                 InvokeDeviceAdded(new DeviceAddedEventArgs(bpDevice));
             }
-            */
 
             foreach (var port in serialDevices)
             {
@@ -47,8 +46,7 @@ namespace Buttplug.Server.Managers.HidSharpManager
                     continue;
                 }
 
-                SerialStream stream;
-                if (!port.TryOpen(out stream))
+                if (!port.TryOpen(out var stream))
                 {
                     continue;
                 }
