@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>netcoreapp2.1;net47</TargetFrameworks>
+    <TargetFrameworks>net47;netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup>
     <PackageId />
