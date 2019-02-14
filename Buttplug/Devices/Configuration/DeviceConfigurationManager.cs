@@ -53,7 +53,10 @@ namespace Buttplug.Devices.Configuration
             AddProtocol("wevibe", typeof(WeVibeProtocol));
             AddProtocol("youcups", typeof(YoucupsProtocol));
             AddProtocol("vorze-cyclone-x", typeof(CycloneX10Protocol));
-            AddProtocol("erostek-et312", typeof(ErostekET312Protocol));
+
+            // ET312 turned off until deadlocks and caching are fixed. See #593, #594, #595
+            // AddProtocol("erostek-et312", typeof(ErostekET312Protocol));
+
             // todo We need a way to be able to turn off xinput, in case the protocol is blacklisted?
             AddProtocol("xinput", typeof(XInputProtocol));
         }

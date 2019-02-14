@@ -45,6 +45,7 @@ namespace Buttplug.Test.Devices
         }
 
         [Test]
+        [Ignore("ET312 protocol currently turned off, we need a test protocol to use on this")]
         public void TestUserConfig()
         {
             DeviceConfigurationManager.LoadBaseConfigurationFromResource();
