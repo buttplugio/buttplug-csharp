@@ -240,14 +240,6 @@ namespace Buttplug.Server.Test
         }
 
         [Test]
-        public void TestServerLicenseFileLoading()
-        {
-            var license = ButtplugUtils.GetLicense(Assembly.GetAssembly(typeof(ButtplugServer)), "Buttplug.Server.LICENSE");
-            license.Should().Contain("Buttplug is covered under the following BSD 3-Clause License");
-            license.Should().Contain("NJsonSchema (https://github.com/RSuter/NJsonSchema) is covered under the");
-        }
-
-        [Test]
         public async Task TestPing()
         {
             var server = new TestServer(500);

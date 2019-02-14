@@ -54,30 +54,6 @@ namespace Buttplug.Core
         }
 
         /// <summary>
-        /// Gets embedded license files in assemblies.
-        /// </summary>
-        /// <param name="aResourceName">Resource to retrieve.</param>
-        /// <returns>String of all licenses for assembly dependencies.</returns>
-        // ReSharper disable once UnusedMember.Global
-        public static string GetLicense(Assembly aAssembly, string aResourceName)
-        {
-            Stream stream = null;
-            try
-            {
-                stream = aAssembly.GetManifestResourceStream(aResourceName);
-                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
-                {
-                    stream = null;
-                    return reader.ReadToEnd();
-                }
-            }
-            finally
-            {
-                stream?.Dispose();
-            }
-        }
-
-        /// <summary>
         /// Given a string, tries to return the ButtplugMessage Type (as in, C# Class Type) denoted by the string.
         /// </summary>
         /// <remarks>
