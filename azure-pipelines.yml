@@ -104,6 +104,20 @@ jobs:
         inputs:
           pathtoPublish: '$(Build.ArtifactStagingDirectory)/$(cliBuildName)'
           artifactName: "$(cliBuildName)"
+      - task: DotNetCoreCLI@2
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
+        inputs:
+          command: 'pack'
+          configuration: 'release'
+          packDirectory: '$(build.artifactStagingDirectory)/nuget'
+          nobuild: true
+      - task: DotNetCoreCLI@2
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
+        inputs:
+          command: "push"
+          nuGetFeedType: "external"
+          packagesToPush: "$(build.artifactStagingDirectory)/nuget/*.nupkg"
+          publishFeedCredentials: "$(NUGET_TOKEN)"
   - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
