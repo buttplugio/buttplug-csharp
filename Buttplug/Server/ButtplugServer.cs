@@ -234,6 +234,8 @@ namespace Buttplug.Server
 
         public async Task ShutdownAsync(CancellationToken aToken = default(CancellationToken))
         {
+            _deviceManager.StopScanning();
+
             // Don't disconnect devices on shutdown, as they won't actually close.
             // Uncomment this once we figure out how to close bluetooth devices.
             // _deviceManager.RemoveAllDevices();
@@ -244,7 +246,6 @@ namespace Buttplug.Server
                 _bpLogger.Error(error.ErrorMessage);
             }
 
-            _deviceManager.StopScanning();
             _deviceManager.DeviceMessageReceived -= DeviceMessageReceivedHandler;
             _deviceManager.ScanningFinished -= ScanningFinishedHandler;
             BpLogManager.RemoveLogListener(LogMessageReceivedHandler);

@@ -70,6 +70,7 @@ namespace Buttplug.Server
 
         ~DeviceManager()
         {
+            StopScanning();
             RemoveAllDevices();
         }
 
