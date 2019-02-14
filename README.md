@@ -59,6 +59,9 @@ includes some heavily commented examples!
 API documentation for the current release is available at
 [https://buttplug-csharp.docs.buttplug.io](https://buttplug-csharp.docs.buttplug.io).
 
+API documentation for the current development branch is available at
+[https://buttplug-csharp-dev.docs.buttplug.io](https://buttplug-csharp-dev.docs.buttplug.io).
+
 ## Buttplug Spec and Documentation
 
 Buttplug implementations are available in multiple languages (rust,

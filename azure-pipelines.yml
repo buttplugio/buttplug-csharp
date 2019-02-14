@@ -93,6 +93,22 @@ jobs:
         inputs:
           pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitShortHash).zip"
           artifactName: "buttplug-csharp-docs"
+      - task: PowerShell@2
+        displayName: Deploy Master Documentation to Netlify
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
+        inputs:
+          targetType: inline
+          script: |
+            npm i -g netlify
+            netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/gh-pages
+      - task: PowerShell@2
+        displayName: Deploy Dev Documentation to Netlify
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+        inputs:
+          targetType: inline
+          script: |
+            npm i -g netlify
+            netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/gh-pages
       - task: DotNetCoreCLI@2
         displayName: "Publish CLI Arifacts"
         inputs:
