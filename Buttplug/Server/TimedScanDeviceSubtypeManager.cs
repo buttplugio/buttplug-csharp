@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Timers;
+using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Timer = System.Timers.Timer;
 
@@ -13,7 +14,7 @@ namespace Buttplug.Server
         protected Timer _scanTimer = new Timer();
         protected SemaphoreSlim _scanLock = new SemaphoreSlim(1, 1);
 
-        public TimedScanDeviceSubtypeManager(IButtplugLogManager aLogManager)
+        protected TimedScanDeviceSubtypeManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
         {
             _scanTimer.Enabled = false;
@@ -29,9 +30,15 @@ namespace Buttplug.Server
                 return;
             }
 
-            _scanLock.Wait();
-            RunScan();
-            _scanLock.Release();
+            try
+            {
+                _scanLock.Wait();
+                RunScan();
+            }
+            finally
+            {
+                _scanLock.Release();
+            }
         }
 
         protected abstract void RunScan();
