@@ -46,7 +46,13 @@ namespace Buttplug.Server.Managers.HidSharpManager
                     continue;
                 }
 
-                if (!port.TryOpen(out var stream))
+                var config = new OpenConfiguration();
+                config.SetOption(OpenOption.Exclusive, true);
+                config.SetOption(OpenOption.Interruptible, true);
+                config.SetOption(OpenOption.TimeoutIfInterruptible, 1000);
+                config.SetOption(OpenOption.TimeoutIfTransient, 1000);
+
+                if (!port.TryOpen(config, out var stream))
                 {
                     continue;
                 }
