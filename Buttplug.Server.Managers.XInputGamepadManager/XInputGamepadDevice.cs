@@ -24,6 +24,7 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
             : base(aLogManager)
         {
             _device = aDevice;
+            Address = $"XInput{aDevice.UserIndex.ToString()}";
         }
 
         public override Task WriteValueAsyncInternal(byte[] aValue,

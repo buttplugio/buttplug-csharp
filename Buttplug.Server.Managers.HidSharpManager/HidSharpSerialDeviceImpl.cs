@@ -20,6 +20,8 @@ namespace Buttplug.Server.Managers.HidSharpManager
             _device = aDevice;
             _device.Closed += OnClosed;
             _device.ReadTimeout = 1000;
+            _device.WriteTimeout = 1000;
+            Address = _device.Device.DevicePath;
         }
 
         private void OnClosed(object obj, EventArgs aArgs)

@@ -27,6 +27,7 @@ namespace Buttplug.Server.Managers.HidSharpManager
             _device = aDevice;
             aDevice.TryOpen(out _stream);
             Name = _device.GetProductName();
+            Address = aDevice.DevicePath;
         }
 
         public override void Disconnect()

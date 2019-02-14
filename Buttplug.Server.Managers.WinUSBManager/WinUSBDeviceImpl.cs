@@ -15,6 +15,8 @@ namespace Buttplug.Server.Managers.WinUSBManager
         public WinUSBDeviceImpl(IButtplugLogManager aLogManager, USBDevice aDevice) : base(aLogManager)
         {
             _device = aDevice;
+            // No idea if this will collide or not.
+            Address = aDevice.ToString();
         }
 
         public override bool Connected => _device != null;
