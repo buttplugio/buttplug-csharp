@@ -26,7 +26,8 @@
       <RepositoryType>git</RepositoryType>
       <PackageIconUrl>https://github.com/buttplugio/buttplug-csharp/blob/master/icons/buttplug-logo-1.png?raw=true</PackageIconUrl>
       <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
-      <PackageLicenseUrl>https://opensource.org/licenses/BSD-3-Clause</PackageLicenseUrl>
+      <!-- each project should have a LICENSE resource if it needs to be packaged -->
+      <PackageLicenseFile>LICENSE</PackageLicenseFile>
 
       <PackageVersion Condition="'$(GitBranch)' != 'master'">$(GitBaseTag)-$(GitBranch)-$(GitCommit)</PackageVersion>
       <PackageVersion Condition="'$(GitBranch)' == 'master'">$(GitBaseTag)</PackageVersion>

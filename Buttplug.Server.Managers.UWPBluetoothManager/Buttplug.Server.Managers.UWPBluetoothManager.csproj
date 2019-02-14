@@ -44,4 +44,11 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
 </Project>

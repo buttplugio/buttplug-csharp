@@ -46,4 +46,8 @@
     <ProjectReference Include="..\Buttplug\Buttplug.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
+
 </Project>

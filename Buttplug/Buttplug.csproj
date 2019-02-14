@@ -51,9 +51,12 @@
 
   <ItemGroup>
     <EmbeddedResource Include="..\dependencies\buttplug-schema\schema\buttplug-schema.json" />
-    <EmbeddedResource Include="..\LICENSE" Link="Server\LICENSE" />
     <EmbeddedResource Include="..\dependencies\buttplug-device-config\buttplug-device-config.yml" Link="buttplug-device-config.yml" />
     <None Include="app.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
