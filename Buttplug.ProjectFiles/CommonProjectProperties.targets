@@ -29,7 +29,8 @@
       <!-- each project should have a LICENSE resource if it needs to be packaged -->
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
 
-      <PackageVersion Condition="'$(GitBranch)' != 'master'">$(GitBaseTag)-$(GitBranch)-$(GitCommit)</PackageVersion>
+      <PackageVersion Condition="'$(GitBranch)' != 'master' and '$(CI)' != 'true'">$(GitBaseTag)-$(GitBranch)-$(GitCommit)</PackageVersion>
+      <PackageVersion Condition="'$(GitBranch)' != 'master' and '$(CI)' == 'true'">$(GitBaseTag).$(BuildID)-$(GitBranch)-$(GitCommit)</PackageVersion>
       <PackageVersion Condition="'$(GitBranch)' == 'master'">$(GitBaseTag)</PackageVersion>
     </PropertyGroup>
   </Target>
