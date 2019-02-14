@@ -114,14 +114,14 @@ jobs:
         inputs:
           pathtoPublish: '$(Build.ArtifactStagingDirectory)/nuget'
           artifactName: "buttplug-csharp-nuget"
-      # - task: DotNetCoreCLI@2
-      #   condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
-      #   displayName: "Push to NuGet"
-      #   inputs:
-      #     command: "push"
-      #     nuGetFeedType: "external"
-      #     packagesToPush: "$(System.DefaultWorkingDirectory)/**/*.nupkg"
-      #     publishFeedCredentials: "$(NUGET_TOKEN)"
+      - task: DotNetCoreCLI@2
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
+        displayName: "Push to NuGet"
+        inputs:
+          command: "push"
+          nuGetFeedType: "external"
+          packagesToPush: "$(System.DefaultWorkingDirectory)/**/Release/**/*.nupkg"
+          publishFeedCredentials: "NuGet.org"
   - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
