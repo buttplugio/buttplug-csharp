@@ -105,22 +105,25 @@ jobs:
           pathtoPublish: '$(Build.ArtifactStagingDirectory)/$(cliBuildName)'
           artifactName: "$(cliBuildName)"
       - task: CopyFiles@2
+        displayName: "Copy nuget packages to staging"
         inputs:
           # Prefix this with Buttplug, otherwise we'll archive the packages directory too.
           contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
           targetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
           cleanTargetFolder: true
       - task: PublishBuildArtifacts@1
+        displayName: "Publish nuget packages to artifacts"
         inputs:
           pathtoPublish: '$(Build.ArtifactStagingDirectory)/nuget'
           artifactName: "buttplug-csharp-nuget"
-      - task: DotNetCoreCLI@2
+      - task: NuGetCommand@2
         condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
-        displayName: "Push to NuGet"
+        displayName: "Push Release NuGet packages to NuGet.org"
         inputs:
           command: "push"
           nuGetFeedType: "external"
           packagesToPush: "$(System.DefaultWorkingDirectory)/**/Release/**/*.nupkg"
+          allowPackageConflicts: false
           publishFeedCredentials: "NuGet.org"
   - job: "Linux"
     pool:
