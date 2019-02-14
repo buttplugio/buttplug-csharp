@@ -122,7 +122,7 @@ jobs:
         inputs:
           command: "push"
           nuGetFeedType: "external"
-          packagesToPush: "$(System.DefaultWorkingDirectory)/**/Release/**/*!(symbols).nupkg"
+          packagesToPush: "$(System.DefaultWorkingDirectory)/**/Release/**/!(*.symbols).nupkg"
           allowPackageConflicts: false
           publishFeedCredentials: "NuGet.org"
   - job: "Linux"
