@@ -106,7 +106,8 @@ jobs:
           artifactName: "$(cliBuildName)"
       - task: CopyFiles@2
         inputs:
-          contents: "$(System.DefaultWorkingDirectory)/**/*.nupkg"
+          # Prefix this with Buttplug, otherwise we'll archive the packages directory too.
+          contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
           targetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
           cleanTargetFolder: true
       - task: PublishBuildArtifacts@1
