@@ -21,6 +21,10 @@
 - Corrected MagicMotion protocol speed scaling
 - Devices no longer ignore stop commands if stop command is first command sent.
 
+## Known Issues
+
+- Erostek ET-312 support disabled due to deadlocks
+
 # 0.3.3 (2019-01-13)
 
 ## Features
