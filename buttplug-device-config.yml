@@ -11,46 +11,82 @@
 # information. You're not really supposed to be here, but since you've
 # shown up, might as give you a tour.
 #
-# Devices in Buttplug have the following info:
+# This file is used in all Buttplug reference implementations,
+# including C#, JS, and whatever other languages we decide to
+# implement things in. It's our main source of truth for devices we
+# know about.
 #
-# - Protocol (Required)
+# Devices in Buttplug are defined in terms of their protocol. We group
+# together all devices that speak the same language. It will look
+# something like this:
 #
-#   - The language we talk to the device. In our config file, these
-#     will all have specific names, usually brands like Lovense or
-#     WeVibe. In some cases, specific toys may have their own protocol
-#     too, like the Fleshlight Launch. Devices should usually only
-#     have one protocol.
+# protocols:
+#   lovense:
+#     btle:
+#       names:
+#         - LVS-*
+#       services:
+#         0000fff0-0000-1000-8000-00805f9b34fb: null
 #
-# - Identifier (name: id, Optional)
+# The protocols portion of the config file lists all of the protocols
+# we know, and how the devices that speak those protocols can be
+# identified. For the above example, we're looking at Lovense brand
+# hardware, all of which uses bluetooth LE, so we create a "btle"
+# configuration section for that protocol. We list the device names
+# (using a * as a wildcard, so this means "try to connect to anything
+# that starts with LVS-"). We also list the services we're interested
+# in. If a service only has rx/tx characteristics (many devices
+# emulate serial in this way), we just put "null" and let the
+# Bluetooth subtype manager sort out the characteristics on connect.
+# Otherwise, if there are multiple characteristics, we list those in
+# name/uuid form. See the definitions below for more examples.
 #
-#   - The information we use to find a device. This will vary
-#     depending on our bus type. Bluetooth needs name, service IDs,
-#     etc. USB needs vendor ID and product ID pairs. This field is
-#     optional, as we can't look for devices on serial ports or wifi
-#     easily, and we expect the user to help us with those by
-#     providing more information in their local config file.
+# Other devices are similar. For USB/HID, we just list VID/PID pairs,
+# as that's all we have to identify with.
 #
-# - Configuration (name: config, Optional)
+# Serial ports are a bit different in that we don't have a specifier
+# for them, they could be anywhere. Therefore, we just specify the
+# port settings in this file. Baud rate, data bits, etc. In Buttplug
+# Reference Servers, we allow the user to pass in another device
+# config file like this one that they've built, that can define things
+# like local port names. So the user may have a file that looks like:
 #
-#   - Common settings for a device. Usually used for serial.
+# protocols:
+#   erostek-et312:
+#     serial:
+#       ports:
+#         - COM4
+#
+# The user's config will be merged with this config file in the
+# server, which lets any Serial subtype manager know which port to
+# discover the device on, as well as all of the other port settings to
+# use.
+#
+# Users can also define things we're missing here, like new BTLE names
+# or IDs we haven't gotten to yet. The only thing users can't define
+# is new protocols, since those have to be implemented in source code.
+#
+# That's pretty much it for how this file works.
+
 
 # Define identifier types. These are the only values devices can have
 # in their connection-info lists.
 
 connection-info-types:
-  - btclassic
   - btle
   - serial
   - usb
   - hid
 
+# Things we may add some day: BT Classic, 433mhz radio
+  
 # Now for the actual protocol definitions. This is gonna get wild, so
 # I'll keep a list of rules that you can refer to up here.
 #
 # - If you are curious about device identifiers or protocols, all
 #   of those are documented at https://stpihkal.docs.buttplug.io
 #
-# - Some fields can be wildcarded using "*". This allows us to do
+# - BTLE name fields can be wildcarded using "*". This allows us to do
 #   things like searching for all devices of a certain name.
 #
 # - Where possible, we assume all devices have at least one output (so
@@ -62,8 +98,8 @@ connection-info-types:
 #   the host-to-device line tx, and device-to-host line rx.
 #
 # - If you see a "btle" connection info with service IDs but no
-#   characteristic IDs, this means that we'll try autodetecting the
-#   characteristics. We'll just expect it to have an input (which
+#   characteristic IDs (null), this means that we'll try autodetecting
+#   the characteristics. We'll just expect it to have an input (which
 #   we'll name "rx") and an output characteristic (which we'll name
 #   "tx"), as mentioned above.
 #
@@ -93,8 +129,6 @@ connection-info-types:
 # - Serial info here is for default device configuration. Port names
 #   will have to be added by the user in the user device config file.
 
-
-
 protocols:
   
   lovense:
@@ -122,7 +156,6 @@ protocols:
         53300001-0023-4bd4-bbd5-a6920e4c5653: null
         5a300001-0023-4bd4-bbd5-a6920e4c5653: null
         4f300001-0023-4bd4-bbd5-a6920e4c5653: null
-
   xinput:
     # This will actually be ANY gamepad that supports XInput. XInput
     # is its own connector type, so we don't have any special
@@ -131,7 +164,6 @@ protocols:
     # TODO Maybe just start calling this "gamepad"? Maybe add "VR
     # Controller" too?
     null
-
   libo:
       btle:
         names:
@@ -218,11 +250,12 @@ protocols:
   cueme:
     btle:
       names:
-        - FUNCODE_1 # Men's Underwear
-        - FUNCODE_2 # Bra
-        - FUNCODE_3 # Women's Underwear
+        # Cueme names have the bluetooth address in the middle because
+        # sure. Why not. Of course they do.
+        - FUNCODE_*
       services:
-        0000fff0-0000-1000-8000-00805f9b34fb: null
+        0000fff0-0000-1000-8000-00805f9b34fb:
+          tx: 0000fff1-0000-1000-8000-00805f9b34fb
   kiiroo-v2-vibrator:
     btle:
       names:
@@ -246,7 +279,6 @@ protocols:
           # The Launch has a special characteristic for loading
           # firmware.
           firmware: 88f80583-0000-01e6-aace-0002a5d5c51b
-        
   erostek-et312:
     serial:
       # Port names are defined in user configs
@@ -254,17 +286,14 @@ protocols:
       data-bits: 8
       parity: N
       stop-bits: 1
-
   vorze-cyclone-x:
     hid:
       vendor-id: 0x0483
       product-id: 0x5750
-
   rez-trancevibrator:
     usb:
       vendor-id: 0xb49
       product-id: 0x064f
-
   kiiroo-v1:
     btle:
       names:
@@ -276,7 +305,6 @@ protocols:
           tx: 49535343-8841-43f4-a8d4-ecbe34729bb3
           cmd: 49535343-aca3-481c-91ec-d85e28a60318
           cmd2: 49535343-6daa-4d02-abf6-19569aca69fe
-
   vorze-sa:
     btle:
       names:
