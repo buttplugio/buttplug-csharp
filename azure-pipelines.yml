@@ -99,7 +99,7 @@ jobs:
         inputs:
           targetType: inline
           script: |
-            npm i -g netlify
+            npm i -g netlify-cli
             netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/gh-pages
       - task: PowerShell@2
         displayName: Deploy Dev Documentation to Netlify
@@ -107,7 +107,7 @@ jobs:
         inputs:
           targetType: inline
           script: |
-            npm i -g netlify
+            npm i -g netlify-cli
             netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/gh-pages
       - task: DotNetCoreCLI@2
         displayName: "Publish CLI Arifacts"
