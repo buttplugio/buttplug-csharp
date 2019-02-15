@@ -6,9 +6,6 @@ installer
 packages
 coverage.xml
 *.csproj.user
-/test-data/
-/buttplug-schema/
-/raven-csharp/
-/websocket-sharp/
 *.DotSettings.user
-*/Properties/PublishProfiles
+*/Properties/
+docs/_site

@@ -10,7 +10,7 @@
           "exclude": [
             "**/obj/**",
             "**/bin/**",
-	          "gh-pages/**"
+	          "_site/**"
 	        ]
         }
       ],
@@ -27,8 +27,7 @@
         "files": [
           "api/**.yml",
           "api/index.md"
-        ],
-        "src": ".."
+        ]
       },
       {
         "files": "*.md",
@@ -43,7 +42,7 @@
         ],
         "exclude": [
           "obj/**",
-          "gh-pages/**"
+          "_site/**"
         ]
       }
     ],
@@ -54,7 +53,7 @@
         ],
         "exclude": [
           "obj/**",
-          "gh-pages/**"
+          "_site/**"
         ]
       }
     ],
@@ -65,11 +64,11 @@
         ],
         "exclude": [
           "obj/**",
-          "gh-pages/**"
+          "_site/**"
         ]
       }
     ],
-    "dest": "gh-pages",
+    "dest": "_site",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
