@@ -83,7 +83,7 @@ jobs:
         condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
         displayName: "Archive Documentation Artifacts"
         inputs:
-          rootFolderOrFile: "docs/gh-pages"
+          rootFolderOrFile: "docs/_site"
           archiveType: "zip"
           archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitShortHash).zip"
           includeRootFolder: true
@@ -100,7 +100,7 @@ jobs:
           targetType: inline
           script: |
             npm i -g netlify-cli
-            netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/gh-pages
+            netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site
       - task: PowerShell@2
         displayName: Deploy Dev Documentation to Netlify
         condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
@@ -108,7 +108,7 @@ jobs:
           targetType: inline
           script: |
             npm i -g netlify-cli
-            netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/gh-pages
+            netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site
       - task: DotNetCoreCLI@2
         displayName: "Publish CLI Arifacts"
         inputs:
