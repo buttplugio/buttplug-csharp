@@ -1,6 +1,6 @@
 # Buttplug Protocol Implementation - C# .Net Standard/Framework
 
-[![Build status](https://ci.appveyor.com/api/projects/status/kcrobh9kvkpcjlqg/branch/master?svg=true)](https://ci.appveyor.com/project/qdot/buttplug-csharp/branch/master) 
+[![Build Status](https://dev.azure.com/nplabs/buttplug/_apis/build/status/buttplugio.buttplug-csharp?branchName=master)](https://dev.azure.com/nplabs/buttplug/_build/latest?definitionId=2&branchName=master)
 [![codecov](https://codecov.io/gh/buttplugio/buttplug-csharp/branch/master/graph/badge.svg)](https://codecov.io/gh/buttplugio/buttplug-csharp)
 [![NuGet](https://img.shields.io/nuget/v/Buttplug.svg)](https://www.nuget.org/packages/Buttplug/)
 
@@ -24,9 +24,11 @@ page.](https://github.com/buttplugio/buttplug-windows-suite/releases/)
 ## Table Of Contents
 
 - [Support The Project](#support-the-project)
-- [Usage Examples](#examples)
-- [API Documentation](#api-documentation)
-- [Buttplug Spec and Documentation](#buttplug-spec-and-documentation)
+- [Documentation](#documentation)
+    - [Developer Guide](#developer-guide)
+    - [Library Usage Examples](#library-usage-examples)
+    - [Library API Documentation](#library-api-documentation)
+    - [Buttplug Spec and Documentation](#buttplug-spec-and-documentation)
 - [Hardware Support](#hardware-support)
 - [Installation](#installation)
 - [Development Branches](#development-branches)
@@ -41,7 +43,22 @@ If you find this project helpful, you can [support us via
 Patreon](http://patreon.com/qdot)! Every donation helps us afford more
 hardware to reverse, document, and write code for!
 
-## Usage Examples
+## Documentation
+
+Documentation is available for the Buttplug Protocol and Frameworks,
+as well as this specific library.
+
+### Developer Guide
+
+The [Buttplug Developer
+Guide](https://buttplug-developer-guide.docs.buttplug.io) is the best
+introduction to how Buttplug works as a system. It provides an
+architectural overview of the various libraries and development
+strategies, as well as code examples in multiple languages.
+
+[https://buttplug-developer-guide.docs.buttplug.io](https://buttplug-developer-guide.docs.buttplug.io)
+
+### Library Usage Examples
 
 Want to know what using the library looks like in code? The project
 includes some heavily commented examples!
@@ -54,7 +71,7 @@ includes some heavily commented examples!
 - [Part 6 - Logging and Error Handling](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.06.LoggingAndErrorHandling/Program.cs)
 - [Part 7 - Full Example Program](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.07.FullProgram/Program.cs)
 
-## API Documentation
+### Library API Documentation
 
 API documentation for the current release is available at
 [https://buttplug-csharp.docs.buttplug.io](https://buttplug-csharp.docs.buttplug.io).
@@ -62,12 +79,12 @@ API documentation for the current release is available at
 API documentation for the current development branch is available at
 [https://buttplug-csharp-dev.docs.buttplug.io](https://buttplug-csharp-dev.docs.buttplug.io).
 
-## Buttplug Spec and Documentation
+### Buttplug Spec and Documentation
 
 Buttplug implementations are available in multiple languages (rust,
-javascript, etc)/frameworks/platforms. For a full
-list of documentation, libraries, and applications,
-[see the buttplug.io website](https://buttplug.io).
+javascript, etc)/frameworks/platforms. For a full list of
+documentation, libraries, and applications, [see the buttplug.io
+website](https://buttplug.io).
 
 ## Hardware Support
 
