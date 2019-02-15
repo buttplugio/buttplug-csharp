@@ -115,15 +115,15 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 return;
             }
 
-            BpLogger.Trace("BLE device found: " + advertName);
-
             // We always need a name to match against.
             if (advertName == string.Empty)
             {
+                // Don't add no-named devices to the seen list, because WeVibes take a few laps to get the name
                 return;
             }
 
             // If we've got an actual name this time around, add to our seen list.
+            BpLogger.Trace("BLE device found: " + advertName);
             _seenAddresses.Add(btAddr);
 
             // todo Add advertGUIDs back in. Not sure that ever really gets used though.
@@ -151,6 +151,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             // remove it from seen devices, since the user may turn it back on during this scanning period.
             if (fromBluetoothAddressAsync == null)
             {
+                // Remove the address from our "seen" list so that we try to reconnect again.
+                _seenAddresses.Remove(btAddr);
                 return;
             }
 
@@ -169,10 +171,10 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             {
                 BpLogger.Error(
                     $"Cannot connect to device {advertName} {btAddr}: {ex.Message}");
-                // Remove the address from our "seen" list so that we try to reconnect again.
-                _seenAddresses.Remove(btAddr);
-                return;
             }
+
+            // Remove the address from our "seen" list so that we try to reconnect again.
+            _seenAddresses.Remove(btAddr);
         }
 
         private void OnWatcherStopped(BluetoothLEAdvertisementWatcher aObj,

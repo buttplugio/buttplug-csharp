@@ -31,7 +31,7 @@ namespace Buttplug.Devices
         public uint Index { get; set; }
 
         /// <inheritdoc />
-        public bool Connected => _device.Connected;
+        public bool Connected => !_isDisconnected;
 
         /// <inheritdoc />
         [CanBeNull]

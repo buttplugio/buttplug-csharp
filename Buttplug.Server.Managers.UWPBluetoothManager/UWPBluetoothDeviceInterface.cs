@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -132,7 +133,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 }
             }
 
-            if (_indexedChars == null)
+            if (_indexedChars == null || !_indexedChars.Any())
             {
                 throw new ButtplugDeviceException(BpLogger, $"No characteristics to connect to for device {Name}");
             }
