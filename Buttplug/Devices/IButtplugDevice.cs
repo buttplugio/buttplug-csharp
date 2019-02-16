@@ -25,11 +25,6 @@ namespace Buttplug.Devices
         string Identifier { get; }
 
         /// <summary>
-        /// Index of the device.
-        /// </summary>
-        uint Index { get; set; }
-
-        /// <summary>
         /// Value indicating whether the device is connected.
         /// </summary>
         bool Connected { get; }

@@ -109,7 +109,6 @@ namespace Buttplug.Server
             _bpLogger.Info((duplicates.Any() ? "Re-" : string.Empty) + $"Adding Device {aEvent.Device.Name} at index {deviceIndex}");
 
             _devices[deviceIndex] = aEvent.Device;
-            _devices[deviceIndex].Index = deviceIndex;
             aEvent.Device.DeviceRemoved += DeviceRemovedHandler;
             aEvent.Device.MessageEmitted += MessageEmittedHandler;
             var msg = new DeviceAdded(
