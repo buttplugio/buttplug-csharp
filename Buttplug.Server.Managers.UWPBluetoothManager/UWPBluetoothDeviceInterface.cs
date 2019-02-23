@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
     internal class UWPBluetoothDeviceInterface : ButtplugDeviceImpl
     {
+        [NotNull]
         private readonly Dictionary<string, GattCharacteristic> _indexedChars = new Dictionary<string, GattCharacteristic>();
 
         [NotNull]
@@ -132,7 +134,10 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 }
             }
 
-            if (_indexedChars == null)
+            // If we've exited characteristic finding without any characteristics to use, something
+            // is wrong with our configuration and we won't be able to talk to the device. Don't
+            // continue connection.
+            if (!_indexedChars.Any())
             {
                 throw new ButtplugDeviceException(BpLogger, $"No characteristics to connect to for device {Name}");
             }
