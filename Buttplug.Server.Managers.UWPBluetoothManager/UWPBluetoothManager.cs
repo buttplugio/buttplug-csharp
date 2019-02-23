@@ -123,24 +123,20 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 return;
             }
 
-            // If we've got an actual name this time around, add to our seen list.
-            _seenAddresses.Add(btAddr);
-
             // todo Add advertGUIDs back in. Not sure that ever really gets used though.
             var deviceCriteria = new BluetoothLEProtocolConfiguration(advertName);
 
             var deviceFactory = DeviceConfigurationManager.Manager.Find(deviceCriteria);
 
             // If we don't have a protocol to match the device, we can't do anything with it.
-            if (deviceFactory == null)
+            if (deviceFactory == null || !(deviceFactory.Config is BluetoothLEProtocolConfiguration bleConfig))
             {
-                BpLogger.Debug($"No device factory available for {advertName}.");
-                return;
-            }
-
-            if (!(deviceFactory.Config is BluetoothLEProtocolConfiguration bleConfig))
-            {
-                BpLogger.Error("Got a factory with a non-BLE protocol config object.");
+                BpLogger.Debug($"No usable device factory available for {advertName}.");
+                // If we've got an actual name this time around, and we don't have any factories
+                // available that match the info we have, add to our seen list so we won't keep
+                // rechecking. If a device does have a factory, but doesn't connect, we still want to
+                // try again.
+                _seenAddresses.Add(btAddr);
                 return;
             }
 
@@ -169,9 +165,6 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             {
                 BpLogger.Error(
                     $"Cannot connect to device {advertName} {btAddr}: {ex.Message}");
-                // Remove the address from our "seen" list so that we try to reconnect again.
-                _seenAddresses.Remove(btAddr);
-                return;
             }
         }
 
