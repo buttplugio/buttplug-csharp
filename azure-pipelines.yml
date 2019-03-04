@@ -141,6 +141,18 @@ jobs:
           packagesToPush: "$(System.DefaultWorkingDirectory)/**/Release/**/!(*.symbols).nupkg"
           allowPackageConflicts: false
           publishFeedCredentials: "NuGet.org"
+      - task: GitHubRelease@0
+        condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
+        displayName: Upload release to Github
+        inputs:
+          gitHubConnection: "buttplugio"
+          repositoryName: "buttplug-csharp"
+          action: "create"
+          target: "$(gitshorthash)"
+          tagSource: "auto"
+          title: "Buttplug C# CLI $(gitshorthash)"
+          assets: "$(Build.ArtifactStagingDirectory)/$(cliBuildName)/*"
+          isPreRelease: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
   - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
