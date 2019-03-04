@@ -1,0 +1,16 @@
+steps:
+  - template: ./build-start.yml
+  - task: DotNetCoreCLI@2
+    displayName: "Build Project"
+    inputs:
+      command: 'build'
+      arguments: '--configuration $(buildConfiguration)Standard'
+  - task: DotNetCoreCLI@2
+    displayName: "Test Project"
+    inputs:
+      command: 'test'
+      arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration $(buildConfiguration)Standard'
+  - template: ./publish-cli.yml
+    parameters:
+      platform: ${{ parameters.platform }}
+      framework: "netcoreapp2.1"
