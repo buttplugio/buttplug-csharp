@@ -149,9 +149,10 @@ jobs:
           repositoryName: "buttplugio/buttplug-csharp"
           action: "create"
           target: "$(gitshorthash)"
-          tagSource: "auto"
+          tagSource: "manual"
+          tag: "prerelease"
           title: "Buttplug C# CLI $(gitshorthash)"
-          assets: "$(Build.ArtifactStagingDirectory)/$(cliBuildName)/*"
+          assets: "$(Build.ArtifactStagingDirectory)/**/*.zip"
           isPreRelease: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
   - job: "Linux"
     pool:
