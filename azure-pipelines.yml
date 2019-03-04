@@ -26,6 +26,12 @@ jobs:
           buildConfiguration: Release
     steps:
       - task: Bash@3
+        displayName: "Remove prerelease tag from repo"
+        inputs:
+          targetType: inline
+          script: |
+            git tag -d prerelease
+      - task: Bash@3
         displayName: "Set Up Build Variables"
         inputs:
           targetType: inline
@@ -165,6 +171,12 @@ jobs:
           buildConfiguration: Release
     steps:
       - task: Bash@3
+        displayName: "Remove prerelease tag from repo"
+        inputs:
+          targetType: inline
+          script: |
+            git tag -d prerelease
+      - task: Bash@3
         displayName: "Set Up Build Variables"
         inputs:
           targetType: inline
@@ -211,6 +223,12 @@ jobs:
         Release:
           buildConfiguration: Release
     steps:
+      - task: Bash@3
+        displayName: "Remove prerelease tag from repo"
+        inputs:
+          targetType: inline
+          script: |
+            git tag -d prerelease
       - task: Bash@3
         displayName: "Set Up Build Variables"
         inputs:
