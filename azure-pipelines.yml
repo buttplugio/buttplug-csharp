@@ -145,8 +145,8 @@ jobs:
         condition: and(succeeded(), and(eq(variables['buildConfiguration'], 'Release'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))))
         displayName: Upload release to Github
         inputs:
-          gitHubConnection: "buttplugio"
-          repositoryName: "buttplug-csharp"
+          gitHubConnection: "release"
+          repositoryName: "buttplugio/buttplug-csharp"
           action: "create"
           target: "$(gitshorthash)"
           tagSource: "auto"
