@@ -138,9 +138,9 @@ jobs:
       - MacOS
       - Linux
     condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+    pool:
+      vmImage: 'vs2017-win2016'
     steps:
-      - task: NuGetToolInstaller@0
-        displayName: "Install Platform Dependencies"
       - task: DownloadPipelineArtifact@1
         displayName: Download Artifacts from other jobs
         inputs:
