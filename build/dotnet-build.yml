@@ -1,5 +1,7 @@
 steps:
   - template: ./build-start.yml
+    parameters:
+      platform: ${{ parameters.platform }}
   - task: DotNetCoreCLI@2
     displayName: "Build Project"
     inputs:

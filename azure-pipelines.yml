@@ -26,6 +26,8 @@ jobs:
           buildConfiguration: Release
     steps:
       - template: build/build-start.yml
+        parameters:
+          platform: "win-x64"
       - task: VSBuild@1
         displayName: "Build Project"
         inputs:
