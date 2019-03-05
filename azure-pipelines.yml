@@ -137,6 +137,8 @@ jobs:
       - Linux
     condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
     steps:
+      - task: NuGetToolInstaller@0
+        displayName: "Install Platform Dependencies"
       - task: DownloadPipelineArtifact@1
         displayName: Download Artifacts from other jobs
         inputs:
@@ -149,6 +151,7 @@ jobs:
             cinst -y --no-progress codecov
             codecov.exe -f "$(System.ArtifactsDirectory)/win-x64-Debug/coverage.xml" -t $(CODECOV_TOKEN)
         displayName: Upload coverage to codecov.
+        continueOnError: true
       - task: NuGetCommand@2
         displayName: "Push NuGet packages to NuGet.org"
         inputs:
