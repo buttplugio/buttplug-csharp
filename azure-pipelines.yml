@@ -59,6 +59,7 @@ jobs:
       - template: build/publish-cli.yml
         parameters:
           platform: "win-x64"
+          dotNetPublishPlatform: "win-x64"
           framework: "net47"
   - job: "Linux"
     pool:
