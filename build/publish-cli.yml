@@ -5,7 +5,7 @@ steps:
       publishWebProjects: false
       zipAfterPublish: true
       command: 'publish'
-      arguments: '--configuration $(buildConfiguration)Standard -r ${{ parameters.platform }} -f ${{ parameters.framework }} --self-contained true --output $(Build.ArtifactStagingDirectory)/$(cliBuildName) Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
+      arguments: '--configuration $(buildConfiguration)Standard -r ${{ parameters.dotNetPublishPlatform }} -f ${{ parameters.framework }} --self-contained true --output $(Build.ArtifactStagingDirectory)/$(cliBuildName) Buttplug.Server.CLI/Buttplug.Server.CLI.csproj'
   - task: PublishPipelineArtifact@0
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
