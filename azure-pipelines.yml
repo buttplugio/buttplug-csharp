@@ -183,7 +183,7 @@ jobs:
           isPreRelease: true
       - task: GitHubRelease@0
         displayName: Upload CLI Release to Github
-        condition: or(contains(variables['Build.SourceBranch'], 'refs/tags/'), not(eq('$(gitCurrentVersion)', '')));
+        condition: or(contains(variables['Build.SourceBranch'], 'refs/tags/'), not(eq('$(gitCurrentVersion)', '')))
         inputs:
           gitHubConnection: "release"
           repositoryName: "buttplugio/buttplug-csharp"
