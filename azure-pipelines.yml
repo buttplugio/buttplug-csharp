@@ -19,66 +19,66 @@ variables:
   buildConfiguration: 'Release'
 
 jobs:
-  - job: Windows
-    pool:
-      vmImage: 'vs2017-win2016'
-    strategy:
-      matrix:
-        Debug:
-          buildConfiguration: Debug
-        Release:
-          buildConfiguration: Release
-    steps:
-      - template: build/build-start.yml
-        parameters:
-          platform: "win-x64"
-      - task: VSBuild@1
-        displayName: "Build Project"
-        inputs:
-          solution: '$(solution)'
-          platform: '$(buildPlatform)'
-          configuration: '$(buildConfiguration)'
-          maximumCpuCount: true
-      - task: PowerShell@2
-        inputs:
-          targetType: inline
-          script: |
-            cinst -y --no-progress opencover.portable nunit-console-runner
-            OpenCover.Console.exe -returntargetcode -register:user -target:"nunit3-console.exe" -targetargs:"Buttplug.Test/bin/$(buildConfiguration)/net47/Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test/bin/$(buildConfiguration)/Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=$(Build.ArtifactStagingDirectory)/myresults.xml" -output:"$(Build.ArtifactStagingDirectory)/coverage.xml" -excludebyfile:"*/*LibLog.cs" -filter:"+[*]* -[nunit*]*"
-        displayName: 'Test with Code Coverage'
-        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Debug'))
-      - task: VSTest@2
-        displayName: "Test Project"
-        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
-        inputs:
-          platform: '$(buildPlatform)'
-          configuration: '$(buildConfiguration)'
-      - task: CopyFiles@2
-        displayName: "Copy nuget packages to staging"
-        inputs:
-          # Prefix this with Buttplug, otherwise we'll archive the packages directory too.
-          contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
-          targetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
-          cleanTargetFolder: true
-      - template: build/publish-cli.yml
-        parameters:
-          platform: "win-x64"
-          dotNetPublishPlatform: "win-x64"
-          framework: "net47"
-  - job: "Linux"
-    pool:
-      vmImage: 'ubuntu-16.04'
-    strategy:
-      matrix:
-        Debug:
-          buildConfiguration: Debug
-        Release:
-          buildConfiguration: Release
-    steps:
-      - template: build/dotnet-build.yml
-        parameters:
-          dotNetPublishPlatform: "linux-x64"
-          platform: "linux-x64"
+  # - job: Windows
+  #   pool:
+  #     vmImage: 'vs2017-win2016'
+  #   strategy:
+  #     matrix:
+  #       Debug:
+  #         buildConfiguration: Debug
+  #       Release:
+  #         buildConfiguration: Release
+  #   steps:
+  #     - template: build/build-start.yml
+  #       parameters:
+  #         platform: "win-x64"
+  #     - task: VSBuild@1
+  #       displayName: "Build Project"
+  #       inputs:
+  #         solution: '$(solution)'
+  #         platform: '$(buildPlatform)'
+  #         configuration: '$(buildConfiguration)'
+  #         maximumCpuCount: true
+  #     - task: PowerShell@2
+  #       inputs:
+  #         targetType: inline
+  #         script: |
+  #           cinst -y --no-progress opencover.portable nunit-console-runner
+  #           OpenCover.Console.exe -returntargetcode -register:user -target:"nunit3-console.exe" -targetargs:"Buttplug.Test/bin/$(buildConfiguration)/net47/Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test/bin/$(buildConfiguration)/Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=$(Build.ArtifactStagingDirectory)/myresults.xml" -output:"$(Build.ArtifactStagingDirectory)/coverage.xml" -excludebyfile:"*/*LibLog.cs" -filter:"+[*]* -[nunit*]*"
+  #       displayName: 'Test with Code Coverage'
+  #       condition: and(succeeded(), eq(variables['buildConfiguration'], 'Debug'))
+  #     - task: VSTest@2
+  #       displayName: "Test Project"
+  #       condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
+  #       inputs:
+  #         platform: '$(buildPlatform)'
+  #         configuration: '$(buildConfiguration)'
+  #     - task: CopyFiles@2
+  #       displayName: "Copy nuget packages to staging"
+  #       inputs:
+  #         # Prefix this with Buttplug, otherwise we'll archive the packages directory too.
+  #         contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
+  #         targetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
+  #         cleanTargetFolder: true
+  #     - template: build/publish-cli.yml
+  #       parameters:
+  #         platform: "win-x64"
+  #         dotNetPublishPlatform: "win-x64"
+  #         framework: "net47"
+  # - job: "Linux"
+  #   pool:
+  #     vmImage: 'ubuntu-16.04'
+  #   strategy:
+  #     matrix:
+  #       Debug:
+  #         buildConfiguration: Debug
+  #       Release:
+  #         buildConfiguration: Release
+  #   steps:
+  #     - template: build/dotnet-build.yml
+  #       parameters:
+  #         dotNetPublishPlatform: "linux-x64"
+  #         platform: "linux-x64"
   - job: MacOS
     pool:
       vmImage: 'macos-10.13'
@@ -93,58 +93,58 @@ jobs:
         parameters:
           dotNetPublishPlatform: "osx-x64"
           platform: "macos-x64"
-  - job: Documentation
-    pool:
-      vmImage: 'vs2017-win2016'
-    dependsOn:
-      - Windows
-      - MacOS
-      - Linux
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
-    steps:
-      - task: PowerShell@2
-        displayName: Documentation Generation
-        inputs:
-          targetType: inline
-          script: |
-            cinst -y docfx
-            copy-item README.md docs/index.md
-            copy-item *.md docs/articles/
-            docfx docs/docfx.json
-      - task: ArchiveFiles@2
-        displayName: "Archive Documentation Artifacts"
-        inputs:
-          rootFolderOrFile: "docs/_site"
-          archiveType: "zip"
-          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
-          includeRootFolder: true
-      - task: PublishBuildArtifacts@1
-        displayName: "Publish Documentation Artifacts"
-        inputs:
-          pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
-          artifactName: "buttplug-csharp-docs"
-      - task: PowerShell@2
-        displayName: Deploy Master Documentation to Netlify
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        inputs:
-          targetType: inline
-          script: |
-            npm i -g netlify-cli
-            netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site
-      - task: PowerShell@2
-        displayName: Deploy Dev Documentation to Netlify
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
-        inputs:
-          targetType: inline
-          script: |
-            npm i -g netlify-cli
-            netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site    
+  # - job: Documentation
+  #   pool:
+  #     vmImage: 'vs2017-win2016'
+  #   dependsOn:
+  #     - Windows
+  #     - MacOS
+  #     - Linux
+  #   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+  #   steps:
+  #     - task: PowerShell@2
+  #       displayName: Documentation Generation
+  #       inputs:
+  #         targetType: inline
+  #         script: |
+  #           cinst -y docfx
+  #           copy-item README.md docs/index.md
+  #           copy-item *.md docs/articles/
+  #           docfx docs/docfx.json
+  #     - task: ArchiveFiles@2
+  #       displayName: "Archive Documentation Artifacts"
+  #       inputs:
+  #         rootFolderOrFile: "docs/_site"
+  #         archiveType: "zip"
+  #         archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
+  #         includeRootFolder: true
+  #     - task: PublishBuildArtifacts@1
+  #       displayName: "Publish Documentation Artifacts"
+  #       inputs:
+  #         pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
+  #         artifactName: "buttplug-csharp-docs"
+  #     - task: PowerShell@2
+  #       displayName: Deploy Master Documentation to Netlify
+  #       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  #       inputs:
+  #         targetType: inline
+  #         script: |
+  #           npm i -g netlify-cli
+  #           netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site
+  #     - task: PowerShell@2
+  #       displayName: Deploy Dev Documentation to Netlify
+  #       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+  #       inputs:
+  #         targetType: inline
+  #         script: |
+  #           npm i -g netlify-cli
+  #           netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site    
   - job: Deploy
     dependsOn:
-      - Windows
+      # - Windows
       - MacOS
-      - Linux
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+      # - Linux
+    condition: succeeded() #and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
     pool:
       vmImage: 'vs2017-win2016'
     steps:
@@ -154,22 +154,22 @@ jobs:
         inputs:
           buildType: 'current'
       # Upload coverage to codecov.io
-      - task: PowerShell@2
-        inputs:
-          targetType: inline
-          script: |
-            cinst -y --no-progress codecov
-            codecov.exe -f "$(System.ArtifactsDirectory)/win-x64-Debug/coverage.xml" -t $(CODECOV_TOKEN)
-        displayName: Upload coverage to codecov.
-        continueOnError: true
-      - task: NuGetCommand@2
-        displayName: "Push NuGet packages to NuGet.org"
-        inputs:
-          command: "push"
-          nuGetFeedType: "external"
-          packagesToPush: "$(System.ArtifactsDirectory)/**/Release/**/!(*.symbols).nupkg"
-          allowPackageConflicts: false
-          publishFeedCredentials: "NuGet.org"
+      # - task: PowerShell@2
+      #   inputs:
+      #     targetType: inline
+      #     script: |
+      #       cinst -y --no-progress codecov
+      #       codecov.exe -f "$(System.ArtifactsDirectory)/win-x64-Debug/coverage.xml" -t $(CODECOV_TOKEN)
+      #   displayName: Upload coverage to codecov.
+      #   continueOnError: true
+      # - task: NuGetCommand@2
+      #   displayName: "Push NuGet packages to NuGet.org"
+      #   inputs:
+      #     command: "push"
+      #     nuGetFeedType: "external"
+      #     packagesToPush: "$(System.ArtifactsDirectory)/**/Release/**/!(*.symbols).nupkg"
+      #     allowPackageConflicts: false
+      #     publishFeedCredentials: "NuGet.org"
       - task: GitHubRelease@0
         displayName: Upload CLI Prerelease to Github
         condition: and(not(contains(variables['Build.SourceBranch'], 'refs/tags/')), eq('$(gitCurrentVersion)', ''))
