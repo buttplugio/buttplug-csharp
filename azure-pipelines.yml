@@ -100,7 +100,7 @@ jobs:
       - Windows
       - MacOS
       - Linux
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), contains(variables['Build.SourceBranch'], 'refs/tags/')))
     steps:
       - task: PowerShell@2
         displayName: Documentation Generation
@@ -125,7 +125,7 @@ jobs:
           artifactName: "buttplug-csharp-docs"
       - task: PowerShell@2
         displayName: Deploy Master Documentation to Netlify
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/'))
         inputs:
           targetType: inline
           script: |
@@ -144,7 +144,7 @@ jobs:
       - Windows
       - MacOS
       - Linux
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), contains(variables['Build.SourceBranch'], 'refs/tags/')))
     pool:
       vmImage: 'vs2017-win2016'
     steps:
