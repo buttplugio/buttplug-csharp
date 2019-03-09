@@ -1,5 +1,7 @@
 steps:
   - template: ./setup-variables.yml
+    parameters:
+      platform: ${{ parameters.platform }}
   - task: Bash@3
     displayName: "Show variable"
     inputs:
