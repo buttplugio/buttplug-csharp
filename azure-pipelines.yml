@@ -173,7 +173,7 @@ jobs:
           repositoryName: "buttplugio/buttplug-csharp"
           action: "edit"
           tagSource: "manual"
-          tag: "$(gitReleaseTag)"
+          tag: "420.69.666"
           title: "Buttplug C# CLI Prerelease"
           assets: "$(System.ArtifactsDirectory)/**/*.zip"
           isPreRelease: true

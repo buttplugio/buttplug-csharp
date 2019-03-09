@@ -4,7 +4,7 @@ steps:
     inputs:
       targetType: inline
       script: |
-        gitLatestTag=$(git tag --points-at HEAD --sort --version:refname | head -1)
+        gitLatestTag=$(git tag --points-at HEAD --sort -version:refname | head -1)
         gitShortHash=$(git describe --long --always --dirty)
         gitVersion=`if [[ -z $gitLatestTag ]]; then echo $gitShortHash; else echo $gitLatestTag; fi;`
         echo "Git Latest Tag: $gitLatestTag"
