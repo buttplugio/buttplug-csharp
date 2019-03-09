@@ -3,6 +3,10 @@ trigger:
     include:
       - master
       - dev
+  tags:
+    include:
+      - *
+
 pr:
   branches:
     include:
@@ -167,7 +171,7 @@ jobs:
           publishFeedCredentials: "NuGet.org"
       - task: GitHubRelease@0
         displayName: Upload CLI Prerelease to Github
-        condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/'))
+        condition: and(not(contains(variables['Build.SourceBranch'], 'refs/tags/')), eq("$(gitCurrentVersion)", ""))
         inputs:
           gitHubConnection: "release"
           repositoryName: "buttplugio/buttplug-csharp"
@@ -179,7 +183,7 @@ jobs:
           isPreRelease: true
       - task: GitHubRelease@0
         displayName: Upload CLI Release to Github
-        condition: contains(variables['Build.SourceBranch'], 'refs/tags/')
+        condition: or(contains(variables['Build.SourceBranch'], 'refs/tags/'), not(eq("$(gitCurrentVersion)", "")));
         inputs:
           gitHubConnection: "release"
           repositoryName: "buttplugio/buttplug-csharp"
