@@ -1,5 +1,12 @@
 steps:
   - task: Bash@3
+    displayName: "Remove prerelease tag"
+    continueOnError: true
+    inputs:
+      targetType: inline
+      script: |
+        git tag -d 420.69.666
+  - task: Bash@3
     displayName: "Set Up Build Variables"
     inputs:
       targetType: inline

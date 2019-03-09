@@ -31,7 +31,7 @@
 
       <PackageVersion Condition="'$(CI)' != 'true' and '$(GitCommits)' != '0'">$(GitBaseTag)-$(GitBranch)-$(GitCommit)</PackageVersion>
       <PackageVersion Condition="'$(CI)' == 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).$(BUILD_BUILDID)-$(GitBranch)-$(GitCommit)</PackageVersion>
-      <PackageVersion Condition="'$(GitBranch)' == 'master' and '$(GitCommits)' == '0'">$(GitBaseTag)</PackageVersion>
+      <PackageVersion Condition="'$(GitCommits)' == '0'">$(GitBaseTag)</PackageVersion>
     </PropertyGroup>
   </Target>
 </Project>

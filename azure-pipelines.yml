@@ -3,9 +3,6 @@ trigger:
     include:
       - master
       - dev
-  tags:
-    include:
-      - '*'
 
 pr:
   branches:
@@ -100,7 +97,7 @@ jobs:
       - Windows
       - MacOS
       - Linux
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), contains(variables['Build.SourceBranch'], 'refs/tags/')))
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     steps:
       - task: PowerShell@2
         displayName: Documentation Generation
@@ -125,7 +122,7 @@ jobs:
           artifactName: "buttplug-csharp-docs"
       - task: PowerShell@2
         displayName: Deploy Master Documentation to Netlify
-        condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/'))
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           targetType: inline
           script: |
@@ -144,7 +141,7 @@ jobs:
       - Windows
       - MacOS
       - Linux
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), contains(variables['Build.SourceBranch'], 'refs/tags/')))
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     pool:
       vmImage: 'vs2017-win2016'
     steps:
@@ -162,17 +159,9 @@ jobs:
             codecov.exe -f "$(System.ArtifactsDirectory)/win-x64-Debug/coverage.xml" -t $(CODECOV_TOKEN)
         displayName: Upload coverage to codecov.
         continueOnError: true
-      - task: NuGetCommand@2
-        displayName: "Push NuGet packages to NuGet.org"
-        inputs:
-          command: "push"
-          nuGetFeedType: "external"
-          packagesToPush: "$(System.ArtifactsDirectory)/**/Release/**/!(*.symbols).nupkg"
-          allowPackageConflicts: false
-          publishFeedCredentials: "NuGet.org"
       - task: GitHubRelease@0
         displayName: Upload CLI Prerelease to Github
-        condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/'))
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
         inputs:
           gitHubConnection: "release"
           repositoryName: "buttplugio/buttplug-csharp"
@@ -184,7 +173,7 @@ jobs:
           isPreRelease: true
       - task: GitHubRelease@0
         displayName: Upload CLI Release to Github
-        condition: contains(variables['Build.SourceBranch'], 'refs/tags/')
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           gitHubConnection: "release"
           repositoryName: "buttplugio/buttplug-csharp"
@@ -193,3 +182,12 @@ jobs:
           title: "Buttplug C# CLI $(gitVersion)"
           assets: "$(System.ArtifactsDirectory)/**/*.zip"
           isPreRelease: false
+      - task: NuGetCommand@2
+        displayName: "Push NuGet packages to NuGet.org"
+        condition: succeeded()
+        inputs:
+          command: "push"
+          nuGetFeedType: "external"
+          packagesToPush: "$(System.ArtifactsDirectory)/**/Release/**/!(*.symbols).nupkg"
+          allowPackageConflicts: false
+          publishFeedCredentials: "NuGet.org"
