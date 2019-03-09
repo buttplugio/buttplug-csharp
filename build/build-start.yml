@@ -1,20 +1,17 @@
 steps:
   - task: Bash@3
-    displayName: "Remove prerelease tag from repo"
-    continueOnError: true
-    inputs:
-      targetType: inline
-      script: |
-        git tag -d 420.69.666
-  - task: Bash@3
     displayName: "Set Up Build Variables"
     inputs:
       targetType: inline
       script: |
-        gitshorthash=$(git describe --long --always --dirty)
-        echo "Git Short Hash: $gitshorthash"
-        echo "##vso[task.setvariable variable=gitShortHash]$gitshorthash"
-        echo "##vso[task.setvariable variable=cliBuildName]buttplug-csharp-${{ parameters.platform }}-cli-$(buildConfiguration)-$gitshorthash"
+        gitLatestTag=$(git tag --points-at HEAD --sort --version:refname | head -1)
+        gitShortHash=$(git describe --long --always --dirty)
+        gitVersion=`if [[ -z $gitLatestTag ]]; then echo $gitShortHash; else echo $gitLatestTag; fi;`
+        echo "Git Latest Tag: $gitLatestTag"
+        echo "Git Short Hash: $gitShortHash"
+        echo "Git Version for Build: $gitVersion"
+        echo "##vso[task.setvariable variable=gitVersion]$gitVersion"
+        echo "##vso[task.setvariable variable=cliBuildName]buttplug-csharp-${{ parameters.platform }}-cli-$(buildConfiguration)-$gitVersion"
   - task: NuGetToolInstaller@0
     displayName: "Install Platform Dependencies"
   - task: NuGetCommand@2
