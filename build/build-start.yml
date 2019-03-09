@@ -2,12 +2,6 @@ steps:
   - template: ./setup-variables.yml
     parameters:
       platform: ${{ parameters.platform }}
-  - task: Bash@3
-    displayName: "Show variable"
-    inputs:
-      targetType: inline
-      script: |
-        echo $(gitCurrentTag)
   - task: NuGetToolInstaller@0
     displayName: "Install Platform Dependencies"
   - task: NuGetCommand@2
