@@ -1,3 +1,16 @@
+# 0.4.1 (2019-03-08)
+
+## Features
+
+- Mostly CI/Release work in preparation for Intiface Release
+- Added Hardware Support
+  - Youou Wand
+
+## Bugfixes
+
+- Fixed check for lack of BLE characteristics
+- Fixed issue with BLE devices not being seen again after connecting once
+
 # 0.4.0 (2019-02-12)
 
 ## Features
