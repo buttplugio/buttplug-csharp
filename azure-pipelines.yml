@@ -148,6 +148,7 @@ jobs:
     pool:
       vmImage: 'vs2017-win2016'
     steps:
+      - template: build/setup-variables.yml
       - task: DownloadPipelineArtifact@1
         displayName: Download Artifacts from other jobs
         inputs:
