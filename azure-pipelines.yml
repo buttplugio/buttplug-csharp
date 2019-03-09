@@ -141,10 +141,10 @@ jobs:
             netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site    
   - job: Deploy
     dependsOn:
-      # - Windows
+      - Windows
       - MacOS
-      # - Linux
-    condition: succeeded() #and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+      - Linux
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
     pool:
       vmImage: 'vs2017-win2016'
     steps:
