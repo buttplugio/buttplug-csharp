@@ -1,4 +1,5 @@
 steps:
+  - template: "./setup-variables.yml"
   - task: DotNetCoreCLI@2
     displayName: "Publish Project"
     inputs:

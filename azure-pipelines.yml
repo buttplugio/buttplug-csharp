@@ -3,6 +3,10 @@ trigger:
     include:
       - master
       - dev
+  tags:
+    include:
+      - '*'
+
 pr:
   branches:
     include:
@@ -112,12 +116,12 @@ jobs:
         inputs:
           rootFolderOrFile: "docs/_site"
           archiveType: "zip"
-          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitShortHash).zip"
+          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
           includeRootFolder: true
       - task: PublishBuildArtifacts@1
         displayName: "Publish Documentation Artifacts"
         inputs:
-          pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitShortHash).zip"
+          pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
           artifactName: "buttplug-csharp-docs"
       - task: PowerShell@2
         displayName: Deploy Master Documentation to Netlify
@@ -137,13 +141,14 @@ jobs:
             netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site    
   - job: Deploy
     dependsOn:
-      - Windows
+      # - Windows
       - MacOS
-      - Linux
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+      # - Linux
+    condition: succeeded() #and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
     pool:
       vmImage: 'vs2017-win2016'
     steps:
+      - template: build/setup-variables.yml
       - task: DownloadPipelineArtifact@1
         displayName: Download Artifacts from other jobs
         inputs:
@@ -166,7 +171,8 @@ jobs:
           allowPackageConflicts: false
           publishFeedCredentials: "NuGet.org"
       - task: GitHubRelease@0
-        displayName: Upload CLI releases to Github
+        displayName: Upload CLI Prerelease to Github
+        condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/'))
         inputs:
           gitHubConnection: "release"
           repositoryName: "buttplugio/buttplug-csharp"
@@ -175,4 +181,15 @@ jobs:
           tag: "420.69.666"
           title: "Buttplug C# CLI Prerelease"
           assets: "$(System.ArtifactsDirectory)/**/*.zip"
-          isPreRelease: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
+          isPreRelease: true
+      - task: GitHubRelease@0
+        displayName: Upload CLI Release to Github
+        condition: contains(variables['Build.SourceBranch'], 'refs/tags/')
+        inputs:
+          gitHubConnection: "release"
+          repositoryName: "buttplugio/buttplug-csharp"
+          action: "create"
+          tagSource: "auto"
+          title: "Buttplug C# CLI $(gitVersion)"
+          assets: "$(System.ArtifactsDirectory)/**/*.zip"
+          isPreRelease: false
