@@ -24,22 +24,29 @@ namespace Buttplug.Server.CLI {
     static ButtplugGuiReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJidXR0cGx1Zy1ndWkucHJvdG8SFWJ1dHRwbHVnX2d1aV9wcm90b2NvbCLm",
-            "BgoKR3VpTWVzc2FnZRI6CgZndWlsb2cYASABKAsyKC5idXR0cGx1Z19ndWlf",
-            "cHJvdG9jb2wuR3VpTWVzc2FnZS5HdWlMb2dIABJKCg5wcm9jZXNzc3RhcnRl",
-            "ZBgCIAEoCzIwLmJ1dHRwbHVnX2d1aV9wcm90b2NvbC5HdWlNZXNzYWdlLlBy",
-            "b2Nlc3NTdGFydGVkSAASRgoMcHJvY2Vzc2VuZGVkGAMgASgLMi4uYnV0dHBs",
-            "dWdfZ3VpX3Byb3RvY29sLkd1aU1lc3NhZ2UuUHJvY2Vzc0VuZGVkSAASPgoF",
-            "YnBsb2cYBCABKAsyLS5idXR0cGx1Z19ndWlfcHJvdG9jb2wuR3VpTWVzc2Fn",
-            "ZS5CdXR0cGx1Z0xvZ0gAEkwKD2NsaWVudGNvbm5lY3RlZBgFIAEoCzIxLmJ1",
-            "dHRwbHVnX2d1aV9wcm90b2NvbC5HdWlNZXNzYWdlLkNsaWVudENvbm5lY3Rl",
-            "ZEgAElIKEmNsaWVudGRpc2Nvbm5lY3RlZBgGIAEoCzI0LmJ1dHRwbHVnX2d1",
-            "aV9wcm90b2NvbC5HdWlNZXNzYWdlLkNsaWVudERpc2Nvbm5lY3RlZEgAEkwK",
-            "D2RldmljZWNvbm5lY3RlZBgHIAEoCzIxLmJ1dHRwbHVnX2d1aV9wcm90b2Nv",
-            "bC5HdWlNZXNzYWdlLkRldmljZUNvbm5lY3RlZEgAElIKEmRldmljZWRpc2Nv",
-            "bm5lY3RlZBgIIAEoCzI0LmJ1dHRwbHVnX2d1aV9wcm90b2NvbC5HdWlNZXNz",
-            "YWdlLkRldmljZURpc2Nvbm5lY3RlZEgAGhkKBkd1aUxvZxIPCgdtZXNzYWdl",
-            "GAEgASgJGhAKDlByb2Nlc3NTdGFydGVkGg4KDFByb2Nlc3NFbmRlZBoeCgtC",
+            "ChJidXR0cGx1Zy1ndWkucHJvdG8SE0J1dHRwbHVnR3VpUHJvdG9jb2wiZQoU",
+            "U2VydmVyQ29udHJvbE1lc3NhZ2USPgoEc3RvcBgBIAEoCzIuLkJ1dHRwbHVn",
+            "R3VpUHJvdG9jb2wuU2VydmVyQ29udHJvbE1lc3NhZ2UuU3RvcEgAGgYKBFN0",
+            "b3BCBQoDbXNnIrwIChRTZXJ2ZXJQcm9jZXNzTWVzc2FnZRJTCg9wcm9jZXNz",
+            "X3N0YXJ0ZWQYASABKAsyOC5CdXR0cGx1Z0d1aVByb3RvY29sLlNlcnZlclBy",
+            "b2Nlc3NNZXNzYWdlLlByb2Nlc3NTdGFydGVkSAASTwoNcHJvY2Vzc19lcnJv",
+            "chgCIAEoCzI2LkJ1dHRwbHVnR3VpUHJvdG9jb2wuU2VydmVyUHJvY2Vzc01l",
+            "c3NhZ2UuUHJvY2Vzc0Vycm9ySAASTwoNcHJvY2Vzc19lbmRlZBgDIAEoCzI2",
+            "LkJ1dHRwbHVnR3VpUHJvdG9jb2wuU2VydmVyUHJvY2Vzc01lc3NhZ2UuUHJv",
+            "Y2Vzc0VuZGVkSAASSwoLcHJvY2Vzc19sb2cYBCABKAsyNC5CdXR0cGx1Z0d1",
+            "aVByb3RvY29sLlNlcnZlclByb2Nlc3NNZXNzYWdlLlByb2Nlc3NMb2dIABJN",
+            "CgxidXR0cGx1Z19sb2cYBSABKAsyNS5CdXR0cGx1Z0d1aVByb3RvY29sLlNl",
+            "cnZlclByb2Nlc3NNZXNzYWdlLkJ1dHRwbHVnTG9nSAASVQoQY2xpZW50X2Nv",
+            "bm5lY3RlZBgGIAEoCzI5LkJ1dHRwbHVnR3VpUHJvdG9jb2wuU2VydmVyUHJv",
+            "Y2Vzc01lc3NhZ2UuQ2xpZW50Q29ubmVjdGVkSAASWwoTY2xpZW50X2Rpc2Nv",
+            "bm5lY3RlZBgHIAEoCzI8LkJ1dHRwbHVnR3VpUHJvdG9jb2wuU2VydmVyUHJv",
+            "Y2Vzc01lc3NhZ2UuQ2xpZW50RGlzY29ubmVjdGVkSAASVQoQZGV2aWNlX2Nv",
+            "bm5lY3RlZBgIIAEoCzI5LkJ1dHRwbHVnR3VpUHJvdG9jb2wuU2VydmVyUHJv",
+            "Y2Vzc01lc3NhZ2UuRGV2aWNlQ29ubmVjdGVkSAASWwoTZGV2aWNlX2Rpc2Nv",
+            "bm5lY3RlZBgJIAEoCzI8LkJ1dHRwbHVnR3VpUHJvdG9jb2wuU2VydmVyUHJv",
+            "Y2Vzc01lc3NhZ2UuRGV2aWNlRGlzY29ubmVjdGVkSAAaHQoKUHJvY2Vzc0xv",
+            "ZxIPCgdtZXNzYWdlGAEgASgJGhAKDlByb2Nlc3NTdGFydGVkGh8KDFByb2Nl",
+            "c3NFcnJvchIPCgdtZXNzYWdlGAEgASgJGg4KDFByb2Nlc3NFbmRlZBoeCgtC",
             "dXR0cGx1Z0xvZxIPCgdtZXNzYWdlGAEgASgJGiYKD0NsaWVudENvbm5lY3Rl",
             "ZBITCgtjbGllbnRfbmFtZRgBIAEoCRoUChJDbGllbnREaXNjb25uZWN0ZWQa",
             "OQoPRGV2aWNlQ29ubmVjdGVkEhMKC2RldmljZV9uYW1lGAEgASgJEhEKCWRl",
@@ -49,25 +56,27 @@ namespace Buttplug.Server.CLI {
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.GuiMessage), global::Buttplug.Server.CLI.GuiMessage.Parser, new[]{ "Guilog", "Processstarted", "Processended", "Bplog", "Clientconnected", "Clientdisconnected", "Deviceconnected", "Devicedisconnected" }, new[]{ "Msg" }, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.GuiMessage.Types.GuiLog), global::Buttplug.Server.CLI.GuiMessage.Types.GuiLog.Parser, new[]{ "Message" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.GuiMessage.Types.ProcessStarted), global::Buttplug.Server.CLI.GuiMessage.Types.ProcessStarted.Parser, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.GuiMessage.Types.ProcessEnded), global::Buttplug.Server.CLI.GuiMessage.Types.ProcessEnded.Parser, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.GuiMessage.Types.ButtplugLog), global::Buttplug.Server.CLI.GuiMessage.Types.ButtplugLog.Parser, new[]{ "Message" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.GuiMessage.Types.ClientConnected), global::Buttplug.Server.CLI.GuiMessage.Types.ClientConnected.Parser, new[]{ "ClientName" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.GuiMessage.Types.ClientDisconnected), global::Buttplug.Server.CLI.GuiMessage.Types.ClientDisconnected.Parser, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.GuiMessage.Types.DeviceConnected), global::Buttplug.Server.CLI.GuiMessage.Types.DeviceConnected.Parser, new[]{ "DeviceName", "DeviceId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.GuiMessage.Types.DeviceDisconnected), global::Buttplug.Server.CLI.GuiMessage.Types.DeviceDisconnected.Parser, new[]{ "DeviceId" }, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerControlMessage), global::Buttplug.Server.CLI.ServerControlMessage.Parser, new[]{ "Stop" }, new[]{ "Msg" }, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerControlMessage.Types.Stop), global::Buttplug.Server.CLI.ServerControlMessage.Types.Stop.Parser, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage), global::Buttplug.Server.CLI.ServerProcessMessage.Parser, new[]{ "ProcessStarted", "ProcessError", "ProcessEnded", "ProcessLog", "ButtplugLog", "ClientConnected", "ClientDisconnected", "DeviceConnected", "DeviceDisconnected" }, new[]{ "Msg" }, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessLog), global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessLog.Parser, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessStarted), global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessStarted.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessError), global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessError.Parser, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessEnded), global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessEnded.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage.Types.ButtplugLog), global::Buttplug.Server.CLI.ServerProcessMessage.Types.ButtplugLog.Parser, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientConnected), global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientConnected.Parser, new[]{ "ClientName" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientDisconnected), global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientDisconnected.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceConnected), global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceConnected.Parser, new[]{ "DeviceName", "DeviceId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceDisconnected), global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceDisconnected.Parser, new[]{ "DeviceId" }, null, null, null)})
           }));
     }
     #endregion
 
   }
   #region Messages
-  public sealed partial class GuiMessage : pb::IMessage<GuiMessage> {
-    private static readonly pb::MessageParser<GuiMessage> _parser = new pb::MessageParser<GuiMessage>(() => new GuiMessage());
+  public sealed partial class ServerControlMessage : pb::IMessage<ServerControlMessage> {
+    private static readonly pb::MessageParser<ServerControlMessage> _parser = new pb::MessageParser<ServerControlMessage>(() => new ServerControlMessage());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<GuiMessage> Parser { get { return _parser; } }
+    public static pb::MessageParser<ServerControlMessage> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -80,38 +89,17 @@ namespace Buttplug.Server.CLI {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public GuiMessage() {
+    public ServerControlMessage() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public GuiMessage(GuiMessage other) : this() {
+    public ServerControlMessage(ServerControlMessage other) : this() {
       switch (other.MsgCase) {
-        case MsgOneofCase.Guilog:
-          Guilog = other.Guilog.Clone();
-          break;
-        case MsgOneofCase.Processstarted:
-          Processstarted = other.Processstarted.Clone();
-          break;
-        case MsgOneofCase.Processended:
-          Processended = other.Processended.Clone();
-          break;
-        case MsgOneofCase.Bplog:
-          Bplog = other.Bplog.Clone();
-          break;
-        case MsgOneofCase.Clientconnected:
-          Clientconnected = other.Clientconnected.Clone();
-          break;
-        case MsgOneofCase.Clientdisconnected:
-          Clientdisconnected = other.Clientdisconnected.Clone();
-          break;
-        case MsgOneofCase.Deviceconnected:
-          Deviceconnected = other.Deviceconnected.Clone();
-          break;
-        case MsgOneofCase.Devicedisconnected:
-          Devicedisconnected = other.Devicedisconnected.Clone();
+        case MsgOneofCase.Stop:
+          Stop = other.Stop.Clone();
           break;
       }
 
@@ -119,95 +107,18 @@ namespace Buttplug.Server.CLI {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public GuiMessage Clone() {
-      return new GuiMessage(this);
+    public ServerControlMessage Clone() {
+      return new ServerControlMessage(this);
     }
 
-    /// <summary>Field number for the "guilog" field.</summary>
-    public const int GuilogFieldNumber = 1;
+    /// <summary>Field number for the "stop" field.</summary>
+    public const int StopFieldNumber = 1;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Buttplug.Server.CLI.GuiMessage.Types.GuiLog Guilog {
-      get { return msgCase_ == MsgOneofCase.Guilog ? (global::Buttplug.Server.CLI.GuiMessage.Types.GuiLog) msg_ : null; }
+    public global::Buttplug.Server.CLI.ServerControlMessage.Types.Stop Stop {
+      get { return msgCase_ == MsgOneofCase.Stop ? (global::Buttplug.Server.CLI.ServerControlMessage.Types.Stop) msg_ : null; }
       set {
         msg_ = value;
-        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.Guilog;
-      }
-    }
-
-    /// <summary>Field number for the "processstarted" field.</summary>
-    public const int ProcessstartedFieldNumber = 2;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Buttplug.Server.CLI.GuiMessage.Types.ProcessStarted Processstarted {
-      get { return msgCase_ == MsgOneofCase.Processstarted ? (global::Buttplug.Server.CLI.GuiMessage.Types.ProcessStarted) msg_ : null; }
-      set {
-        msg_ = value;
-        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.Processstarted;
-      }
-    }
-
-    /// <summary>Field number for the "processended" field.</summary>
-    public const int ProcessendedFieldNumber = 3;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Buttplug.Server.CLI.GuiMessage.Types.ProcessEnded Processended {
-      get { return msgCase_ == MsgOneofCase.Processended ? (global::Buttplug.Server.CLI.GuiMessage.Types.ProcessEnded) msg_ : null; }
-      set {
-        msg_ = value;
-        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.Processended;
-      }
-    }
-
-    /// <summary>Field number for the "bplog" field.</summary>
-    public const int BplogFieldNumber = 4;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Buttplug.Server.CLI.GuiMessage.Types.ButtplugLog Bplog {
-      get { return msgCase_ == MsgOneofCase.Bplog ? (global::Buttplug.Server.CLI.GuiMessage.Types.ButtplugLog) msg_ : null; }
-      set {
-        msg_ = value;
-        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.Bplog;
-      }
-    }
-
-    /// <summary>Field number for the "clientconnected" field.</summary>
-    public const int ClientconnectedFieldNumber = 5;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Buttplug.Server.CLI.GuiMessage.Types.ClientConnected Clientconnected {
-      get { return msgCase_ == MsgOneofCase.Clientconnected ? (global::Buttplug.Server.CLI.GuiMessage.Types.ClientConnected) msg_ : null; }
-      set {
-        msg_ = value;
-        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.Clientconnected;
-      }
-    }
-
-    /// <summary>Field number for the "clientdisconnected" field.</summary>
-    public const int ClientdisconnectedFieldNumber = 6;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Buttplug.Server.CLI.GuiMessage.Types.ClientDisconnected Clientdisconnected {
-      get { return msgCase_ == MsgOneofCase.Clientdisconnected ? (global::Buttplug.Server.CLI.GuiMessage.Types.ClientDisconnected) msg_ : null; }
-      set {
-        msg_ = value;
-        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.Clientdisconnected;
-      }
-    }
-
-    /// <summary>Field number for the "deviceconnected" field.</summary>
-    public const int DeviceconnectedFieldNumber = 7;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Buttplug.Server.CLI.GuiMessage.Types.DeviceConnected Deviceconnected {
-      get { return msgCase_ == MsgOneofCase.Deviceconnected ? (global::Buttplug.Server.CLI.GuiMessage.Types.DeviceConnected) msg_ : null; }
-      set {
-        msg_ = value;
-        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.Deviceconnected;
-      }
-    }
-
-    /// <summary>Field number for the "devicedisconnected" field.</summary>
-    public const int DevicedisconnectedFieldNumber = 8;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Buttplug.Server.CLI.GuiMessage.Types.DeviceDisconnected Devicedisconnected {
-      get { return msgCase_ == MsgOneofCase.Devicedisconnected ? (global::Buttplug.Server.CLI.GuiMessage.Types.DeviceDisconnected) msg_ : null; }
-      set {
-        msg_ = value;
-        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.Devicedisconnected;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.Stop;
       }
     }
 
@@ -215,14 +126,7 @@ namespace Buttplug.Server.CLI {
     /// <summary>Enum of possible cases for the "msg" oneof.</summary>
     public enum MsgOneofCase {
       None = 0,
-      Guilog = 1,
-      Processstarted = 2,
-      Processended = 3,
-      Bplog = 4,
-      Clientconnected = 5,
-      Clientdisconnected = 6,
-      Deviceconnected = 7,
-      Devicedisconnected = 8,
+      Stop = 1,
     }
     private MsgOneofCase msgCase_ = MsgOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -238,25 +142,18 @@ namespace Buttplug.Server.CLI {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as GuiMessage);
+      return Equals(other as ServerControlMessage);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(GuiMessage other) {
+    public bool Equals(ServerControlMessage other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!object.Equals(Guilog, other.Guilog)) return false;
-      if (!object.Equals(Processstarted, other.Processstarted)) return false;
-      if (!object.Equals(Processended, other.Processended)) return false;
-      if (!object.Equals(Bplog, other.Bplog)) return false;
-      if (!object.Equals(Clientconnected, other.Clientconnected)) return false;
-      if (!object.Equals(Clientdisconnected, other.Clientdisconnected)) return false;
-      if (!object.Equals(Deviceconnected, other.Deviceconnected)) return false;
-      if (!object.Equals(Devicedisconnected, other.Devicedisconnected)) return false;
+      if (!object.Equals(Stop, other.Stop)) return false;
       if (MsgCase != other.MsgCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -264,14 +161,7 @@ namespace Buttplug.Server.CLI {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (msgCase_ == MsgOneofCase.Guilog) hash ^= Guilog.GetHashCode();
-      if (msgCase_ == MsgOneofCase.Processstarted) hash ^= Processstarted.GetHashCode();
-      if (msgCase_ == MsgOneofCase.Processended) hash ^= Processended.GetHashCode();
-      if (msgCase_ == MsgOneofCase.Bplog) hash ^= Bplog.GetHashCode();
-      if (msgCase_ == MsgOneofCase.Clientconnected) hash ^= Clientconnected.GetHashCode();
-      if (msgCase_ == MsgOneofCase.Clientdisconnected) hash ^= Clientdisconnected.GetHashCode();
-      if (msgCase_ == MsgOneofCase.Deviceconnected) hash ^= Deviceconnected.GetHashCode();
-      if (msgCase_ == MsgOneofCase.Devicedisconnected) hash ^= Devicedisconnected.GetHashCode();
+      if (msgCase_ == MsgOneofCase.Stop) hash ^= Stop.GetHashCode();
       hash ^= (int) msgCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -286,37 +176,9 @@ namespace Buttplug.Server.CLI {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (msgCase_ == MsgOneofCase.Guilog) {
+      if (msgCase_ == MsgOneofCase.Stop) {
         output.WriteRawTag(10);
-        output.WriteMessage(Guilog);
-      }
-      if (msgCase_ == MsgOneofCase.Processstarted) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Processstarted);
-      }
-      if (msgCase_ == MsgOneofCase.Processended) {
-        output.WriteRawTag(26);
-        output.WriteMessage(Processended);
-      }
-      if (msgCase_ == MsgOneofCase.Bplog) {
-        output.WriteRawTag(34);
-        output.WriteMessage(Bplog);
-      }
-      if (msgCase_ == MsgOneofCase.Clientconnected) {
-        output.WriteRawTag(42);
-        output.WriteMessage(Clientconnected);
-      }
-      if (msgCase_ == MsgOneofCase.Clientdisconnected) {
-        output.WriteRawTag(50);
-        output.WriteMessage(Clientdisconnected);
-      }
-      if (msgCase_ == MsgOneofCase.Deviceconnected) {
-        output.WriteRawTag(58);
-        output.WriteMessage(Deviceconnected);
-      }
-      if (msgCase_ == MsgOneofCase.Devicedisconnected) {
-        output.WriteRawTag(66);
-        output.WriteMessage(Devicedisconnected);
+        output.WriteMessage(Stop);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -326,29 +188,8 @@ namespace Buttplug.Server.CLI {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (msgCase_ == MsgOneofCase.Guilog) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Guilog);
-      }
-      if (msgCase_ == MsgOneofCase.Processstarted) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Processstarted);
-      }
-      if (msgCase_ == MsgOneofCase.Processended) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Processended);
-      }
-      if (msgCase_ == MsgOneofCase.Bplog) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Bplog);
-      }
-      if (msgCase_ == MsgOneofCase.Clientconnected) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Clientconnected);
-      }
-      if (msgCase_ == MsgOneofCase.Clientdisconnected) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Clientdisconnected);
-      }
-      if (msgCase_ == MsgOneofCase.Deviceconnected) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Deviceconnected);
-      }
-      if (msgCase_ == MsgOneofCase.Devicedisconnected) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Devicedisconnected);
+      if (msgCase_ == MsgOneofCase.Stop) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Stop);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -357,58 +198,16 @@ namespace Buttplug.Server.CLI {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(GuiMessage other) {
+    public void MergeFrom(ServerControlMessage other) {
       if (other == null) {
         return;
       }
       switch (other.MsgCase) {
-        case MsgOneofCase.Guilog:
-          if (Guilog == null) {
-            Guilog = new global::Buttplug.Server.CLI.GuiMessage.Types.GuiLog();
+        case MsgOneofCase.Stop:
+          if (Stop == null) {
+            Stop = new global::Buttplug.Server.CLI.ServerControlMessage.Types.Stop();
           }
-          Guilog.MergeFrom(other.Guilog);
-          break;
-        case MsgOneofCase.Processstarted:
-          if (Processstarted == null) {
-            Processstarted = new global::Buttplug.Server.CLI.GuiMessage.Types.ProcessStarted();
-          }
-          Processstarted.MergeFrom(other.Processstarted);
-          break;
-        case MsgOneofCase.Processended:
-          if (Processended == null) {
-            Processended = new global::Buttplug.Server.CLI.GuiMessage.Types.ProcessEnded();
-          }
-          Processended.MergeFrom(other.Processended);
-          break;
-        case MsgOneofCase.Bplog:
-          if (Bplog == null) {
-            Bplog = new global::Buttplug.Server.CLI.GuiMessage.Types.ButtplugLog();
-          }
-          Bplog.MergeFrom(other.Bplog);
-          break;
-        case MsgOneofCase.Clientconnected:
-          if (Clientconnected == null) {
-            Clientconnected = new global::Buttplug.Server.CLI.GuiMessage.Types.ClientConnected();
-          }
-          Clientconnected.MergeFrom(other.Clientconnected);
-          break;
-        case MsgOneofCase.Clientdisconnected:
-          if (Clientdisconnected == null) {
-            Clientdisconnected = new global::Buttplug.Server.CLI.GuiMessage.Types.ClientDisconnected();
-          }
-          Clientdisconnected.MergeFrom(other.Clientdisconnected);
-          break;
-        case MsgOneofCase.Deviceconnected:
-          if (Deviceconnected == null) {
-            Deviceconnected = new global::Buttplug.Server.CLI.GuiMessage.Types.DeviceConnected();
-          }
-          Deviceconnected.MergeFrom(other.Deviceconnected);
-          break;
-        case MsgOneofCase.Devicedisconnected:
-          if (Devicedisconnected == null) {
-            Devicedisconnected = new global::Buttplug.Server.CLI.GuiMessage.Types.DeviceDisconnected();
-          }
-          Devicedisconnected.MergeFrom(other.Devicedisconnected);
+          Stop.MergeFrom(other.Stop);
           break;
       }
 
@@ -424,75 +223,12 @@ namespace Buttplug.Server.CLI {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            global::Buttplug.Server.CLI.GuiMessage.Types.GuiLog subBuilder = new global::Buttplug.Server.CLI.GuiMessage.Types.GuiLog();
-            if (msgCase_ == MsgOneofCase.Guilog) {
-              subBuilder.MergeFrom(Guilog);
+            global::Buttplug.Server.CLI.ServerControlMessage.Types.Stop subBuilder = new global::Buttplug.Server.CLI.ServerControlMessage.Types.Stop();
+            if (msgCase_ == MsgOneofCase.Stop) {
+              subBuilder.MergeFrom(Stop);
             }
             input.ReadMessage(subBuilder);
-            Guilog = subBuilder;
-            break;
-          }
-          case 18: {
-            global::Buttplug.Server.CLI.GuiMessage.Types.ProcessStarted subBuilder = new global::Buttplug.Server.CLI.GuiMessage.Types.ProcessStarted();
-            if (msgCase_ == MsgOneofCase.Processstarted) {
-              subBuilder.MergeFrom(Processstarted);
-            }
-            input.ReadMessage(subBuilder);
-            Processstarted = subBuilder;
-            break;
-          }
-          case 26: {
-            global::Buttplug.Server.CLI.GuiMessage.Types.ProcessEnded subBuilder = new global::Buttplug.Server.CLI.GuiMessage.Types.ProcessEnded();
-            if (msgCase_ == MsgOneofCase.Processended) {
-              subBuilder.MergeFrom(Processended);
-            }
-            input.ReadMessage(subBuilder);
-            Processended = subBuilder;
-            break;
-          }
-          case 34: {
-            global::Buttplug.Server.CLI.GuiMessage.Types.ButtplugLog subBuilder = new global::Buttplug.Server.CLI.GuiMessage.Types.ButtplugLog();
-            if (msgCase_ == MsgOneofCase.Bplog) {
-              subBuilder.MergeFrom(Bplog);
-            }
-            input.ReadMessage(subBuilder);
-            Bplog = subBuilder;
-            break;
-          }
-          case 42: {
-            global::Buttplug.Server.CLI.GuiMessage.Types.ClientConnected subBuilder = new global::Buttplug.Server.CLI.GuiMessage.Types.ClientConnected();
-            if (msgCase_ == MsgOneofCase.Clientconnected) {
-              subBuilder.MergeFrom(Clientconnected);
-            }
-            input.ReadMessage(subBuilder);
-            Clientconnected = subBuilder;
-            break;
-          }
-          case 50: {
-            global::Buttplug.Server.CLI.GuiMessage.Types.ClientDisconnected subBuilder = new global::Buttplug.Server.CLI.GuiMessage.Types.ClientDisconnected();
-            if (msgCase_ == MsgOneofCase.Clientdisconnected) {
-              subBuilder.MergeFrom(Clientdisconnected);
-            }
-            input.ReadMessage(subBuilder);
-            Clientdisconnected = subBuilder;
-            break;
-          }
-          case 58: {
-            global::Buttplug.Server.CLI.GuiMessage.Types.DeviceConnected subBuilder = new global::Buttplug.Server.CLI.GuiMessage.Types.DeviceConnected();
-            if (msgCase_ == MsgOneofCase.Deviceconnected) {
-              subBuilder.MergeFrom(Deviceconnected);
-            }
-            input.ReadMessage(subBuilder);
-            Deviceconnected = subBuilder;
-            break;
-          }
-          case 66: {
-            global::Buttplug.Server.CLI.GuiMessage.Types.DeviceDisconnected subBuilder = new global::Buttplug.Server.CLI.GuiMessage.Types.DeviceDisconnected();
-            if (msgCase_ == MsgOneofCase.Devicedisconnected) {
-              subBuilder.MergeFrom(Devicedisconnected);
-            }
-            input.ReadMessage(subBuilder);
-            Devicedisconnected = subBuilder;
+            Stop = subBuilder;
             break;
           }
         }
@@ -500,18 +236,18 @@ namespace Buttplug.Server.CLI {
     }
 
     #region Nested types
-    /// <summary>Container for nested types declared in the GuiMessage message type.</summary>
+    /// <summary>Container for nested types declared in the ServerControlMessage message type.</summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static partial class Types {
-      public sealed partial class GuiLog : pb::IMessage<GuiLog> {
-        private static readonly pb::MessageParser<GuiLog> _parser = new pb::MessageParser<GuiLog>(() => new GuiLog());
+      public sealed partial class Stop : pb::IMessage<Stop> {
+        private static readonly pb::MessageParser<Stop> _parser = new pb::MessageParser<Stop>(() => new Stop());
         private pb::UnknownFieldSet _unknownFields;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public static pb::MessageParser<GuiLog> Parser { get { return _parser; } }
+        public static pb::MessageParser<Stop> Parser { get { return _parser; } }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::Buttplug.Server.CLI.GuiMessage.Descriptor.NestedTypes[0]; }
+          get { return global::Buttplug.Server.CLI.ServerControlMessage.Descriptor.NestedTypes[0]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -520,21 +256,612 @@ namespace Buttplug.Server.CLI {
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public GuiLog() {
+        public Stop() {
           OnConstruction();
         }
 
         partial void OnConstruction();
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public GuiLog(GuiLog other) : this() {
+        public Stop(Stop other) : this() {
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public Stop Clone() {
+          return new Stop(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override bool Equals(object other) {
+          return Equals(other as Stop);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public bool Equals(Stop other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void WriteTo(pb::CodedOutputStream output) {
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public int CalculateSize() {
+          int size = 0;
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void MergeFrom(Stop other) {
+          if (other == null) {
+            return;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void MergeFrom(pb::CodedInputStream input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+            }
+          }
+        }
+
+      }
+
+    }
+    #endregion
+
+  }
+
+  /// <summary>
+  /// This needs to stay in sync with the Intiface protocols.
+  /// </summary>
+  public sealed partial class ServerProcessMessage : pb::IMessage<ServerProcessMessage> {
+    private static readonly pb::MessageParser<ServerProcessMessage> _parser = new pb::MessageParser<ServerProcessMessage>(() => new ServerProcessMessage());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ServerProcessMessage> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Buttplug.Server.CLI.ButtplugGuiReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ServerProcessMessage() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ServerProcessMessage(ServerProcessMessage other) : this() {
+      switch (other.MsgCase) {
+        case MsgOneofCase.ProcessStarted:
+          ProcessStarted = other.ProcessStarted.Clone();
+          break;
+        case MsgOneofCase.ProcessError:
+          ProcessError = other.ProcessError.Clone();
+          break;
+        case MsgOneofCase.ProcessEnded:
+          ProcessEnded = other.ProcessEnded.Clone();
+          break;
+        case MsgOneofCase.ProcessLog:
+          ProcessLog = other.ProcessLog.Clone();
+          break;
+        case MsgOneofCase.ButtplugLog:
+          ButtplugLog = other.ButtplugLog.Clone();
+          break;
+        case MsgOneofCase.ClientConnected:
+          ClientConnected = other.ClientConnected.Clone();
+          break;
+        case MsgOneofCase.ClientDisconnected:
+          ClientDisconnected = other.ClientDisconnected.Clone();
+          break;
+        case MsgOneofCase.DeviceConnected:
+          DeviceConnected = other.DeviceConnected.Clone();
+          break;
+        case MsgOneofCase.DeviceDisconnected:
+          DeviceDisconnected = other.DeviceDisconnected.Clone();
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ServerProcessMessage Clone() {
+      return new ServerProcessMessage(this);
+    }
+
+    /// <summary>Field number for the "process_started" field.</summary>
+    public const int ProcessStartedFieldNumber = 1;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessStarted ProcessStarted {
+      get { return msgCase_ == MsgOneofCase.ProcessStarted ? (global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessStarted) msg_ : null; }
+      set {
+        msg_ = value;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.ProcessStarted;
+      }
+    }
+
+    /// <summary>Field number for the "process_error" field.</summary>
+    public const int ProcessErrorFieldNumber = 2;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessError ProcessError {
+      get { return msgCase_ == MsgOneofCase.ProcessError ? (global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessError) msg_ : null; }
+      set {
+        msg_ = value;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.ProcessError;
+      }
+    }
+
+    /// <summary>Field number for the "process_ended" field.</summary>
+    public const int ProcessEndedFieldNumber = 3;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessEnded ProcessEnded {
+      get { return msgCase_ == MsgOneofCase.ProcessEnded ? (global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessEnded) msg_ : null; }
+      set {
+        msg_ = value;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.ProcessEnded;
+      }
+    }
+
+    /// <summary>Field number for the "process_log" field.</summary>
+    public const int ProcessLogFieldNumber = 4;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessLog ProcessLog {
+      get { return msgCase_ == MsgOneofCase.ProcessLog ? (global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessLog) msg_ : null; }
+      set {
+        msg_ = value;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.ProcessLog;
+      }
+    }
+
+    /// <summary>Field number for the "buttplug_log" field.</summary>
+    public const int ButtplugLogFieldNumber = 5;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Buttplug.Server.CLI.ServerProcessMessage.Types.ButtplugLog ButtplugLog {
+      get { return msgCase_ == MsgOneofCase.ButtplugLog ? (global::Buttplug.Server.CLI.ServerProcessMessage.Types.ButtplugLog) msg_ : null; }
+      set {
+        msg_ = value;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.ButtplugLog;
+      }
+    }
+
+    /// <summary>Field number for the "client_connected" field.</summary>
+    public const int ClientConnectedFieldNumber = 6;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientConnected ClientConnected {
+      get { return msgCase_ == MsgOneofCase.ClientConnected ? (global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientConnected) msg_ : null; }
+      set {
+        msg_ = value;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.ClientConnected;
+      }
+    }
+
+    /// <summary>Field number for the "client_disconnected" field.</summary>
+    public const int ClientDisconnectedFieldNumber = 7;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientDisconnected ClientDisconnected {
+      get { return msgCase_ == MsgOneofCase.ClientDisconnected ? (global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientDisconnected) msg_ : null; }
+      set {
+        msg_ = value;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.ClientDisconnected;
+      }
+    }
+
+    /// <summary>Field number for the "device_connected" field.</summary>
+    public const int DeviceConnectedFieldNumber = 8;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceConnected DeviceConnected {
+      get { return msgCase_ == MsgOneofCase.DeviceConnected ? (global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceConnected) msg_ : null; }
+      set {
+        msg_ = value;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.DeviceConnected;
+      }
+    }
+
+    /// <summary>Field number for the "device_disconnected" field.</summary>
+    public const int DeviceDisconnectedFieldNumber = 9;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceDisconnected DeviceDisconnected {
+      get { return msgCase_ == MsgOneofCase.DeviceDisconnected ? (global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceDisconnected) msg_ : null; }
+      set {
+        msg_ = value;
+        msgCase_ = value == null ? MsgOneofCase.None : MsgOneofCase.DeviceDisconnected;
+      }
+    }
+
+    private object msg_;
+    /// <summary>Enum of possible cases for the "msg" oneof.</summary>
+    public enum MsgOneofCase {
+      None = 0,
+      ProcessStarted = 1,
+      ProcessError = 2,
+      ProcessEnded = 3,
+      ProcessLog = 4,
+      ButtplugLog = 5,
+      ClientConnected = 6,
+      ClientDisconnected = 7,
+      DeviceConnected = 8,
+      DeviceDisconnected = 9,
+    }
+    private MsgOneofCase msgCase_ = MsgOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MsgOneofCase MsgCase {
+      get { return msgCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearMsg() {
+      msgCase_ = MsgOneofCase.None;
+      msg_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ServerProcessMessage);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ServerProcessMessage other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(ProcessStarted, other.ProcessStarted)) return false;
+      if (!object.Equals(ProcessError, other.ProcessError)) return false;
+      if (!object.Equals(ProcessEnded, other.ProcessEnded)) return false;
+      if (!object.Equals(ProcessLog, other.ProcessLog)) return false;
+      if (!object.Equals(ButtplugLog, other.ButtplugLog)) return false;
+      if (!object.Equals(ClientConnected, other.ClientConnected)) return false;
+      if (!object.Equals(ClientDisconnected, other.ClientDisconnected)) return false;
+      if (!object.Equals(DeviceConnected, other.DeviceConnected)) return false;
+      if (!object.Equals(DeviceDisconnected, other.DeviceDisconnected)) return false;
+      if (MsgCase != other.MsgCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (msgCase_ == MsgOneofCase.ProcessStarted) hash ^= ProcessStarted.GetHashCode();
+      if (msgCase_ == MsgOneofCase.ProcessError) hash ^= ProcessError.GetHashCode();
+      if (msgCase_ == MsgOneofCase.ProcessEnded) hash ^= ProcessEnded.GetHashCode();
+      if (msgCase_ == MsgOneofCase.ProcessLog) hash ^= ProcessLog.GetHashCode();
+      if (msgCase_ == MsgOneofCase.ButtplugLog) hash ^= ButtplugLog.GetHashCode();
+      if (msgCase_ == MsgOneofCase.ClientConnected) hash ^= ClientConnected.GetHashCode();
+      if (msgCase_ == MsgOneofCase.ClientDisconnected) hash ^= ClientDisconnected.GetHashCode();
+      if (msgCase_ == MsgOneofCase.DeviceConnected) hash ^= DeviceConnected.GetHashCode();
+      if (msgCase_ == MsgOneofCase.DeviceDisconnected) hash ^= DeviceDisconnected.GetHashCode();
+      hash ^= (int) msgCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (msgCase_ == MsgOneofCase.ProcessStarted) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ProcessStarted);
+      }
+      if (msgCase_ == MsgOneofCase.ProcessError) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ProcessError);
+      }
+      if (msgCase_ == MsgOneofCase.ProcessEnded) {
+        output.WriteRawTag(26);
+        output.WriteMessage(ProcessEnded);
+      }
+      if (msgCase_ == MsgOneofCase.ProcessLog) {
+        output.WriteRawTag(34);
+        output.WriteMessage(ProcessLog);
+      }
+      if (msgCase_ == MsgOneofCase.ButtplugLog) {
+        output.WriteRawTag(42);
+        output.WriteMessage(ButtplugLog);
+      }
+      if (msgCase_ == MsgOneofCase.ClientConnected) {
+        output.WriteRawTag(50);
+        output.WriteMessage(ClientConnected);
+      }
+      if (msgCase_ == MsgOneofCase.ClientDisconnected) {
+        output.WriteRawTag(58);
+        output.WriteMessage(ClientDisconnected);
+      }
+      if (msgCase_ == MsgOneofCase.DeviceConnected) {
+        output.WriteRawTag(66);
+        output.WriteMessage(DeviceConnected);
+      }
+      if (msgCase_ == MsgOneofCase.DeviceDisconnected) {
+        output.WriteRawTag(74);
+        output.WriteMessage(DeviceDisconnected);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (msgCase_ == MsgOneofCase.ProcessStarted) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ProcessStarted);
+      }
+      if (msgCase_ == MsgOneofCase.ProcessError) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ProcessError);
+      }
+      if (msgCase_ == MsgOneofCase.ProcessEnded) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ProcessEnded);
+      }
+      if (msgCase_ == MsgOneofCase.ProcessLog) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ProcessLog);
+      }
+      if (msgCase_ == MsgOneofCase.ButtplugLog) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ButtplugLog);
+      }
+      if (msgCase_ == MsgOneofCase.ClientConnected) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ClientConnected);
+      }
+      if (msgCase_ == MsgOneofCase.ClientDisconnected) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ClientDisconnected);
+      }
+      if (msgCase_ == MsgOneofCase.DeviceConnected) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DeviceConnected);
+      }
+      if (msgCase_ == MsgOneofCase.DeviceDisconnected) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DeviceDisconnected);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ServerProcessMessage other) {
+      if (other == null) {
+        return;
+      }
+      switch (other.MsgCase) {
+        case MsgOneofCase.ProcessStarted:
+          if (ProcessStarted == null) {
+            ProcessStarted = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessStarted();
+          }
+          ProcessStarted.MergeFrom(other.ProcessStarted);
+          break;
+        case MsgOneofCase.ProcessError:
+          if (ProcessError == null) {
+            ProcessError = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessError();
+          }
+          ProcessError.MergeFrom(other.ProcessError);
+          break;
+        case MsgOneofCase.ProcessEnded:
+          if (ProcessEnded == null) {
+            ProcessEnded = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessEnded();
+          }
+          ProcessEnded.MergeFrom(other.ProcessEnded);
+          break;
+        case MsgOneofCase.ProcessLog:
+          if (ProcessLog == null) {
+            ProcessLog = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessLog();
+          }
+          ProcessLog.MergeFrom(other.ProcessLog);
+          break;
+        case MsgOneofCase.ButtplugLog:
+          if (ButtplugLog == null) {
+            ButtplugLog = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ButtplugLog();
+          }
+          ButtplugLog.MergeFrom(other.ButtplugLog);
+          break;
+        case MsgOneofCase.ClientConnected:
+          if (ClientConnected == null) {
+            ClientConnected = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientConnected();
+          }
+          ClientConnected.MergeFrom(other.ClientConnected);
+          break;
+        case MsgOneofCase.ClientDisconnected:
+          if (ClientDisconnected == null) {
+            ClientDisconnected = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientDisconnected();
+          }
+          ClientDisconnected.MergeFrom(other.ClientDisconnected);
+          break;
+        case MsgOneofCase.DeviceConnected:
+          if (DeviceConnected == null) {
+            DeviceConnected = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceConnected();
+          }
+          DeviceConnected.MergeFrom(other.DeviceConnected);
+          break;
+        case MsgOneofCase.DeviceDisconnected:
+          if (DeviceDisconnected == null) {
+            DeviceDisconnected = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceDisconnected();
+          }
+          DeviceDisconnected.MergeFrom(other.DeviceDisconnected);
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessStarted subBuilder = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessStarted();
+            if (msgCase_ == MsgOneofCase.ProcessStarted) {
+              subBuilder.MergeFrom(ProcessStarted);
+            }
+            input.ReadMessage(subBuilder);
+            ProcessStarted = subBuilder;
+            break;
+          }
+          case 18: {
+            global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessError subBuilder = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessError();
+            if (msgCase_ == MsgOneofCase.ProcessError) {
+              subBuilder.MergeFrom(ProcessError);
+            }
+            input.ReadMessage(subBuilder);
+            ProcessError = subBuilder;
+            break;
+          }
+          case 26: {
+            global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessEnded subBuilder = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessEnded();
+            if (msgCase_ == MsgOneofCase.ProcessEnded) {
+              subBuilder.MergeFrom(ProcessEnded);
+            }
+            input.ReadMessage(subBuilder);
+            ProcessEnded = subBuilder;
+            break;
+          }
+          case 34: {
+            global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessLog subBuilder = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ProcessLog();
+            if (msgCase_ == MsgOneofCase.ProcessLog) {
+              subBuilder.MergeFrom(ProcessLog);
+            }
+            input.ReadMessage(subBuilder);
+            ProcessLog = subBuilder;
+            break;
+          }
+          case 42: {
+            global::Buttplug.Server.CLI.ServerProcessMessage.Types.ButtplugLog subBuilder = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ButtplugLog();
+            if (msgCase_ == MsgOneofCase.ButtplugLog) {
+              subBuilder.MergeFrom(ButtplugLog);
+            }
+            input.ReadMessage(subBuilder);
+            ButtplugLog = subBuilder;
+            break;
+          }
+          case 50: {
+            global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientConnected subBuilder = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientConnected();
+            if (msgCase_ == MsgOneofCase.ClientConnected) {
+              subBuilder.MergeFrom(ClientConnected);
+            }
+            input.ReadMessage(subBuilder);
+            ClientConnected = subBuilder;
+            break;
+          }
+          case 58: {
+            global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientDisconnected subBuilder = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.ClientDisconnected();
+            if (msgCase_ == MsgOneofCase.ClientDisconnected) {
+              subBuilder.MergeFrom(ClientDisconnected);
+            }
+            input.ReadMessage(subBuilder);
+            ClientDisconnected = subBuilder;
+            break;
+          }
+          case 66: {
+            global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceConnected subBuilder = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceConnected();
+            if (msgCase_ == MsgOneofCase.DeviceConnected) {
+              subBuilder.MergeFrom(DeviceConnected);
+            }
+            input.ReadMessage(subBuilder);
+            DeviceConnected = subBuilder;
+            break;
+          }
+          case 74: {
+            global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceDisconnected subBuilder = new global::Buttplug.Server.CLI.ServerProcessMessage.Types.DeviceDisconnected();
+            if (msgCase_ == MsgOneofCase.DeviceDisconnected) {
+              subBuilder.MergeFrom(DeviceDisconnected);
+            }
+            input.ReadMessage(subBuilder);
+            DeviceDisconnected = subBuilder;
+            break;
+          }
+        }
+      }
+    }
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the ServerProcessMessage message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static partial class Types {
+      /// <summary>
+      /// Status messages from the server process
+      /// </summary>
+      public sealed partial class ProcessLog : pb::IMessage<ProcessLog> {
+        private static readonly pb::MessageParser<ProcessLog> _parser = new pb::MessageParser<ProcessLog>(() => new ProcessLog());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public static pb::MessageParser<ProcessLog> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Buttplug.Server.CLI.ServerProcessMessage.Descriptor.NestedTypes[0]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public ProcessLog() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public ProcessLog(ProcessLog other) : this() {
           message_ = other.message_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public GuiLog Clone() {
-          return new GuiLog(this);
+        public ProcessLog Clone() {
+          return new ProcessLog(this);
         }
 
         /// <summary>Field number for the "message" field.</summary>
@@ -550,11 +877,11 @@ namespace Buttplug.Server.CLI {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public override bool Equals(object other) {
-          return Equals(other as GuiLog);
+          return Equals(other as ProcessLog);
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public bool Equals(GuiLog other) {
+        public bool Equals(ProcessLog other) {
           if (ReferenceEquals(other, null)) {
             return false;
           }
@@ -604,7 +931,7 @@ namespace Buttplug.Server.CLI {
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public void MergeFrom(GuiLog other) {
+        public void MergeFrom(ProcessLog other) {
           if (other == null) {
             return;
           }
@@ -632,6 +959,9 @@ namespace Buttplug.Server.CLI {
 
       }
 
+      /// <summary>
+      /// Notifies frontend that server process is up and running
+      /// </summary>
       public sealed partial class ProcessStarted : pb::IMessage<ProcessStarted> {
         private static readonly pb::MessageParser<ProcessStarted> _parser = new pb::MessageParser<ProcessStarted>(() => new ProcessStarted());
         private pb::UnknownFieldSet _unknownFields;
@@ -640,7 +970,7 @@ namespace Buttplug.Server.CLI {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::Buttplug.Server.CLI.GuiMessage.Descriptor.NestedTypes[1]; }
+          get { return global::Buttplug.Server.CLI.ServerProcessMessage.Descriptor.NestedTypes[1]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -733,6 +1063,141 @@ namespace Buttplug.Server.CLI {
 
       }
 
+      /// <summary>
+      /// Notifies frontend that the server process errored out
+      /// </summary>
+      public sealed partial class ProcessError : pb::IMessage<ProcessError> {
+        private static readonly pb::MessageParser<ProcessError> _parser = new pb::MessageParser<ProcessError>(() => new ProcessError());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public static pb::MessageParser<ProcessError> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Buttplug.Server.CLI.ServerProcessMessage.Descriptor.NestedTypes[2]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public ProcessError() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public ProcessError(ProcessError other) : this() {
+          message_ = other.message_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public ProcessError Clone() {
+          return new ProcessError(this);
+        }
+
+        /// <summary>Field number for the "message" field.</summary>
+        public const int MessageFieldNumber = 1;
+        private string message_ = "";
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public string Message {
+          get { return message_; }
+          set {
+            message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override bool Equals(object other) {
+          return Equals(other as ProcessError);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public bool Equals(ProcessError other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Message != other.Message) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (Message.Length != 0) hash ^= Message.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void WriteTo(pb::CodedOutputStream output) {
+          if (Message.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Message);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public int CalculateSize() {
+          int size = 0;
+          if (Message.Length != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void MergeFrom(ProcessError other) {
+          if (other == null) {
+            return;
+          }
+          if (other.Message.Length != 0) {
+            Message = other.Message;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public void MergeFrom(pb::CodedInputStream input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10: {
+                Message = input.ReadString();
+                break;
+              }
+            }
+          }
+        }
+
+      }
+
+      /// <summary>
+      /// Notifies frontend that server process has ended
+      /// </summary>
       public sealed partial class ProcessEnded : pb::IMessage<ProcessEnded> {
         private static readonly pb::MessageParser<ProcessEnded> _parser = new pb::MessageParser<ProcessEnded>(() => new ProcessEnded());
         private pb::UnknownFieldSet _unknownFields;
@@ -741,7 +1206,7 @@ namespace Buttplug.Server.CLI {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::Buttplug.Server.CLI.GuiMessage.Descriptor.NestedTypes[2]; }
+          get { return global::Buttplug.Server.CLI.ServerProcessMessage.Descriptor.NestedTypes[3]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -834,6 +1299,9 @@ namespace Buttplug.Server.CLI {
 
       }
 
+      /// <summary>
+      /// Buttplug protocol log message from server process
+      /// </summary>
       public sealed partial class ButtplugLog : pb::IMessage<ButtplugLog> {
         private static readonly pb::MessageParser<ButtplugLog> _parser = new pb::MessageParser<ButtplugLog>(() => new ButtplugLog());
         private pb::UnknownFieldSet _unknownFields;
@@ -842,7 +1310,7 @@ namespace Buttplug.Server.CLI {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::Buttplug.Server.CLI.GuiMessage.Descriptor.NestedTypes[3]; }
+          get { return global::Buttplug.Server.CLI.ServerProcessMessage.Descriptor.NestedTypes[4]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -963,6 +1431,9 @@ namespace Buttplug.Server.CLI {
 
       }
 
+      /// <summary>
+      /// Notification that a client has connected to the server process
+      /// </summary>
       public sealed partial class ClientConnected : pb::IMessage<ClientConnected> {
         private static readonly pb::MessageParser<ClientConnected> _parser = new pb::MessageParser<ClientConnected>(() => new ClientConnected());
         private pb::UnknownFieldSet _unknownFields;
@@ -971,7 +1442,7 @@ namespace Buttplug.Server.CLI {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::Buttplug.Server.CLI.GuiMessage.Descriptor.NestedTypes[4]; }
+          get { return global::Buttplug.Server.CLI.ServerProcessMessage.Descriptor.NestedTypes[5]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1092,6 +1563,10 @@ namespace Buttplug.Server.CLI {
 
       }
 
+      /// <summary>
+      /// Notification that a client has disconnected from the server
+      /// process.
+      /// </summary>
       public sealed partial class ClientDisconnected : pb::IMessage<ClientDisconnected> {
         private static readonly pb::MessageParser<ClientDisconnected> _parser = new pb::MessageParser<ClientDisconnected>(() => new ClientDisconnected());
         private pb::UnknownFieldSet _unknownFields;
@@ -1100,7 +1575,7 @@ namespace Buttplug.Server.CLI {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::Buttplug.Server.CLI.GuiMessage.Descriptor.NestedTypes[5]; }
+          get { return global::Buttplug.Server.CLI.ServerProcessMessage.Descriptor.NestedTypes[6]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1193,6 +1668,9 @@ namespace Buttplug.Server.CLI {
 
       }
 
+      /// <summary>
+      /// Notification that the server has connected to a device.
+      /// </summary>
       public sealed partial class DeviceConnected : pb::IMessage<DeviceConnected> {
         private static readonly pb::MessageParser<DeviceConnected> _parser = new pb::MessageParser<DeviceConnected>(() => new DeviceConnected());
         private pb::UnknownFieldSet _unknownFields;
@@ -1201,7 +1679,7 @@ namespace Buttplug.Server.CLI {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::Buttplug.Server.CLI.GuiMessage.Descriptor.NestedTypes[6]; }
+          get { return global::Buttplug.Server.CLI.ServerProcessMessage.Descriptor.NestedTypes[7]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1350,6 +1828,9 @@ namespace Buttplug.Server.CLI {
 
       }
 
+      /// <summary>
+      /// Notification that the server has disconnected from a device.
+      /// </summary>
       public sealed partial class DeviceDisconnected : pb::IMessage<DeviceDisconnected> {
         private static readonly pb::MessageParser<DeviceDisconnected> _parser = new pb::MessageParser<DeviceDisconnected>(() => new DeviceDisconnected());
         private pb::UnknownFieldSet _unknownFields;
@@ -1358,7 +1839,7 @@ namespace Buttplug.Server.CLI {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::Buttplug.Server.CLI.GuiMessage.Descriptor.NestedTypes[7]; }
+          get { return global::Buttplug.Server.CLI.ServerProcessMessage.Descriptor.NestedTypes[8]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
