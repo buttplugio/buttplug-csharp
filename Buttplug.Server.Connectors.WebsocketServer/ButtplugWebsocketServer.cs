@@ -53,23 +53,24 @@ namespace Buttplug.Server.Connectors.WebsocketServer
 
         public bool Connected => _server != null;
 
-        public async Task StartServerAsync([NotNull] Func<ButtplugServer> aFactory, uint maxConnections = 1, int aPort = 12345, bool aLoopBack = true, bool aSecure = false, string aHostname = "localhost")
+        public async Task StartServerAsync([NotNull] Func<ButtplugServer> aFactory, uint aMaxConnections = 1, int aPort = 12345, bool aLocalOnly = true, string aCertPath = null, string aKeyPath = null)
         {
             _cancellation = new CancellationTokenSource();
             _serverFactory = aFactory;
 
-            _maxConnections = maxConnections;
+            _maxConnections = aMaxConnections;
 
             _logManager = new ButtplugLogManager();
             _logger = _logManager.GetLogger(GetType());
 
-            var endpoint = new IPEndPoint(aLoopBack ? IPAddress.Loopback : IPAddress.Any, aPort);
+            var endpoint = new IPEndPoint(aLocalOnly ? IPAddress.Loopback : IPAddress.Any, aPort);
 
             var options = new WebSocketListenerOptions();
             options.Standards.RegisterRfc6455();
-            if (aSecure)
+
+            if (aCertPath != null && aKeyPath != null)
             {
-                var cert = CertUtils.GetCert("Buttplug", aHostname);
+                var cert = CertUtils.LoadPEMCert(aCertPath, aKeyPath);
                 options.ConnectionExtensions.RegisterSecureConnection(cert);
             }
 

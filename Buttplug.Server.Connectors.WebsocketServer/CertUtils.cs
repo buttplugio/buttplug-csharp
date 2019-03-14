@@ -4,6 +4,10 @@
 //     license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using IoTSharp.X509Extensions;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Asn1.X509;
@@ -17,16 +21,48 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.X509;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Buttplug.Server.Connectors.WebsocketServer
 {
-    internal static class CertUtils
+    public static class CertUtils
     {
+        public static X509Certificate2 LoadPEMCert(string aPEMCertPath, string aPEMPrivKeyPath)
+        {
+            if (!File.Exists(aPEMCertPath) || !File.Exists(aPEMPrivKeyPath))
+            {
+                throw new ArgumentException();
+            }
+            // Converting PEMs is an extension method that requires an instance but doesn't update itself. Oi.
+            var cert = new X509Certificate2();
+            return cert.LoadPem(aPEMCertPath, aPEMPrivKeyPath);
+        }
+
+        /*
+        public static X509Certificate2 LoadPFXCert(string aPFXCAPath, string aPFXCertPath)
+        {
+            if (!File.Exists(aPFXCertPath))
+            {
+                throw new ArgumentException();
+            }
+            // Converting PEMs is an extension method that requires an instance but doesn't update itself. Oi.
+            var cert = new X509Certificate2();
+            return cert.GetCert(aCertPath, aPrivKeyPath);
+        }
+        */
+
+        // THIS DOES NOT WORK YET. It won't create the privkey due to now-invalid defines. Need to fork package or send PR or something.
+        /*
+        public static X509Certificate2 GenerateSelfSignedPemCertificate(string aCertPath, string aPrivKeyPath)
+        {
+            var cert = new X509Certificate2();
+            cert = Q2g.HelperPem.PemCertificateHelper.GenerateSelfSignedCertificate("CN=localhost", "CN=localhost", 2048);
+            cert.SavePem(aCertPath, aPrivKeyPath);
+            return cert;
+        }
+        */
+
         /// <exception cref="CryptographicException">
         /// Sometimes thrown due to issues generating keys.
         /// </exception>

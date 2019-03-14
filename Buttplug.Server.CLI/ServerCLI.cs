@@ -90,7 +90,8 @@ namespace Buttplug.Server.CLI
 
             if (aOptions.GenerateCertificate)
             {
-                CertUtils.GenerateSelfSignedCert(aOptions.CertFile, aOptions.PrivFile);
+                // CertUtils.GenerateSelfSignedCert(aOptions.CertFile, aOptions.PrivFile);
+                Console.WriteLine("Cannot currently generate certificates.");
                 return;
             }
 
@@ -149,24 +150,32 @@ namespace Buttplug.Server.CLI
                 return server;
             }
 
-            if (aOptions.WebsocketServer)
+            var ipcServer = new ButtplugIPCServer();
+            var insecureWebsocketServer = new ButtplugWebsocketServer();
+            var secureWebsocketServer = new ButtplugWebsocketServer();
+            var wait = new TaskCompletionSource<bool>();
+            if (aOptions.UseWebsocketServer)
             {
-                var server = new ButtplugWebsocketServer();
-                server.StartServerAsync(ServerFactory, 1, aOptions.Port, true, aOptions.WebsocketSecure, aOptions.Host).Wait();
-                var wait = new TaskCompletionSource<bool>();
-                server.ConnectionClosed += (aSender, aArgs) => { wait.SetResult(true); };
-                PrintGuiLog("Websocket Server now running...").Wait();
-                wait.Task.Wait();
+                if (aOptions.WebsocketServerInsecurePort != 0)
+                {
+                    insecureWebsocketServer.StartServerAsync(ServerFactory, 1, aOptions.WebsocketServerInsecurePort, !aOptions.WebsocketServerAllInterfaces).Wait();
+                    insecureWebsocketServer.ConnectionClosed += (aSender, aArgs) => { wait.SetResult(true); };
+                    PrintProcessLog("Insecure websocket Server now running...").Wait();
+                }
+                if (aOptions.WebsocketServerSecurePort != 0 && aOptions.CertFile != null && aOptions.PrivFile != null)
+                {
+                    secureWebsocketServer.StartServerAsync(ServerFactory, 1, aOptions.WebsocketServerSecurePort, !aOptions.WebsocketServerAllInterfaces, aOptions.CertFile, aOptions.PrivFile).Wait();
+                    secureWebsocketServer.ConnectionClosed += (aSender, aArgs) => { wait.SetResult(true); };
+                    PrintProcessLog("Secure websocket Server now running...").Wait();
+                }
             }
-            else if (aOptions.IpcServer)
+            else if (aOptions.UseIpcServer)
             {
-                var server = new ButtplugIPCServer();
-                server.StartServer(ServerFactory, aOptions.IpcPipe);
-                var wait = new TaskCompletionSource<bool>();
-                server.ConnectionClosed += (aSender, aArgs) => { wait.SetResult(true); };
-                PrintGuiLog("IPC Server now running...").Wait();
-                wait.Task.Wait();
+                ipcServer.StartServer(ServerFactory, aOptions.IpcPipe);
+                ipcServer.ConnectionClosed += (aSender, aArgs) => { wait.SetResult(true); };
+                PrintProcessLog("IPC Server now running...").Wait();
             }
+            wait.Task.Wait();
         }
     }
 }
