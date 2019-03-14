@@ -1,14 +1,18 @@
-﻿using CommandLine;
+﻿using System;
+using CommandLine;
 
 namespace Buttplug.Server.CLI
 {
     class Options
     {
-        [Option("name", Default = "Buttplug Server", HelpText = "Name of server to pass to connecting clients.")]
+        [Option("servername", Default = "Buttplug Server", HelpText = "Name of server to pass to connecting clients.")]
         public string ServerName { get; set; }
 
-        [Option("version", HelpText = "Print version and exit")]
+        [Option("serverversion", HelpText = "Print version and exit")]
         public bool Version { get; set; }
+
+        [Option("generatecert", HelpText = "Generate certificate file at the path specified, then exit.")]
+        public bool GenerateCertificate { get; set; }
 
         [Option("deviceconfig", HelpText = "Device Configuration file")]
         public string DeviceConfigFile { get; set; }
@@ -17,28 +21,31 @@ namespace Buttplug.Server.CLI
         public string UserDeviceConfigFile { get; set; }
 
         [Option("websocketserver", HelpText = "Run websocket server")]
-        public bool WebsocketServer { get; set; }
+        public bool UseWebsocketServer { get; set; }
 
-        [Option("host", Default = "localhost", HelpText = "Host for websocket servers")]
-        public string Host { get; set; }
+        [Option("websocketserverallinterfaces", Default = false, HelpText = "If passed, listen on all interfaces. Otherwise, only listen on 127.0.0.1.")]
+        public bool WebsocketServerAllInterfaces { get; set; }
 
-        [Option("port", Default = 12345, HelpText = "Port for websocket servers")]
-        public int Port { get; set; }
+        [Option("insecureport", Default = 0, HelpText = "Insecure port for websocket servers.")]
+        public int WebsocketServerInsecurePort { get; set; }
 
-        [Option("websocketsecure", Default = false, HelpText = "Generate and use certificate for Websocket Server")]
-        public bool WebsocketSecure { get; set; }
+        [Option("secureport", Default = 0, HelpText = "Secure port for websocket servers. Requires certificate files also be passed.")]
+        public int WebsocketServerSecurePort { get; set; }
 
-        [Option("certfile", HelpText = "Certificate for secure Websocket Server")]
+        [Option("certfile", HelpText = "Certificate file (in PEM format) for secure Websocket Server")]
         public string CertFile { get; set; }
 
-        [Option("ipcserver", HelpText = "Run ipc server")]
-        public bool IpcServer { get; set; }
+        [Option("privfile", HelpText = "Private Key file (in PEM format) for secure Websocket Server")]
+        public string PrivFile { get; set; }
 
-        [Option("guipipe", Default = null, HelpText = "IPC Pipe name for GUI info")]
-        public string GuiPipe { get; set; }
+        [Option("ipcserver", HelpText = "Run ipc server")]
+        public bool UseIpcServer { get; set; }
 
         [Option("ipcpipe", Default = "ButtplugPipe", HelpText = "Pipe name for IPC Server")]
         public string IpcPipe { get; set; }
+
+        [Option("guipipe", Default = null, HelpText = "IPC Pipe name for GUI info")]
+        public string GuiPipe { get; set; }
 
         [Option("pingtime", Default = 0, HelpText = "Ping timeout maximum for server (in milliseconds")]
         public int PingTime { get; set; }

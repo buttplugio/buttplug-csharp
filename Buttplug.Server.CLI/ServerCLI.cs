@@ -12,7 +12,6 @@ namespace Buttplug.Server.CLI
 {
     class ServerCLI
     {
-        private bool _hasGuiPipe;
         private NamedPipeClientStream _guiPipe;
         public bool ServerReady { get; }
         private DeviceManager _deviceManager;
@@ -37,7 +36,7 @@ namespace Buttplug.Server.CLI
 
         }
 
-        private async Task SendGuiMessage(GuiMessage aMsg)
+        private async Task SendProcessMessage(ServerProcessMessage aMsg)
         {
             if (_guiPipe == null)
             {
@@ -47,16 +46,16 @@ namespace Buttplug.Server.CLI
             await _guiPipe.WriteAsync(aMsg.ToByteArray(), 0, arr.Length);
         }
 
-        private async Task PrintGuiLog(string aGuiLogMsg)
+        private async Task PrintProcessLog(string aLogMsg)
         {
             if (_guiPipe != null)
             {
-                var msg = new GuiMessage { Guilog = new GuiMessage.Types.GuiLog { Message = aGuiLogMsg } };
-                await SendGuiMessage(msg);
+                var msg = new ServerProcessMessage { ProcessLog = new ServerProcessMessage.Types.ProcessLog { Message = aLogMsg } };
+                await SendProcessMessage(msg);
             }
             else
             {
-                Console.WriteLine(aGuiLogMsg);
+                Console.WriteLine(aLogMsg);
             }
         }
 
@@ -74,7 +73,6 @@ namespace Buttplug.Server.CLI
             {
                 // Set up IPC Pipe and wait for connection before continuing, so any errors will show
                 // up in the GUI.
-                _hasGuiPipe = true;
                 _guiPipe =
                     new NamedPipeClientStream(".", aOptions.GuiPipe, PipeDirection.InOut);
                 try
@@ -87,7 +85,13 @@ namespace Buttplug.Server.CLI
                     return;
                 }
 
-                SendGuiMessage(new GuiMessage {Processstarted = new GuiMessage.Types.ProcessStarted()}).Wait();
+                SendProcessMessage(new ServerProcessMessage { ProcessStarted = new ServerProcessMessage.Types.ProcessStarted() } ).Wait();
+            }
+
+            if (aOptions.GenerateCertificate)
+            {
+                CertUtils.GenerateSelfSignedCert(aOptions.CertFile, aOptions.PrivFile);
+                return;
             }
 
             if (aOptions.DeviceConfigFile != null)
@@ -104,15 +108,15 @@ namespace Buttplug.Server.CLI
                 DeviceConfigurationManager.Manager.LoadUserConfigurationFile(aOptions.UserDeviceConfigFile);
             }
 
-            if (aOptions.WebsocketServer && aOptions.IpcServer)
+            if (aOptions.UseWebsocketServer && aOptions.UseIpcServer)
             {
-                PrintGuiLog("ERROR: Can't run websocket server and IPC server at the same time!").Wait();
+                PrintProcessLog("ERROR: Can't run websocket server and IPC server at the same time!").Wait();
                 return;
             }
 
-            if (!aOptions.WebsocketServer && !aOptions.IpcServer)
+            if (!aOptions.UseWebsocketServer && !aOptions.UseIpcServer)
             {
-                PrintGuiLog("ERROR: Must specify either IPC server or Websocket server!").Wait();
+                PrintProcessLog("ERROR: Must specify either IPC server or Websocket server!").Wait();
                 return;
             }
 
@@ -121,7 +125,7 @@ namespace Buttplug.Server.CLI
             {
                 if (!Enum.TryParse(aOptions.Log, out logLevel))
                 {
-                    PrintGuiLog("ERROR: Invalid log level!").Wait();
+                    PrintProcessLog("ERROR: Invalid log level!").Wait();
                     return;
                 }
             }
@@ -138,7 +142,7 @@ namespace Buttplug.Server.CLI
                 {
                     server.LogManager.AddLogListener(logLevel, async (aLogMsg) =>
                     {
-                        await PrintGuiLog(aLogMsg.LogMessage);
+                        await PrintProcessLog(aLogMsg.LogMessage);
                     });
                 }
 
