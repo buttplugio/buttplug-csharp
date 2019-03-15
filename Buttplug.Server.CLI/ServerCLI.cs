@@ -1,7 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.IO.Pipes;
 using System.Threading.Tasks;
-using Buttplug.Client;
 using Buttplug.Core.Logging;
 using Buttplug.Devices.Configuration;
 using Buttplug.Server.Connectors.WebsocketServer;
@@ -12,9 +12,12 @@ namespace Buttplug.Server.CLI
 {
     class ServerCLI
     {
-        private NamedPipeClientStream _guiPipe;
+        private bool _useProtobufOutput;
         public bool ServerReady { get; }
         private DeviceManager _deviceManager;
+        private readonly Stream _stdout = Console.OpenStandardOutput();
+        private readonly Stream _stdin = Console.OpenStandardInput();
+
 
         // Simple server that exposes device manager, since we'll need to chain device managers
         // through it for this. This is required because Windows 10 has problems disconnecting from
@@ -38,17 +41,17 @@ namespace Buttplug.Server.CLI
 
         private async Task SendProcessMessage(ServerProcessMessage aMsg)
         {
-            if (_guiPipe == null)
+            if (!_useProtobufOutput)
             {
                 return;
             }
             var arr = aMsg.ToByteArray();
-            await _guiPipe.WriteAsync(aMsg.ToByteArray(), 0, arr.Length);
+            aMsg.WriteDelimitedTo(_stdout);
         }
 
         private async Task PrintProcessLog(string aLogMsg)
         {
-            if (_guiPipe != null)
+            if (_useProtobufOutput)
             {
                 var msg = new ServerProcessMessage { ProcessLog = new ServerProcessMessage.Types.ProcessLog { Message = aLogMsg } };
                 await SendProcessMessage(msg);
@@ -69,24 +72,7 @@ namespace Buttplug.Server.CLI
                 return;
             }
 
-            if (aOptions.GuiPipe != null)
-            {
-                // Set up IPC Pipe and wait for connection before continuing, so any errors will show
-                // up in the GUI.
-                _guiPipe =
-                    new NamedPipeClientStream(".", aOptions.GuiPipe, PipeDirection.InOut);
-                try
-                {
-                    _guiPipe.Connect(100);
-                }
-                catch(TimeoutException)
-                {
-                    Console.WriteLine("Can't connect to GUI pipe! Exiting.");
-                    return;
-                }
-
-                SendProcessMessage(new ServerProcessMessage { ProcessStarted = new ServerProcessMessage.Types.ProcessStarted() } ).Wait();
-            }
+            _useProtobufOutput = aOptions.GuiPipe;
 
             if (aOptions.GenerateCertificate)
             {

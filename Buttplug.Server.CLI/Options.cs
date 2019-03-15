@@ -44,8 +44,8 @@ namespace Buttplug.Server.CLI
         [Option("ipcpipe", Default = "ButtplugPipe", HelpText = "Pipe name for IPC Server")]
         public string IpcPipe { get; set; }
 
-        [Option("guipipe", Default = null, HelpText = "IPC Pipe name for GUI info")]
-        public string GuiPipe { get; set; }
+        [Option("guipipe", Default = false, HelpText = "If passed, output protobufs for parent process, instead of strings.")]
+        public bool GuiPipe { get; set; }
 
         [Option("pingtime", Default = 0, HelpText = "Ping timeout maximum for server (in milliseconds")]
         public int PingTime { get; set; }
