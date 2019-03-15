@@ -204,7 +204,7 @@ namespace Buttplug.Server.Connectors
 
         public void StopServer()
         {
-            if (!_cancellation.IsCancellationRequested)
+            if (_cancellation != null && _cancellation.IsCancellationRequested)
             {
                 try
                 {
