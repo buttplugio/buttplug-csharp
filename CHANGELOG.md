@@ -1,3 +1,10 @@
+# 0.4.2 (2019-03-15)
+
+## Features
+
+- Readied CLI for Intiface
+- Added PEM cert reading to Websocket Server
+
 # 0.4.1 (2019-03-08)
 
 ## Features
