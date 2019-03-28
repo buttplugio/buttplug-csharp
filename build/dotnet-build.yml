@@ -15,5 +15,5 @@ steps:
   - template: ./publish-cli.yml
     parameters:
       platform: ${{ parameters.platform }}
-      dotNetPublishPlatform: ${{ parameters.dotNetPublishPlatform }}
       framework: "netcoreapp2.1"
+      signed: false

@@ -1,0 +1,24 @@
+steps:
+  - task: AzureKeyVault@1
+    displayName: "Retreive Signing Key"
+    inputs:
+      azureSubscription: "azure-nplabs"
+      keyVaultName: "nplabs"
+  - task: PowerShell@2
+    displayName: 'Setup Signing Key'
+    inputs:
+      targetType: inline
+      script: |
+        $kvSecretBytes = [System.Convert]::FromBase64String("$(NPLabsCodeSigningCert)")
+        $certCollection = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
+        $certCollection.Import($kvSecretBytes,$null,[System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
+        $password = "$(NPLabsRepoSigningKey)"
+        $protectedCertificateBytes = $certCollection.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pkcs12, $password)
+        $pfxPath = "SigningCert.pfx"
+        [System.IO.File]::WriteAllBytes($pfxPath, $protectedCertificateBytes)
+  - task: Bash@3
+    displayName: "Update Nuget"
+    inputs:
+      targetType: inline
+      script: |
+        nuget update -self
