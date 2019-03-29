@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
@@ -14,8 +15,61 @@ namespace Buttplug.Devices.Protocols
 {
     internal class LiBoProtocol : ButtplugDeviceProtocol
     {
-        private readonly uint _vibratorCount = 1;
-        private readonly double[] _vibratorSpeed = { 0 };
+        internal class LiBoType
+        {
+            public string Name;
+            public uint VibeCount;
+            public uint[] VibeOrder = new uint[] { 0, 1 };
+        }
+
+        internal static readonly Dictionary<string, LiBoType> DevInfos =
+            new Dictionary<string, LiBoType>()
+            {
+                {
+                    "PiPiJing",
+                    new LiBoType()
+                    {
+                        Name = "Elle",
+                        VibeCount = 2, // Shock as vibe
+                        VibeOrder = new uint[] { 1, 0 },
+                    }
+                },
+                {
+                    "XiaoLu",
+                    new LiBoType()
+                    {
+                        Name = "Lottie",
+                        VibeCount = 1,
+                    }
+                },
+                {
+                    "SuoYinQiu",
+                    new LiBoType()
+                    {
+                        Name = "Karen",
+                        VibeCount = 0,
+                    }
+                },
+                {
+                    "BaiHu",
+                    new LiBoType()
+                    {
+                        Name = "LaLa",
+                        VibeCount = 2, // Suction as vibe
+                    }
+                },
+                {
+                    "LuXiaoHan",
+                    new LiBoType()
+                    {
+                        Name = "LuLu",
+                        VibeCount = 1,
+                    }
+                },
+            };
+
+        private readonly LiBoType _devInfo;
+        private readonly double[] _vibratorSpeed = { 0, 0 };
 
         public LiBoProtocol(IButtplugLogManager aLogManager,
                       IButtplugDeviceImpl aInterface)
@@ -23,11 +77,27 @@ namespace Buttplug.Devices.Protocols
                    $"LiBo ({aInterface.Name})",
                    aInterface)
         {
-            AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
-            AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() { FeatureCount = _vibratorCount });
-            AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
+            if (DevInfos.ContainsKey(aInterface.Name))
+            {
+                _devInfo = DevInfos[aInterface.Name];
+                Name = $"LiBo {_devInfo.Name}";
+            }
+            else
+            {
+                // Pick the single vibe baseline
+                BpLogger.Warn($"Cannot identify device {Name}, defaulting to LuLu settings.");
+                _devInfo = DevInfos["LuXiaoHan"];
+            }
 
-            // TODO Add a handler for Estim shocking, add a battery handler.
+            AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
+            if (_devInfo.VibeCount > 0)
+            {
+                AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
+                AddMessageHandler<VibrateCmd>(HandleVibrateCmd,
+                    new MessageAttributes { FeatureCount = _devInfo.VibeCount });
+            }
+
+            // TODO Add an explicit handler for Estim shocking, kegel pressure and add a battery handler.
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -39,14 +109,15 @@ namespace Buttplug.Devices.Protocols
         {
             var cmdMsg = CheckMessageHandler<SingleMotorVibrateCmd>(aMsg);
 
-            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, _vibratorCount), aToken).ConfigureAwait(false);
+            return await HandleVibrateCmd(VibrateCmd.Create(cmdMsg.DeviceIndex, cmdMsg.Id, cmdMsg.Speed, _devInfo.VibeCount), aToken).ConfigureAwait(false);
         }
 
         private async Task<ButtplugMessage> HandleVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, _vibratorCount);
+            var cmdMsg = CheckGenericMessageHandler<VibrateCmd>(aMsg, _devInfo.VibeCount);
 
-            var changed = false;
+            var changed = new[] { false, false };
+
             foreach (var v in cmdMsg.Speeds)
             {
                 if (!(Math.Abs(v.Speed - _vibratorSpeed[v.Index]) > 0.001))
@@ -54,26 +125,35 @@ namespace Buttplug.Devices.Protocols
                     continue;
                 }
 
-                changed = true;
+                changed[v.Index] = true;
                 _vibratorSpeed[v.Index] = v.Speed;
             }
 
-            if (!changed && SentVibration)
+            if (changed[_devInfo.VibeOrder[0]] || !SentVibration)
             {
-                return new Ok(cmdMsg.Id);
+                // Map a 0 - 100% value to a 0 - 0x64 value since 0 * x == 0 this will turn off the vibe if
+                // speed is 0.00
+                await Interface.WriteValueAsync(
+                    new[] { Convert.ToByte((uint)Math.Ceiling(_vibratorSpeed[_devInfo.VibeOrder[0]] * 0x64)) },
+                    new ButtplugDeviceWriteOptions { Endpoint = Endpoints.Tx },
+                    aToken).ConfigureAwait(false);
+            }
+
+            if (_devInfo.VibeCount < 2 ||
+                (!changed[_devInfo.VibeOrder[1]] && SentVibration) )
+            {
+                return new Ok(aMsg.Id);
             }
 
             SentVibration = true;
 
             // Map a 0 - 100% value to a 0 - 3 value since 0 * x == 0 this will turn off the vibe if
             // speed is 0.00
-            var mode = (int)Math.Ceiling(_vibratorSpeed[0] * 3);
-
-            var data = new[] { Convert.ToByte(mode) };
-
-            await Interface.WriteValueAsync(data,
-                new ButtplugDeviceWriteOptions { Endpoint = Endpoints.TxVibrate },
+            await Interface.WriteValueAsync(
+                new[] { Convert.ToByte((uint)Math.Ceiling(_vibratorSpeed[_devInfo.VibeOrder[1]] * 3)) },
+                new ButtplugDeviceWriteOptions { Endpoint = Endpoints.TxMode },
                 aToken).ConfigureAwait(false);
+
             return new Ok(aMsg.Id);
         }
     }
