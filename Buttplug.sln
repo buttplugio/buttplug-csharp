@@ -41,8 +41,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.Wi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.UWPBluetoothManager", "Buttplug.Server.Managers.UWPBluetoothManager\Buttplug.Server.Managers.UWPBluetoothManager.csproj", "{90503A9A-8377-46A4-80D1-7686F7DB72C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntifaceCLI", "IntifaceCLI\IntifaceCLI.csproj", "{B8C4D7AE-6F38-4B98-BDC6-9E639BE46B1D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,14 +179,6 @@ Global
 		{90503A9A-8377-46A4-80D1-7686F7DB72C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90503A9A-8377-46A4-80D1-7686F7DB72C1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{90503A9A-8377-46A4-80D1-7686F7DB72C1}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{B8C4D7AE-6F38-4B98-BDC6-9E639BE46B1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8C4D7AE-6F38-4B98-BDC6-9E639BE46B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8C4D7AE-6F38-4B98-BDC6-9E639BE46B1D}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8C4D7AE-6F38-4B98-BDC6-9E639BE46B1D}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
-		{B8C4D7AE-6F38-4B98-BDC6-9E639BE46B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8C4D7AE-6F38-4B98-BDC6-9E639BE46B1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8C4D7AE-6F38-4B98-BDC6-9E639BE46B1D}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{B8C4D7AE-6F38-4B98-BDC6-9E639BE46B1D}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
