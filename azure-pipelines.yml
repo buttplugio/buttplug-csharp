@@ -52,6 +52,13 @@ jobs:
         inputs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
+      - task: CopyFiles@2
+        displayName: "Copy nuget packages to staging"
+        inputs:
+          # Prefix this with Buttplug, otherwise we'll archive the packages directory too.
+          contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
+          targetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
+          cleanTargetFolder: true
       - task: PowerShell@2
         displayName: 'Sign Exported Nuget Packages'
         # Only sign on dev/master builds
@@ -62,13 +69,6 @@ jobs:
             Get-ChildItem -Path $(Build.ArtifactStagingDirectory) -Filter *.nupkg -Recurse -File -Name| ForEach-Object {
                 nuget sign $(Build.ArtifactStagingDirectory)\$_ -CertificatePath SigningCert.pfx -CertificatePassword "$(NPLabsRepoSigningKey)" -Timestamper http://timestamp.comodoca.com/rfc3161
             }
-      - task: CopyFiles@2
-        displayName: "Copy nuget packages to staging"
-        inputs:
-          # Prefix this with Buttplug, otherwise we'll archive the packages directory too.
-          contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
-          targetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
-          cleanTargetFolder: true
       - task: PublishPipelineArtifact@0
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)'
