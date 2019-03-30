@@ -72,7 +72,7 @@ jobs:
       - task: PublishPipelineArtifact@0
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)'
-          artifactName: 'nuget-packages'
+          artifactName: 'artifacts-$(buildConfiguration)'
   - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
@@ -167,7 +167,7 @@ jobs:
           targetType: inline
           script: |
             cinst -y --no-progress codecov
-            codecov.exe -f "$(System.ArtifactsDirectory)/win-x64-Debug/coverage.xml" -t $(CODECOV_TOKEN)
+            codecov.exe -f "$(System.ArtifactsDirectory)/artifacts-Debug/coverage.xml" -t $(CODECOV_TOKEN)
         displayName: Upload coverage to codecov.
         continueOnError: true
       - task: NuGetCommand@2
@@ -176,6 +176,6 @@ jobs:
         inputs:
           command: "push"
           nuGetFeedType: "external"
-          packagesToPush: "$(System.ArtifactsDirectory)/**/Release/**/!(*.symbols).nupkg"
+          packagesToPush: "$(System.ArtifactsDirectory)/artifacts-Release/**/!(*.symbols).nupkg"
           allowPackageConflicts: false
           publishFeedCredentials: "NuGet.org"
