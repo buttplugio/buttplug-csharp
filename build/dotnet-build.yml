@@ -12,8 +12,3 @@ steps:
     inputs:
       command: 'test'
       arguments: 'Buttplug.Test/Buttplug.Test.csproj --configuration $(buildConfiguration)Standard'
-  - template: ./publish-cli.yml
-    parameters:
-      platform: ${{ parameters.platform }}
-      framework: "netcoreapp2.1"
-      signed: false
