@@ -52,6 +52,16 @@ jobs:
         inputs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
+      - task: PowerShell@2
+        displayName: 'Sign Exported Nuget Packages'
+        # Only sign on dev/master builds
+        condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
+        inputs:
+          targetType: inline
+          script: |
+            Get-ChildItem -Path $(Build.ArtifactStagingDirectory) -Filter *.nupkg -Recurse -File -Name| ForEach-Object {
+                nuget sign $(Build.ArtifactStagingDirectory)\$_ -CertificatePath SigningCert.pfx -CertificatePassword "$(NPLabsRepoSigningKey)" -Timestamper http://timestamp.comodoca.com/rfc3161
+            }
       - task: CopyFiles@2
         displayName: "Copy nuget packages to staging"
         inputs:
@@ -62,7 +72,7 @@ jobs:
       - task: PublishPipelineArtifact@0
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)'
-          artifactName: '${{ parameters.platform }}-$(buildConfiguration)'
+          artifactName: 'nuget-packages'
   - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
