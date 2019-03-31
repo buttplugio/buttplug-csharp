@@ -325,7 +325,14 @@ namespace Buttplug.Server
                 foreach (var dll in Directory.GetFiles(path, "Buttplug.Server.Managers.*.dll"))
                 {
                     _bpLogger.Debug($"Loading {dll}");
-                    Assembly.LoadFile(dll);
+                    try
+                    {
+                        Assembly.LoadFile(dll);
+                    }
+                    catch (Exception)
+                    {
+                        _bpLogger.Warn($"Loading {dll} for subtype manager addition failed.");
+                    }
                 }
             }
 
@@ -346,7 +353,7 @@ namespace Buttplug.Server
                 try
                 {
                     _bpLogger.Info($"Adding subtype manager {t.Name} as part of AddAllSubtypeManagers.");
-                    var mgr = (IDeviceSubtypeManager)Activator.CreateInstance(t, new[] { _bpLogManager });
+                    var mgr = (IDeviceSubtypeManager)Activator.CreateInstance(t, _bpLogManager);
                     AddDeviceSubtypeManager(mgr);
                 }
                 catch (MissingMethodException)
