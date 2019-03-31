@@ -1,24 +1,23 @@
 ﻿// <copyright file="ButtplugServerTests.cs" company="Nonpolynomial Labs LLC">
-// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
-// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
-// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+//     Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+//     Copyright (c) Nonpolynomial Labs LLC. All rights reserved. Licensed under the BSD 3-Clause
+//     license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 // Test file, disable ConfigureAwait checking.
 // ReSharper disable ConsiderUsingConfigureAwait
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Test;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Buttplug.Server.Test
 {
@@ -98,6 +97,7 @@ namespace Buttplug.Server.Test
                     da.DeviceMessages.Count().Should().Be(3);
                     da.DeviceMessages.Should().ContainKey("SingleMotorVibrateCmd");
                     break;
+
                 case DeviceList dl:
                     dl.Devices.Length.Should().Be(1);
                     var di = dl.Devices[0];
@@ -106,11 +106,14 @@ namespace Buttplug.Server.Test
                     di.DeviceMessages.Count().Should().Be(3);
                     di.DeviceMessages.ContainsKey("SingleMotorVibrateCmd");
                     break;
+
                 case DeviceRemoved dr:
                     dr.DeviceIndex.Should().Be(1);
                     break;
+
                 case ScanningFinished _:
                     break;
+
                 default:
                     Assert.Fail($"Shouldn't be here {aMsgArgs.GetType().Name}");
                     break;
@@ -236,6 +239,82 @@ namespace Buttplug.Server.Test
 
                 (i == 0 ? msgReceived : !msgReceived).Should().BeTrue();
                 msgReceived = false;
+            }
+        }
+
+        [Test]
+        public async Task TestDeviceReconnect()
+        {
+            var d = new TestDevice(new ButtplugLogManager(), "TestDevice", "TestAddress");
+            var m = new TestDeviceSubtypeManager(d);
+            _server.AddDeviceSubtypeManager(aLogger => m);
+            var msgReceived = false;
+            _server.MessageReceived += (aObj, aMsgArgs) =>
+            {
+                switch (aMsgArgs.Message)
+                {
+                    case DeviceAdded da:
+                        msgReceived = true;
+                        da.DeviceName.Should().Be("TestDevice");
+                        da.DeviceIndex.Should().Be(1);
+                        da.Id.Should().Be(0);
+                        break;
+
+                    case DeviceRemoved da:
+                        msgReceived = true;
+                        da.DeviceIndex.Should().Be(1);
+                        da.Id.Should().Be(0);
+                        break;
+
+                    case ScanningFinished _:
+                        break;
+
+                    default:
+                        msgReceived = true;
+                        aMsgArgs.Message.Should().NotBeOfType<DeviceAdded>();
+                        break;
+                }
+            };
+            (await _server.SendMessageAsync(new StartScanning())).Should().BeOfType<Ok>();
+            (await _server.SendMessageAsync(new StopScanning())).Should().BeOfType<Ok>();
+            msgReceived.Should().BeTrue();
+            msgReceived = false;
+
+            var x = await _server.SendMessageAsync(new RequestDeviceList());
+            x.Should().BeOfType<DeviceList>();
+            switch (x)
+            {
+                case DeviceList dl:
+                    dl.Devices.Length.Should().Be(1);
+                    dl.Devices[0].DeviceIndex.Should().Be(1U);
+                    dl.Devices[0].DeviceName.Should().Be("TestDevice");
+                    break;
+            }
+            msgReceived = false;
+
+            d.RemoveDevice();
+
+            msgReceived.Should().BeTrue();
+            msgReceived = false;
+
+
+            d = new TestDevice(new ButtplugLogManager(), "TestDevice", "TestAddress");
+            m.AddDevice(d);
+            (await _server.SendMessageAsync(new StartScanning())).Should().BeOfType<Ok>();
+            (await _server.SendMessageAsync(new StopScanning())).Should().BeOfType<Ok>();
+
+            msgReceived.Should().BeTrue();
+            msgReceived = false;
+
+            x = await _server.SendMessageAsync(new RequestDeviceList());
+            x.Should().BeOfType<DeviceList>();
+            switch (x)
+            {
+                case DeviceList dl:
+                    dl.Devices.Length.Should().Be(1);
+                    dl.Devices[0].DeviceIndex.Should().Be(1U);
+                    dl.Devices[0].DeviceName.Should().Be("TestDevice");
+                    break;
             }
         }
 

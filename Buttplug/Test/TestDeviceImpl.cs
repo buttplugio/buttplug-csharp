@@ -36,11 +36,11 @@ namespace Buttplug.Test
 
         public override bool Connected => _connected;
 
-        public TestDeviceImpl(IButtplugLogManager aLogManager, string aName)
+        public TestDeviceImpl(IButtplugLogManager aLogManager, string aName, string aAddress = null)
            : base(aLogManager)
         {
             Name = aName;
-            Address = new Random().Next(0, 100).ToString();
+            Address = aAddress ?? new Random().Next(0, 100).ToString();
             Removed = false;
             _connected = true;
             DeviceRemoved += (obj, args) => { Removed = true; };
