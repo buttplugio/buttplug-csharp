@@ -251,7 +251,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         {
             if (_bleDevice?.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
             {
-                InvokeDeviceRemoved();
+                Disconnect();
             }
         }
 
