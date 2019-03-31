@@ -43,8 +43,6 @@ namespace Buttplug.Devices
         [NotNull]
         protected readonly IButtplugLog BpLogger;
 
-        private bool _isDisconnected;
-
         /// <inheritdoc />
         [CanBeNull]
         public event EventHandler<MessageReceivedEventArgs> MessageEmitted;
@@ -102,7 +100,7 @@ namespace Buttplug.Devices
         /// <inheritdoc />
         public async Task<ButtplugMessage> ParseMessageAsync([NotNull] ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            if (_isDisconnected)
+            if (!Connected)
             {
                 throw new ButtplugDeviceException(BpLogger, $"{Name} has disconnected and can no longer process messages.", aMsg.Id);
             }
@@ -133,7 +131,6 @@ namespace Buttplug.Devices
         /// </summary>
         protected void InvokeDeviceRemoved()
         {
-            _isDisconnected = true;
             DeviceRemoved?.Invoke(this, new EventArgs());
         }
     }
