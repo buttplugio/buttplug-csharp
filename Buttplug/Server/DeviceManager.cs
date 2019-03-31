@@ -34,7 +34,6 @@ namespace Buttplug.Server
 
         private readonly IButtplugLogManager _bpLogManager;
 
-        private bool _hasAddedSubtypeManagers;
         private bool _isScanning;
 
         private long _deviceIndexCounter;
@@ -60,7 +59,6 @@ namespace Buttplug.Server
             _sentFinished = true;
             _devices = new Dictionary<uint, IButtplugDevice>();
             _deviceIndexCounter = 0;
-            _hasAddedSubtypeManagers = false;
             _isScanning = false;
 
             _managerSearchDirs = aSearchDirs ?? new List<string> { Directory.GetCurrentDirectory() };
@@ -267,9 +265,13 @@ namespace Buttplug.Server
         private async Task StartScanning()
         {
             // Check for subtype managers before we lock.
-            if (!_hasAddedSubtypeManagers)
+            if (_managers.Count == 0)
             {
                 await AddAllSubtypeManagers();
+            }
+            else
+            {
+                _bpLogger.Info("Subtype managers already added (possibly manually), not calling AddAllSubtypeManagers().");
             }
 
             if (_isScanning)
