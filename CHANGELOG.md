@@ -1,3 +1,17 @@
+# 0.4.3 (2019-03-31)
+
+## Features
+
+- Removed CLI, now at https://github.com/intiface/intiface-cli-csharp
+- Nuget packages now cryptographically signed
+- Update UWP Bluetooth Manager to Win10 17763 SDK
+- Added support for more LiBo Devices
+
+## Bugfixes
+
+- Fixed issue with bluetooth devices not reconnecting (#602)
+- Fixed redundant calls to AddAllSubtypeManagers (#610)
+
 # 0.4.2 (2019-03-15)
 
 ## Features
