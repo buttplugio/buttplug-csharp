@@ -44,9 +44,20 @@ namespace Buttplug.Server
         /// ScanningFinished call if a manager returns immediately.
         /// </summary>
         private bool _isStartingScan;
-        // Needs to be internal for tests.
+
+        /// <summary>
+        /// Get an internal array of connected device objects, mapped via the device ID they're
+        /// exposed to the Client API with. Should only contain connected devices.
+        /// </summary>
+        /// <remarks>Needs to be internal for tests.</remarks>
         // ReSharper disable once MemberCanBePrivate.Global
-        internal Dictionary<uint, IButtplugDevice> _devices { get; }
+        internal Dictionary<uint, IButtplugDevice> Devices { get; }
+
+        /// <summary>
+        /// Gets a map of device addresses to assigned indexes. Used for reassigning indexes to
+        /// devices that have disconnected and reconnected later during a session.
+        /// </summary>
+        internal Dictionary<string, uint> DeviceIds { get; }
 
         public uint SpecVersion { get; set; }
 
@@ -57,7 +68,8 @@ namespace Buttplug.Server
             _bpLogger = _bpLogManager.GetLogger(GetType());
             _bpLogger.Info("Setting up DeviceManager");
             _sentFinished = true;
-            _devices = new Dictionary<uint, IButtplugDevice>();
+            Devices = new Dictionary<uint, IButtplugDevice>();
+            DeviceIds = new Dictionary<string, uint>();
             _deviceIndexCounter = 0;
             _isScanning = false;
 
@@ -93,20 +105,21 @@ namespace Buttplug.Server
                 return;
             }
 
-            var duplicates = from x in _devices
+            var duplicates = from x in Devices
                              where x.Value.Identifier == aEvent.Device.Identifier
                              select x;
-            if (duplicates.Any() && (duplicates.Count() > 1 || duplicates.First().Value.Connected))
+            if (duplicates.Any())
             {
                 _bpLogger.Debug($"Already have device {aEvent.Device.Name} in Devices list");
                 return;
             }
 
             // If we get to 4 billion devices connected, this may be a problem.
-            var deviceIndex = duplicates.Any() ? duplicates.First().Key : (uint)Interlocked.Increment(ref _deviceIndexCounter);
-            _bpLogger.Info((duplicates.Any() ? "Re-" : string.Empty) + $"Adding Device {aEvent.Device.Name} at index {deviceIndex}");
+            var deviceIndex = DeviceIds.ContainsKey(aEvent.Device.Identifier) ? DeviceIds[aEvent.Device.Identifier] : (uint)Interlocked.Increment(ref _deviceIndexCounter);
+            _bpLogger.Info((DeviceIds.ContainsKey(aEvent.Device.Identifier) ? "Re-" : string.Empty) + $"Adding Device {aEvent.Device.Name} at index {deviceIndex}");
 
-            _devices[deviceIndex] = aEvent.Device;
+            DeviceIds[aEvent.Device.Identifier] = deviceIndex;
+            Devices[deviceIndex] = aEvent.Device;
             aEvent.Device.DeviceRemoved += DeviceRemovedHandler;
             aEvent.Device.MessageEmitted += MessageEmittedHandler;
             var msg = new DeviceAdded(
@@ -134,7 +147,7 @@ namespace Buttplug.Server
 
             // The device itself will fire the remove event, so look it up in the dictionary and
             // translate that for clients.
-            var entry = (from x in _devices where x.Value.Identifier == device.Identifier select x).ToList();
+            var entry = (from x in Devices where x.Value.Identifier == device.Identifier select x).ToList();
             if (!entry.Any())
             {
                 _bpLogger.Error("Got DeviceRemoved Event from object that is not in devices dictionary");
@@ -150,6 +163,8 @@ namespace Buttplug.Server
                 pair.Value.DeviceRemoved -= DeviceRemovedHandler;
                 _bpLogger.Info($"Device removed: {pair.Key} - {pair.Value.Name}");
                 DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(new DeviceRemoved(pair.Key)));
+                // Once a device is removed, it should no longer be in the devices array, period.
+                Devices.Remove(pair.Key);
             }
         }
 
@@ -202,7 +217,7 @@ namespace Buttplug.Server
                     _bpLogger.Debug("Got StopAllDevices Message");
                     var isOk = true;
                     var errorMsg = string.Empty;
-                    foreach (var d in _devices.ToList())
+                    foreach (var d in Devices.ToList())
                     {
                         if (!d.Value.Connected)
                         {
@@ -228,7 +243,7 @@ namespace Buttplug.Server
                     throw new ButtplugDeviceException(_bpLogger, errorMsg, aMsg.Id);
                 case RequestDeviceList _:
                     _bpLogger.Debug("Got RequestDeviceList Message");
-                    var msgDevices = _devices.Where(aDevice => aDevice.Value.Connected)
+                    var msgDevices = Devices.Where(aDevice => aDevice.Value.Connected)
                         .Select(aDevice => new DeviceMessageInfo(
                             aDevice.Key,
                             aDevice.Value.Name,
@@ -238,13 +253,13 @@ namespace Buttplug.Server
                 // If it's a device message, it's most likely not ours.
                 case ButtplugDeviceMessage m:
                     _bpLogger.Trace($"Sending {aMsg.GetType().Name} to device index {m.DeviceIndex}");
-                    if (!_devices.ContainsKey(m.DeviceIndex))
+                    if (!Devices.ContainsKey(m.DeviceIndex))
                     {
                         throw new ButtplugDeviceException(_bpLogger,
                             $"Dropping message for unknown device index {m.DeviceIndex}", id);
                     }
 
-                    return await _devices[m.DeviceIndex].ParseMessageAsync(m, aToken).ConfigureAwait(false);
+                    return await Devices[m.DeviceIndex].ParseMessageAsync(m, aToken).ConfigureAwait(false);
             }
 
             throw new ButtplugMessageException(_bpLogger, $"Message type {aMsg.GetType().Name} unhandled by this server.", id);
@@ -253,8 +268,8 @@ namespace Buttplug.Server
         internal void RemoveAllDevices()
         {
             StopScanning();
-            var removeDevices = _devices.Values;
-            _devices.Clear();
+            var removeDevices = Devices.Values;
+            Devices.Clear();
             foreach (var d in removeDevices)
             {
                 d.DeviceRemoved -= DeviceRemovedHandler;
