@@ -48,6 +48,7 @@ namespace Buttplug.Devices.Configuration
             AddProtocol("magic-motion", typeof(MagicMotionProtocol));
             AddProtocol("mysteryvibe", typeof(MysteryVibeProtocol));
             AddProtocol("picobong", typeof(PicobongProtocol));
+            AddProtocol("prettylove", typeof(PrettyLoveProtocol));
             AddProtocol("vibratissimo", typeof(VibratissimoProtocol));
             AddProtocol("vorze-sa", typeof(VorzeSAProtocol));
             AddProtocol("wevibe", typeof(WeVibeProtocol));
