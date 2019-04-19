@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.ProjectFiles", "Buttplug.ProjectFiles\Buttplug.ProjectFiles.csproj", "{437B1971-00B6-4638-A700-756F4B7610AA}"
 EndProject
@@ -40,6 +40,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.WinUSBManager", "Buttplug.Server.Managers.WinUSBManager\Buttplug.Server.Managers.WinUSBManager.csproj", "{14B529C4-4921-4EF3-847F-2FAE488B35BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.UWPBluetoothManager", "Buttplug.Server.Managers.UWPBluetoothManager\Buttplug.Server.Managers.UWPBluetoothManager.csproj", "{90503A9A-8377-46A4-80D1-7686F7DB72C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Server.Managers.XamarinBluetoothManager", "Buttplug.Server.Managers.XamarinBluetoothManager\Buttplug.Server.Managers.XamarinBluetoothManager.csproj", "{28729771-B499-4D79-B40C-81A2C7D4D3DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,6 +181,14 @@ Global
 		{90503A9A-8377-46A4-80D1-7686F7DB72C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90503A9A-8377-46A4-80D1-7686F7DB72C1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{90503A9A-8377-46A4-80D1-7686F7DB72C1}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
+		{28729771-B499-4D79-B40C-81A2C7D4D3DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28729771-B499-4D79-B40C-81A2C7D4D3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28729771-B499-4D79-B40C-81A2C7D4D3DB}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{28729771-B499-4D79-B40C-81A2C7D4D3DB}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
+		{28729771-B499-4D79-B40C-81A2C7D4D3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28729771-B499-4D79-B40C-81A2C7D4D3DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28729771-B499-4D79-B40C-81A2C7D4D3DB}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
+		{28729771-B499-4D79-B40C-81A2C7D4D3DB}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
