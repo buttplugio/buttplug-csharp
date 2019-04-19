@@ -71,9 +71,9 @@ namespace Buttplug.Examples._03.DeviceEnumeration
             // In this case, we also have to create a Test Device, since we aren't working with
             // actual hardware. This step won't normally be required if you're working with a
             // hardware subtype manager.
-            var testDevice = new TestDevice(new ButtplugLogManager(), "Test Device");
-            server.AddDeviceSubtypeManager(
-                aLogManager => new TestDeviceSubtypeManager(testDevice));
+            //var testDevice = new TestDevice(new ButtplugLogManager(), "Test Device");
+            //server.AddDeviceSubtypeManager(
+            //    aLogManager => new TestDeviceSubtypeManager(testDevice));
 
             // If you'd like to see what manual setup looks like with an actual hardware manager,
             // here's how we'd add the XInput (Xbox Gamepad) manager to the server.
@@ -169,7 +169,7 @@ namespace Buttplug.Examples._03.DeviceEnumeration
             // disconnect, which simulates the device powering off, going out of range, or doing
             // something else that makes it no longer connected to the server. This should fire off
             // the DeviceRemoved event.
-            testDevice.Disconnect();
+            //testDevice.Disconnect();
             await WaitForKey();
 
             // And now we disconnect as usual.

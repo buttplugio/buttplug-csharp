@@ -9,13 +9,12 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Buttplug.Examples._04.DeviceEnumeration</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Plugin.BluetoothLE" Version="6.2.3" />
+  </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Buttplug.Server.Managers.XamarinBluetoothManager\Buttplug.Server.Managers.XamarinBluetoothManager.csproj" />
     <ProjectReference Include="..\Buttplug\Buttplug.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="Microsoft.NETCore.App" Version="2.1.0" />
-  </ItemGroup>
-
-
 </Project>
