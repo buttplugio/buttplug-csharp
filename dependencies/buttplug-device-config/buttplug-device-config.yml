@@ -172,6 +172,7 @@ protocols:
           - LuXiaoHan # LuLu - Egg
           - SuoYinQiu # Karen - Kegel
           - BaiHu # LaLa - Suction Rabbit
+          - MonsterPub # Sistalk MonsterPub (all 6?)
         services:
           # Write Service
           00006000-0000-1000-8000-00805f9b34fb:
