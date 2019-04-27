@@ -66,6 +66,14 @@ namespace Buttplug.Devices.Protocols
                         VibeCount = 1,
                     }
                 },
+                {
+                    "MonsterPub",
+                    new LiBoType()
+                    {
+                        Name = "MonsterPub",
+                        VibeCount = 1,
+                    }
+                },
             };
 
         private readonly LiBoType _devInfo;
@@ -102,7 +110,15 @@ namespace Buttplug.Devices.Protocols
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
-            return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id), aToken).ConfigureAwait(false);
+            // We can't actually stop the Karen
+
+            if (_devInfo.VibeCount > 0)
+            {
+                return await HandleSingleMotorVibrateCmd(new SingleMotorVibrateCmd(aMsg.DeviceIndex, 0, aMsg.Id),
+                    aToken).ConfigureAwait(false);
+            }
+
+            return new Ok(aMsg.Id);
         }
 
         private async Task<ButtplugMessage> HandleSingleMotorVibrateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
@@ -131,17 +147,28 @@ namespace Buttplug.Devices.Protocols
 
             if (changed[_devInfo.VibeOrder[0]] || !SentVibration)
             {
+                var ep = Endpoints.Tx;
+                if (_devInfo.VibeCount == 1 && (uint)Math.Ceiling(_vibratorSpeed[_devInfo.VibeOrder[0]] * 0x64) == 0)
+                {
+                    ep = Endpoints.TxMode;
+                }
+
                 // Map a 0 - 100% value to a 0 - 0x64 value since 0 * x == 0 this will turn off the vibe if
                 // speed is 0.00
                 await Interface.WriteValueAsync(
                     new[] { Convert.ToByte((uint)Math.Ceiling(_vibratorSpeed[_devInfo.VibeOrder[0]] * 0x64)) },
-                    new ButtplugDeviceWriteOptions { Endpoint = Endpoints.Tx },
+                    new ButtplugDeviceWriteOptions { Endpoint = ep },
                     aToken).ConfigureAwait(false);
             }
 
             if (_devInfo.VibeCount < 2 ||
                 (!changed[_devInfo.VibeOrder[1]] && SentVibration) )
             {
+                if (_devInfo.VibeCount < 2)
+                {
+                    SentVibration = true;
+                }
+
                 return new Ok(aMsg.Id);
             }
 
