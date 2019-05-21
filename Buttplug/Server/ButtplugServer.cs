@@ -73,6 +73,11 @@ namespace Buttplug.Server
         protected readonly DeviceManager _deviceManager;
 
         /// <summary>
+        /// Publicly exposed DeviceManager, for use when persisting DMs between servers (God damnit, windows).
+        /// </summary>
+        public DeviceManager DeviceManager => _deviceManager;
+
+        /// <summary>
         /// Timer that tracks ping updates from clients, if requested.
         /// </summary>
         [CanBeNull]
