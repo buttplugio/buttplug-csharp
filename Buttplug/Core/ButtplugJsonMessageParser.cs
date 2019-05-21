@@ -39,7 +39,7 @@ namespace Buttplug.Core
         /// Schema object, for checking message validity against the spec schema.
         /// </summary>
         [NotNull]
-        private readonly JsonSchema4 _schema;
+        private readonly JsonSchema _schema;
 
         /// <summary>
         /// Serializes/deserializes object to/from JSON.
@@ -78,7 +78,7 @@ namespace Buttplug.Core
 
             // Load the schema for validation. Schema file is an embedded resource in the library.
             var jsonSchemaString = ButtplugUtils.GetStringFromFileResource("Buttplug.buttplug-schema.json");
-            _schema = JsonSchema4.FromJsonAsync(jsonSchemaString)?.GetAwaiter().GetResult() ?? throw new InvalidOperationException();
+            _schema = JsonSchema.FromJsonAsync(jsonSchemaString)?.GetAwaiter().GetResult() ?? throw new InvalidOperationException();
         }
 
         /// <summary>
