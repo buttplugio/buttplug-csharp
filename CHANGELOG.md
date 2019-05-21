@@ -1,3 +1,16 @@
+# 0.4.4 (2019-05-21)
+
+## Features
+
+- New hardware support
+  - Mysteryvibe Tenuto
+- DeviceManager can now be accessed from a ButtplugServer via a getter
+  
+## Bugfixes
+
+- Don't hold disconnected devices in the main device array (#618)
+- Fix nuget display icons
+
 # 0.4.3 (2019-03-31)
 
 ## Features
