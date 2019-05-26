@@ -44,7 +44,7 @@ namespace Buttplug.Devices.Protocols
         public LovenseProtocol(IButtplugLogManager aLogManager,
                        IButtplugDeviceImpl aInterface)
             : base(aLogManager,
-                   "Lovense Unknown Device",
+                   "Lovense Device (Uninitialized)",
                    aInterface)
         {
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
