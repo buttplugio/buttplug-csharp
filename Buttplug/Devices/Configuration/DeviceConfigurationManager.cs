@@ -54,6 +54,7 @@ namespace Buttplug.Devices.Configuration
             AddProtocol("youcups", typeof(YoucupsProtocol));
             AddProtocol("vorze-cyclone-x", typeof(CycloneX10Protocol));
             AddProtocol("youou", typeof(YououProtocol));
+            AddProtocol("kiiroo-v21", typeof(KiirooGen21Protocol));
 
             // ET312 turned off until deadlocks and caching are fixed. See #593, #594, #595
             // AddProtocol("erostek-et312", typeof(ErostekET312Protocol));

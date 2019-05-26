@@ -14,6 +14,7 @@ using JetBrains.Annotations;
 using Microsoft.Win32;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
+using Buttplug.Devices;
 
 namespace Buttplug.Server.Managers.UWPBluetoothManager
 {
@@ -155,14 +156,25 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             // If a device is turned on after scanning has started, windows seems to lose the device
             // handle the first couple of times it tries to deal with the advertisement. Just log the
             // error and hope it reconnects on a later retry.
+            IButtplugDeviceImpl bleDevice = null;
+            IButtplugDevice btDevice = null; 
             try
             {
-                var bleDevice = await UWPBluetoothDeviceInterface.Create(LogManager, bleConfig, dev).ConfigureAwait(false);
-                var btDevice = await deviceFactory.CreateDevice(LogManager, bleDevice).ConfigureAwait(false);
+                bleDevice = await UWPBluetoothDeviceInterface.Create(LogManager, bleConfig, dev).ConfigureAwait(false);
+                btDevice = await deviceFactory.CreateDevice(LogManager, bleDevice).ConfigureAwait(false);
                 InvokeDeviceAdded(new DeviceAddedEventArgs(btDevice));
             }
             catch (Exception ex)
             {
+                if (btDevice != null)
+                {
+                    btDevice.Disconnect();
+                }
+                else
+                {
+                    bleDevice?.Disconnect();
+                }
+                
                 BpLogger.Error(
                     $"Cannot connect to device {advertName} {btAddr}: {ex.Message}");
             }

@@ -109,7 +109,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     if (chrResult.Status != GattCommunicationStatus.Success)
                     {
                         throw new ButtplugDeviceException(BpLogger,
-                            $"Cannot connect to characteristics for {serviceGuid} of {_bleDevice.Name}.");
+                            $"Cannot connect to characteristics for {serviceGuid} of {_bleDevice.Name}: {chrResult.Status}");
                     }
 
                     foreach (var chr in chrResult.Characteristics)
