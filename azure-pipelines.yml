@@ -18,7 +18,7 @@ variables:
 jobs:
   - job: Windows
     pool:
-      vmImage: 'vs2017-win2016'
+      vmImage: 'windows-2019'
     strategy:
       matrix:
         Debug:
@@ -154,7 +154,7 @@ jobs:
       - Linux
     condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     pool:
-      vmImage: 'vs2017-win2016'
+      vmImage: 'windows-2019'
     steps:
       - template: build/setup-variables.yml
       - task: DownloadPipelineArtifact@1
