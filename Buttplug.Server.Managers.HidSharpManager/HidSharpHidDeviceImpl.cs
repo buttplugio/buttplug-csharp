@@ -19,7 +19,7 @@ namespace Buttplug.Server.Managers.HidSharpManager
         private HidDevice _device;
         private HidStream _stream;
 
-        public override bool Connected => _stream == null;
+        public override bool Connected => _stream != null;
 
         public HidSharpHidDeviceImpl(IButtplugLogManager aLogManager, HidDevice aDevice)
             : base(aLogManager)
