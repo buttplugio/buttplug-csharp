@@ -372,11 +372,11 @@ protocols:
       services:
         0000fff0-0000-1000-8000-00805f9b34fb:
           tx: 0000fff6-0000-1000-8000-00805f9b34fb
+  realtouch:
+    hid:
+      vendor-id: 0x1f54
+      product-id: 0x0001
   # nintendo-joycon:
-  #   names:
-  #     en-us: Nintendo Joycon
-  #   protocol: joycon
-  #   connection-info:
-  #     - hid:
-  #         vendor-id: 0x057e
-  #         product-id: 0x2006
+  #   hid:
+  #     vendor-id: 0x057e
+  #     product-id: 0x2006
