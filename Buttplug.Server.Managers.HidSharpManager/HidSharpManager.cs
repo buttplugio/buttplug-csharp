@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using Buttplug.Core.Logging;
 using Buttplug.Devices.Configuration;
 using HidSharp;
@@ -13,6 +14,8 @@ namespace Buttplug.Server.Managers.HidSharpManager
 {
     public class HidSharpManager : TimedScanDeviceSubtypeManager
     {
+        List<string> _connectedAddresses = new List<string>();
+
         public HidSharpManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
         {
@@ -33,7 +36,19 @@ namespace Buttplug.Server.Managers.HidSharpManager
                     continue;
                 }
 
+                // We're already connected, just keep going.
+                if (_connectedAddresses.Contains(device.DevicePath))
+                {
+                    continue;
+                }
                 var bpDevice = factory.CreateDevice(LogManager, new HidSharpHidDeviceImpl(LogManager, device)).Result;
+                _connectedAddresses.Add(bpDevice.Identifier);
+                void Removed(object aObj, EventArgs aArgs)
+                {
+                    _connectedAddresses.Remove(bpDevice.Identifier);
+                    bpDevice.DeviceRemoved -= Removed;
+                }
+                bpDevice.DeviceRemoved += Removed;
                 InvokeDeviceAdded(new DeviceAddedEventArgs(bpDevice));
             }
 
@@ -45,7 +60,11 @@ namespace Buttplug.Server.Managers.HidSharpManager
                 {
                     continue;
                 }
-
+                // We're already connected, just keep going.
+                if (_connectedAddresses.Contains(port.DevicePath))
+                {
+                    continue;
+                }
                 var config = new OpenConfiguration();
                 config.SetOption(OpenOption.Exclusive, true);
                 config.SetOption(OpenOption.Interruptible, true);
@@ -65,6 +84,13 @@ namespace Buttplug.Server.Managers.HidSharpManager
                 stream.Parity = SerialParity.None;
 
                 var bpDevice = factory.CreateDevice(LogManager, new HidSharpSerialDeviceImpl(LogManager, stream)).Result;
+                _connectedAddresses.Add(bpDevice.Identifier);
+                void Removed(object aObj, EventArgs aArgs)
+                {
+                    _connectedAddresses.Remove(bpDevice.Identifier);
+                    bpDevice.DeviceRemoved -= Removed;
+                }
+                bpDevice.DeviceRemoved += Removed;
                 InvokeDeviceAdded(new DeviceAddedEventArgs(bpDevice));
             }
         }
