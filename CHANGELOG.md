@@ -1,3 +1,15 @@
+# 0.4.5 (2019-05-26)
+
+## Features
+
+- New hardware support
+  - Kiiroo Onyx 2.1
+  - RealTouch
+  
+## Bugfixes
+
+- Various fixes for HID devices
+
 # 0.4.4 (2019-05-21)
 
 ## Features

@@ -97,7 +97,7 @@ Buttplug C# Supports the following platforms:
     - LiBo Whale
     - Lovense Toys
     - Magic Motion Toys
-    - Mysteryvibe Crescendo
+    - Mysteryvibe Crescendo and Tenuto
     - OhMiBod Fuse
     - Vibratissimo Toys
     - Vorze Interactive A10 Cyclone SA
@@ -107,6 +107,7 @@ Buttplug C# Supports the following platforms:
   - USB Devices
     - Rez Trancevibrator
     - Vorze Cyclone X10
+    - RealTouch
   - Serial Devices
     - ErosTek ET312B
   - Other Devices
@@ -118,11 +119,17 @@ Buttplug C# Supports the following platforms:
   - USB Devices
     - Rez Trancevibrator
     - Vorze Cyclone X10
+    - RealTouch
   - Other Devices
     - Xbox Compatible Gamepads (XInput, Vibration Control Only)
 
 - Linux/Mac (Mono)
-  - No hardware support currently
+  - Serial Devices
+    - ErosTek ET312B
+  - USB Devices
+    - Rez Trancevibrator
+    - Vorze Cyclone X10
+    - RealTouch
 
 Check [https://buttplug.io](https://buttplug.io) for a list a fully
 up-to-date list of supported hardware, as well as planned hardware
