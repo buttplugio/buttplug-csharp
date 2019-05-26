@@ -5,7 +5,7 @@
 // </copyright>
 
 using System;
-using Buttplug.Server.Util;
+using Buttplug.Devices.Protocols;
 using FluentAssertions;
 using NUnit.Framework;
 

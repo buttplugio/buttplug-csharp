@@ -12,7 +12,6 @@ using System.Timers;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Server.Util;
 using Timer = System.Timers.Timer;
 
 namespace Buttplug.Devices.Protocols

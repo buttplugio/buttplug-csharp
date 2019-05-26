@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Server.Util;
 using JetBrains.Annotations;
 
 namespace Buttplug.Devices.Protocols

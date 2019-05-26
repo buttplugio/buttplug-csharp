@@ -6,7 +6,7 @@
 
 using System;
 
-namespace Buttplug.Server.Util
+namespace Buttplug.Devices.Protocols
 {
     /// <summary>
     /// Fleshlight speed calculation utilities.
