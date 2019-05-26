@@ -49,10 +49,18 @@ namespace Buttplug.Server.Managers.HidSharpManager
             await _stream.WriteAsync(aValue, 0, aValue.Length, aToken).ConfigureAwait(false);
         }
 
-        public override Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions,
+        public override async Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions,
             CancellationToken aToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            // Both Hid and Serial only have one incoming endpoint.
+            if (aOptions.Endpoint != Endpoints.Rx)
+            {
+                throw new ButtplugDeviceException(BpLogger, "HidDevice doesn't support any read endpoint except the default.");
+            }
+
+            var arr = new byte[64];
+            var read = await _stream.ReadAsync(arr, 0, arr.Length, aToken).ConfigureAwait(false);
+            return arr;
         }
 
         public override Task SubscribeToUpdatesAsyncInternal(ButtplugDeviceReadOptions aOptions)
