@@ -29,5 +29,7 @@
         public static string TxShock = "txshock";
 
         public static string TxVendorControl = "txvendorcontrol";
+
+        public static string Whitelist = "whitelist";
     }
 }
