@@ -1,3 +1,19 @@
+# 0.4.6 (2019-05-26)
+
+## Features
+
+- New hardware support
+  - PrettyLove brand
+  - MonsterPub (Libo)
+  
+## Bugfixes
+
+- Fixed conflict issues with BouncyCastle between our library and the
+  PEM reader we use. Removed self-signed cert generation from library
+  to do this. If you need a cert, use intiface or generate one with
+  OpenSSL or something. But as this is a thing that has nothing to do
+  with sex toys, it's No Longer My Problem.
+
 # 0.4.5 (2019-05-26)
 
 ## Features
