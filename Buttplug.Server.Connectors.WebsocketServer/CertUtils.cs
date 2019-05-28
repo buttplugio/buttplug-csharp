@@ -30,21 +30,10 @@ namespace Buttplug.Server.Connectors.WebsocketServer
         /// <exception cref="CryptographicException">
         /// Sometimes thrown due to issues generating keys.
         /// </exception>
-        public static X509Certificate2 GetCert(string app, string hostname = "localhost")
+        public static X509Certificate2 GetCert(string app)
         {
             var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), app);
-            var caPfx = Path.Combine(appPath, "ca.pfx");
             var certPfx = Path.Combine(appPath, "cert.pfx");
-
-            // Patch release rework of cert handling: our websocket server doesn't accept a chain!
-            if (File.Exists(caPfx))
-            {
-                File.Delete(caPfx);
-                if (File.Exists(certPfx))
-                {
-                    File.Delete(certPfx);
-                }
-            }
 
             if (!File.Exists(certPfx))
             {
