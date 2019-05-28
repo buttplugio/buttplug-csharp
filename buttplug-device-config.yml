@@ -190,6 +190,7 @@ protocols:
           - LuXiaoHan # LuLu - Egg
           - SuoYinQiu # Karen - Kegel
           - BaiHu # LaLa - Suction Rabbit
+          - MonsterPub # Sistalk MonsterPub (all 6?)
         services:
           # Write Service
           00006000-0000-1000-8000-00805f9b34fb:
@@ -224,9 +225,9 @@ protocols:
         # using a wildcard.
         - MV Tenuto*
       services:
-        f0006900-110c-478B-B74B-6F403B364A9C:
-          txmode: f0006901-110c-478B-B74B-6F403B364A9C
-          txvibrate: f0006903-110c-478B-B74B-6F403B364A9C
+        f0006900-110c-478b-b74b-6f403b364a9c:
+          txmode: f0006901-110c-478b-b74b-6f403b364a9c
+          txvibrate: f0006903-110c-478b-b74b-6f403b364a9c
   picobong:
     btle:
       names:
@@ -280,7 +281,8 @@ protocols:
       names:
         - Youcups
       services:
-        0000fee9-0000-1000-8000-00805f9b34fb: null
+        0000fee9-0000-1000-8000-00805f9b34fb:
+          tx: d44bc439-abfd-45a2-b575-925416129600
   cueme:
     btle:
       names:
@@ -302,6 +304,16 @@ protocols:
           tx: 88f82581-0000-01e6-aace-0002a5d5c51b
           rxtouch: 88f82582-0000-01e6-aace-0002a5d5c51b
           rxaccel: 88f82584-0000-01e6-aace-0002a5d5c51b
+  kiiroo-v21:
+    btle:
+      names:
+        - Onyx2.1
+      services:
+        00001900-0000-1000-8000-00805f9b34fb:
+          # Used to clear the whitelist
+          whitelist: 00001901-0000-1000-8000-00805f9b34fb
+          tx: 00001902-0000-1000-8000-00805f9b34fb
+          rx: 00001903-0000-1000-8000-00805f9b34fb
   kiiroo-v2:
     btle:
       names:
@@ -362,11 +374,19 @@ protocols:
       services:
         0000fff0-0000-1000-8000-00805f9b34fb:
           tx: 0000fff6-0000-1000-8000-00805f9b34fb
+  realtouch:
+    hid:
+      vendor-id: 0x1f54
+      product-id: 0x0001
+  prettylove:
+    btle:
+      names:
+        - Aogu BLE *
+      services:
+        0000ffe5-0000-1000-8000-00805f9b34fb:
+          tx: 0000ffe9-0000-1000-8000-00805f9b34fb
+          rx: 0000ffe2-0000-1000-8000-00805f9b34fb
   # nintendo-joycon:
-  #   names:
-  #     en-us: Nintendo Joycon
-  #   protocol: joycon
-  #   connection-info:
-  #     - hid:
-  #         vendor-id: 0x057e
-  #         product-id: 0x2006
+  #   hid:
+  #     vendor-id: 0x057e
+  #     product-id: 0x2006
