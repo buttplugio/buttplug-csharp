@@ -31,6 +31,5 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.5.0" />
     <PackageReference Include="Google.Protobuf" Version="3.7.0" />
-    <PackageReference Include="IoTSharp.X509Extensions" Version="1.3.3" />
   </ItemGroup>
 </Project>
