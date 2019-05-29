@@ -191,6 +191,11 @@ protocols:
           - SuoYinQiu # Karen - Kegel
           - BaiHu # LaLa - Suction Rabbit
           - MonsterPub # Sistalk MonsterPub (all 6?)
+          - Gugudai # Carlos - Suction Chicken
+          - ShaYu # Shark - Enflating Rabbit
+          - Yuyi # Lina - Leaf
+          - LuWuShuang # Adel - Curved Rabbit
+          - LiBo # Lily - Double ended mini wand
         services:
           # Write Service
           00006000-0000-1000-8000-00805f9b34fb:
