@@ -59,6 +59,7 @@ namespace Buttplug.Test.Devices.Protocols
             expected =
                 new List<(byte[], string)>()
                 {
+                    (new byte[] { 0 }, Endpoints.Tx),
                     (new byte[] { 0 }, Endpoints.TxMode),
                 };
 
