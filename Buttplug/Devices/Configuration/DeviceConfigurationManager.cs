@@ -57,6 +57,7 @@ namespace Buttplug.Devices.Configuration
             AddProtocol("youou", typeof(YououProtocol));
             AddProtocol("kiiroo-v21", typeof(KiirooGen21Protocol));
             AddProtocol("realtouch", typeof(RealTouchProtocol));
+            AddProtocol("nikku", typeof(NikkuProtocol));
 
             // ET312 turned off until deadlocks and caching are fixed. See #593, #594, #595
             // AddProtocol("erostek-et312", typeof(ErostekET312Protocol));
