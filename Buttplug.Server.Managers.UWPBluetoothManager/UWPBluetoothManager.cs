@@ -123,6 +123,8 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             {
                 return;
             }
+            
+            _seenAddresses.Add(btAddr);
 
             // todo Add advertGUIDs back in. Not sure that ever really gets used though.
             var deviceCriteria = new BluetoothLEProtocolConfiguration(advertName);
@@ -134,10 +136,9 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             {
                 BpLogger.Debug($"No usable device factory available for {advertName}.");
                 // If we've got an actual name this time around, and we don't have any factories
-                // available that match the info we have, add to our seen list so we won't keep
+                // available that match the info we have, keep the device in our seen list so we won't keep
                 // rechecking. If a device does have a factory, but doesn't connect, we still want to
                 // try again.
-                _seenAddresses.Add(btAddr);
                 return;
             }
 
@@ -148,6 +149,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             // remove it from seen devices, since the user may turn it back on during this scanning period.
             if (fromBluetoothAddressAsync == null)
             {
+                _seenAddresses.Remove(btAddr);
                 return;
             }
 
@@ -176,8 +178,11 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 }
                 
                 BpLogger.Error(
-                    $"Cannot connect to device {advertName} {btAddr}: {ex.Message}");
+                    $"Cannot connect to device {advertName} {btAddr}: {ex.Message}\n{ex.StackTrace}");
             }
+
+            // Remove the device from the seen list so that if we error'ed or disconnect, we can try again
+            _seenAddresses.Remove(btAddr);
         }
 
         private void OnWatcherStopped(BluetoothLEAdvertisementWatcher aObj,

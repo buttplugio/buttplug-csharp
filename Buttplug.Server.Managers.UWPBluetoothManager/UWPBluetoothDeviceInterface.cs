@@ -60,21 +60,22 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         protected async Task<GattDeviceService> GetService(Guid aServiceGuid)
         {
             // GetGattServicesForUuidAsync is 15063+ only?
-            var serviceResult = await _bleDevice.GetGattServicesForUuidAsync(aServiceGuid, BluetoothCacheMode.Cached);
+            var servicedResult = await _bleDevice.GetGattServicesAsync();
 
             // Don't log exceptions here, as we may not want to report them at some points.
-            if (serviceResult.Status != GattCommunicationStatus.Success)
+            if (servicedResult.Status != GattCommunicationStatus.Success)
             {
                 throw new ButtplugDeviceException($"Cannot check for service {aServiceGuid} of {_bleDevice.Name}.");
             }
 
-            if (serviceResult.Services.Count == 0)
+            var services = servicedResult.Services.Where(s => s.Uuid == aServiceGuid).ToList();
+            if (services.Count == 0)
             {
                 throw new ButtplugDeviceException($"Cannot find service {aServiceGuid} of {_bleDevice.Name}.");
             }
 
             // TODO is there EVER a way we'd get more than one service back?
-            return serviceResult.Services[0];
+            return services[0];
         }
 
         protected async Task InitializeDevice(BluetoothLEProtocolConfiguration aConfig)
@@ -85,6 +86,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                 // characteristic detection.
                 if (serviceInfo.Value == null || serviceInfo.Value.Count == 0)
                 {
+                    BpLogger.Debug($"Auto finding characteristics for {_bleDevice.Name}");
                     await AddDefaultCharacteristics(serviceInfo.Key).ConfigureAwait(false);
                 }
                 else
@@ -97,11 +99,12 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
                     {
                         service = await GetService(serviceGuid).ConfigureAwait(false);
                     }
-                    catch (ButtplugDeviceException)
+                    catch (ButtplugDeviceException ex)
                     {
                         // In this case, we may have a whole bunch of services that aren't valid for
                         // a device and only one that is. We can ignore the exception here, and throw
                         // later if we don't get anything from any service in the list.
+                        BpLogger.Error(ex.Message);
                         continue;
                     }
 
