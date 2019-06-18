@@ -6,6 +6,8 @@ steps:
       keyVaultName: "nplabs"
   - task: PowerShell@2
     displayName: 'Setup Signing Key'
+    # Only load signing key on dev/master builds
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     inputs:
       targetType: inline
       script: |
