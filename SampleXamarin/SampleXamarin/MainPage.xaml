@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SampleXamarin"
+             x:Class="SampleXamarin.MainPage">
+
+    <StackLayout>
+        <!-- Place new controls here -->
+        <Label Text="Welcome to Xamarin.Forms!" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+        <StackLayout Orientation="Horizontal">
+            <Button x:Name="btnVibrate" Text="Vibrate" IsEnabled="False" Clicked="Vibrate_Clicked"></Button>
+            <Button x:Name="btnStop" Text="Vibrate" IsEnabled="False" Clicked="Stop_Clicked"></Button>
+        </StackLayout>
+        
+        <Button x:Name="btnSync" Text="Sync" Clicked="Button_Clicked" IsEnabled="False"></Button>
+    </StackLayout>
+
+</ContentPage>
