@@ -11,7 +11,7 @@
            VerticalOptions="CenterAndExpand" />
         <StackLayout Orientation="Horizontal">
             <Button x:Name="btnVibrate" Text="Vibrate" IsEnabled="False" Clicked="Vibrate_Clicked"></Button>
-            <Button x:Name="btnStop" Text="Vibrate" IsEnabled="False" Clicked="Stop_Clicked"></Button>
+            <Button x:Name="btnStop" Text="Stop" IsEnabled="False" Clicked="Stop_Clicked"></Button>
         </StackLayout>
         
         <Button x:Name="btnSync" Text="Sync" Clicked="Button_Clicked" IsEnabled="False"></Button>
