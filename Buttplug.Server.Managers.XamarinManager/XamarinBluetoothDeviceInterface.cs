@@ -1,5 +1,4 @@
-﻿using Android.Bluetooth;
-using Buttplug.Core;
+﻿using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Devices;
 using Buttplug.Devices.Configuration;
@@ -203,50 +202,13 @@ namespace Buttplug.Server.Managers.XamarinManager
 
         private async Task SubscribeToUpdatesAsync(ICharacteristic aCharacteristic)
         {
-            var descriptors = await aCharacteristic.GetDescriptorsAsync();
-            var descriptor = descriptors.FirstOrDefault(d => d.Id.Equals("00002902-0000-1000-8000-00805f9b34fb")) ??
-                                            descriptors.FirstOrDefault();
-            ButtplugUtils.ArgumentNotNull(aCharacteristic, nameof(aCharacteristic));
-
-            if (!aCharacteristic.Properties.HasFlag(CharacteristicPropertyType.Notify) &&
-                !aCharacteristic.Properties.HasFlag(CharacteristicPropertyType.Indicate))
-            {
-                throw new ButtplugDeviceException(BpLogger, $"Cannot subscribe to BLE updates from {Name}: No Notify characteristic found.");
-            }
-
-            if (aCharacteristic.Properties.HasFlag(CharacteristicPropertyType.Notify))
-            {
-
-                await descriptor.WriteAsync(BluetoothGattDescriptor.EnableNotificationValue.ToArray());
-
-                if (_bleDevice.State != DeviceState.Connected)
-                {
-                    throw new ButtplugDeviceException(BpLogger, $"Cannot subscribe to BLE notify updates from {Name}: Failed Request {_bleDevice.State}");
-                }
-            }
-
-            if (aCharacteristic.Properties.HasFlag(CharacteristicPropertyType.Indicate))
-            {
-                await descriptor.WriteAsync(BluetoothGattDescriptor.EnableIndicationValue.ToArray());
-
-                if (_bleDevice.State != DeviceState.Connected)
-                {
-                    throw new ButtplugDeviceException(BpLogger, $"Cannot subscribe to BLE indicate updates from {Name}: Failed Request {_bleDevice.State}");
-                }
-            }
-
-            // Server has been informed of clients interest.
-            aCharacteristic.ValueUpdated += BluetoothNotifyReceivedHandler2;
+            aCharacteristic.ValueUpdated += BluetoothNotifyReceivedHandler;
+            await aCharacteristic.StartUpdatesAsync();
         }
 
-        private void BluetoothNotifyReceivedHandler2(object sender, CharacteristicUpdatedEventArgs e)
+        private void BluetoothNotifyReceivedHandler(object sender, CharacteristicUpdatedEventArgs e)
         {
-            throw new NotImplementedException();
-        }
-
-        private void BluetoothNotifyReceivedHandler(object sender, BluetoothStateChangedArgs e)
-        {
-            InvokeDataReceived(new ButtplugDeviceDataEventArgs("rx", ((ICharacteristic)sender).Value));
+            InvokeDataReceived(new ButtplugDeviceDataEventArgs("rx", e.Characteristic.Value));
         }
 
         [ItemNotNull]
