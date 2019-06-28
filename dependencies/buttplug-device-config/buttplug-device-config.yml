@@ -386,6 +386,14 @@ protocols:
         0000ffe5-0000-1000-8000-00805f9b34fb:
           tx: 0000ffe9-0000-1000-8000-00805f9b34fb
           rx: 0000ffe2-0000-1000-8000-00805f9b34fb
+  svakom:
+    btle:
+      names:
+        - Aogu SCB # Ella
+      services:
+        0000ffe0-0000-1000-8000-00805f9b34fb:
+          tx: 0000ffe1-0000-1000-8000-00805f9b34fb
+          rx: 0000ffe2-0000-1000-8000-00805f9b34fb
   # nintendo-joycon:
   #   hid:
   #     vendor-id: 0x057e
