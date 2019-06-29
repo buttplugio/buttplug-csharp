@@ -40,6 +40,7 @@ namespace Buttplug.Devices.Protocols
         private double _rotateSpeed;
         private LovenseDeviceType _deviceType = LovenseDeviceType.Unknown;
         private string _lastNotifyReceived = string.Empty;
+        private TaskCompletionSource<string> _notificationWaiter = new TaskCompletionSource<string>();
 
         public LovenseProtocol(IButtplugLogManager aLogManager,
                        IButtplugDeviceImpl aInterface)
@@ -63,33 +64,8 @@ namespace Buttplug.Devices.Protocols
                 new ButtplugDeviceWriteOptions { WriteWithResponse = true },
                 aToken).ConfigureAwait(false);
 
-            var deviceInfoString = string.Empty;
-            try
-            {
-                var result =
-                    await Interface.ReadValueAsync(aToken).ConfigureAwait(false);
-                if (result.Length > 0)
-                {
-                    deviceInfoString = Encoding.ASCII.GetString(result);
-                }
-            }
-            catch (ButtplugDeviceException)
-            {
-                // The device info notification isn't available immediately.
-                // TODO Turn this into a task semaphore with cancellation/timeout, let system handle check timing.
-                var timeout = 1000;
-                while (timeout > 0)
-                {
-                    if (_lastNotifyReceived != string.Empty)
-                    {
-                        deviceInfoString = _lastNotifyReceived;
-                        break;
-                    }
-
-                    timeout -= 5;
-                    await Task.Delay(5).ConfigureAwait(false);
-                }
-            }
+            await Task.WhenAny(_notificationWaiter.Task, Task.Delay(2, aToken));
+            var deviceInfoString = _notificationWaiter.Task.Result;
 
             BpLogger.Debug($"Received device query return for {Name}");
 
@@ -159,10 +135,13 @@ namespace Buttplug.Devices.Protocols
 
         private void NotifyReceived(object sender, ButtplugDeviceDataEventArgs args)
         {
-            var data = Encoding.ASCII.GetString(args.Bytes);
-
-            //BpLogger.Trace(data);
-            _lastNotifyReceived = data;
+            // Only set the waiter if it's not been set yet. Currently we only
+            // use this when initializing, but in the future this may need
+            // resetting if we need 2 way communication with the device.
+            if (!_notificationWaiter.Task.IsCompleted)
+            {
+                _notificationWaiter.TrySetResult(Encoding.ASCII.GetString(args.Bytes));
+            }
         }
 
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
