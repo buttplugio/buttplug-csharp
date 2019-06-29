@@ -64,7 +64,7 @@ namespace Buttplug.Devices.Protocols
                 new ButtplugDeviceWriteOptions { WriteWithResponse = true },
                 aToken).ConfigureAwait(false);
 
-            await Task.WhenAny(_notificationWaiter.Task, Task.Delay(2, aToken));
+            await Task.WhenAny(_notificationWaiter.Task, Task.Delay(4000, aToken));
             var deviceInfoString = _notificationWaiter.Task.Result;
 
             BpLogger.Debug($"Received device query return for {Name}");
