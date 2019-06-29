@@ -13,25 +13,25 @@ namespace Buttplug.Server.Managers.XamarinManager
     public class XamarinBluetoothManager : DeviceSubtypeManager
     {
         private IAdapter _adapter;
-        
+
         [NotNull]
         private readonly List<string> _seenAddresses = new List<string>();
 
         public XamarinBluetoothManager(IButtplugLogManager aLogManager)
             : base(aLogManager)
         {
-            BpLogger.Info("Loading UWP Bluetooth Manager");
+            BpLogger.Info("Loading Xamarin Bluetooth Manager");
 
             _adapter = CrossBluetoothLE.Current.Adapter;
             if (_adapter == null)
             {
-                BpLogger.Warn("No bluetooth adapter available for UWP Bluetooth Manager Connection");
+                BpLogger.Warn("No bluetooth adapter available for Xamarin Bluetooth Manager Connection");
                 return;
             }
-            _adapter.DeviceAdvertised += _adapter_DeviceAdvertised;            
+            _adapter.DeviceAdvertised += _adapter_DeviceAdvertised;
 
-            BpLogger.Debug("UWP Manager found working Bluetooth LE Adapter");            
-        }        
+            BpLogger.Debug("Xamarin Manager found working Bluetooth LE Adapter");
+        }
 
         private async void _adapter_DeviceAdvertised(object sender, Plugin.BLE.Abstractions.EventArgs.DeviceEventArgs e)
         {
@@ -40,28 +40,25 @@ namespace Buttplug.Server.Managers.XamarinManager
                 BpLogger.Debug("Null BLE advertisement received: skipping");
                 return;
             }
-            string advertName = e.Device.GetPropValue<string>("BluetoothDevice.Name");
 
-            var advertGUIDs = new List<Guid>();
-            advertGUIDs.Add(e.Device.Id);
-            var btAddr = e.Device.GetPropValue<string>("BluetoothDevice.Address");
+            var advertName = e.Device.Name;
+            var btAddr = e.Device.Id.ToString();
 
             BpLogger.Trace($"Got BLE Advertisement for device: {advertName} / {btAddr}");
             if (_seenAddresses.Contains(btAddr))
             {
-                BpLogger.Trace($"Ignoring advertisement for already connecting device: {btAddr}");               
+                BpLogger.Trace($"Ignoring advertisement for already connecting device: {btAddr}");
                 return;
             }
             _seenAddresses.Add(btAddr);
             BpLogger.Trace("BLE device found: " + advertName);
 
             // We always need a name to match against.
-            if (String.IsNullOrEmpty(advertName))
+            if (string.IsNullOrEmpty(advertName))
             {
                 return;
             }
 
-            // todo Add advertGUIDs back in. Not sure that ever really gets used though.
             var deviceCriteria = new BluetoothLEProtocolConfiguration(advertName);
 
             var deviceFactory = DeviceConfigurationManager.Manager.Find(deviceCriteria);
@@ -69,7 +66,7 @@ namespace Buttplug.Server.Managers.XamarinManager
             // If we don't have a protocol to match the device, we can't do anything with it.
             if (deviceFactory == null || !(deviceFactory.Config is BluetoothLEProtocolConfiguration bleConfig))
             {
-                BpLogger.Debug($"No usable device factory available for {advertName}.");                
+                BpLogger.Debug($"No usable device factory available for {advertName}.");
                 return;
             }
 
