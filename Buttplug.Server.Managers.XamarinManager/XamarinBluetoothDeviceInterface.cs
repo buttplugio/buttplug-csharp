@@ -1,4 +1,4 @@
-﻿using Buttplug.Core;
+using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Devices;
 using Buttplug.Devices.Configuration;
@@ -36,8 +36,8 @@ namespace Buttplug.Server.Managers.XamarinManager
         : base(aLogManager)
         {
             _bleDevice = aDevice;
-            Name = _bleDevice.Name;            
-            Address = _bleDevice.GetPropValue<string>("BluetoothDevice.Address");
+            Name = _bleDevice.Name;
+            Address = _bleDevice.Id.ToString();
         }
 
         public static async Task<IButtplugDeviceImpl> Create(IButtplugLogManager aLogManager,
@@ -60,6 +60,12 @@ namespace Buttplug.Server.Managers.XamarinManager
             }
 
             return serviceResult;
+        }
+
+        // Xamarin may sometimes use 16-bit characteristic addressing. Expand to full address so we can use GUIDs.
+        protected string CompleteGATTDefaultAddress(string aShortAddr)
+        {
+            return $"0000{aShortAddr}-0000-1000-8000-00805f9b34fb";
         }
 
         protected async Task InitializeDevice(BluetoothLEProtocolConfiguration aConfig)
@@ -101,9 +107,14 @@ namespace Buttplug.Server.Managers.XamarinManager
 
                     foreach (var chr in chrResult)
                     {
+                        var chrUuid = chr.Uuid;
+                        if (chrUuid.Length == 4)
+                        {
+                            chrUuid = CompleteGATTDefaultAddress(chrUuid);
+                        }
                         foreach (var indexChr in serviceInfo.Value)
                         {
-                            if (Guid.Parse(chr.Uuid) != indexChr.Value)
+                            if (Guid.Parse(chrUuid) != indexChr.Value)
                             {
                                 continue;
                             }
@@ -114,7 +125,7 @@ namespace Buttplug.Server.Managers.XamarinManager
                                 throw new ButtplugDeviceException(BpLogger, $"Found repeated endpoint name {indexChr.Key} on {Name}");
                             }
 
-                            BpLogger.Debug($"Found characteristic {indexChr.Key} {chr.Uuid} ({_bleDevice.Name})");
+                            BpLogger.Debug($"Found characteristic {indexChr.Key} {chrUuid} ({_bleDevice.Name})");
                             _indexedChars.Add(indexChr.Key, chr);
                         }
                     }
@@ -236,6 +247,12 @@ namespace Buttplug.Server.Managers.XamarinManager
                 BpLogger.Error("Cancelling device transfer in progress for new transfer.");
             }
 
+            if (_bleDevice.State != DeviceState.Connected)
+            {
+                throw new ButtplugDeviceException(BpLogger,
+                    $"Device {Name} not connected.");
+            }
+
             try
             {
                 _internalTokenSource = new CancellationTokenSource();
@@ -243,12 +260,6 @@ namespace Buttplug.Server.Managers.XamarinManager
                 var writeTask = aChar.WriteAsync(aValue,_currentWriteTokenSource.Token);
                 var status = await writeTask.ConfigureAwait(false);
                 _currentWriteTokenSource = null;
-
-                if (_bleDevice.State != DeviceState.Connected)
-                {
-                    throw new ButtplugDeviceException(BpLogger,
-                        $"GattCommunication Error: {status}");
-                }
             }
             catch (InvalidOperationException e)
             {
@@ -280,14 +291,12 @@ namespace Buttplug.Server.Managers.XamarinManager
 
         private async Task<byte[]> ReadValueAsync(ICharacteristic aChar, CancellationToken aToken)
         {
-            var result = await aChar.ReadAsync(aToken).ConfigureAwait(false);
-
             if (_bleDevice.State != DeviceState.Connected)
             {
-                throw new ButtplugDeviceException(BpLogger, $"Error while reading from {Name}");
+                throw new ButtplugDeviceException(BpLogger, $"Device {Name} not connected.");
             }
 
-            return result;
+            return await aChar.ReadAsync(aToken).ConfigureAwait(false);
         }
 
         public override void Disconnect()
