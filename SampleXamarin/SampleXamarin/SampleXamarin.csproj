@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Buttplug.Server.Connectors.WebsocketServer\Buttplug.Server.Connectors.WebsocketServer.csproj" />
     <ProjectReference Include="..\..\Buttplug.Server.Managers.HidSharpManager\Buttplug.Server.Managers.HidSharpManager.csproj" />
     <ProjectReference Include="..\..\Buttplug.Server.Managers.XamarinManager\Buttplug.Server.Managers.XamarinManager.csproj" />
     <ProjectReference Include="..\..\Buttplug\Buttplug.csproj" />

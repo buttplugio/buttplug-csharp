@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Buttplug.Server;
+using Buttplug.Server.Connectors.WebsocketServer;
 using Xamarin.Forms;
+using DeviceAddedEventArgs = Buttplug.Client.DeviceAddedEventArgs;
 
 namespace SampleXamarin
 {
@@ -14,12 +17,14 @@ namespace SampleXamarin
     {
         private ButtplugClient _client;
         private ButtplugClientDevice _device;
+        private ButtplugWebsocketServer _wsserver;
 
         public MainPage()
         {
             InitializeComponent();
             var t = Task.Run(async () =>
             {
+                /*
                 var connector = new ButtplugEmbeddedConnector("Example Server");
                 connector.Server.AddDeviceSubtypeManager<Buttplug.Server.DeviceSubtypeManager>(aLogger => new XamarinBluetoothManager(new ButtplugLogManager()));
                 _client = new ButtplugClient("Example Client", connector);
@@ -30,6 +35,15 @@ namespace SampleXamarin
                 });
                 _client.DeviceAdded += HandleDeviceAdded;
                 _client.DeviceRemoved += HandleDeviceRemoved;
+                */
+                _wsserver = new ButtplugWebsocketServer();
+                await _wsserver.StartServerAsync(() =>
+                {
+                    var server = new ButtplugServer("Android Server", 0);
+                    server.AddDeviceSubtypeManager<Buttplug.Server.DeviceSubtypeManager>(aLogger =>
+                        new XamarinBluetoothManager(new ButtplugLogManager()));
+                    return server;
+                }, aLocalOnly: false);
             });
         }
 

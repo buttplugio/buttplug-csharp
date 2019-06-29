@@ -10,7 +10,7 @@ using System.IO;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using IoTSharp.X509Extensions;
+//using IoTSharp.X509Extensions;
 
 namespace Buttplug.Server.Connectors.WebsocketServer
 {
@@ -24,7 +24,8 @@ namespace Buttplug.Server.Connectors.WebsocketServer
             }
             // Converting PEMs is an extension method that requires an instance but doesn't update itself. Oi.
             var cert = new X509Certificate2();
-            return cert.LoadPem(aPEMCertPath, aPEMPrivKeyPath);
+            return cert;
+            //return cert.LoadPem(aPEMCertPath, aPEMPrivKeyPath);
         }
 
         /// <exception cref="CryptographicException">
