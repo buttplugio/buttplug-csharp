@@ -17,7 +17,7 @@
     <Description>Websocket Connection Capabilities for Buttplug Clients. (.Net Framework 4.7+/.Net Standard 2.0)</Description>
     
     <!-- Generate nuget packages and assembly files -->
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild Condition="'$(GitInfoImported)' == 'true'">true</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 
     <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->

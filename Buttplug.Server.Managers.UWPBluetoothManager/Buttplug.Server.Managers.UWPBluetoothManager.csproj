@@ -11,7 +11,7 @@
     <Description>UWP Bluetooth (Windows 10 15063 Creators Update or Later) device support for Buttplug Servers. (.Net Framework 4.7+ only)</Description>
 
     <!-- Generate nuget packages and assembly files -->
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild Condition="'$(GitInfoImported)' == 'true'">true</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 
     <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->

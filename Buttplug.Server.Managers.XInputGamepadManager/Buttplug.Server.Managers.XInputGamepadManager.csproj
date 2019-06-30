@@ -11,7 +11,7 @@
     <Description>Adds XInput Device enumeration and vibration/rumble control to Buttplug. (.Net Framework 4.7+ Only)</Description>
 
     <!-- Generate nuget packages and assembly files -->
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild Condition="'$(GitInfoImported)' == 'true'">true</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 
     <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->
