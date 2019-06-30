@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
@@ -27,6 +28,8 @@ namespace Buttplug.Test
 
         public List<WriteData> LastWritten = new List<WriteData>();
         public Dictionary<string, List<byte[]>> ExpectedRead = new Dictionary<string, List<byte[]>>();
+        // Maps a string we get as a write to a return packet. Mostly used for Lovense.
+        public Dictionary<string, byte[]> ExpectedNotify = new Dictionary<string, byte[]>();
 
         public event EventHandler ValueWritten;
 
@@ -56,6 +59,11 @@ namespace Buttplug.Test
             ExpectedRead[aCharacteristicIndex].Add(aValue);
         }
 
+        public void AddExpectedNotify(string aNotifyStr, byte[] aValue)
+        {
+            ExpectedNotify.Add(aNotifyStr, aValue);
+        }
+
         public override Task WriteValueAsyncInternal(byte[] aValue,
             ButtplugDeviceWriteOptions aOptions,
             CancellationToken aToken = default(CancellationToken))
@@ -67,6 +75,19 @@ namespace Buttplug.Test
                 WriteWithResponse = aOptions.WriteWithResponse,
             });
             ValueWritten?.Invoke(this, new EventArgs());
+            try
+            {
+                var valueStr = Encoding.UTF8.GetString(aValue, 0, aValue.Length);
+                if (ExpectedNotify.ContainsKey(valueStr))
+                {
+                    InvokeDataReceived(new ButtplugDeviceDataEventArgs("tx", ExpectedNotify[valueStr]));
+                }
+            }
+            catch
+            {
+                // noop.
+            }
+
             return Task.CompletedTask;
         }
 

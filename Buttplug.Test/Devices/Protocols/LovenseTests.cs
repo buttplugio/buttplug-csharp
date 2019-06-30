@@ -32,7 +32,7 @@ namespace Buttplug.Test.Devices.Protocols
 
             // Just leave name the same as the prefix, we'll set device type via initialize.
             await testUtil.SetupTest<LovenseProtocol>("LVS", false);
-            testUtil.AddExpectedRead(Endpoints.Tx, Encoding.ASCII.GetBytes("W:39:000000000000"));
+            testUtil.AddExpectedNotify("DeviceType;", Encoding.ASCII.GetBytes("W:39:000000000000"));
             await testUtil.Initialize();
         }
 
@@ -119,7 +119,7 @@ namespace Buttplug.Test.Devices.Protocols
 
             // Just leave name the same as the prefix, we'll set device type via initialize.
             await testUtil.SetupTest<LovenseProtocol>("LVS", false);
-            testUtil.AddExpectedRead(Endpoints.Tx, Encoding.ASCII.GetBytes("P:39:000000000000"));
+            testUtil.AddExpectedNotify("DeviceType;", Encoding.ASCII.GetBytes("P:39:000000000000"));
             await testUtil.Initialize();
         }
 
@@ -210,7 +210,7 @@ namespace Buttplug.Test.Devices.Protocols
 
             // Just leave name the same as the prefix, we'll set device type via initialize.
             await testUtil.SetupTest<LovenseProtocol>("LVS", false);
-            testUtil.AddExpectedRead(Endpoints.Tx, Encoding.ASCII.GetBytes("A:13:000000000000"));
+            testUtil.AddExpectedNotify("DeviceType;", Encoding.ASCII.GetBytes("A:13:000000000000"));
             await testUtil.Initialize();
         }
 

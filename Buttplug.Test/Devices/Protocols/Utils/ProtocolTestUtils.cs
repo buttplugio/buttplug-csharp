@@ -62,6 +62,11 @@ namespace Buttplug.Test.Devices.Protocols.Utils
             _testImpl.AddExpectedRead(aCharacteristic, aValue);
         }
 
+        public void AddExpectedNotify(string aTriggerString, byte[] aValue)
+        {
+            _testImpl.AddExpectedNotify(aTriggerString, aValue);
+        }
+
         private void Clear()
         {
             _testImpl.LastWritten.Clear();
