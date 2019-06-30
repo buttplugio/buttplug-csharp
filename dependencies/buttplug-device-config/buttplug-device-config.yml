@@ -361,7 +361,7 @@ protocols:
   vorze-sa:
     btle:
       names:
-        - CYCSA
+        - CycSA
         - Bach smart
         - UFOSA
       services:
