@@ -13,7 +13,9 @@
     <GitIgnoreTagVersion>false</GitIgnoreTagVersion>
     <GitSkipCache>true</GitSkipCache>
   </PropertyGroup>
-  <Target Name="CommonProjectProperties" DependsOnTargets="GitVersion">
+  <Target Name="CommonProjectProperties"
+          DependsOnTargets="GitVersion"
+          Condition="'$(GitInfoImported)' == 'true' And '$(ExcludeRestorePackageImports)' != 'true'">
     <PropertyGroup>
       <RootNamespace>Buttplug</RootNamespace>
       <Product>Buttplug</Product>
@@ -33,17 +35,17 @@
 
       <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
       <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+      <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DebugType>full</DebugType>
     </PropertyGroup>
 
-    <PropertyGroup
-      Condition="'$(GitInfoImported)' == 'true' And '$(ExcludeRestorePackageImports)' != 'true'">
-      <!-- Generate nuget packages and assembly files only when we're a git repo -->
+    <!-- If we actually have git info, use that to populate our versions, and build packages. Do this by assuming we have a BaseTag. -->
+    <PropertyGroup Condition="'$(GitBaseTag)' != ''">
+      <!-- Generate nuget packages only when we're a git repo -->
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 
       <PackageVersion Condition="'$(CI)' != 'true' and '$(GitCommits)' != '0'">$(GitBaseTag)-$(GitBranch).9999-$(GitCommit)</PackageVersion>
       <PackageVersion Condition="'$(CI)' == 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).$(BUILD_BUILDID)-$(GitBranch)-$(GitCommit)</PackageVersion>
