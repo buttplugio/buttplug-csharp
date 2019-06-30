@@ -1,10 +1,34 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
+  <Import Project="..\Buttplug.ProjectFiles\CommonProjectProperties.targets" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId />
+    <Title>Buttplug Xamarin Bluetooth Manager</Title>
+    <AssemblyName>Buttplug.Server.Managers.XamarinBluetoothManager</AssemblyName>
+    <Summary>Buttplug Xamarin Bluetooth Manager</Summary>
+    <Description>Xamarin Bluetooth LE (Android/iOS) device support for Buttplug Servers, using Plugin.BLE. (.Net Standard 2.0)</Description>
+
+    <!-- Generate nuget packages and assembly files -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+
+    <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
+
+    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="GitInfo" Version="2.0.20">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Plugin.BLE" Version="1.3.0" />
   </ItemGroup>
 
