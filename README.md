@@ -17,9 +17,11 @@ not specifically be HID, but may go in your butt.
 Or other places too! We're not completely butt-centric, despite the
 project name. And logo.
 
-If you're looking for the installer for the Buttplug Server or Game
-Vibration Router software, [visit the buttplug-windows-suite releases
-page.](https://github.com/buttplugio/buttplug-windows-suite/releases/)
+## Want to use your sex toys with Movie Players, Games, Etc?
+
+If you're a user that just wants to use your sex toys with
+pre-existing Buttplug software, check out [Intiface
+Desktop](https://intiface.com/desktop).
 
 ## Table Of Contents
 
@@ -71,6 +73,8 @@ includes some heavily commented examples!
 - [Part 6 - Logging and Error Handling](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.06.LoggingAndErrorHandling/Program.cs)
 - [Part 7 - Full Example Program](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.07.FullProgram/Program.cs)
 
+For examples of Xamarin (Android/iOS) applications, [see the buttplug-xamarin-examples repo](https://github.com/buttplugio/buttplug-xamarin-examples).
+
 ### Library API Documentation
 
 API documentation for the current release is available at
@@ -88,17 +92,16 @@ website](https://buttplug.io).
 
 ## Hardware Support
 
-Buttplug C# Supports the following platforms:
-
-- Windows 10 - Creators Update (15063, April 2017) or later
+Buttplug C# Supports the following Devices:
   - BLE Devices
     - Fleshlight Launch
     - Kiiroo Toys (Onyx, Pearl, Onyx 2, Pearl 2)
-    - LiBo Whale
+    - LiBo Toys
     - Lovense Toys
     - Magic Motion Toys
     - Mysteryvibe Crescendo and Tenuto
     - OhMiBod Fuse
+    - Svakom Ella
     - Vibratissimo Toys
     - Vorze Interactive A10 Cyclone SA
     - Vorze UFO SA
@@ -108,28 +111,22 @@ Buttplug C# Supports the following platforms:
     - Rez Trancevibrator
     - Vorze Cyclone X10
     - RealTouch
-  - Serial Devices
-    - ErosTek ET312B
-  - Other Devices
-    - Xbox Compatible Gamepads (XInput, Vibration Control Only)
-  
-- Windows 7/8 and 10 pre 15063
-  - Serial Devices
-    - ErosTek ET312B
-  - USB Devices
-    - Rez Trancevibrator
-    - Vorze Cyclone X10
-    - RealTouch
   - Other Devices
     - Xbox Compatible Gamepads (XInput, Vibration Control Only)
 
+Operating System support is as follows:
+
+- Windows 10 - Creators Update (15063, April 2017) or later
+  - All Devices
+
+- Windows 7/8 and 10 pre 15063
+  - All USB/Serial/Other Devices (No Bluetooth)
+
 - Linux/Mac (Mono)
-  - Serial Devices
-    - ErosTek ET312B
-  - USB Devices
-    - Rez Trancevibrator
-    - Vorze Cyclone X10
-    - RealTouch
+  - All USB/Serial Devices (No Bluetooth, No XInput)
+    
+- Android/iOS (Xamarin)
+  - All Bluetooth LE devices (No USB, No XInput, No Serial)
 
 Check [https://buttplug.io](https://buttplug.io) for a list a fully
 up-to-date list of supported hardware, as well as planned hardware
@@ -168,20 +165,10 @@ Manager project are hard-linked to the C:\ drive. If your program
 files and SDKs are not on your C: drive, you may need to readjust
 these paths by hand.
 
-## Client Software
-
-Buttplug programs including
-
-- Buttplug Server
-- Game Vibration Router
-
-have moved to the Buttplug Windows Suite Repo. To download the
-installer for these applications, [visit the releases
-page for that repo.](https://github.com/buttplugio/buttplug-windows-suite/releases/)
-
 ## Third Party Applications Using Buttplug C#
 
-- [Buttplug Windows Suite](https://github.com/buttplugio/buttplug-windows-suite) - Buttplug Server and Buttplug Game Vibration Router
+- [Intiface Desktop](https://intiface.com/desktop) - Intiface Desktop sex toy server software
+- [Intiface Game Haptics Router](https://intiface.com/ghr) - Reroute game vibration to sex toys
 - [ScriptPlayer](https://github.com/FredTungsten/ScriptPlayer) - Native hardware synced movie player for Windows.
 - [Caveman BIOS Teaches Typing](https://curiousjp.itch.io/caveman-bios-teaches-erotic-typing) - Typing Training Game
 

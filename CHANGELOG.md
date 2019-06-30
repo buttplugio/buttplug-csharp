@@ -1,3 +1,20 @@
+# 0.4.7 (2019-06-30)
+
+## Features
+
+- Add Xamarin (iOS/Android) Bluetooth Manager
+- New hardware support
+  - Svakom Ella
+  - Libo Carlos, Shark, Lina, Adel, Lily
+
+## Bugfixes
+
+- Make XInput scanning less spammy
+- Fix invalid read issue with Lovense Device Identification
+- Fix package versioning with GitInfo (DLLs now show version)
+- Fix building from non-git-repo (zip archives)
+- Fix CI PR builds failing to sign binaries
+
 # 0.4.6 (2019-05-26)
 
 ## Features
