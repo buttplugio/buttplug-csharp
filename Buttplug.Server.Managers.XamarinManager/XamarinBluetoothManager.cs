@@ -1,4 +1,10 @@
-﻿using Buttplug.Core.Logging;
+﻿// <copyright file="XamarinBlutoothManager.cs" company="Nonpolynomial Labs LLC">
+// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
+// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using Buttplug.Core.Logging;
 using Buttplug.Devices;
 using Buttplug.Devices.Configuration;
 using JetBrains.Annotations;
@@ -6,6 +12,7 @@ using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Buttplug.Server.Managers.XamarinManager
@@ -48,10 +55,14 @@ namespace Buttplug.Server.Managers.XamarinManager
             if (_seenAddresses.Contains(btAddr))
             {
                 BpLogger.Trace($"Ignoring advertisement for already connecting device: {btAddr}");
-                return;
+                //return;
             }
-            _seenAddresses.Add(btAddr);
-            BpLogger.Trace("BLE device found: " + advertName);
+            else
+            {
+                _seenAddresses.Add(btAddr);
+            }
+
+            Debug.WriteLine("BLE device found: " + advertName);
 
             // We always need a name to match against.
             if (string.IsNullOrEmpty(advertName))
