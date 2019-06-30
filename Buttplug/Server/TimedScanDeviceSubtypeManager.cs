@@ -35,6 +35,13 @@ namespace Buttplug.Server
                 _scanLock.Wait();
                 RunScan();
             }
+            catch (Exception e)
+            {
+                BpLogger.Error($"Caught timed-repeat scanning exception (aborting further scans for {GetType().Name}).");
+                BpLogger.Error($"Exception Message: ${e.Message}");
+                _scanTimer.Enabled = false;
+                InvokeScanningFinished();
+            }
             finally
             {
                 _scanLock.Release();
@@ -46,6 +53,7 @@ namespace Buttplug.Server
         public override void StartScanning()
         {
             _scanTimer.Enabled = true;
+            BpLogger.Info($"Starting timed-repeat scanning for {GetType().Name}");
         }
 
         public override void StopScanning()
@@ -54,6 +62,7 @@ namespace Buttplug.Server
             _scanLock.Wait();
             _scanTimer.Enabled = false;
             _scanLock.Release();
+            BpLogger.Info($"Stopping timed-repeat scanning for {GetType().Name}");
             InvokeScanningFinished();
         }
 

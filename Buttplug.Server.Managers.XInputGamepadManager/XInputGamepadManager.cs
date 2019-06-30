@@ -22,7 +22,6 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
 
         protected override void RunScan()
         {
-            BpLogger.Info("XInputGamepadManager start scanning");
             try
             {
                 // TODO this should scan in a loop on a timer until told to stop
@@ -44,14 +43,14 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
                     var deviceImpl = new XInputGamepadDevice(LogManager, c);
                     var device = new ButtplugDevice(LogManager, new XInputProtocol(LogManager, deviceImpl), deviceImpl);
                     InvokeDeviceAdded(new DeviceAddedEventArgs(device));
-                    InvokeScanningFinished();
+                    // Do not invoke ScanningFinished here, the parent class will handle that for us.
                 }
             }
             catch (DllNotFoundException e)
             {
                 // TODO Should we maybe try testing for this in construction instead of during scanning?
                 BpLogger.Error($"Required DirectX DLL not found: {e.Message}\nThis probably means you need to install the DirectX Runtime from June 2010: https://www.microsoft.com/en-us/download/details.aspx?id=8109");
-                InvokeScanningFinished();
+                throw e;
             }
         }
     }
