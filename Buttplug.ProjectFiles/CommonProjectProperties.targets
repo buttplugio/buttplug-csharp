@@ -29,9 +29,21 @@
       <!-- each project should have a LICENSE resource if it needs to be packaged -->
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
 
-      <PackageVersion Condition="'$(CI)' != 'true' and '$(GitCommits)' != '0'">$(GitBaseTag)-$(GitBranch)-$(GitCommit)</PackageVersion>
+      <PackageVersion Condition="'$(CI)' != 'true' and '$(GitCommits)' != '0'">$(GitBaseTag)-$(GitBranch).9999-$(GitCommit)</PackageVersion>
       <PackageVersion Condition="'$(CI)' == 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).$(BUILD_BUILDID)-$(GitBranch)-$(GitCommit)</PackageVersion>
       <PackageVersion Condition="'$(GitCommits)' == '0'">$(GitBaseTag)</PackageVersion>
+
+      <FileVersion Condition="'$(CI)' != 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).9999</FileVersion>
+      <FileVersion Condition="'$(CI)' == 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).$(BUILD_BUILDID)</FileVersion>
+      <FileVersion Condition="'$(GitCommits)' == '0'">$(GitBaseTag)</FileVersion>
+
+      <AssemblyVersion Condition="'$(CI)' != 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).9999</AssemblyVersion>
+      <AssemblyVersion Condition="'$(CI)' == 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).$(BUILD_BUILDID)</AssemblyVersion>
+      <AssemblyVersion Condition="'$(GitCommits)' == '0'">$(GitBaseTag)</AssemblyVersion>
+
+      <InformationalVersion Condition="'$(CI)' != 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).9999-$(GitBranch)-$(GitCommit)</InformationalVersion>
+      <InformationalVersion Condition="'$(CI)' == 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).$(BUILD_BUILDID)-$(GitBranch)-$(GitCommit)</InformationalVersion>
+      <InformationalVersion Condition="'$(GitCommits)' == '0'">$(GitBaseTag)</InformationalVersion>
     </PropertyGroup>
   </Target>
 </Project>
