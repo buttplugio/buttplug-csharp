@@ -1,11 +1,13 @@
 steps:
   - task: AzureKeyVault@1
     displayName: "Retreive Signing Key"
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     inputs:
       azureSubscription: "azure-nplabs"
       keyVaultName: "nplabs"
   - task: PowerShell@2
     displayName: 'Setup Signing Key'
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     inputs:
       targetType: inline
       script: |
