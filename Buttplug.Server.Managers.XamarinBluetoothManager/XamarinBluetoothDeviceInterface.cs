@@ -18,7 +18,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Buttplug.Server.Managers.XamarinManager
+namespace Buttplug.Server.Managers.XamarinBluetoothManager
 {
     public class XamarinBluetoothDeviceInterface : ButtplugDeviceImpl
     {

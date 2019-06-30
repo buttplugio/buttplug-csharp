@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Buttplug.Server.Managers.XamarinManager
+namespace Buttplug.Server.Managers.XamarinBluetoothManager
 {
     public class XamarinBluetoothManager : DeviceSubtypeManager
     {

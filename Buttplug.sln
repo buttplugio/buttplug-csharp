@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.Wi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.UWPBluetoothManager", "Buttplug.Server.Managers.UWPBluetoothManager\Buttplug.Server.Managers.UWPBluetoothManager.csproj", "{90503A9A-8377-46A4-80D1-7686F7DB72C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.XamarinManager", "Buttplug.Server.Managers.XamarinManager\Buttplug.Server.Managers.XamarinManager.csproj", "{9D40A98E-B2E1-4AD8-AB0C-19A83508E708}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Server.Managers.XamarinBluetoothManager", "Buttplug.Server.Managers.XamarinBluetoothManager\Buttplug.Server.Managers.XamarinBluetoothManager.csproj", "{CA395330-7C58-4055-8DBB-22E7B7E97A9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -181,14 +181,14 @@ Global
 		{90503A9A-8377-46A4-80D1-7686F7DB72C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90503A9A-8377-46A4-80D1-7686F7DB72C1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{90503A9A-8377-46A4-80D1-7686F7DB72C1}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{9D40A98E-B2E1-4AD8-AB0C-19A83508E708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D40A98E-B2E1-4AD8-AB0C-19A83508E708}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D40A98E-B2E1-4AD8-AB0C-19A83508E708}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D40A98E-B2E1-4AD8-AB0C-19A83508E708}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
-		{9D40A98E-B2E1-4AD8-AB0C-19A83508E708}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D40A98E-B2E1-4AD8-AB0C-19A83508E708}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D40A98E-B2E1-4AD8-AB0C-19A83508E708}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{9D40A98E-B2E1-4AD8-AB0C-19A83508E708}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
+		{CA395330-7C58-4055-8DBB-22E7B7E97A9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA395330-7C58-4055-8DBB-22E7B7E97A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA395330-7C58-4055-8DBB-22E7B7E97A9F}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA395330-7C58-4055-8DBB-22E7B7E97A9F}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
+		{CA395330-7C58-4055-8DBB-22E7B7E97A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA395330-7C58-4055-8DBB-22E7B7E97A9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA395330-7C58-4055-8DBB-22E7B7E97A9F}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
+		{CA395330-7C58-4055-8DBB-22E7B7E97A9F}.ReleaseStandard|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
