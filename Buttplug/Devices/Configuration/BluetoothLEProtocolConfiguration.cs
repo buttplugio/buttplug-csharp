@@ -54,7 +54,7 @@ namespace Buttplug.Devices.Configuration
                 var tempName = name.Substring(0, name.Length - 1);
                 foreach (var otherName in btleConfig.Names)
                 {
-                    if (otherName.StartsWith(tempName))
+                    if (!string.IsNullOrEmpty(otherName) && otherName.StartsWith(tempName))
                     {
                         return true;
                     }
