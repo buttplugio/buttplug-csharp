@@ -14,16 +14,6 @@
     <Title>Buttplug HidSharp Subtype Manager</Title>
     <Summary>Buttplug Server Hid Device and Serial Port Subtype Manager</Summary>
     <Description>Buttplug Server Hid Device and Serial Port Subtype Manager, based on the HidSharp Library. (.Net Framework 4.7+/.Net Standard 2.0)</Description>
-
-    <!-- Generate nuget packages and assembly files -->
-    <GeneratePackageOnBuild Condition="'$(GitInfoImported)' == 'true'">true</GeneratePackageOnBuild>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-
-    <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->
-    <IncludeSource>True</IncludeSource>
-    <IncludeSymbols>True</IncludeSymbols>
-
-    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>

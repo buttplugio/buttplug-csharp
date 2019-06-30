@@ -12,21 +12,6 @@
     <AssemblyName>Buttplug</AssemblyName>
     <Summary>Buttplug Sex Toy Control Library</Summary>
     <Description>Buttplug Sex Toy Control Library. Contains Core (messages, logging, etc), Server (device management), and Client (API) components. (.Net Framework 4.7+/.Net Standard 2.0)</Description>
-
-    <!-- Generate nuget packages and assembly files -->
-    <GeneratePackageOnBuild Condition="'$(GitInfoImported)' == 'true'">true</GeneratePackageOnBuild>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-
-    <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->
-    <IncludeSource>True</IncludeSource>
-    <IncludeSymbols>True</IncludeSymbols>
-
-    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

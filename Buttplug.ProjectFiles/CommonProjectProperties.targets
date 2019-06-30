@@ -13,9 +13,7 @@
     <GitIgnoreTagVersion>false</GitIgnoreTagVersion>
     <GitSkipCache>true</GitSkipCache>
   </PropertyGroup>
-  <Target Name="CommonProjectProperties"
-          DependsOnTargets="GitVersion"
-          Condition="'$(GitInfoImported)' == 'true' And '$(ExcludeRestorePackageImports)' != 'true'">
+  <Target Name="CommonProjectProperties" DependsOnTargets="GitVersion">
     <PropertyGroup>
       <RootNamespace>Buttplug</RootNamespace>
       <Product>Buttplug</Product>
@@ -28,6 +26,24 @@
       <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
       <!-- each project should have a LICENSE resource if it needs to be packaged -->
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+      <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->
+      <IncludeSource>True</IncludeSource>
+      <IncludeSymbols>True</IncludeSymbols>
+
+      <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+      <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DebugType>full</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup
+      Condition="'$(GitInfoImported)' == 'true' And '$(ExcludeRestorePackageImports)' != 'true'">
+      <!-- Generate nuget packages and assembly files only when we're a git repo -->
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 
       <PackageVersion Condition="'$(CI)' != 'true' and '$(GitCommits)' != '0'">$(GitBaseTag)-$(GitBranch).9999-$(GitCommit)</PackageVersion>
       <PackageVersion Condition="'$(CI)' == 'true' and '$(GitCommits)' != '0'">$(GitBaseTag).$(BUILD_BUILDID)-$(GitBranch)-$(GitCommit)</PackageVersion>

@@ -9,17 +9,6 @@
     <AssemblyName>Buttplug.Server.Managers.UWPBluetoothManager</AssemblyName>
     <Summary>Buttplug UWP Bluetooth Device Subtype Manager</Summary>
     <Description>UWP Bluetooth (Windows 10 15063 Creators Update or Later) device support for Buttplug Servers. (.Net Framework 4.7+ only)</Description>
-
-    <!-- Generate nuget packages and assembly files -->
-    <GeneratePackageOnBuild Condition="'$(GitInfoImported)' == 'true'">true</GeneratePackageOnBuild>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-
-    <!-- Generate Symbols (*.pdb) files in their own package for easier debugging by consuming apps -->
-    <IncludeSource>True</IncludeSource>
-    <IncludeSymbols>True</IncludeSymbols>
-
-    <CodeAnalysisRuleSet>..\Buttplug.ProjectFiles\ButtplugCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="2.0.20">
