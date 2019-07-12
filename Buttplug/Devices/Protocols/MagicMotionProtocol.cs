@@ -118,6 +118,28 @@ namespace Buttplug.Devices.Protocols
                         MaxSpeed = 0x4d,
                     }
                 },
+                {
+                    "Smart Mini Vibe3",
+                    new MagicMotionType()
+                    {
+                        Brand = "MagicMotion",
+                        Name = "Vini",
+                        VibeCount = 1,
+                        Protocol = MagicMotionProtocolType.Protocol1,
+                        MaxSpeed = 0x64,
+                    }
+                },
+                {
+                    "Fugu",
+                    new MagicMotionType()
+                    {
+                        Brand = "MagicMotion",
+                        Name = "Fugu",
+                        VibeCount = 1,
+                        Protocol = MagicMotionProtocolType.Protocol1,
+                        MaxSpeed = 0x64,
+                    }
+                },
             };
 
         private readonly MagicMotionType _devInfo;
