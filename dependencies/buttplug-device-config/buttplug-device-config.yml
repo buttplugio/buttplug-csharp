@@ -319,6 +319,16 @@ protocols:
           whitelist: 00001901-0000-1000-8000-00805f9b34fb
           tx: 00001902-0000-1000-8000-00805f9b34fb
           rx: 00001903-0000-1000-8000-00805f9b34fb
+  kiiroo-v21-vibrator:
+    btle:
+      names:
+        - Cliona
+      services:
+        00001900-0000-1000-8000-00805f9b34fb:
+          # Used to clear the whitelist?
+          whitelist: 00001901-0000-1000-8000-00805f9b34fb
+          tx: 00001902-0000-1000-8000-00805f9b34fb
+          rx: 00001903-0000-1000-8000-00805f9b34fb
   kiiroo-v2:
     btle:
       names:
