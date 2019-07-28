@@ -51,12 +51,18 @@ namespace Buttplug.Test.Devices
             DeviceConfigurationManager.LoadBaseConfigurationFromResource();
             var mgr = DeviceConfigurationManager.Manager;
             mgr.LoadUserConfigurationString(@"
-protocols:
-  erostek-et312:
-    serial:
-      ports:
-        - COM1
-        - /dev/ttyUSB0
+{
+   'protocols': {
+            'erostek-et312': {
+                'serial': {
+                    'ports': [
+                    'COM1',
+                    '/dev/ttyUSB0'
+                        ]
+                }
+            }
+        }
+    }
 ");
             mgr.Find(new SerialProtocolConfiguration("COM1")).Should().NotBeNull();
             mgr.Find(new SerialProtocolConfiguration("COM2")).Should().BeNull();
@@ -68,12 +74,18 @@ protocols:
             DeviceConfigurationManager.LoadBaseConfigurationFromResource();
             var mgr = DeviceConfigurationManager.Manager;
             Action test = () => mgr.LoadUserConfigurationString(@"
-protocols:
-  not-a-protocol:
-    serial:
-      ports:
-        - COM1
-        - /dev/ttyUSB0
+{
+   'protocols': {
+            'not-a-protocol': {
+                'serial': {
+                    'ports': [
+                    'COM1',
+                    '/dev/ttyUSB0'
+                        ]
+                }
+            }
+        }
+    }
 ");
             test.Should().Throw<ButtplugDeviceException>();
         }
@@ -84,11 +96,17 @@ protocols:
             DeviceConfigurationManager.LoadBaseConfigurationFromResource();
             var mgr = DeviceConfigurationManager.Manager;
             Action test = () => mgr.LoadUserConfigurationString(@"
-protocols:
-  mysteryvibe:
-    btle:
-      names:
-        - MV Crescendo
+{
+   'protocols': {
+            'mysteryvibe': {
+                'btle': {
+                    'names': [
+                    'MV Crescendo'
+                        ]
+                }
+            }
+        }
+    }
 ");
             test.Should().Throw<ButtplugDeviceException>();
         }
@@ -99,13 +117,20 @@ protocols:
             DeviceConfigurationManager.LoadBaseConfigurationFromResource();
             var mgr = DeviceConfigurationManager.Manager;
             Action test = () => mgr.LoadUserConfigurationString(@"
-protocols:
-  mysteryvibe:
-    btle:
-      services:
-        f0006900-110c-478B-B74B-6F403B364A9C:
-          txmode: f0006901-110c-478B-B74B-6F403B364A9C
-          txvibrate: f0006903-110c-478B-B74B-6F403B364A9C
+{
+   'protocols': {
+            'mysteryvibe': {
+                'btle': {
+                    'services': {
+                        'f0006900-110c-478B-B74B-6F403B364A9C': {
+                            'txmode': 'f0006901-110c-478B-B74B-6F403B364A9C',
+                            'txvibrate': 'f0006903-110c-478B-B74B-6F403B364A9C'
+                        }
+                    }
+                }
+            }
+        }
+    }
 ");
             test.Should().Throw<ButtplugDeviceException>();
         }

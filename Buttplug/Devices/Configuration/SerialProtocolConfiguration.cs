@@ -1,16 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Buttplug.Devices.Configuration
 {
     public class SerialProtocolConfiguration : IProtocolConfiguration
     {
+        [JsonProperty("baud-rate")]
         public uint BaudRate;
+        [JsonProperty("data-bits")]
         public uint DataBits;
+        [JsonProperty("stop-bits")]
         public byte StopBits;
+        [JsonProperty("parity")]
         public char ParityBit;
         public List<string> Ports = new List<string>();
+
+        public SerialProtocolConfiguration()
+        { }
 
         public SerialProtocolConfiguration(uint aBaudRate, uint aDataBits, char aParityBit, byte aStopBits, List<string> aPorts)
         {
@@ -25,11 +33,6 @@ namespace Buttplug.Devices.Configuration
         public SerialProtocolConfiguration(string aPortName)
         {
             Ports.Add(aPortName);
-        }
-
-        internal SerialProtocolConfiguration(SerialInfo aConfig)
-            : this(aConfig.BaudRate, aConfig.DataBits, aConfig.Parity, aConfig.StopBits, aConfig.Ports)
-        {
         }
 
         public bool Matches(IProtocolConfiguration aConfig)

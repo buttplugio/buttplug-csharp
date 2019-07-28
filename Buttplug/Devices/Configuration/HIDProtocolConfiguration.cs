@@ -1,22 +1,22 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Buttplug.Devices.Configuration
 {
     public class HIDProtocolConfiguration : IProtocolConfiguration
     {
+        [JsonProperty("vendor-id")]
         public readonly ushort VendorId;
+        [JsonProperty("product-id")]
         public readonly ushort ProductId;
+
+        public HIDProtocolConfiguration()
+        { }
 
         public HIDProtocolConfiguration(ushort aVendorId, ushort aProductId)
         {
             VendorId = aVendorId;
             ProductId = aProductId;
-        }
-
-        internal HIDProtocolConfiguration(HIDInfo aId)
-        {
-            VendorId = aId.VendorId;
-            ProductId = aId.ProductId;
         }
 
         public bool Matches(IProtocolConfiguration aConfig)

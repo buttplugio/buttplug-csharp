@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Buttplug.Core;
 using Buttplug.Devices.Protocols;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Buttplug.Devices.Configuration
 {
@@ -35,6 +37,9 @@ namespace Buttplug.Devices.Configuration
         protected readonly List<IProtocolConfiguration> _blackList = new List<IProtocolConfiguration>();
 
         public static bool HasManager => _manager != null;
+
+        [NotNull]
+        private readonly JsonSerializer _serializer;
 
         protected DeviceConfigurationManager()
         {
@@ -66,46 +71,61 @@ namespace Buttplug.Devices.Configuration
 
             // todo We need a way to be able to turn off xinput, in case the protocol is blacklisted?
             AddProtocol("xinput", typeof(XInputProtocol));
+
+            _serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
         }
 
-        private void LoadOrAppendConfigurationObject(string aConfigFile, bool aCanAddProtocols = true)
+        private void LoadOrAppendConfigurationObject(string aConfigString, bool aCanAddProtocols = true)
         {
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(new HyphenatedNamingConvention())
-                .Build();
-            var configObject = deserializer.Deserialize<DeviceConfigurationFile>(aConfigFile);
-            foreach (var protocolDefinition in configObject.Protocols)
+            var configObj = JObject.Parse(aConfigString);
+
+            foreach (var jsonObj in ((JObject)configObj["protocols"]).Properties())
             {
-                var protocolName = protocolDefinition.Key;
-                var protocolInfo = protocolDefinition.Value;
+                var protocolName = jsonObj.Name;
 
                 if (!aCanAddProtocols && !_protocolConfigs.ContainsKey(protocolName))
                 {
                     throw new ButtplugDeviceException("Cannot add protocols in user configuration files.");
                 }
 
-                if (protocolInfo?.Btle != null)
+                // We sometimes have null protocols, like "xinput". Just skip.
+                if (!jsonObj.Value.HasValues)
                 {
-                    var btleProtocolConfig = new BluetoothLEProtocolConfiguration(protocolInfo.Btle);
-                    AddProtocolConfig(protocolName, btleProtocolConfig);
+                    continue;
                 }
 
-                if (protocolInfo?.Hid != null)
+                foreach (var busObj in ((JObject)jsonObj.Value).Properties())
                 {
-                    var hidProtocolConfig = new HIDProtocolConfiguration(protocolInfo.Hid);
-                    AddProtocolConfig(protocolName, hidProtocolConfig);
-                }
+                    IProtocolConfiguration config = null;
+                    switch (busObj.Name)
+                    {
+                        case "btle":
+                            config = busObj.Value.ToObject<BluetoothLEProtocolConfiguration>(_serializer);
+                            break;
 
-                if (protocolInfo?.Serial != null)
-                {
-                    var serialProtocolConfig = new SerialProtocolConfiguration(protocolInfo.Serial);
-                    AddProtocolConfig(protocolName, serialProtocolConfig);
-                }
+                        case "usb":
+                            config = busObj.Value.ToObject<USBProtocolConfiguration>(_serializer);
+                            break;
 
-                if (protocolInfo?.Usb != null)
-                {
-                    var usbProtocolConfig = new USBProtocolConfiguration(protocolInfo.Usb);
-                    AddProtocolConfig(protocolName, usbProtocolConfig);
+                        case "hid":
+                            config = busObj.Value.ToObject<HIDProtocolConfiguration>(_serializer);
+                            break;
+
+                        case "serial":
+                            config = busObj.Value.ToObject<SerialProtocolConfiguration>(_serializer);
+                            break;
+
+                        default:
+                            // TODO Throw an error message here?
+                            break;
+                    }
+
+                    if (config == null)
+                    {
+                        continue;
+                    }
+
+                    AddProtocolConfig(protocolName, config);
                 }
             }
         }
@@ -116,7 +136,7 @@ namespace Buttplug.Devices.Configuration
         public static void LoadBaseConfigurationFromResource()
         {
             _manager = new DeviceConfigurationManager();
-            var deviceConfig = ButtplugUtils.GetStringFromFileResource("Buttplug.buttplug-device-config.yml");
+            var deviceConfig = ButtplugUtils.GetStringFromFileResource("Buttplug.buttplug-device-config.json");
             _manager.LoadOrAppendConfigurationObject(deviceConfig);
         }
 

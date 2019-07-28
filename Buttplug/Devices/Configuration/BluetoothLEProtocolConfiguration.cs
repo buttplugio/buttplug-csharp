@@ -10,6 +10,9 @@ namespace Buttplug.Devices.Configuration
         public List<string> Names = new List<string>();
         public Dictionary<Guid, Dictionary<string, Guid>> Services;
 
+        public BluetoothLEProtocolConfiguration()
+        { }
+
         public BluetoothLEProtocolConfiguration(IEnumerable<string> aNames,
             Dictionary<Guid, Dictionary<string, Guid>> aServices = null)
         {
@@ -18,11 +21,6 @@ namespace Buttplug.Devices.Configuration
             Services = aServices ?? new Dictionary<Guid, Dictionary<string, Guid>>();
 
             // TODO Fail on similarly named characteristics in same service.
-        }
-
-        internal BluetoothLEProtocolConfiguration(BluetoothLEInfo aInfo)
-            : this(aInfo.Names, aInfo.Services)
-        {
         }
 
         public BluetoothLEProtocolConfiguration(string aName)

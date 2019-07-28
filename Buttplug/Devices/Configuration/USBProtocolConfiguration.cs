@@ -1,22 +1,22 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Buttplug.Devices.Configuration
 {
     public class USBProtocolConfiguration : IProtocolConfiguration
     {
+        [JsonProperty("vendor-id")]
         public readonly ushort VendorId;
+        [JsonProperty("product-id")]
         public readonly ushort ProductId;
+
+        public USBProtocolConfiguration()
+        { }
 
         public USBProtocolConfiguration(ushort aVendorId, ushort aProductId)
         {
             VendorId = aVendorId;
             ProductId = aProductId;
-        }
-
-        internal USBProtocolConfiguration(USBInfo aInfo)
-        {
-            VendorId = aInfo.VendorId;
-            ProductId = aInfo.ProductId;
         }
 
         public bool Matches(IProtocolConfiguration aConfig)
