@@ -276,6 +276,7 @@ protocols:
         - Pivot
         - Rave
         - Sync
+        - Vector
         - Verge
         - Wish
       services:
