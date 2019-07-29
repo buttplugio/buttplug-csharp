@@ -35,7 +35,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="..\dependencies\buttplug-schema\schema\buttplug-schema.json" />
-    <EmbeddedResource Include="..\dependencies\buttplug-device-config\buttplug-device-config.yml" Link="buttplug-device-config.yml" />
+    <EmbeddedResource Include="..\dependencies\buttplug-device-config\buttplug-device-config.json" Link="buttplug-device-config.json" />
     <None Include="app.config" />
   </ItemGroup>
 

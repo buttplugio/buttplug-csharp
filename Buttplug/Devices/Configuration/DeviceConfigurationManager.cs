@@ -131,7 +131,7 @@ namespace Buttplug.Devices.Configuration
         }
 
         /// <summary>
-        /// Loads configuration file from the configuration packed with the library on compilation.
+        /// Loads JSON configuration file from the configuration packed with the library on compilation.
         /// </summary>
         public static void LoadBaseConfigurationFromResource()
         {
