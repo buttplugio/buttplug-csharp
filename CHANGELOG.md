@@ -1,3 +1,19 @@
+# 0.5.0 (2019-07-28)
+
+## Features
+
+- Change device config file loading to use JSON, removing YAML library
+  requirement
+- New hardware support
+  - WeVibe Vector
+  - Kiiroo Clinoa
+  - Realov Lydia, Irena
+  - MagicMotion Vini, Fugu
+  
+# Bugfixes
+
+- Fix UWP Gatt Service finding for some toys
+
 # 0.4.7 (2019-06-30)
 
 ## Features
