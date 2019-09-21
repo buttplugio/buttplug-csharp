@@ -14,112 +14,129 @@ using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Devices;
 using Buttplug.Devices.Configuration;
-using Buttplug.Server;
 using HidSharp;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
-namespace ButtplugForVR
+namespace Buttplug.Server.Managers.LovenseDongleManager
 {
     public class LovenseDongleManager : TimedScanDeviceSubtypeManager
     {
-        SerialStream dongle_stream;
-        Mutex send_mute = new Mutex();
-        SemaphoreSlim receive_mute = new SemaphoreSlim(0, 1);
-        bool run_scan = false;
+        private SerialStream _dongleStream;
+        private readonly Mutex _sendMute = new Mutex();
+        private readonly SemaphoreSlim _receiveMute = new SemaphoreSlim(0, 1);
+        private bool _runScan = false;
 
-        Dictionary<string, LovenseDongleDeviceImpl> devices; //mabe make single toy only?
-        ButtplugDeviceFactory factory;
-        FixedSizedQueue<string> send_data = new FixedSizedQueue<string>(2);
+        private readonly Dictionary<string, LovenseDongleDeviceImpl> _devices = new Dictionary<string, LovenseDongleDeviceImpl>();
+        private ButtplugDeviceFactory _deviceFactory;
+        private readonly FixedSizedQueue<string> _sendData = new FixedSizedQueue<string>(2);
 
         public LovenseDongleManager(IButtplugLogManager aLogManager)
-            : base(aLogManager) {
-
-            devices = new Dictionary<string, LovenseDongleDeviceImpl>();
+              : base(aLogManager)
+        {
         }
 
-        protected override void RunScan() {
-            if (dongle_stream == null && !ScanForDongle())
+        protected override void RunScan()
+        {
+            // TODO Can the dongle not scan while it's connected to something? Seriously?
+            if ((_dongleStream == null && !ScanForDongle()) || _devices.Count > 0)
+            {
                 return;
-
-            if (devices.Count == 0) {
-                run_scan = true;
-                BpLogger.Info("LovenseDongleManager starts scanning");
             }
+
+            _runScan = true;
+            BpLogger.Info("LovenseDongleManager starts scanning");
         }
 
-        void DongleStreamManager(object obj) {
+        void DongleStreamManager(object obj)
+        {
             var result = "";
             bool status_requested = false;
             bool dongle_scan_mode = false;
             string last_toy_data = null;
 
-            while (true) {
+            while (true)
+            {
                 //check dongle is okay
-                if (dongle_stream == null)
+                if (_dongleStream == null)
                     Thread.CurrentThread.Abort();
 
-                if (run_scan && devices.Count == 0 && dongle_scan_mode == false && status_requested == false) {
+                if (_runScan && _devices.Count == 0 && dongle_scan_mode == false && status_requested == false)
+                {
                     //request connected toy list
                     SendToDongle("{\"type\":\"toy\",\"func\":\"statuss\"}\r");
                     status_requested = true;
-                    dongle_stream.ReadTimeout = 500;
+                    _dongleStream.ReadTimeout = 500;
                 }
-                else if (run_scan && devices.Count == 0 && dongle_scan_mode == false) {
+                else if (_runScan && _devices.Count == 0 && dongle_scan_mode == false)
+                {
                     //if there no toys connected run search
                     SendToDongle("{\"type\":\"toy\",\"func\":\"search\"}\r");
                     dongle_scan_mode = true;
                     status_requested = false;
                     //dongle will keep scanning till something is received, timeout is not much matter
-                    dongle_stream.ReadTimeout = 500;
+                    _dongleStream.ReadTimeout = 500;
                 }
                 else if (dongle_scan_mode == false)
-                    dongle_stream.ReadTimeout = 10; //quck read for data coming from dongle, data responces should be handled in send_data
+                    _dongleStream.ReadTimeout = 10; //quck read for data coming from dongle, data responces should be handled in send_data
 
                 //check if anything received in tx area
-                if (result == "") {
+                if (result == "")
+                {
                     //for word-reading, need to check it quickly
-                    try {
-                        result += dongle_stream.ReadLine();
-                    } catch {
+                    try
+                    {
+                        result += _dongleStream.ReadLine();
+                    }
+                    catch
+                    {
                     }
                 }
 
                 //try parse line
-                try {
-                    if (result != "") {
+                try
+                {
+                    if (result != "")
+                    {
                         var array = Regex.Replace(result, "[{\" }]", string.Empty).Split(','); //commands array
                         var subarray = array[1].Split(':');
 
-                        switch (subarray[1]) {
+                        switch (subarray[1])
+                        {
                             case "status":
                                 //incoming toy status message format:
                                 //{"type":"toy","func":"status","result":200,"data":{"id":"D188BCDCEBC7","status":202}}
                                 var status_match = Regex.Match(result, "((?<={\"id\":\")\\w+).+((?<=\"status\":)\\d+)");
-                                if (status_match.Success) {
+                                if (status_match.Success)
+                                {
                                     string id = status_match.Groups[1].Value;
                                     string state = status_match.Groups[2].Value;
-                                    if (state == "202") {
-                                        if (dongle_scan_mode) {
+                                    if (state == "202")
+                                    {
+                                        if (dongle_scan_mode)
+                                        {
                                             //cant just connect new toys, stop scanning first
-                                            dongle_stream.ReadTimeout = 500;
+                                            _dongleStream.ReadTimeout = 500;
                                             SendAndWaitFor("{\"type\":\"usb\",\"func\":\"stopSearch\"}\r", "{\"type\":\"usb\",\"func\":\"stopSearch\"", out var res);
                                             dongle_scan_mode = false;
                                         }
                                         status_requested = false;
-                                        run_scan = false;
+                                        _runScan = false;
                                         //wait a moment before connect
                                         Thread.Sleep(600);
                                         AddToy(id);
                                     }
-                                    else {
+                                    else
+                                    {
                                         //something bad about toy
-                                        if (devices.ContainsKey(id)) {
+                                        if (_devices.ContainsKey(id))
+                                        {
                                             //delete toy
-                                            devices[id].Disconnect();
-                                            devices.Remove(id);
+                                            _devices[id].Disconnect();
+                                            _devices.Remove(id);
                                             //toy is gone
-                                            while (send_data.Count > 0)
-                                                send_data.TryDequeue(out var trash);
+                                            while (_sendData.Count > 0)
+                                                _sendData.TryDequeue(out var trash);
                                             last_toy_data = null;
                                         }
 
@@ -130,21 +147,25 @@ namespace ButtplugForVR
                             case "toyData":
                                 //extract data message
                                 var toyData_match = Regex.Match(result, "((?<={\"id\":\")\\w+).+((?<=\"data\":\")[a-zA-Z0-9;:]+)");
-                                if (toyData_match.Success) {
+                                if (toyData_match.Success)
+                                {
                                     string id = toyData_match.Groups[1].Value;
                                     string data = toyData_match.Groups[2].Value;
-                                    if (devices.ContainsKey(id)) {
-                                        devices[id].ProcessData(data);
+                                    if (_devices.ContainsKey(id))
+                                    {
+                                        _devices[id].ProcessData(data);
                                     }
-                                    else {
+                                    else
+                                    {
                                         //data from unknown toy? it's new!
-                                        if (dongle_scan_mode) {
+                                        if (dongle_scan_mode)
+                                        {
                                             //cant just connect new toys, stop scanning first
-                                            dongle_stream.ReadTimeout = 500;
+                                            _dongleStream.ReadTimeout = 500;
                                             SendAndWaitFor("{\"type\":\"usb\",\"func\":\"stopSearch\"}\r", "{\"type\":\"usb\",\"func\":\"stopSearch\"", out var res);
                                         }
                                         dongle_scan_mode = false;
-                                        run_scan = false;
+                                        _runScan = false;
                                         //wait a moment before connect
                                         Thread.Sleep(600);
                                         AddToy(id);
@@ -152,13 +173,15 @@ namespace ButtplugForVR
                                 }
                                 break;
 
-                            case "search": {
+                            case "search":
+                                {
                                     //get result number
                                     var search_match = Regex.Split(result, "(?<=\"result\":)\\d+");
                                     if (search_match[0] == "205")
                                         dongle_scan_mode = true;
 
-                                    if (search_match[0] == "206") {
+                                    if (search_match[0] == "206")
+                                    {
                                         //dongle search timeout
                                         dongle_scan_mode = false;
                                         this.InvokeScanningFinished();
@@ -167,7 +190,8 @@ namespace ButtplugForVR
                                 break;
 
                             case "stopSearch":
-                                if (dongle_scan_mode) {
+                                if (dongle_scan_mode)
+                                {
                                     dongle_scan_mode = false;
                                     this.InvokeScanningFinished();
                                 }
@@ -176,14 +200,17 @@ namespace ButtplugForVR
                             case "error":
                                 //get result number
                                 var error_match = Regex.Split(result, "(?<=\"result\":)\\d+");
-                                if (error_match[0] == "501") {
+                                if (error_match[0] == "501")
+                                {
                                     //weird bug when stopSearch sent and ok received but it keeps searching, stop all activity
                                     dongle_scan_mode = false;
                                 }
-                                if (error_match[0] == "402") {
+                                if (error_match[0] == "402")
+                                {
                                     //data that was sent to dongle was not accepted
-                                    if (send_data.Count == 0 && last_toy_data != null) {
-                                        send_data.Enqueue(last_toy_data);
+                                    if (_sendData.Count == 0 && last_toy_data != null)
+                                    {
+                                        _sendData.Enqueue(last_toy_data);
                                     }
                                 }
                                 //let dongle output what it got
@@ -191,15 +218,18 @@ namespace ButtplugForVR
                                 break;
                         }
                     }
-                } catch {
+                }
+                catch
+                {
                     //Parsing error
                 }
                 result = "";
 
                 string tosend = "";
-                if (dongle_scan_mode == false && status_requested == false && send_data.TryDequeue(out tosend)) {
+                if (dongle_scan_mode == false && status_requested == false && _sendData.TryDequeue(out tosend))
+                {
                     //command respond rate, it should handle 10hz but sometimes have higher delay (about 103ms, usually ~80ms)
-                    dongle_stream.ReadTimeout = 120;
+                    _dongleStream.ReadTimeout = 120;
                     last_toy_data = tosend; //keep track of last command if it gets lost
                     SendToDongle(tosend);
                     GetFromDongle(out result);
@@ -209,32 +239,37 @@ namespace ButtplugForVR
             }
         }
 
-        async Task AddToy(string id) {
+        async Task AddToy(string id)
+        {
             //async creation to avoid locking rx thread
-            if (!devices.ContainsKey(id)) {
-                try {
-                    var dev = new LovenseDongleDeviceImpl(LogManager, id, send_data);
-                    devices.Add(id, dev);
-                    var bpDevice = await factory.CreateDevice(LogManager, dev);
+            if (!_devices.ContainsKey(id))
+            {
+                try
+                {
+                    var dev = new LovenseDongleDeviceImpl(LogManager, id, _sendData);
+                    _devices.Add(id, dev);
+                    var bpDevice = await _deviceFactory.CreateDevice(LogManager, dev);
                     InvokeDeviceAdded(new DeviceAddedEventArgs(bpDevice));
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     BpLogger.Error($"Cannot connect to Lovense device {id}: {ex.Message}");
-                    devices.Remove(id);
+                    _devices.Remove(id);
                 }
             }
         }
 
-        bool ScanForDongle() {
+        bool ScanForDongle()
+        {
             var devList = DeviceList.Local;
             var serialDevices = devList.GetSerialDevices();
             BpLogger.Info("Scanning for Lovense Dongle");
 
-            foreach (var port in serialDevices) {
-
-                var serialFinder = new SerialProtocolConfiguration(port.GetFileSystemName());
-                factory = DeviceConfigurationManager.Manager.Find(serialFinder);
-                //only lovense dongles
-                if (factory == null || factory.ProtocolName != "LovenseProtocol") {
+            foreach (var port in serialDevices)
+            {
+                // This is the USB device name for the Lovense Dongle
+                if (!port.GetFriendlyName().Contains("USB-SERIAL CH340"))
+                {
                     continue;
                 }
 
@@ -244,35 +279,37 @@ namespace ButtplugForVR
                 config.SetOption(OpenOption.TimeoutIfInterruptible, 1000);
                 config.SetOption(OpenOption.TimeoutIfTransient, 1000);
 
-                if (!port.TryOpen(config, out dongle_stream)) {
-                    dongle_stream = null;
+                if (!port.TryOpen(config, out _dongleStream))
+                {
+                    _dongleStream = null;
                     continue;
                 }
-                var deviceConfig = factory.Config as SerialProtocolConfiguration;
 
-                dongle_stream.BaudRate = (int)deviceConfig.BaudRate;
-                dongle_stream.DataBits = (int)deviceConfig.DataBits;
-                dongle_stream.StopBits = (int)deviceConfig.StopBits;
-                dongle_stream.Parity = SerialParity.None;
+                _dongleStream.BaudRate = 115200;
+                _dongleStream.DataBits = 8;
+                _dongleStream.StopBits = 1;
+                _dongleStream.Parity = SerialParity.None;
 
-                if (!dongle_stream.CanRead || !dongle_stream.CanWrite) {
-                    dongle_stream.Close();
-                    dongle_stream = null;
+                if (!_dongleStream.CanRead || !_dongleStream.CanWrite)
+                {
+                    _dongleStream.Close();
+                    _dongleStream = null;
                     continue; //check for sure
                 }
                 //Dongle respond with only \n, use it as line break. But commands to dongle should be sent as \r\n
-                dongle_stream.NewLine = "\n";
+                _dongleStream.NewLine = "\n";
                 //detect dongle
-                dongle_stream.WriteTimeout = 500;
-                dongle_stream.ReadTimeout = 500;
+                _dongleStream.WriteTimeout = 500;
+                _dongleStream.ReadTimeout = 500;
 
-                if (!SendAndWaitFor("DeviceType;\r", "D:", out var res)) {
-                    dongle_stream.Close();
-                    dongle_stream = null;
+                if (!SendAndWaitFor("DeviceType;\r", "D:", out var res))
+                {
+                    _dongleStream.Close();
+                    _dongleStream = null;
                     continue;
                 }
                 BpLogger.Debug($"Found Lovense Dongle on {port.GetFileSystemName()}");
-                dongle_stream.Closed += Dongle_stream_Closed;  //(sender, e) => {  };
+                _dongleStream.Closed += _dongleStream_Closed;  //(sender, e) => {  };
                 //just to make sure no search ongoing
                 SendAndWaitFor("{\"type\":\"usb\",\"func\":\"stopSearch\"}\r", "{\"type\":\"usb\",\"func\":\"stopSearch\"", out res);
 
@@ -286,110 +323,66 @@ namespace ButtplugForVR
             return false;
         }
 
-        private void Dongle_stream_Closed(object sender, EventArgs e) {
+        private void _dongleStream_Closed(object sender, EventArgs e)
+        {
             //called when COM port closed. 
             //disconnect all devices and clean up list
-            foreach (var dev in devices) {
+            foreach (var dev in _devices)
+            {
                 dev.Value.Disconnect();
-                devices.Remove(dev.Key);
+                _devices.Remove(dev.Key);
             }
             //close dongle stream
-            dongle_stream = null;
+            _dongleStream = null;
         }
 
-        void SendToDongle(string send) {
-            if (dongle_stream == null)
+        void SendToDongle(string send)
+        {
+            if (_dongleStream == null)
                 return;
-            send_mute.WaitOne();
-            try {
-                dongle_stream.WriteLine(send);
-            } catch {
+            _sendMute.WaitOne();
+            try
+            {
+                _dongleStream.WriteLine(send);
             }
-            send_mute.ReleaseMutex();
+            catch
+            {
+            }
+            _sendMute.ReleaseMutex();
         }
 
-        void GetFromDongle(out string result) {
+        void GetFromDongle(out string result)
+        {
             result = "timeout";
-            if (dongle_stream == null)
+            if (_dongleStream == null)
                 return;
 
-            try {
-                result = dongle_stream.ReadLine();
-            } catch {
+            try
+            {
+                result = _dongleStream.ReadLine();
+            }
+            catch
+            {
             }
         }
 
-        bool SendAndWaitFor(string send, string wait_start_with, out string result) {
+        bool SendAndWaitFor(string send, string wait_start_with, out string result)
+        {
             result = "timeout";
 
-            send_mute.WaitOne();
-            try {
-                dongle_stream.WriteLine(send);
-                result = dongle_stream.ReadLine();
-            } catch {
+            _sendMute.WaitOne();
+            try
+            {
+                _dongleStream.WriteLine(send);
+                result = _dongleStream.ReadLine();
             }
-            send_mute.ReleaseMutex();
+            catch
+            {
+            }
+            _sendMute.ReleaseMutex();
 
             return result.StartsWith(wait_start_with);
         }
 
-    }
-
-    public class LovenseDongleDeviceImpl : ButtplugDeviceImpl
-    {
-        public string DeviceID { get; private set; }
-        private bool _connected = true;
-        FixedSizedQueue<string> send;
-
-        public LovenseDongleDeviceImpl(IButtplugLogManager aLogManager, string device_id, FixedSizedQueue<string> send_queue)
-           : base(aLogManager) {
-            Address = device_id;
-            DeviceID = device_id;
-            send = send_queue;
-        }
-
-        public override bool Connected => _connected;
-
-        public override void Disconnect() {
-            _connected = false;
-            InvokeDeviceRemoved();
-        }
-
-        public void ProcessData(string data) {
-            this.InvokeDataReceived(new ButtplugDeviceDataEventArgs("rx", Encoding.ASCII.GetBytes(data)));
-        }
-
-        public override async Task WriteValueAsyncInternal(byte[] aValue, ButtplugDeviceWriteOptions aOptions, CancellationToken aToken = default(CancellationToken)) {
-            var input = Encoding.ASCII.GetString(aValue);
-            string format = "{\"type\":\"toy\",\"func\":\"command\",\"id\":\"" + DeviceID + "\",\"cmd\":\"" + input + "\"}\r";
-            send.Enqueue(format);
-        }
-
-        public override async Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions, CancellationToken aToken = default(CancellationToken)) {
-            throw new ButtplugDeviceException("Lovense Dongle Manager: Direct reading not implemented");
-        }
-
-        public override Task SubscribeToUpdatesAsyncInternal(ButtplugDeviceReadOptions aOptions) {
-            return Task.CompletedTask;
-        }
-    }
-
-    public class FixedSizedQueue<T> : ConcurrentQueue<T>
-    {
-        private object lockObject = new object();
-        public int Limit { get; set; }
-
-        public FixedSizedQueue(int max) : base() {
-            Limit = max;
-        }
-
-        public new void Enqueue(T obj) {
-            base.Enqueue(obj);
-            lock (lockObject) {
-                while (Count > Limit && base.TryDequeue(out var overflow)) {
-
-                };
-            }
-        }
     }
 }
