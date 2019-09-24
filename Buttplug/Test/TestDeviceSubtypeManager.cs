@@ -8,6 +8,7 @@
 // ReSharper disable ConsiderUsingConfigureAwait
 
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Devices;
 using Buttplug.Server;
@@ -36,7 +37,7 @@ namespace Buttplug.Test
             Device = aDevice;
         }
 
-        public override void StartScanning()
+        public override Task StartScanning()
         {
             StartScanningCalled = true;
             StopScanningCalled = false;
@@ -44,13 +45,17 @@ namespace Buttplug.Test
             {
                 InvokeDeviceAdded(new DeviceAddedEventArgs(Device));
             }
+
+            return Task.CompletedTask;
         }
 
-        public override void StopScanning()
+        public override Task StopScanning()
         {
             StopScanningCalled = true;
             StartScanningCalled = false;
             InvokeScanningFinished();
+
+            return Task.CompletedTask;
         }
 
         public override bool IsScanning()

@@ -5,10 +5,10 @@
 // </copyright>
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text.RegularExpressions;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
@@ -21,52 +21,153 @@ using Newtonsoft.Json.Linq;
 namespace Buttplug.Server.Managers.LovenseDongleManager
 {
     public class LovenseDongleConnectionException : Exception
-    { }
+    {
+    }
 
-    public class LovenseDongleManager : TimedScanDeviceSubtypeManager
+    public class LovenseDongleManager : DeviceSubtypeManager
     {
         private SerialStream _dongleStream;
-        private readonly Mutex _sendMute = new Mutex();
-        private readonly SemaphoreSlim _receiveMute = new SemaphoreSlim(0, 1);
         private bool _runScan = false;
 
-        private readonly Dictionary<string, LovenseDongleDeviceImpl> _devices = new Dictionary<string, LovenseDongleDeviceImpl>();
+        private readonly Dictionary<string, LovenseDongleDeviceImpl> _devices =
+            new Dictionary<string, LovenseDongleDeviceImpl>();
+
+        private ConcurrentQueue<Tuple<string, TaskCompletionSource<LovenseDongleIncomingMessage>>> CommQueue = 
+            new ConcurrentQueue<Tuple<string, TaskCompletionSource<LovenseDongleIncomingMessage>>>();
         private ButtplugDeviceFactory _deviceFactory;
-        private readonly FixedSizedQueue<string> _sendData = new FixedSizedQueue<string>(2);
+        private readonly FixedSizedQueue<LovenseDongleOutgoingMessage> _msgQueue = new FixedSizedQueue<LovenseDongleOutgoingMessage>(2);
         private readonly JsonSerializer _serializer = new JsonSerializer();
+        private Task _dongleCommTask;
+        private Task _scanForDongleTask;
+        private bool _isScanning;
+        private CancellationTokenSource _portReadTokenSource = new CancellationTokenSource();
 
         public LovenseDongleManager(IButtplugLogManager aLogManager)
-              : base(aLogManager)
+            : base(aLogManager)
         {
+            _scanForDongleTask = new Task(async () =>
+            {
+                var foundDongle = false;
+                while (_dongleStream == null)
+                {
+                    // TODO This should probably watch for changes in the connected devices list somehow, instead of running a loop.
+                    try
+                    {
+                        await ScanForDongle();
+                    }
+                    catch (LovenseDongleConnectionException ex)
+                    {
+                        // Connection didn't work this time. Sleep for a bit and try finding it again.
+                        await Task.Delay(2000);
+                    }
+                }
+            });
+            _scanForDongleTask.Start();
         }
 
-        protected override void RunScan()
+        private async Task<bool> MatchToWaitingTasks(LovenseDongleIncomingMessage aMsg)
         {
-            // TODO Can the dongle not scan while it's connected to something? Seriously?
-            if (_devices.Count > 0)
-            {
-                return;
-            }
+            // command matches to toyData
 
+            // search matches to search
+
+            // stopSearch matches to stopSearch
+            return false;
+        }
+
+        private async Task DongleCommunicationLoop()
+        {
+            while (true)
+            {
+                // Make a new token for the next loop.
+                _portReadTokenSource = new CancellationTokenSource();
+
+                // Wait for incoming messages, until we cancel out.
+                var result = await ReceiveMessageAsync(_portReadTokenSource.Token);
+
+                // IF we have a message to check, see whether we're waiting for this message type.
+                if (result != null && !await MatchToWaitingTasks(result))
+                {
+                    // If not, then run through incoming message scenarios.
+                    switch (result.Func)
+                    {
+                        case LovenseDongleMessageFunc.ToyData:
+                            if (!_devices.ContainsKey(result.Data.Id))
+                            {
+                                // We've found a new toy.
+                                await AddToy(result.Id);
+                            }
+
+                            break;
+                        case LovenseDongleMessageFunc.IncomingStatus:
+                            if (result.Data != null)
+                            {
+                                if (result.Data.Status == (uint) LovenseDongleResultCode.DeviceDisconnected)
+                                {
+                                    // Device disconnected
+
+                                    // TODO Should we try to enter a reconnection loop here?
+                                }
+                            }
+
+                            break;
+                        case LovenseDongleMessageFunc.Search:
+                            // When calling stopSearch, Search will return with a 206 to denote that searching has stopped.
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                // Send out anything we have waiting.
+                while (_msgQueue.Any())
+                {
+                    _msgQueue.TryDequeue(out var msg);
+                    await SendMessageAsync(msg);
+                }
+            }
+        }
+
+        private async Task SendMessageAsync(LovenseDongleOutgoingMessage aMsg)
+        {
             if (_dongleStream == null)
             {
-                try
-                {
-                    ScanForDongle();
-                }
-                catch (LovenseDongleConnectionException aEx)
-                {
-
-                }
+                throw new LovenseDongleConnectionException();
             }
 
-            _runScan = true;
-            BpLogger.Info("LovenseDongleManager starts scanning");
+            var objStr = JObject.FromObject(aMsg).ToString(Formatting.None);
+            // All strings going to the dongle must end with a \r
+            objStr += "\r";
+            await WriteLineAsync(objStr);
         }
 
-        private void ScanForDongle()
+        private async Task<LovenseDongleIncomingMessage> ReceiveMessageAsync(CancellationToken aToken)
         {
-            BpLogger.Info("Scanning for Lovense Dongle");
+            if (_dongleStream == null)
+            {
+                throw new LovenseDongleConnectionException();
+            }
+
+            var result = await ReadLineAsync();
+            var textReader = new StringReader(result);
+            // We shouldn't get multiple inputs here, since each object is delimited by a newline.
+            var reader = new JsonTextReader(textReader)
+            {
+                CloseInput = false,
+            };
+
+            if (!reader.Read())
+            {
+                //break;
+            }
+
+            var msgObj = JObject.Load(reader);
+            return (LovenseDongleIncomingMessage)msgObj.ToObject(typeof(LovenseDongleIncomingMessage), _serializer);
+        }
+
+
+        private async Task ScanForDongle()
+        {
             SerialDevice devPort = null;
 
             foreach (var port in DeviceList.Local.GetSerialDevices())
@@ -84,6 +185,11 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                 break;
             }
 
+            if (devPort == null)
+            {
+                throw new LovenseDongleConnectionException();
+            }
+
             BpLogger.Debug($"Found Lovense Dongle: {devPort.GetFriendlyName()}");
 
             var config = new OpenConfiguration();
@@ -95,7 +201,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
             if (!devPort.TryOpen(config, out _dongleStream))
             {
                 _dongleStream = null;
-                return;
+                throw new LovenseDongleConnectionException();
             }
 
             _dongleStream.BaudRate = 115200;
@@ -107,7 +213,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
             {
                 _dongleStream.Close();
                 _dongleStream = null;
-                return;
+                throw new LovenseDongleConnectionException();
             }
 
             // Dongle responds with only \n, use it as line break. But commands to dongle should be sent as \r\n
@@ -120,7 +226,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
             try
             {
                 // Send a Lovense style device type query, which will return a "D" toy code.
-                var reply = SendAndExpectReply("DeviceType;\r");
+                var reply = await SendAndExpectReply("DeviceType;\r");
                 // Expect back a Lovense device type status, D:XXX:YYYYYYYYY
                 // D - static, device code
                 // X - dongle firmware version
@@ -131,6 +237,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                 {
                     throw new Exception("Lovense Dongle Component Length not 3.");
                 }
+
                 BpLogger.Info($"Lovense Dongle Version: {components[1]}");
             }
             catch (Exception ex)
@@ -138,92 +245,55 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                 BpLogger.Error($"Exception while checking Lovense Dongle: {ex.ToString()}");
                 _dongleStream.Close();
                 _dongleStream = null;
-                return;
+                throw new LovenseDongleConnectionException();
             }
 
             _dongleStream.Closed += _dongleStream_Closed;
 
-            var result = SendAndExpectSuccess(new LovenseDongleOutgoingMessage()
+            var result = await SendAndExpectSuccess(new LovenseDongleOutgoingMessage()
             {
-                Type = LovenseDongleOutgoingMessage.MessageType.USB,
-                Func = LovenseDongleOutgoingMessage.MessageFunc.StopSearch,
+                Type = LovenseDongleMessageType.USB,
+                Func = LovenseDongleMessageFunc.StopSearch,
             });
-
-            /*
-            Thread net_rx = new Thread(new ParameterizedThreadStart(DongleCommunicationLoop));
-            net_rx.IsBackground = true;
-            net_rx.Start();
-            */
         }
 
-        bool SendAndExpectSuccess(LovenseDongleOutgoingMessage aMsg)
+        private async Task<bool> SendAndExpectSuccess(LovenseDongleOutgoingMessage aMsg)
         {
-            var result = SendAndExpectIncomingMessage(aMsg);
+            var result = await SendAndExpectIncomingMessage(aMsg);
             return result.Result >= 200 && result.Result < 300;
         }
 
-        LovenseDongleIncomingMessage SendAndExpectIncomingMessage(LovenseDongleOutgoingMessage aMsg)
+        private async Task<LovenseDongleIncomingMessage> SendAndExpectIncomingMessage(LovenseDongleOutgoingMessage aMsg)
         {
-            SendMessage(aMsg);
-            return ReceiveMessage();
+            var resultSource = new TaskCompletionSource<LovenseDongleIncomingMessage>();
+
+            await resultSource.Task;
+            await SendMessageAsync(aMsg);
+            return await ReceiveMessageAsync();
         }
 
-        string SendAndExpectReply(string send)
+        private async Task WriteLineAsync(string aLine)
+        {
+            var writeTask = new Task(() => _dongleStream.WriteLine(aLine));
+            writeTask.Start();
+            await writeTask;
+        }
+
+        private async Task<string> ReadLineAsync(CancellationToken aToken)
+        {
+            var readTask = new Task<string>(() => _dongleStream.ReadLine(), aToken);
+            readTask.Start();
+            return await readTask;
+        }
+
+        private async Task<string> SendAndExpectReply(string aMsg)
         {
             string result;
-            _sendMute.WaitOne();
-            try
-            {
-                _dongleStream.WriteLine(send);
-                result = _dongleStream.ReadLine();
-            }
-            finally
-            {
-                _sendMute.ReleaseMutex();
-            }
 
+            await WriteLineAsync(aMsg);
+            result = await ReadLineAsync();
 
             return result;
-        }
-
-        void SendMessage(LovenseDongleOutgoingMessage aMsg)
-        {
-            if (_dongleStream == null)
-            {
-                throw new LovenseDongleConnectionException();
-            }
-
-            var objStr = JObject.FromObject(aMsg).ToString(Formatting.None);
-            // All strings going to the dongle must end with a \r
-            objStr += "\r";
-            Debug.WriteLine(objStr);
-            _sendMute.WaitOne();
-            _dongleStream.WriteLine(objStr);
-            _sendMute.ReleaseMutex();
-        }
-
-        LovenseDongleIncomingMessage ReceiveMessage()
-        {
-            if (_dongleStream == null)
-            {
-                throw new LovenseDongleConnectionException();
-            }
-
-            var result = _dongleStream.ReadLine();
-            var textReader = new StringReader(result);
-            // We shouldn't get multiple inputs here, since each object is delimited by a newline.
-            var reader = new JsonTextReader(textReader)
-            {
-                CloseInput = false,
-            };
-
-            if (!reader.Read())
-            {
-                //break;
-            }
-
-            var msgObj = JObject.Load(reader);
-            return (LovenseDongleIncomingMessage)msgObj.ToObject(typeof(LovenseDongleIncomingMessage), _serializer);
         }
 
         private void _dongleStream_Closed(object sender, EventArgs e)
@@ -235,50 +305,92 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                 dev.Value.Disconnect();
                 _devices.Remove(dev.Key);
             }
+
             //close dongle stream
             _dongleStream = null;
         }
+        
+        public override async Task StartScanning()
+        {
+            if (_dongleStream == null)
+            {
+                throw new LovenseDongleConnectionException();
+            }
+
+            if (_dongleCommTask == null || _dongleCommTask.IsCompleted)
+            {
+                _dongleCommTask = new Task(() => DongleCommunicationLoop());
+                _dongleCommTask.Start();
+            }
+
+            await SendAndExpectSuccess(new LovenseDongleOutgoingMessage()
+            {
+                Type = LovenseDongleMessageType.USB,
+                Func = LovenseDongleMessageFunc.Search,
+            });
+
+            _isScanning = true;
+        }
+
+        public override async Task StopScanning()
+        {
+            if (_dongleStream == null)
+            {
+                throw new LovenseDongleConnectionException();
+            }
+
+            await SendAndExpectSuccess(new LovenseDongleOutgoingMessage()
+            {
+                Type = LovenseDongleMessageType.USB,
+                Func = LovenseDongleMessageFunc.StopSearch,
+            });
+            _isScanning = false;
+        }
+
+        public override bool IsScanning()
+        {
+            return _isScanning;
+        }
+
+        private async Task AddToy(string aDeviceId)
+        {
+            //async creation to avoid locking rx thread
+            if (_devices.ContainsKey(aDeviceId))
+            {
+                return;
+            }
+
+            try
+            {
+                var dev = new LovenseDongleDeviceImpl(LogManager, aDeviceId, _msgQueue);
+                _devices.Add(aDeviceId, dev);
+                var bpDevice = await _deviceFactory.CreateDevice(LogManager, dev);
+                InvokeDeviceAdded(new DeviceAddedEventArgs(bpDevice));
+            }
+            catch (Exception ex)
+            {
+                BpLogger.Error($"Cannot connect to Lovense dongle device {aDeviceId}: {ex.Message}");
+                _devices.Remove(aDeviceId);
+            }
+        }
+
 
         /*
-        private void DongleCommunicationLoop(object obj)
+        private async Task DongleCommunicationLoop()
         {
             var result = "";
             var statusRequested = false;
             var dongleScanMode = false;
-            var lastToyData = String.Empty;
-
+            var lastToyData = string.Empty;
+    
             while (true)
             {
                 // Check that dongle is still connected.
                 if (_dongleStream == null)
                 {
-                    Thread.CurrentThread.Abort();
+                    return;
                 }
-
-                if (_runScan && _devices.Count == 0 && dongleScanMode == false && statusRequested == false)
-                {
-                    //request connected toy list
-                    //SendToDongle("{\"type\":\"toy\",\"func\":\"statuss\"}\r");
-                    SendToDongle(new LovenseDongleOutgoingMessage()
-                    {
-                        Type = LovenseDongleOutgoingMessage.MessageType.toy,
-                        Func = LovenseDongleOutgoingMessage.MessageFunc.statuss,
-                    });
-                    statusRequested = true;
-                    _dongleStream.ReadTimeout = 500;
-                }
-                else if (_runScan && _devices.Count == 0 && dongleScanMode == false)
-                {
-                    //if there no toys connected run search
-                    SendToDongle("{\"type\":\"toy\",\"func\":\"search\"}\r");
-                    dongleScanMode = true;
-                    statusRequested = false;
-                    //dongle will keep scanning till something is received, timeout is not much matter
-                    _dongleStream.ReadTimeout = 500;
-                }
-                else if (dongleScanMode == false)
-                    _dongleStream.ReadTimeout = 10; //quck read for data coming from dongle, data responces should be handled in send_data
-
+    
                 //check if anything received in tx area
                 if (result == "")
                 {
@@ -291,7 +403,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                     {
                     }
                 }
-
+    
                 //try parse line
                 try
                 {
@@ -299,7 +411,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                     {
                         var array = Regex.Replace(result, "[{\" }]", string.Empty).Split(','); //commands array
                         var subarray = array[1].Split(':');
-
+    
                         switch (subarray[1])
                         {
                             case "status":
@@ -338,11 +450,11 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                                                 _sendData.TryDequeue(out var trash);
                                             lastToyData = null;
                                         }
-
+    
                                     }
                                 }
                                 break;
-
+    
                             case "toyData":
                                 //extract data message
                                 var toyData_match = Regex.Match(result, "((?<={\"id\":\")\\w+).+((?<=\"data\":\")[a-zA-Z0-9;:]+)");
@@ -371,14 +483,14 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                                     }
                                 }
                                 break;
-
+    
                             case "search":
                                 {
                                     //get result number
                                     var search_match = Regex.Split(result, "(?<=\"result\":)\\d+");
                                     if (search_match[0] == "205")
                                         dongleScanMode = true;
-
+    
                                     if (search_match[0] == "206")
                                     {
                                         //dongle search timeout
@@ -387,7 +499,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                                     }
                                 }
                                 break;
-
+    
                             case "stopSearch":
                                 if (dongleScanMode)
                                 {
@@ -395,7 +507,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                                     this.InvokeScanningFinished();
                                 }
                                 break;
-
+    
                             case "error":
                                 //get result number
                                 var error_match = Regex.Split(result, "(?<=\"result\":)\\d+");
@@ -423,7 +535,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                     //Parsing error
                 }
                 result = "";
-
+    
                 string tosend = "";
                 if (dongleScanMode == false && statusRequested == false && _sendData.TryDequeue(out tosend))
                 {
@@ -437,7 +549,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                 }
             }
         }
-
+    
         async Task AddToy(string id)
         {
             //async creation to avoid locking rx thread
@@ -457,7 +569,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
                 }
             }
         }
-
+        /*
         private void _dongleStream_Closed(object sender, EventArgs e)
         {
             //called when COM port closed. 
@@ -470,7 +582,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
             //close dongle stream
             _dongleStream = null;
         }
-
+    
         void SendToDongle(string send)
         {
             if (_dongleStream == null)
@@ -485,14 +597,14 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
             }
             _sendMute.ReleaseMutex();
         }
-
+    
         void SendToDongle(LovenseDongleOutgoingMessage aMsg)
         {
             if (_dongleStream == null)
             {
                 return;
             }
-
+    
             var objStr = JObject.FromObject(aMsg).ToString(Formatting.None);
             // All strings going to the dongle must end with a \r
             objStr += "\r";
@@ -501,13 +613,13 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
             _dongleStream.WriteLine(objStr);
             _sendMute.ReleaseMutex();
         }
-
+    
         void GetFromDongle(out string result)
         {
             result = "timeout";
             if (_dongleStream == null)
                 return;
-
+    
             try
             {
                 result = _dongleStream.ReadLine();
@@ -516,7 +628,7 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
             {
             }
         }
-
+    
         void SendAndExpectReply(string send)
         {
             _sendMute.WaitOne();
@@ -529,9 +641,10 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
             {
             }
             _sendMute.ReleaseMutex();
-
+    
             return result.StartsWith(wait_start_with);
         }
         */
+
     }
 }

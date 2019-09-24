@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Buttplug.Server
@@ -17,9 +18,9 @@ namespace Buttplug.Server
         [CanBeNull]
         event EventHandler<EventArgs> ScanningFinished;
 
-        void StartScanning();
+        Task StartScanning();
 
-        void StopScanning();
+        Task StopScanning();
 
         bool IsScanning();
     }

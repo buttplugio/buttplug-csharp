@@ -11,14 +11,14 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
     {
         public string DeviceID { get; private set; }
         private bool _connected = true;
-        FixedSizedQueue<string> send;
+        private FixedSizedQueue<LovenseDongleOutgoingMessage> _send;
 
-        public LovenseDongleDeviceImpl(IButtplugLogManager aLogManager, string device_id, FixedSizedQueue<string> send_queue)
+        public LovenseDongleDeviceImpl(IButtplugLogManager aLogManager, string device_id, FixedSizedQueue<LovenseDongleOutgoingMessage> send_queue)
             : base(aLogManager)
         {
             Address = device_id;
             DeviceID = device_id;
-            send = send_queue;
+            _send = send_queue;
         }
 
         public override bool Connected => _connected;
@@ -34,14 +34,21 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
             this.InvokeDataReceived(new ButtplugDeviceDataEventArgs("rx", Encoding.ASCII.GetBytes(data)));
         }
 
-        public override async Task WriteValueAsyncInternal(byte[] aValue, ButtplugDeviceWriteOptions aOptions, CancellationToken aToken = default(CancellationToken))
+        public override Task WriteValueAsyncInternal(byte[] aValue, ButtplugDeviceWriteOptions aOptions, CancellationToken aToken = default(CancellationToken))
         {
             var input = Encoding.ASCII.GetString(aValue);
-            string format = "{\"type\":\"toy\",\"func\":\"command\",\"id\":\"" + DeviceID + "\",\"cmd\":\"" + input + "\"}\r";
-            send.Enqueue(format);
+            var msg = new LovenseDongleOutgoingMessage()
+            {
+                Type = LovenseDongleMessageType.Toy,
+                Func = LovenseDongleMessageFunc.Command,
+                Id = DeviceID,
+                Command = input,
+            };
+            _send.Enqueue(msg);
+            return Task.CompletedTask;
         }
 
-        public override async Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions, CancellationToken aToken = default(CancellationToken))
+        public override Task<byte[]> ReadValueAsyncInternal(ButtplugDeviceReadOptions aOptions, CancellationToken aToken = default(CancellationToken))
         {
             throw new ButtplugDeviceException("Lovense Dongle Manager: Direct reading not implemented");
         }

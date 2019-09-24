@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using JetBrains.Annotations;
 
@@ -40,9 +41,9 @@ namespace Buttplug.Server
             ScanningFinished?.Invoke(this, new EventArgs());
         }
 
-        public abstract void StartScanning();
+        public abstract Task StartScanning();
 
-        public abstract void StopScanning();
+        public abstract Task StopScanning();
 
         public abstract bool IsScanning();
     }

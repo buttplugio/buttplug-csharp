@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
@@ -18,6 +19,7 @@ namespace Buttplug.Server
             : base(aLogManager)
         {
             _scanTimer.Enabled = false;
+
             // 2 seconds seems like an ok default time for the moment.
             _scanTimer.Interval = 2000;
             _scanTimer.Elapsed += OnScanTimer;
@@ -50,13 +52,14 @@ namespace Buttplug.Server
 
         protected abstract void RunScan();
 
-        public override void StartScanning()
+        public override Task StartScanning()
         {
             _scanTimer.Enabled = true;
             BpLogger.Info($"Starting timed-repeat scanning for {GetType().Name}");
+            return Task.CompletedTask;
         }
 
-        public override void StopScanning()
+        public override Task StopScanning()
         {
             // todo We need to be able to kill a CancellationToken here, otherwise things like ET312 connects will stall here.
             _scanLock.Wait();
@@ -64,6 +67,7 @@ namespace Buttplug.Server
             _scanLock.Release();
             BpLogger.Info($"Stopping timed-repeat scanning for {GetType().Name}");
             InvokeScanningFinished();
+            return Task.CompletedTask;
         }
 
         public override bool IsScanning()

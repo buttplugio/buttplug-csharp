@@ -100,7 +100,6 @@ namespace Buttplug.Server.Managers.WinUSBManager
                     return;
                 }
 
-                uint index = 0;
                 foreach (var deviceinfo in devices)
                 {
                     var device = new USBDevice(deviceinfo);

@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Buttplug.Server.Connectors.WebsocketServer\Buttplug.Server.Connectors.WebsocketServer.csproj" />
     <ProjectReference Include="..\Buttplug.Server.Managers.HidSharpManager\Buttplug.Server.Managers.HidSharpManager.csproj" />
+    <ProjectReference Include="..\Buttplug.Server.Managers.LovenseDongleManager\Buttplug.Server.Managers.LovenseDongleManager.csproj" />
     <ProjectReference Include="..\Buttplug\Buttplug.csproj" />
   </ItemGroup>
 

@@ -1,24 +1,38 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace Buttplug.Server.Managers.LovenseDongleManager
 {
-    class LovenseDongleOutgoingMessage
+
+    public enum LovenseDongleResultCode
     {
-        public class MessageType
-        {
-            public static readonly string USB = "usb";
-            public static readonly string Toy = "toy";
-        }
+        CommandSuccess = 200,
+        DeviceConnectFailed = 201,
+        DeviceConnectSuccess = 202,
+        SearchStarted = 205,
+        SearchStopped = 206,
+        DeviceDisconnected = 403,
+        DongleScanningInterruption = 501,
+    }
 
-        public class MessageFunc
-        {
-            public static readonly string Search = "search";
-            public static readonly string StopSearch = "stopSearch";
-            public static readonly string Status = "statuss";
-            public static readonly string Command = "command";
-            public static readonly string ToyData = "toyData";
-        }
+    public class LovenseDongleMessageType
+    {
+        public const string USB = "usb";
+        public const string Toy = "toy";
+    }
 
+    public class LovenseDongleMessageFunc
+    {
+        public const string Search = "search";
+        public const string StopSearch = "stopSearch";
+        public const string IncomingStatus = "status";
+        public const string Command = "command";
+        public const string ToyData = "toyData";
+        public const string Connect = "connect";
+    }
+
+    public class LovenseDongleOutgoingMessage
+    {
         [JsonProperty(Required = Required.Always, PropertyName = "type")]
         public string Type;
 
@@ -31,9 +45,24 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
         [JsonProperty(PropertyName = "cmd", NullValueHandling = NullValueHandling.Ignore)]
         public string Command;
 
+        [JsonProperty(PropertyName = "eager", NullValueHandling = NullValueHandling.Ignore)]
+        public uint? Eager;
+
         public LovenseDongleOutgoingMessage()
         {
         }
+    }
+
+    class LovenseDongleIncomingData
+    {
+        [JsonProperty(PropertyName = "id", NullValueHandling = NullValueHandling.Ignore)]
+        public string Id;
+
+        [JsonProperty(PropertyName = "data", NullValueHandling = NullValueHandling.Ignore)]
+        public string Data;
+
+        [JsonProperty(PropertyName = "status", NullValueHandling = NullValueHandling.Ignore)]
+        public uint? Status;
     }
 
     class LovenseDongleIncomingMessage : LovenseDongleOutgoingMessage
@@ -41,8 +70,11 @@ namespace Buttplug.Server.Managers.LovenseDongleManager
         [JsonProperty(PropertyName = "result", NullValueHandling = NullValueHandling.Ignore)]
         public int Result;
 
-        [JsonProperty(PropertyName = "data.data", NullValueHandling = NullValueHandling.Ignore)]
-        public string Data;
+        [JsonProperty(PropertyName = "data", NullValueHandling = NullValueHandling.Ignore)]
+        public LovenseDongleIncomingData Data;
+
+        [JsonProperty(PropertyName = "message", NullValueHandling = NullValueHandling.Ignore)]
+        public string Message;
 
         public LovenseDongleIncomingMessage()
         {

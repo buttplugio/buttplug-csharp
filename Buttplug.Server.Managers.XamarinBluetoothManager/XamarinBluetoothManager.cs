@@ -109,26 +109,21 @@ namespace Buttplug.Server.Managers.XamarinBluetoothManager
             }
         }
 
-        public override void StartScanning()
+        public override async Task StartScanning()
         {
             BpLogger.Info("Starting BLE Scanning");
             _seenAddresses.Clear();
-            var t = Task.Run(async () =>
-            {
-                BpLogger.Info("Start BLE Scanning");
-                await _adapter.StartScanningForDevicesAsync();
-            });
+
+            BpLogger.Info("Start BLE Scanning");
+            await _adapter.StartScanningForDevicesAsync();
         }
 
-        public override void StopScanning()
+        public override async Task StopScanning()
         {
             BpLogger.Info("Stopping BLE Scanning");
-            var t = Task.Run(async () =>
-            {
-                await _adapter.StopScanningForDevicesAsync();
-                BpLogger.Info("Stopped BLE Scanning");
-                InvokeScanningFinished();
-            });
+            await _adapter.StopScanningForDevicesAsync();
+            BpLogger.Info("Stopped BLE Scanning");
+            InvokeScanningFinished();
         }
 
         public override bool IsScanning()

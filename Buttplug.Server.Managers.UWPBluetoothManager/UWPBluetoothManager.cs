@@ -192,17 +192,19 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
             InvokeScanningFinished();
         }
 
-        public override void StartScanning()
+        public override Task StartScanning()
         {
             BpLogger.Info("Starting BLE Scanning");
             _seenAddresses.Clear();
             _bleWatcher.Start();
+            return Task.CompletedTask;
         }
 
-        public override void StopScanning()
+        public override Task StopScanning()
         {
             BpLogger.Info("Stopping BLE Scanning");
             _bleWatcher.Stop();
+            return Task.CompletedTask;
         }
 
         public override bool IsScanning()

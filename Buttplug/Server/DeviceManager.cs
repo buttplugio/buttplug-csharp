@@ -80,8 +80,8 @@ namespace Buttplug.Server
 
         ~DeviceManager()
         {
-            StopScanning();
-            RemoveAllDevices();
+            StopScanning().Wait();
+            RemoveAllDevices().Wait();
         }
 
         private static Dictionary<string, MessageAttributes>
@@ -163,6 +163,7 @@ namespace Buttplug.Server
                 pair.Value.DeviceRemoved -= DeviceRemovedHandler;
                 _bpLogger.Info($"Device removed: {pair.Key} - {pair.Value.Name}");
                 DeviceMessageReceived?.Invoke(this, new MessageReceivedEventArgs(new DeviceRemoved(pair.Key)));
+
                 // Once a device is removed, it should no longer be in the devices array, period.
                 Devices.Remove(pair.Key);
             }
@@ -210,7 +211,7 @@ namespace Buttplug.Server
 
                 case StopScanning _:
                     _bpLogger.Debug("Got StopScanning Message");
-                    StopScanning();
+                    await StopScanning();
                     return new Ok(id);
 
                 case StopAllDevices _:
@@ -265,9 +266,9 @@ namespace Buttplug.Server
             throw new ButtplugMessageException(_bpLogger, $"Message type {aMsg.GetType().Name} unhandled by this server.", id);
         }
 
-        internal void RemoveAllDevices()
+        internal async Task RemoveAllDevices()
         {
-            StopScanning();
+            await StopScanning();
             var removeDevices = Devices.Values;
             Devices.Clear();
             foreach (var d in removeDevices)
@@ -308,7 +309,7 @@ namespace Buttplug.Server
             try
             {
                 _isStartingScan = true;
-                _managers.ForEach(aMgr => aMgr.StartScanning());
+                _managers.ForEach(async aMgr => await aMgr.StartScanning());
             }
             finally
             {
@@ -328,7 +329,7 @@ namespace Buttplug.Server
         /// that this function can be slow enough to delay startup and GUIs, and might best be run on
         /// a thread or Task.
         /// </summary>
-        public async Task AddAllSubtypeManagers()
+        public Task AddAllSubtypeManagers()
         {
             _bpLogger.Debug("Searching for Subtype Managers");
 
@@ -376,11 +377,16 @@ namespace Buttplug.Server
                     _bpLogger.Info($"Subtype manager {t.Name} not added, missing appropriate constructor.");
                 }
             }
+
+            return Task.CompletedTask;
         }
 
-        internal void StopScanning()
+        internal async Task StopScanning()
         {
-            _managers.ForEach(aMgr => aMgr.StopScanning());
+            foreach (var mgr in _managers)
+            {
+                await mgr.StopScanning();
+            }
         }
 
         public void AddDeviceSubtypeManager<T>([NotNull] Func<IButtplugLogManager, T> aCreateMgrFunc)
