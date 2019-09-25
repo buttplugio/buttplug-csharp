@@ -65,6 +65,7 @@ namespace Buttplug.Devices.Configuration
             AddProtocol("realtouch", typeof(RealTouchProtocol));
             AddProtocol("svakom", typeof(SvakomProtocol));
             AddProtocol("realov", typeof(RealovProtocol));
+            AddProtocol("motorbunny", typeof(MotorbunnyProtocol));
 
             // ET312 turned off until deadlocks and caching are fixed. See #593, #594, #595
             // AddProtocol("erostek-et312", typeof(ErostekET312Protocol));
