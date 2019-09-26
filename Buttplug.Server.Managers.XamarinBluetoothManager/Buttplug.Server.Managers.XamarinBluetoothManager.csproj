@@ -18,7 +18,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Plugin.BLE" Version="1.3.0" />
+    <PackageReference Include="Plugin.BLE" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
