@@ -1,3 +1,11 @@
+# 0.5.1 (2019-09-26)
+
+## Features
+
+- Update Dependencies (including Plugin.BLE support for MacOS)
+- New hardware support
+  - Motorbunny Classic
+  
 # 0.5.0 (2019-07-28)
 
 ## Features
