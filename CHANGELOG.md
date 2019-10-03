@@ -1,3 +1,9 @@
+# 0.5.2 (2019-10-02)
+
+## Bugfixes
+
+- Websocket server should only send one JSON string per packet
+
 # 0.5.1 (2019-09-26)
 
 ## Features
