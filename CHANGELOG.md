@@ -1,3 +1,9 @@
+# 0.5.3 (2019-10-03)
+
+## Bugfixes
+
+- Nothing actually in this release, just fixing a CI hiccup on 0.5.2
+
 # 0.5.2 (2019-10-02)
 
 ## Bugfixes
