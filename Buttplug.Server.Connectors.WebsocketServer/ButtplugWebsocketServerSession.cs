@@ -117,10 +117,12 @@ namespace Buttplug.Server.Connectors.WebsocketServer
                         try
                         {
                             _outgoingMessages.TryReceiveAll(out var msgs);
-                            var outMsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
                             if (_ws != null && _ws.IsConnected)
                             {
-                                await _ws.WriteStringAsync(outMsgs, _linkedCancelSource.Token).ConfigureAwait(false);
+                                foreach (var msg in msgs)
+                                {
+                                    await _ws.WriteStringAsync(msg, _linkedCancelSource.Token).ConfigureAwait(false);
+                                }
                             }
 
                             writeTask = _outgoingMessages.OutputAvailableAsync(_linkedCancelSource.Token);
