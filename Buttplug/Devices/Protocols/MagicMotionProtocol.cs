@@ -140,6 +140,39 @@ namespace Buttplug.Devices.Protocols
                         MaxSpeed = 0x64,
                     }
                 },
+                {
+                    "Lipstick",
+                    new MagicMotionType()
+                    {
+                        Brand = "MagicMotion",
+                        Name = "Awaken",
+                        VibeCount = 1,
+                        Protocol = MagicMotionProtocolType.Protocol2,
+                        MaxSpeed = 0x64,
+                    }
+                },
+                {
+                    "Sword",
+                    new MagicMotionType()
+                    {
+                        Brand = "MagicMotion",
+                        Name = "Equinox",
+                        VibeCount = 1,
+                        Protocol = MagicMotionProtocolType.Protocol2,
+                        MaxSpeed = 0x64,
+                    }
+                },
+                {
+                    "Curve",
+                    new MagicMotionType()
+                    {
+                        Brand = "MagicMotion",
+                        Name = "Solstice",
+                        VibeCount = 1,
+                        Protocol = MagicMotionProtocolType.Protocol2,
+                        MaxSpeed = 0x64,
+                    }
+                },
             };
 
         private readonly MagicMotionType _devInfo;
