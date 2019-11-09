@@ -44,6 +44,7 @@ namespace Buttplug.Devices.Configuration
         protected DeviceConfigurationManager()
         {
             // Names in this list must match the device config file keys.
+            AddProtocol("aneros", typeof(AnerosProtocol));
             AddProtocol("lovense", typeof(LovenseProtocol));
             AddProtocol("kiiroo-v2", typeof(KiirooGen2Protocol));
             AddProtocol("cueme", typeof(CuemeProtocol));
