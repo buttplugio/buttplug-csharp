@@ -16,12 +16,19 @@ namespace Buttplug.Devices.Protocols
 {
     internal class LiBoProtocol : ButtplugDeviceProtocol
     {
+        internal enum LiboMode
+        {
+            Default,
+            Shark,
+            Elle,
+        }
+
         internal class LiBoType
         {
             public string Name;
             public uint VibeCount;
             public uint[] VibeOrder = new uint[] { 0, 1 };
-            public bool MultiCharacteristic = true;
+            public LiboMode mode = LiboMode.Default;
         }
 
         internal static readonly Dictionary<string, LiBoType> DevInfos =
@@ -33,7 +40,7 @@ namespace Buttplug.Devices.Protocols
                     {
                         Name = "Elle",
                         VibeCount = 2, // Shock as vibe
-                        VibeOrder = new uint[] { 1, 0 },
+                        mode = LiboMode.Elle,
                     }
                 },
                 {
@@ -90,7 +97,7 @@ namespace Buttplug.Devices.Protocols
                     {
                         Name = "Shark",
                         VibeCount = 2,
-                        MultiCharacteristic = false,
+                        mode = LiboMode.Shark,
                     }
                 },
                 {
@@ -114,7 +121,32 @@ namespace Buttplug.Devices.Protocols
                     new LiBoType()
                     {
                         Name = "Lily",
-                        VibeCount = 2,
+                        VibeCount = 1,
+                    }
+                },
+                {
+                    "QingTing",
+                    new LiBoType()
+                    {
+                        Name = "Lucy",
+                        VibeCount = 1,
+                    }
+                },
+                {
+                    "Shuidi",
+                    new LiBoType()
+                    {
+                        Name = "Elle 2",
+                        VibeCount = 2, // Shock as vibe
+                        mode = LiboMode.Elle,
+                    }
+                },
+                {
+                    "Huohu",
+                    new LiBoType()
+                    {
+                        Name = "Sexy Fox",
+                        VibeCount = 1,
                     }
                 },
             };
@@ -189,7 +221,7 @@ namespace Buttplug.Devices.Protocols
             }
 
             // Shark specific handling
-            if (_devInfo.VibeCount == 2 && !_devInfo.MultiCharacteristic)
+            if (_devInfo.mode == LiboMode.Shark && _devInfo.VibeCount == 2)
             {
                 if (!changed.Select(x => x).Any() && SentVibration)
                 {
@@ -205,6 +237,49 @@ namespace Buttplug.Devices.Protocols
                     new ButtplugDeviceWriteOptions { Endpoint = Endpoints.Tx },
                     aToken).ConfigureAwait(false);
 
+                return new Ok(aMsg.Id);
+            }
+
+            // Elle specific handling
+            if (_devInfo.mode == LiboMode.Elle && _devInfo.VibeCount == 2)
+            {
+                if (changed[_devInfo.VibeOrder[1]] || !SentVibration)
+                {
+                    byte data = 0x00;
+
+                    // Set shock intensity 0 = off, mode 1, 0-6, mode 4 0-6
+                    var shock = Math.Ceiling(_vibratorSpeed[_devInfo.VibeOrder[1]] * 14);
+                    if (shock > 0 && shock <= 7)
+                    {
+                        data |= (byte)((byte)(shock - 1) << 4);
+                        data |= 1; // Set the mode too
+                    }
+                    else if (shock > 7)
+                    {
+                        data |= (byte)((byte)(shock - 8) << 4);
+                        data |= 4; // Set the mode too
+                    }
+
+                    await Interface.WriteValueAsync(
+                        new[] { data },
+                        new ButtplugDeviceWriteOptions { Endpoint = Endpoints.Tx },
+                        aToken).ConfigureAwait(false);
+                }
+
+                if (changed[_devInfo.VibeOrder[0]] || !SentVibration)
+                {
+                    byte data = 0x00;
+
+                    // Set vibe intensity pattern
+                    data |= (byte)Math.Ceiling(_vibratorSpeed[_devInfo.VibeOrder[0]] * 0x03);
+
+                    await Interface.WriteValueAsync(
+                        new[] { data },
+                        new ButtplugDeviceWriteOptions { Endpoint = Endpoints.TxMode },
+                        aToken).ConfigureAwait(false);
+                }
+
+                SentVibration = true;
                 return new Ok(aMsg.Id);
             }
 

@@ -51,8 +51,8 @@ namespace Buttplug.Test.Devices.Protocols
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 50 }, Endpoints.Tx),
-                    (new byte[] { 2 }, Endpoints.TxMode),
+                    (new byte[] { 0x61 }, Endpoints.Tx),
+                    (new byte[] { 0x02 }, Endpoints.TxMode),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -60,8 +60,8 @@ namespace Buttplug.Test.Devices.Protocols
             expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0 }, Endpoints.Tx),
-                    (new byte[] { 0 }, Endpoints.TxMode),
+                    (new byte[] { 0x00 }, Endpoints.Tx),
+                    (new byte[] { 0x00 }, Endpoints.TxMode),
                 };
 
             await testUtil.TestDeviceMessage(new StopDeviceCmd(4), expected, false);
@@ -73,8 +73,8 @@ namespace Buttplug.Test.Devices.Protocols
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 50 }, Endpoints.Tx),
-                    (new byte[] { 2 }, Endpoints.TxMode),
+                    (new byte[] { 0x61 }, Endpoints.Tx),
+                    (new byte[] { 0x02 }, Endpoints.TxMode),
                 };
 
             await testUtil.TestDeviceMessage(new SingleMotorVibrateCmd(4, 0.5), expected, false);
@@ -86,8 +86,8 @@ namespace Buttplug.Test.Devices.Protocols
             var expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 0 }, Endpoints.Tx),
-                    (new byte[] { 2 }, Endpoints.TxMode),
+                    (new byte[] { 0x00 }, Endpoints.Tx),
+                    (new byte[] { 0x02 }, Endpoints.TxMode),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 1), expected, false);
@@ -102,7 +102,7 @@ namespace Buttplug.Test.Devices.Protocols
             expected =
                 new List<(byte[], string)>()
                 {
-                    (new byte[] { 50 }, Endpoints.Tx),
+                    (new byte[] { 0x61 }, Endpoints.Tx),
                 };
 
             await testUtil.TestDeviceMessage(VibrateCmd.Create(4, 1, 0.5, 2), expected, false);
