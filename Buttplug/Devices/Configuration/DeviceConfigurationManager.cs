@@ -51,6 +51,7 @@ namespace Buttplug.Devices.Configuration
             AddProtocol("kiiroo-v2-vibrator", typeof(KiirooGen2VibeProtocol));
             AddProtocol("kiiroo-v21-vibrator", typeof(KiirooGen21VibeProtocol));
             AddProtocol("libo", typeof(LiBoProtocol));
+            AddProtocol("lovehoney-desire", typeof(LovehoneyDesireProtocol));
             AddProtocol("magic-motion", typeof(MagicMotionProtocol));
             AddProtocol("mysteryvibe", typeof(MysteryVibeProtocol));
             AddProtocol("picobong", typeof(PicobongProtocol));
