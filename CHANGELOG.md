@@ -1,3 +1,14 @@
+# 0.5.4 (2019-11-26)
+
+## Features
+
+- New hardware support
+  - Lelo F1s
+  - Aneros Vivi
+  - Lovehoney Desire
+  - Libo Sexy Fox, Lucy, Elle2
+  - WeVibe Vector (for real this time. I think.)
+
 # 0.5.3 (2019-10-03)
 
 ## Bugfixes
