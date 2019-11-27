@@ -292,7 +292,7 @@ protocols:
         - Reina # Branded Realm
         - imassager # Reina alias
         - Interactive Massager # Reina alias
-        - 03 # Reina alias
+        - "03" # Reina alias
         - Sync
         - Vector
         - Verge
