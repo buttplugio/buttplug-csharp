@@ -1,3 +1,10 @@
+# 0.5.5 (2019-12-06)
+
+## Features
+
+- New hardware support
+  - Magic Motion Awaken, Equinox, Solstice
+
 # 0.5.4 (2019-11-26)
 
 ## Features
