@@ -29,16 +29,29 @@ namespace Buttplug.Test.Devices.Protocols
         [Test]
         public async Task TestAllowedMessages()
         {
-            foreach (var item in KiirooGen21VibeProtocol.DevInfos)
+            foreach (var item in KiirooGen21Protocol.DevInfos)
             {
+                if (item.Value.VibeCount == 0)
+                {
+                    continue;
+                }
+
                 var testUtil = new ProtocolTestUtils();
-                await testUtil.SetupTest<KiirooGen21VibeProtocol>(item.Key);
-                testUtil.TestDeviceAllowedMessages(new Dictionary<Type, uint>()
+                await testUtil.SetupTest<KiirooGen21Protocol>(item.Key);
+                var expected = new Dictionary<Type, uint>()
                 {
                     { typeof(StopDeviceCmd), 0 },
                     { typeof(SingleMotorVibrateCmd), 0 },
                     { typeof(VibrateCmd), item.Value.VibeCount },
-                });
+                };
+
+                if (item.Value.HasLinear)
+                {
+                    expected.Add(typeof(LinearCmd), 1);
+                    expected.Add(typeof(FleshlightLaunchFW12Cmd), 0);
+                }
+
+                testUtil.TestDeviceAllowedMessages(expected);
             }
         }
 
@@ -47,10 +60,15 @@ namespace Buttplug.Test.Devices.Protocols
         [Test]
         public async Task TestSingleMotorVibrateCmd()
         {
-            foreach (var item in KiirooGen21VibeProtocol.DevInfos)
+            foreach (var item in KiirooGen21Protocol.DevInfos)
             {
+                if (item.Value.VibeCount == 0)
+                {
+                    continue;
+                }
+
                 var testUtil = new ProtocolTestUtils();
-                await testUtil.SetupTest<KiirooGen21VibeProtocol>(item.Key);
+                await testUtil.SetupTest<KiirooGen21Protocol>(item.Key);
                 var expected = new byte[] { 1, 0 };
                 for (var i = 0u; i < item.Value.VibeCount; ++i)
                 {
@@ -69,10 +87,15 @@ namespace Buttplug.Test.Devices.Protocols
         [Test]
         public async Task TestVibrateCmd()
         {
-            foreach (var item in KiirooGen21VibeProtocol.DevInfos)
+            foreach (var item in KiirooGen21Protocol.DevInfos)
             {
+                if (item.Value.VibeCount == 0)
+                {
+                    continue;
+                }
+
                 var testUtil = new ProtocolTestUtils();
-                await testUtil.SetupTest<KiirooGen21VibeProtocol>(item.Key);
+                await testUtil.SetupTest<KiirooGen21Protocol>(item.Key);
                 var speeds = new[] { 0.25, 0.5, 0.75 };
                 var features = new List<VibrateCmd.VibrateSubcommand>();
                 for (var i = 0u; i < item.Value.VibeCount; ++i)
@@ -98,10 +121,15 @@ namespace Buttplug.Test.Devices.Protocols
         [Test]
         public async Task TestInvalidCmds()
         {
-            foreach (var item in KiirooGen21VibeProtocol.DevInfos)
+            foreach (var item in KiirooGen21Protocol.DevInfos)
             {
+                if (item.Value.VibeCount == 0)
+                {
+                    continue;
+                }
+
                 var testUtil = new ProtocolTestUtils();
-                await testUtil.SetupTest<KiirooGen21VibeProtocol>(item.Key);
+                await testUtil.SetupTest<KiirooGen21Protocol>(item.Key);
                 testUtil.TestInvalidVibrateCmd(item.Value.VibeCount);
             }
         }

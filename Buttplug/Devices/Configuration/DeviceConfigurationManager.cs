@@ -50,7 +50,8 @@ namespace Buttplug.Devices.Configuration
             AddProtocol("cueme", typeof(CuemeProtocol));
             AddProtocol("kiiroo-v1", typeof(KiirooGen1Protocol));
             AddProtocol("kiiroo-v2-vibrator", typeof(KiirooGen2VibeProtocol));
-            AddProtocol("kiiroo-v21-vibrator", typeof(KiirooGen21VibeProtocol));
+            AddProtocol("kiiroo-v21", typeof(KiirooGen21Protocol));
+            AddProtocol("kiiroo-v21-vibrator", typeof(KiirooGen21Protocol)); // 2 names for backwards compatibility
             AddProtocol("lelo-f1s", typeof(LeloF1sProtocol));
             AddProtocol("libo", typeof(LiBoProtocol));
             AddProtocol("lovehoney-desire", typeof(LovehoneyDesireProtocol));
@@ -64,7 +65,6 @@ namespace Buttplug.Devices.Configuration
             AddProtocol("youcups", typeof(YoucupsProtocol));
             AddProtocol("vorze-cyclone-x", typeof(CycloneX10Protocol));
             AddProtocol("youou", typeof(YououProtocol));
-            AddProtocol("kiiroo-v21", typeof(KiirooGen21Protocol));
             AddProtocol("realtouch", typeof(RealTouchProtocol));
             AddProtocol("svakom", typeof(SvakomProtocol));
             AddProtocol("realov", typeof(RealovProtocol));

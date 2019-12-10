@@ -344,12 +344,17 @@ protocols:
     btle:
       names:
         - Cliona
+        - Pearl2.1
+        - OhMiBod 4.0
       services:
         00001900-0000-1000-8000-00805f9b34fb:
           # Used to clear the whitelist?
           whitelist: 00001901-0000-1000-8000-00805f9b34fb
           tx: 00001902-0000-1000-8000-00805f9b34fb
           rx: 00001903-0000-1000-8000-00805f9b34fb
+        a0d70001-4c16-4ba7-977a-d394920e13a3:
+          tx: a0d70002-4c16-4ba7-977a-d394920e13a3
+          rx: a0d70003-4c16-4ba7-977a-d394920e13a3
   kiiroo-v2:
     btle:
       names:
