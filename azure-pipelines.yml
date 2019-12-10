@@ -1,181 +1,44 @@
 trigger:
-  branches:
-    include:
-      - master
-      - dev
-
-pr:
-  branches:
-    include:
-      - master
-      - dev
+- master
 
 variables:
-  solution: 'Buttplug.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  buildNum: $[ counter() ]
 
 jobs:
-  - job: Windows
-    pool:
-      vmImage: 'windows-2019'
-    strategy:
-      matrix:
-        Debug:
-          buildConfiguration: Debug
-        Release:
-          buildConfiguration: Release
-    steps:
-      - template: build/build-start.yml
-        parameters:
-          platform: "win-x64"
-      # Set up key after build start, otherwise we won't have nuget to update yet.
-      - template: build/setup-signing-key.yml
-      - task: VSBuild@1
-        displayName: "Build Project"
-        inputs:
-          solution: '$(solution)'
-          platform: '$(buildPlatform)'
-          configuration: '$(buildConfiguration)'
-          maximumCpuCount: true
-      - task: PowerShell@2
-        inputs:
-          targetType: inline
-          script: |
-            cinst -y --no-progress opencover.portable nunit-console-runner
-            OpenCover.Console.exe -returntargetcode -register:user -target:"nunit3-console.exe" -targetargs:"Buttplug.Test/bin/$(buildConfiguration)/net47/Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test/bin/$(buildConfiguration)/Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=$(Build.ArtifactStagingDirectory)/myresults.xml" -output:"$(Build.ArtifactStagingDirectory)/coverage.xml" -excludebyfile:"*/*LibLog.cs" -filter:"+[*]* -[nunit*]*"
-        displayName: 'Test with Code Coverage'
-        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Debug'))
-      - task: VSTest@2
-        displayName: "Test Project"
-        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
-        inputs:
-          platform: '$(buildPlatform)'
-          configuration: '$(buildConfiguration)'
-      - task: CopyFiles@2
-        displayName: "Copy nuget packages to staging"
-        inputs:
-          # Prefix this with Buttplug, otherwise we'll archive the packages directory too.
-          contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
-          targetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
-          cleanTargetFolder: true
-      - task: PowerShell@2
-        displayName: 'Sign Exported Nuget Packages'
-        # Only sign on dev/master builds
-        condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
-        inputs:
-          targetType: inline
-          script: |
-            Get-ChildItem -Path $(Build.ArtifactStagingDirectory) -Filter *.nupkg -Recurse -File -Name| ForEach-Object {
-                nuget sign $(Build.ArtifactStagingDirectory)\$_ -CertificatePath SigningCert.pfx -CertificatePassword "$(NPLabsRepoSigningKey)" -Timestamper http://timestamp.comodoca.com/rfc3161
-            }
-      - task: PublishPipelineArtifact@0
-        inputs:
-          targetPath: '$(Build.ArtifactStagingDirectory)'
-          artifactName: 'artifacts-$(buildConfiguration)'
   - job: "Linux"
     pool:
       vmImage: 'ubuntu-16.04'
-    strategy:
-      matrix:
-        Debug:
-          buildConfiguration: Debug
-        Release:
-          buildConfiguration: Release
     steps:
-      - template: build/dotnet-build.yml
-        parameters:
-          dotNetPublishPlatform: "linux-x64"
-          platform: "linux-x64"
-  - job: MacOS
-    pool:
-      vmImage: 'macos-10.13'
-    strategy:
-      matrix:
-        Debug:
-          buildConfiguration: Debug
-        Release:
-          buildConfiguration: Release
-    steps:
-      - template: build/dotnet-build.yml
-        parameters:
-          dotNetPublishPlatform: "osx-x64"
-          platform: "macos-x64"
-  - job: Documentation
-    pool:
-      vmImage: 'vs2017-win2016'
-    dependsOn:
-      - Windows
-      - MacOS
-      - Linux
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
-    steps:
-      - task: PowerShell@2
-        displayName: Documentation Generation
-        inputs:
-          targetType: inline
-          script: |
-            cinst -y docfx
-            copy-item README.md docs/index.md
-            copy-item *.md docs/articles/
-            docfx docs/docfx.json
-      - task: ArchiveFiles@2
-        displayName: "Archive Documentation Artifacts"
-        inputs:
-          rootFolderOrFile: "docs/_site"
-          archiveType: "zip"
-          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
-          includeRootFolder: true
-      - task: PublishBuildArtifacts@1
-        displayName: "Publish Documentation Artifacts"
-        inputs:
-          pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
-          artifactName: "buttplug-csharp-docs"
-      - task: PowerShell@2
-        displayName: Deploy Master Documentation to Netlify
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        inputs:
-          targetType: inline
-          script: |
-            npm i -g netlify-cli
-            netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site
-      - task: PowerShell@2
-        displayName: Deploy Dev Documentation to Netlify
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
-        inputs:
-          targetType: inline
-          script: |
-            npm i -g netlify-cli
-            netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site    
-  - job: Deploy
-    dependsOn:
-      - Windows
-      - MacOS
-      - Linux
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
-    pool:
-      vmImage: 'windows-2019'
-    steps:
-      - template: build/setup-variables.yml
-      - task: DownloadPipelineArtifact@1
-        displayName: Download Artifacts from other jobs
-        inputs:
-          buildType: 'current'
-      # Upload coverage to codecov.io
-      - task: PowerShell@2
-        inputs:
-          targetType: inline
-          script: |
-            cinst -y --no-progress codecov
-            codecov.exe -f "$(System.ArtifactsDirectory)/artifacts-Debug/coverage.xml" -t $(CODECOV_TOKEN)
-        displayName: Upload coverage to codecov.
-        continueOnError: true
-      - task: NuGetCommand@2
-        displayName: "Push NuGet packages to NuGet.org"
-        condition: succeeded()
-        inputs:
-          command: "push"
-          nuGetFeedType: "external"
-          packagesToPush: "$(System.ArtifactsDirectory)/artifacts-Release/**/!(*.symbols).nupkg"
-          allowPackageConflicts: false
-          publishFeedCredentials: "NuGet.org"
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '10.x'
+      displayName: 'Install Node.js'
+    - script: |
+        yarn
+      displayName: 'Install packages'
+      env: { "CI": "true" }
+    - script: |
+        yarn build
+      displayName: 'Build JSON version of device file'
+      env: { "CI": "true" }
+    - task: CopyFiles@2
+      displayName: "Copy config files to staging"
+      inputs:
+        contents: "$(System.DefaultWorkingDirectory)/buttplug-device-config.*"
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishPipelineArtifact@0
+      displayName: "Publish artifacts"
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'config'
+    - task: GitHubRelease@0
+      displayName: Upload device config release to Github if files changed
+      inputs:
+        gitHubConnection: "release"
+        repositoryName: "buttplugio/buttplug-device-config"
+        action: "create"
+        tagSource: "manual"
+        tag: "v$(buildNum)"
+        title: "Buttplug Device Config File Version $(buildNum)"
+        assets: "$(Build.ArtifactStagingDirectory)/*"
+        

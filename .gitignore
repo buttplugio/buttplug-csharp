@@ -1,11 +1,2 @@
-.vs
-bin
-obj
-*.pfx
-installer
-packages
-coverage.xml
-*.csproj.user
-*.DotSettings.user
-*/Properties/
-docs/_site
+dist
+node_modules
