@@ -40,7 +40,7 @@ namespace Buttplug.Devices.Protocols
                     Name = "Cliona",
                     HasLinear = false,
                     VibeCount = 1,
-                    VibeOrder = new[] { 0u, 1u, 2u },
+                    VibeOrder = new[] { 0u },
                 }
             },
             {
@@ -51,7 +51,7 @@ namespace Buttplug.Devices.Protocols
                     Name = "Pearl 2.1",
                     HasLinear = false,
                     VibeCount = 1,
-                    VibeOrder = new[] { 0u, 1u, 2u },
+                    VibeOrder = new[] { 0u },
                 }
             },
             {
@@ -62,7 +62,7 @@ namespace Buttplug.Devices.Protocols
                     Name = "Esca 2",
                     HasLinear = false,
                     VibeCount = 1,
-                    VibeOrder = new[] { 0u, 1u, 2u },
+                    VibeOrder = new[] { 0u },
                 }
             },
             {
@@ -73,7 +73,7 @@ namespace Buttplug.Devices.Protocols
                     Name = "Onyx 2.1",
                     HasLinear = true,
                     VibeCount = 0,
-                    VibeOrder = new[] { 0u, 1u, 2u },
+                    VibeOrder = new uint[0],
                 }
             },
             {
@@ -84,7 +84,7 @@ namespace Buttplug.Devices.Protocols
                     Name = "Titan 1.1",
                     HasLinear = true,
                     VibeCount = 1, // actually 3
-                    VibeOrder = new[] { 0u, 1u, 2u },
+                    VibeOrder = new[] { 0u },
                 }
             },
         };
