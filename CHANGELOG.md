@@ -1,3 +1,12 @@
+# 0.5.6 (2019-12-10)
+
+## Features
+
+- New hardware support
+  - Kiiroo Pearl 2, OhMiBod Esca 2
+- Merged Kiiroo support into single protocol, so Titan should work as
+  a vibrator now.
+
 # 0.5.5 (2019-12-06)
 
 ## Features
