@@ -49,6 +49,10 @@ namespace Buttplug.Core.Test
         {
             foreach (var msgClass in ButtplugUtils.GetAllMessageTypes())
             {
+                if (msgClass == typeof(BaseRawCmd))
+                {
+                    continue;
+                }
                 // This will throw if the ButtplugMessageMetadata attribute isn't present.
                 ButtplugMessage.GetName(msgClass);
             }
