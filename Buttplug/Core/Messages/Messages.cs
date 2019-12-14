@@ -1433,4 +1433,48 @@ namespace Buttplug.Core.Messages
         {
         }
     }
+
+    [ButtplugMessageMetadata("BatteryLevelCmd", 2)]
+    public class BatteryLevelCmd : ButtplugDeviceMessage
+    {
+        public BatteryLevelCmd(uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+        }
+    }
+
+    [ButtplugMessageMetadata("BatteryLevelReading", 2)]
+    public class BatteryLevelReading : ButtplugDeviceMessage
+    {
+        [JsonProperty(Required = Required.Always)]
+        public double BatteryLevel;
+
+        public BatteryLevelReading(double aBatteryLevel, uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+            BatteryLevel = aBatteryLevel;
+        }
+    }
+
+    [ButtplugMessageMetadata("RSSILevelCmd", 2)]
+    public class RSSILevelCmd : ButtplugDeviceMessage
+    {
+        public RSSILevelCmd(uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+        }
+    }
+
+    [ButtplugMessageMetadata("RSSILevelCmd", 2)]
+    public class RSSILevelReading : ButtplugDeviceMessage
+    {
+        [JsonProperty(Required = Required.Always)]
+        public int RSSILevel;
+
+        public RSSILevelReading(int aRSSILevel, uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+            RSSILevel = aRSSILevel;
+        }
+    }
 }
