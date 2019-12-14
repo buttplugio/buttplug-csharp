@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using Buttplug.Core;
+using Buttplug.Core.Messages;
 using Buttplug.Devices.Protocols;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -86,19 +88,32 @@ namespace Buttplug.Devices.Configuration
             foreach (var jsonObj in ((JObject)configObj["protocols"]).Properties())
             {
                 var protocolName = jsonObj.Name;
+                var obj = (JObject)jsonObj.Value;
 
                 if (!aCanAddProtocols && !_protocolConfigs.ContainsKey(protocolName))
                 {
                     throw new ButtplugDeviceException("Cannot add protocols in user configuration files.");
                 }
 
-                // We sometimes have null protocols, like "xinput". Just skip.
-                if (!jsonObj.Value.HasValues)
+                List<DeviceConfiguration> conf;
+                Dictionary<string, MessageAttributes> defaults;
+
+                conf = obj["configurations"].Value<JArray>().ToObject<List<DeviceConfiguration>>();
+                try
                 {
-                    continue;
+                    defaults = obj["defaults"]["messages"].Value<JObject>().ToObject<Dictionary<string, MessageAttributes>>();
+                    foreach (var c in conf)
+                    {
+                        c.AddDefaults(defaults);
+                    }
+                }
+                catch
+                {
+                    // just leave defaults null
                 }
 
-                foreach (var busObj in ((JObject)jsonObj.Value).Properties())
+                // Find the bus configurations, combine with device configurations to form Protocol Configuration.
+                foreach (var busObj in obj.Properties())
                 {
                     IProtocolConfiguration config = null;
                     switch (busObj.Name)
@@ -128,6 +143,8 @@ namespace Buttplug.Devices.Configuration
                     {
                         continue;
                     }
+
+                    config.SetDeviceConfig(conf);
 
                     AddProtocolConfig(protocolName, config);
                 }

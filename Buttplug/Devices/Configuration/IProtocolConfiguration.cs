@@ -1,4 +1,6 @@
-﻿namespace Buttplug.Devices.Configuration
+﻿using System.Collections.Generic;
+
+namespace Buttplug.Devices.Configuration
 {
     public interface IProtocolConfiguration
     {
@@ -7,5 +9,7 @@
         bool Matches(IProtocolConfiguration aConfig);
 
         void Merge(IProtocolConfiguration aConfig);
+
+        void SetDeviceConfig(List<DeviceConfiguration> aDeviceConfig);
     }
 }

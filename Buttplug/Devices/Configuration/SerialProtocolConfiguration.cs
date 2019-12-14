@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Buttplug.Devices.Configuration
 {
-    public class SerialProtocolConfiguration : IProtocolConfiguration
+    public class SerialProtocolConfiguration : ProtocolConfiguration
     {
         [JsonProperty("baud-rate")]
         public uint BaudRate;
@@ -35,13 +35,13 @@ namespace Buttplug.Devices.Configuration
             Ports.Add(aPortName);
         }
 
-        public bool Matches(IProtocolConfiguration aConfig)
+        public override bool Matches(IProtocolConfiguration aConfig)
         {
             // If our config and their config have the same ports, call it good.
             return aConfig is SerialProtocolConfiguration serialConfig && serialConfig.Ports.Intersect(Ports).Any();
         }
 
-        public void Merge(IProtocolConfiguration aConfig)
+        public override void Merge(IProtocolConfiguration aConfig)
         {
             if (!(aConfig is SerialProtocolConfiguration serialConfig))
             {

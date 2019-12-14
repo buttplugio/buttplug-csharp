@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Buttplug.Devices.Configuration
 {
-    public class USBProtocolConfiguration : IProtocolConfiguration
+    public class USBProtocolConfiguration : ProtocolConfiguration
     {
         [JsonProperty("vendor-id")]
         public readonly ushort VendorId;
@@ -19,12 +19,12 @@ namespace Buttplug.Devices.Configuration
             ProductId = aProductId;
         }
 
-        public bool Matches(IProtocolConfiguration aConfig)
+        public override bool Matches(IProtocolConfiguration aConfig)
         {
             return aConfig is USBProtocolConfiguration usbConfig && usbConfig.ProductId == ProductId && usbConfig.VendorId == VendorId;
         }
 
-        public void Merge(IProtocolConfiguration aConfig)
+        public override void Merge(IProtocolConfiguration aConfig)
         {
             throw new NotImplementedException("No valid implementation of configuration merging for USB");
         }

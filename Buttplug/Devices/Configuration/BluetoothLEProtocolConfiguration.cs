@@ -5,7 +5,7 @@ using Buttplug.Core;
 
 namespace Buttplug.Devices.Configuration
 {
-    public class BluetoothLEProtocolConfiguration : IProtocolConfiguration
+    public class BluetoothLEProtocolConfiguration : ProtocolConfiguration
     {
         public List<string> Names = new List<string>();
         public Dictionary<Guid, Dictionary<string, Guid>> Services;
@@ -28,7 +28,7 @@ namespace Buttplug.Devices.Configuration
         {
         }
 
-        public bool Matches(IProtocolConfiguration aConfig)
+        public override bool Matches(IProtocolConfiguration aConfig)
         {
             if (!(aConfig is BluetoothLEProtocolConfiguration btleConfig))
             {
@@ -63,7 +63,7 @@ namespace Buttplug.Devices.Configuration
             return false;
         }
 
-        public void Merge(IProtocolConfiguration aConfig)
+        public override void Merge(IProtocolConfiguration aConfig)
         {
             if (!(aConfig is BluetoothLEProtocolConfiguration bleConfig))
             {
