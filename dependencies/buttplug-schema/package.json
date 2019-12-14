@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "ajv compile -s schema/buttplug-schema.json"
+    "test": "ajv compile -s schema/buttplug-schema.json && node tests/jsontest.js"
   },
   "repository": {
     "type": "git",
