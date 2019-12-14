@@ -69,17 +69,6 @@
 # That's pretty much it for how this file works.
 
 
-# Define identifier types. These are the only values devices can have
-# in their connection-info lists.
-
-connection-info-types:
-  - btle
-  - serial
-  - usb
-  - hid
-
-# Things we may add some day: BT Classic, 433mhz radio
-  
 # Now for the actual protocol definitions. This is gonna get wild, so
 # I'll keep a list of rules that you can refer to up here.
 #
@@ -183,7 +172,7 @@ protocols:
           FeatureCount: 1
           StepCount:
             - 20
-    device-configs:
+    configurations:
       # For lovense, our identifiers are the letters returned from the
       # DeviceInfo query sent on initialization.
       - identifier:
@@ -237,12 +226,12 @@ protocols:
     #
     # TODO Maybe just start calling this "gamepad"? Maybe add "VR
     # Controller" too?
-    configs:
+    configurations:
       - identifier:
           # We already know what this is as its communication manager
           # is specifically built for it, so there's nothing to
-          # identify.
-          - null
+          # identify. Just make this a string that we'll ignore.
+          - Xbox Gamepad
         name:
           en-us: XBox (XInput) Compatible Gamepad
         messages:
@@ -258,11 +247,11 @@ protocols:
         - Onyx2
       services:
         88f80580-0000-01e6-aace-0002a5d5c51b:
-          tx: 88f80581-0000-01e6-aace-0002a5d5c51b
-          rx: 88f80582-0000-01e6-aace-0002a5d5c51b
-          # The Launch has a special characteristic for loading
-          # firmware.
-          firmware: 88f80583-0000-01e6-aace-0002a5d5c51b
+         tx: 88f80581-0000-01e6-aace-0002a5d5c51b 
+         rx: 88f80582-0000-01e6-aace-0002a5d5c51b
+         # The Launch has a special characteristic for loading
+         # firmware.
+         firmware: 88f80583-0000-01e6-aace-0002a5d5c51b
         f60402a6-0293-4bdb-9f20-6758133f7090:
           tx: 02962ac9-e86f-4094-989d-231d69995fc2
           rx: d44d0393-0731-43b3-a373-8fc70b1f3323
@@ -275,11 +264,13 @@ protocols:
           FeatureCount: 1
           StepCount:
             - 100
-    configs:
-      - identifier: Launch
+    configurations:
+      - identifier:
+          - Launch
         name:
           en-us: Fleshlight Launch
-      - identifier: Onyx2
+      - identifier:
+          - Onyx2
         name:
           en-us: Kiiroo Onyx 2
   # libo:
@@ -452,24 +443,6 @@ protocols:
   #       a0d70001-4c16-4ba7-977a-d394920e13a3:
   #         tx: a0d70002-4c16-4ba7-977a-d394920e13a3
   #         rx: a0d70003-4c16-4ba7-977a-d394920e13a3
-  # kiiroo-v2:
-  #   btle:
-  #     names:
-  #       - Launch
-  #       - Onyx2
-  #     services:
-  #       88f80580-0000-01e6-aace-0002a5d5c51b:
-  #         tx: 88f80581-0000-01e6-aace-0002a5d5c51b
-  #         rx: 88f80582-0000-01e6-aace-0002a5d5c51b
-  #         # The Launch has a special characteristic for loading
-  #         # firmware.
-  #         firmware: 88f80583-0000-01e6-aace-0002a5d5c51b
-  #       f60402a6-0293-4bdb-9f20-6758133f7090:
-  #         tx: 02962ac9-e86f-4094-989d-231d69995fc2
-  #         rx: d44d0393-0731-43b3-a373-8fc70b1f3323
-  #         # The Onyx2 has a special characteristic for loading
-  #         # firmware.
-  #         firmware: c7b7a04b-2cc4-40ff-8b10-5d531d1161db
   # erostek-et312:
   #   serial:
   #     # Port names are defined in user configs
