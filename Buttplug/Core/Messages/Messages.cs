@@ -1359,4 +1359,78 @@ namespace Buttplug.Core.Messages
         {
         }
     }
+
+    public class BaseRawCmd : ButtplugDeviceMessage
+    {
+        [JsonProperty(Required = Required.Always)]
+        public string Endpoint;
+
+        public BaseRawCmd(string aEndpoint, uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+            Endpoint = aEndpoint;
+        }
+    }
+
+    [ButtplugMessageMetadata("RawWriteCmd", 2)]
+    public class RawWriteCmd : BaseRawCmd
+    {
+        [JsonProperty(Required = Required.Always)]
+        public byte[] Data;
+        [JsonProperty(Required = Required.Always)]
+        public bool WriteWithResponse;
+
+        public RawWriteCmd(string aEndpoint, byte[] aData, bool aWriteWithResponse, uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aEndpoint, aId, aDeviceIndex)
+        {
+            Data = aData;
+            WriteWithResponse = aWriteWithResponse;
+        }
+    }
+
+    [ButtplugMessageMetadata("RawReadCmd", 2)]
+    public class RawReadCmd : BaseRawCmd
+    {
+        [JsonProperty(Required = Required.Always)]
+        public uint ExpectedLength;
+        [JsonProperty(Required = Required.Always)]
+        public bool WaitForData;
+
+        public RawReadCmd(string aEndpoint, uint aExpectedLength, bool aWaitForData, uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aEndpoint, aId, aDeviceIndex)
+        {
+        }
+    }
+
+    [ButtplugMessageMetadata("RawReading", 2)]
+    public class RawReading : BaseRawCmd
+    {
+        [JsonProperty(Required = Required.Always)]
+        public byte[] Data;
+
+        public RawReading(string aEndpoint, byte[] aData, uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aEndpoint, aId, aDeviceIndex)
+        {
+            Data = aData;
+        }
+    }
+
+    [ButtplugMessageMetadata("RawSubscribeCmd", 2)]
+    public class RawSubscribeCmd : BaseRawCmd
+    {
+        public RawSubscribeCmd(string aEndpoint, uint aDeviceIndex = UInt32.MaxValue,
+            uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aEndpoint, aId, aDeviceIndex)
+        {
+        }
+    }
+
+    [ButtplugMessageMetadata("RawUnsubscribeCmd", 2)]
+    public class RawUnsubscribeCmd : BaseRawCmd
+    {
+        public RawUnsubscribeCmd(string aEndpoint, uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aEndpoint, aId, aDeviceIndex)
+        {
+        }
+    }
 }
