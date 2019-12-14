@@ -4,7 +4,7 @@
   "description": "Buttplug Device Configuration File",
   "main": "index.js",
   "scripts": {
-    "build": "js-yaml buttplug-device-config.yml > buttplug-device-config.json"
+    "build": "js-yaml buttplug-device-config.yml > buttplug-device-config.json && ajv validate -s buttplug-device-config-schema.json -d buttplug-device-config.json"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/buttplugio/buttplug-device-config#readme",
   "devDependencies": {
+    "ajv": "^6.10.2",
+    "ajv-cli": "^3.0.0",
     "js-yaml": "^3.13.1"
   },
   "dependencies": {
