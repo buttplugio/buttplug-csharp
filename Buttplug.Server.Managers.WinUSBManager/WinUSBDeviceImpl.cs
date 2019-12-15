@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -11,6 +12,13 @@ namespace Buttplug.Server.Managers.WinUSBManager
     class WinUSBDeviceImpl : ButtplugDeviceImpl
     {
         private USBDevice _device;
+
+        // Since this currently only supports the TranceVibrator, this should be
+        // all we need.
+        public override IEnumerable<string> DeviceEndpoints => new[]
+        {
+            Endpoints.Rx
+        };
 
         public WinUSBDeviceImpl(IButtplugLogManager aLogManager, USBDevice aDevice) : base(aLogManager)
         {

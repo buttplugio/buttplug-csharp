@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -19,6 +20,11 @@ namespace Buttplug.Server.Managers.XInputGamepadManager
         private Controller _device;
 
         public override bool Connected => _device != null;
+
+        public override IEnumerable<string> DeviceEndpoints => new[]
+        {
+            Endpoints.Rx
+        };
 
         public XInputGamepadDevice(IButtplugLogManager aLogManager, Controller aDevice)
             : base(aLogManager)

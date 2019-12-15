@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -20,6 +21,12 @@ namespace Buttplug.Server.Managers.HidSharpManager
         private HidStream _stream;
 
         public override bool Connected => _stream != null;
+
+        public override IEnumerable<string> DeviceEndpoints => new[]
+        {
+            Endpoints.Tx,
+            Endpoints.Rx
+        };
 
         public HidSharpHidDeviceImpl(IButtplugLogManager aLogManager, HidDevice aDevice)
             : base(aLogManager)

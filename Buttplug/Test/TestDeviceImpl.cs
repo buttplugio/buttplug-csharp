@@ -13,6 +13,12 @@ namespace Buttplug.Test
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class TestDeviceImpl : ButtplugDeviceImpl
     {
+        public override IEnumerable<string> DeviceEndpoints => new[]
+        {
+            Endpoints.Rx,
+            Endpoints.Tx,
+        };
+
         public class WriteData
         {
             public uint MsgId;

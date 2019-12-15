@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,6 +16,8 @@ namespace Buttplug.Devices
         string Address { get; }
 
         bool Connected { get; }
+
+        IEnumerable<string> DeviceEndpoints { get; }
 
         void Disconnect();
 

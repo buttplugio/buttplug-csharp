@@ -34,6 +34,8 @@ namespace Buttplug.Server.Managers.XamarinBluetoothManager
         [CanBeNull]
         private IDevice _bleDevice;
 
+        public override IEnumerable<string> DeviceEndpoints => _indexedChars.Keys;
+
         public override bool Connected => _bleDevice != null && _bleDevice.State != DeviceState.Disconnected;
 
         protected XamarinBluetoothDeviceInterface(

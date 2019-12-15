@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,11 @@ namespace Buttplug.Server.Managers.HidSharpManager
     {
         private SerialStream _device;
         private bool _connected = true;
+        public override IEnumerable<string> DeviceEndpoints => new[]
+        {
+            Endpoints.Tx,
+            Endpoints.Rx
+        };
 
         public HidSharpSerialDeviceImpl(IButtplugLogManager aLogManager, SerialStream aDevice)
             : base(aLogManager)

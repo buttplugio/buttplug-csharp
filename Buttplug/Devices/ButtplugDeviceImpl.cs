@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
@@ -15,6 +16,8 @@ namespace Buttplug.Devices
         public string Name { get; protected set; }
 
         public string Address { get; protected set; }
+
+        public abstract IEnumerable<string> DeviceEndpoints { get; }
 
         /// <summary>
         /// Connected is abstract, as implementing classes may use it as a computed property.
