@@ -1480,7 +1480,7 @@ namespace Buttplug.Core.Messages
         }
     }
 
-    [ButtplugMessageMetadata("RSSILevelCmd", 2)]
+    [ButtplugMessageMetadata("RSSILevelReading", 2)]
     public class RSSILevelReading : ButtplugDeviceMessage
     {
         [JsonProperty(Required = Required.Always)]
@@ -1490,6 +1490,254 @@ namespace Buttplug.Core.Messages
             : base(aId, aDeviceIndex)
         {
             RSSILevel = aRSSILevel;
+        }
+    }
+
+    [ButtplugMessageMetadata("ShockCmd", 2)]
+    public class ShockCmd : ButtplugDeviceMessage
+    {
+        public class ShockSubcommand : GenericMessageSubcommand
+        {
+            private double _strengthImpl;
+
+            [JsonProperty(Required = Required.Always)]
+            public uint Duration;
+
+            [JsonProperty(Required = Required.Always)]
+            public double Strength
+            {
+                get => _strengthImpl;
+                set
+                {
+                    if (value < 0)
+                    {
+                        throw new ArgumentException("ShockCmd Strength cannot be less than 0!");
+                    }
+
+                    if (value > 1)
+                    {
+                        throw new ArgumentException("ShockCmd Strength cannot be greater than 1!");
+                    }
+
+                    _strengthImpl = value;
+                }
+            }
+
+            public ShockSubcommand(uint aIndex, uint aDuration, double aStrength)
+                : base(aIndex)
+            {
+                Duration = aDuration;
+                Strength = aStrength;
+            }
+        }
+
+
+        public static ShockCmd Create(uint aDuration, double aStrength, uint aCmdCount)
+        {
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat((aDuration, aStrength), (int)aCmdCount));
+        }
+
+        public static ShockCmd Create(uint aDeviceIndex, uint aMsgId, uint aDuration, double aStrength, uint aCmdCount)
+        {
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aDuration, aStrength), (int)aCmdCount));
+        }
+
+        public static ShockCmd Create(IEnumerable<(uint duration, double strength)> aCmds)
+        {
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, aCmds);
+        }
+
+        public static ShockCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(uint duration, double strength)> aCmds)
+        {
+            var cmdList = new List<ShockSubcommand>(aCmds.Count());
+            uint i = 0;
+            foreach (var cmd in aCmds)
+            {
+                cmdList.Add(new ShockSubcommand(i, cmd.duration, cmd.strength));
+                ++i;
+            }
+
+            return new ShockCmd(aDeviceIndex, cmdList, aMsgId);
+        }
+
+        [JsonProperty(Required = Required.Always)]
+        public List<ShockSubcommand> Shocks;
+
+        [JsonConstructor]
+        public ShockCmd(uint aDeviceIndex, List<ShockSubcommand> aShocks, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+            Shocks = aShocks;
+        }
+
+        public ShockCmd(List<ShockSubcommand> aShocks)
+            : this(uint.MaxValue, aShocks)
+        {
+        }
+    }
+
+    [ButtplugMessageMetadata("PatternPlaybackCmd", 2)]
+    public class PatternPlaybackCmd : ButtplugDeviceMessage
+    {
+        public class PatternPlaybackSubcommand : GenericMessageSubcommand
+        {
+            private double _strengthImpl;
+
+            [JsonProperty(Required = Required.Always)]
+            public string Name;
+
+            [JsonProperty(Required = Required.Always)]
+            public double Strength
+            {
+                get => _strengthImpl;
+                set
+                {
+                    if (value < 0)
+                    {
+                        throw new ArgumentException("PatternPlaybackCmd Strength cannot be less than 0!");
+                    }
+
+                    if (value > 1)
+                    {
+                        throw new ArgumentException("PatternPlaybackCmd Strength cannot be greater than 1!");
+                    }
+
+                    _strengthImpl = value;
+                }
+            }
+
+            public PatternPlaybackSubcommand(uint aIndex, string aName, double aStrength)
+                : base(aIndex)
+            {
+                Name = aName;
+                Strength = aStrength;
+            }
+        }
+
+
+        public static PatternPlaybackCmd Create(string aName, double aStrength, uint aCmdCount)
+        {
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat((aName, aStrength), (int)aCmdCount));
+        }
+
+        public static PatternPlaybackCmd Create(uint aDeviceIndex, uint aMsgId, string aName, double aStrength, uint aCmdCount)
+        {
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aName, aStrength), (int)aCmdCount));
+        }
+
+        public static PatternPlaybackCmd Create(IEnumerable<(string aName, double strength)> aCmds)
+        {
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, aCmds);
+        }
+
+        public static PatternPlaybackCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(string pattern, double strength)> aCmds)
+        {
+            var cmdList = new List<PatternPlaybackSubcommand>(aCmds.Count());
+            uint i = 0;
+            foreach (var cmd in aCmds)
+            {
+                cmdList.Add(new PatternPlaybackSubcommand(i, cmd.pattern, cmd.strength));
+                ++i;
+            }
+
+            return new PatternPlaybackCmd(aDeviceIndex, cmdList, aMsgId);
+        }
+
+        [JsonProperty(Required = Required.Always)]
+        public List<PatternPlaybackSubcommand> Patterns;
+
+        [JsonConstructor]
+        public PatternPlaybackCmd(uint aDeviceIndex, List<PatternPlaybackSubcommand> aPatterns, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+            Patterns = aPatterns;
+        }
+
+        public PatternPlaybackCmd(List<PatternPlaybackSubcommand> aPatterns)
+            : this(uint.MaxValue, aPatterns)
+        {
+        }
+    }
+
+    [ButtplugMessageMetadata("ToneEmitterCmd", 2)]
+    public class ToneEmitterCmd : ButtplugDeviceMessage
+    {
+        public class ToneSubcommand : GenericMessageSubcommand
+        {
+            private double _VolumeImpl;
+
+            [JsonProperty(Required = Required.Always)]
+            public uint Duration;
+
+            [JsonProperty(Required = Required.Always)]
+            public double Volume
+            {
+                get => _VolumeImpl;
+                set
+                {
+                    if (value < 0)
+                    {
+                        throw new ArgumentException("ToneEmitterCmd Volume cannot be less than 0!");
+                    }
+
+                    if (value > 1)
+                    {
+                        throw new ArgumentException("ToneEmitterCmd Volume cannot be greater than 1!");
+                    }
+
+                    _VolumeImpl = value;
+                }
+            }
+
+            public ToneSubcommand(uint aIndex, uint aDuration, double aVolume)
+                : base(aIndex)
+            {
+                Duration = aDuration;
+                Volume = aVolume;
+            }
+        }
+
+        public static ToneEmitterCmd Create(uint aDuration, double aVolume, uint aCmdCount)
+        {
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat((aDuration, aVolume), (int)aCmdCount));
+        }
+
+        public static ToneEmitterCmd Create(uint aDeviceIndex, uint aMsgId, uint aDuration, double aVolume, uint aCmdCount)
+        {
+            return Create(aDeviceIndex, aMsgId, Enumerable.Repeat((aDuration, aVolume), (int)aCmdCount));
+        }
+
+        public static ToneEmitterCmd Create(IEnumerable<(uint aDuration, double Volume)> aCmds)
+        {
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, aCmds);
+        }
+
+        public static ToneEmitterCmd Create(uint aDeviceIndex, uint aMsgId, IEnumerable<(uint duration, double Volume)> aCmds)
+        {
+            var cmdList = new List<ToneSubcommand>(aCmds.Count());
+            uint i = 0;
+            foreach (var cmd in aCmds)
+            {
+                cmdList.Add(new ToneSubcommand(i, cmd.duration, cmd.Volume));
+                ++i;
+            }
+
+            return new ToneEmitterCmd(aDeviceIndex, cmdList, aMsgId);
+        }
+
+        [JsonProperty(Required = Required.Always)]
+        public List<ToneSubcommand> Tones;
+
+        [JsonConstructor]
+        public ToneEmitterCmd(uint aDeviceIndex, List<ToneSubcommand> aTones, uint aId = ButtplugConsts.DefaultMsgId)
+            : base(aId, aDeviceIndex)
+        {
+            Tones = aTones;
+        }
+
+        public ToneEmitterCmd(List<ToneSubcommand> aTones)
+            : this(uint.MaxValue, aTones)
+        {
         }
     }
 }
