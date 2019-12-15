@@ -18,6 +18,8 @@ namespace Buttplug.Devices
         /// </remarks>
         string Name { get; }
 
+        string DeviceConfigIdentifier { get; }
+
         /// <summary>
         /// Allowed message types for this device.
         /// </summary>

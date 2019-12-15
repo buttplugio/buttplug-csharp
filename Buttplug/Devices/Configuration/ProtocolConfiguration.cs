@@ -34,6 +34,8 @@ namespace Buttplug.Devices.Configuration
     {
         private List<DeviceConfiguration> _deviceConfig;
 
+        public List<DeviceConfiguration> DeviceConfigs => _deviceConfig;
+
         public void SetDeviceConfig(List<DeviceConfiguration> aDeviceConfig)
         {
             _deviceConfig = aDeviceConfig;

@@ -86,6 +86,8 @@ namespace Buttplug.Devices.Protocols
                 deviceTypeLetter = 'A';
             }
 
+            DeviceConfigIdentifier = deviceTypeLetter.ToString();
+
             int.TryParse(deviceInfo[1], out var deviceVersion);
             BpLogger.Trace($"Lovense DeviceType Return: {deviceTypeLetter}");
             if (!Enum.IsDefined(typeof(LovenseDeviceType), (uint)deviceTypeLetter))

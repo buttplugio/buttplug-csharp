@@ -24,7 +24,7 @@ namespace Buttplug.Devices.Configuration
             var device = new ButtplugDevice(aLogManager, _protocolType, aDevice);
             // Run initialization now, just to make sure we're ready to go when we hand the device back.
             // TODO should probably find a better cancellation token for this. Or like, any at all.
-            await device.InitializeAsync(CancellationToken.None).ConfigureAwait(false);
+            await device.InitializeAsync(Config.DeviceConfigs, CancellationToken.None).ConfigureAwait(false);
             return device;
         }
     }

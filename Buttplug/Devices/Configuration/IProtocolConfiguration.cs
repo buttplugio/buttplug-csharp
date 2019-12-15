@@ -11,5 +11,7 @@ namespace Buttplug.Devices.Configuration
         void Merge(IProtocolConfiguration aConfig);
 
         void SetDeviceConfig(List<DeviceConfiguration> aDeviceConfig);
+
+        List<DeviceConfiguration> DeviceConfigs { get; }
     }
 }

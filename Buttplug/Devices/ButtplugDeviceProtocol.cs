@@ -20,6 +20,8 @@ namespace Buttplug.Devices
     {
         public string Name { get; protected set; }
 
+        public string DeviceConfigIdentifier { get; protected set; }
+
         /// <summary>
         /// Gets the message handler functions.
         /// </summary>
@@ -49,6 +51,11 @@ namespace Buttplug.Devices
         {
             BpLogger = aLogManager.GetLogger(GetType());
             Name = aName;
+            // By default, we'll make the identifier the name of the device as
+            // seen by the device subtype manager. Running initialize may change
+            // this, for instance, when Lovense gets its device identifier
+            // letter during status queries.
+            DeviceConfigIdentifier = aInterface.Name;
             Interface = aInterface;
             MsgFuncs =
                 new Dictionary<Type, (Func<ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> Function,

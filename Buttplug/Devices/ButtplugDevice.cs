@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
+using Buttplug.Devices.Configuration;
 using JetBrains.Annotations;
 
 namespace Buttplug.Devices
@@ -22,7 +24,7 @@ namespace Buttplug.Devices
         protected readonly IButtplugDeviceImpl _device;
 
         /// <inheritdoc />
-        public string Name => _protocol.Name;
+        public string Name { get; protected set; }
 
         /// <inheritdoc />
         public string Identifier => _device.Address;
@@ -60,6 +62,9 @@ namespace Buttplug.Devices
             // Protocol can be null if activator construction from type constructor fails
             ButtplugUtils.ArgumentNotNull(aProtocol, nameof(aProtocol));
             _protocol = aProtocol;
+            // To start, make this resolve from the protocol. This may change
+            // once we have an identifier.
+            Name = _protocol.Name;
             _device = aDevice;
             BpLogger = aLogManager.GetLogger(GetType());
             _device.DeviceRemoved += OnDeviceRemoved;
@@ -109,9 +114,19 @@ namespace Buttplug.Devices
         }
 
         /// <inheritdoc />
-        public virtual async Task InitializeAsync(CancellationToken aToken)
+        public virtual async Task InitializeAsync(List<DeviceConfiguration> aConfigurations, CancellationToken aToken)
         {
+            // Run initialize in order to set the DeviceConfigIdentifier, if needed.,
             await _protocol.InitializeAsync(aToken);
+            // Look up the identifier in the device configuration records
+            var ident = from config in aConfigurations
+                where config.Identifiers.Contains(_protocol.DeviceConfigIdentifier)
+                select config;
+            if (ident.Count() > 0)
+            {
+                // This will usually be en-us for now, until we get more languages in.
+                Name = ident.First().Names.First().Value;
+            }
         }
 
         /// <inheritdoc />
