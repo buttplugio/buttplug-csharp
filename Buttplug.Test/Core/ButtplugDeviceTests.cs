@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
+using Buttplug.Devices.Configuration;
 using Buttplug.Test;
 using FluentAssertions;
 using NUnit.Framework;
@@ -35,7 +36,7 @@ namespace Buttplug.Core.Test
                 Index = 2,
             };
 
-            await dev.InitializeAsync(default(CancellationToken));
+            await dev.InitializeAsync(new List<DeviceConfiguration>(), default(CancellationToken));
 
             (await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken))).Should().BeOfType<Ok>();
 

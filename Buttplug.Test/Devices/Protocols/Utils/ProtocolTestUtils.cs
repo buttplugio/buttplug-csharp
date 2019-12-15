@@ -17,6 +17,7 @@ using Buttplug.Core;
 using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 using Buttplug.Devices;
+using Buttplug.Devices.Configuration;
 using FluentAssertions;
 using JetBrains.Annotations;
 
@@ -53,7 +54,7 @@ namespace Buttplug.Test.Devices.Protocols.Utils
 
         public async Task Initialize()
         {
-            await _testDevice.InitializeAsync();
+            await _testDevice.InitializeAsync(new List<DeviceConfiguration>());
             _testImpl.LastWritten.Clear();
         }
 
@@ -157,7 +158,7 @@ namespace Buttplug.Test.Devices.Protocols.Utils
         public async Task TestDeviceInitialize(IEnumerable<(byte[], string)> aExpectedBytes, bool aWriteWithResponse, bool aStrict = true)
         {
             Clear();
-            await _testDevice.InitializeAsync();
+            await _testDevice.InitializeAsync(new List<DeviceConfiguration>());
 
             TestPacketMatching(aExpectedBytes, aWriteWithResponse, aStrict);
         }
