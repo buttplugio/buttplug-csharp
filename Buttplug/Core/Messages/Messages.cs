@@ -144,6 +144,21 @@ namespace Buttplug.Core.Messages
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public uint? FeatureCount;
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<string> Endpoints;
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<uint> StepCount;
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<uint> MaxDuration;
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<IEnumerable<string>> Patterns;
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<string> ActuatorType;
+
         public MessageAttributes()
         {
         }
