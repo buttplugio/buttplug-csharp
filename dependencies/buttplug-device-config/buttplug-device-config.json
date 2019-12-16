@@ -55,7 +55,9 @@
             "StepCount": [
               20
             ]
-          }
+          },
+          "BatteryLevelCmd": {},
+          "RSSILevelCmd": {}
         }
       },
       "configurations": [
@@ -144,6 +146,17 @@
       ]
     },
     "xinput": {
+      "defaults": {
+        "messages": {
+          "VibrateCmd": {
+            "FeatureCount": 2,
+            "StepCount": [
+              65535,
+              65535
+            ]
+          }
+        }
+      },
       "configurations": [
         {
           "identifier": [
@@ -151,15 +164,6 @@
           ],
           "name": {
             "en-us": "XBox (XInput) Compatible Gamepad"
-          },
-          "messages": {
-            "VibrateCmd": {
-              "FeatureCount": 2,
-              "StepCount": [
-                65535,
-                65535
-              ]
-            }
           }
         }
       ]
@@ -190,7 +194,9 @@
             "StepCount": [
               100
             ]
-          }
+          },
+          "BatteryLevelCmd": {},
+          "RSSILevelCmd": {}
         }
       },
       "configurations": [
