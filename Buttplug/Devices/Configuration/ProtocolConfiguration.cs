@@ -9,10 +9,14 @@ namespace Buttplug.Devices.Configuration
 {
     public class DeviceConfiguration
     {
-        [JsonProperty("identifier")] public List<string> Identifiers;
+        // Can be null in default configuration
+        [JsonProperty("identifier", NullValueHandling = NullValueHandling.Ignore)] public List<string> Identifiers;
 
-        [JsonProperty("name")] public Dictionary<string, string> Names;
+        // Can be null when device is named via default
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)] public IDictionary<string, string> Names;
 
+        // Can be null when all messages match default configuration and are not
+        // included in configs block.
         [JsonProperty("messages", NullValueHandling = NullValueHandling.Ignore)]
         public IDictionary<string, MessageAttributes> Attributes = new Dictionary<string, MessageAttributes>();
 
@@ -22,11 +26,12 @@ namespace Buttplug.Devices.Configuration
             return dictA.Keys.Union(dictB.Keys).ToDictionary(k => k, k => dictA.ContainsKey(k) ? dictA[k] : dictB[k]);
         }
 
-        public void AddDefaults(Dictionary<string, MessageAttributes> aDefaults)
+        public void AddDefaults(DeviceConfiguration aDefaults)
         {
+            Names = Merge(Names, aDefaults.Names);
             // Merge dictionaries. If a key already exists in our configuration,
             // ignore the version in the defaults.
-            Attributes = Merge(Attributes, aDefaults);
+            Attributes = Merge(Attributes, aDefaults.Attributes);
         }
     }
 

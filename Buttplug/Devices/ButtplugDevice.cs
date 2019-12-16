@@ -119,9 +119,17 @@ namespace Buttplug.Devices
             // Run initialize in order to set the DeviceConfigIdentifier, if needed.,
             await _protocol.InitializeAsync(aToken);
             // Look up the identifier in the device configuration records
-            var ident = from config in aConfigurations
+            var ident = (from config in aConfigurations
                 where config.Identifiers.Contains(_protocol.DeviceConfigIdentifier)
-                select config;
+                select config).ToList();
+            // If all we have is one configuration, it may be the default. If
+            // nothing else was found, select it. This will happen for cases
+            // like XInput.
+            if (ident.Count() == 0 && aConfigurations.Count == 1)
+            {
+                ident.Add(aConfigurations.First());
+            }
+
             if (ident.Count() > 0)
             {
                 // This will usually be en-us for now, until we get more languages in.

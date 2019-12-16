@@ -96,12 +96,12 @@ namespace Buttplug.Devices.Configuration
                 }
 
                 List<DeviceConfiguration> conf;
-                Dictionary<string, MessageAttributes> defaults;
+                DeviceConfiguration defaults;
 
                 conf = obj["configurations"].Value<JArray>().ToObject<List<DeviceConfiguration>>();
                 try
                 {
-                    defaults = obj["defaults"]["messages"].Value<JObject>().ToObject<Dictionary<string, MessageAttributes>>();
+                    defaults = obj["defaults"].Value<JObject>().ToObject<DeviceConfiguration>();
                     foreach (var c in conf)
                     {
                         c.AddDefaults(defaults);
