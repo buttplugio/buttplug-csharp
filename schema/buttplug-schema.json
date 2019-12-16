@@ -134,6 +134,7 @@
         "VorzeA10CycloneCmd": { "$ref": "#/components/NullMessageAttributes" },
         "KiirooCmd": { "$ref": "#/components/NullMessageAttributes" },
         "SingleMotorVibrateCmd": { "$ref": "#/components/NullMessageAttributes" },
+        "FleshlightLaunchFW12Cmd": { "$ref": "#/components/NullMessageAttributes" },
         "BatteryLevelCmd": { "$ref": "#/components/NullMessageAttributes" },
         "RSSILevelCmd": { "$ref": "#/components/NullMessageAttributes" },
         "RawReadCmd": { "$ref": "#/components/RawMessageAttributes" },
