@@ -172,6 +172,8 @@ protocols:
           FeatureCount: 1
           StepCount:
             - 20
+        BatteryLevelCmd: {}
+        RSSILevelCmd: {}
     configurations:
       # For lovense, our identifiers are the letters returned from the
       # DeviceInfo query sent on initialization.
@@ -226,6 +228,13 @@ protocols:
     #
     # TODO Maybe just start calling this "gamepad"? Maybe add "VR
     # Controller" too?
+    defaults:
+      messages:
+        VibrateCmd:
+          FeatureCount: 2
+          StepCount:
+            - 65535
+            - 65535
     configurations:
       - identifier:
           # We already know what this is as its communication manager
@@ -234,12 +243,6 @@ protocols:
           - Xbox Gamepad
         name:
           en-us: XBox (XInput) Compatible Gamepad
-        messages:
-          VibrateCmd:
-            FeatureCount: 2
-            StepCount:
-              - 65535
-              - 65535
   kiiroo-v2:
     btle:
       names:
@@ -264,6 +267,8 @@ protocols:
           FeatureCount: 1
           StepCount:
             - 100
+        BatteryLevelCmd: {}
+        RSSILevelCmd: {}
     configurations:
       - identifier:
           - Launch

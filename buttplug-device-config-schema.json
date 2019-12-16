@@ -200,9 +200,27 @@
       },
       "additionalProperties": false
     },
+    "name-field": {
+      "type": "object",
+      "patternProperties": {
+        "^(en-us)$": {
+          "type": "string"
+        },
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "string"
+        }
+      },
+      "minProperties": 1,
+      "required": [
+        "en-us"
+      ]
+    },
     "defaults-definition": {
       "type": "object",
       "properties" : {
+        "name": {
+          "$ref": "#/components/name-field"
+        },
         "messages": {
           "$ref": "#/components/DeviceMessagesEx"
         }
@@ -224,19 +242,7 @@
             "minItems": 1
           },
           "name": {
-            "type": "object",
-            "patternProperties": {
-              "^(en-us)$": {
-                "type": "string"
-              },
-              "^[a-z]{2}-[A-Z]{2}$": {
-                "type": "string"
-              }
-            },
-            "minProperties": 1,
-            "required": [
-              "en-us"
-            ]
+            "$ref": "#/components/name-field"
           },
           "messages": {
             "$ref": "#/components/DeviceMessagesEx"
