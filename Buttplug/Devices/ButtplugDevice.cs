@@ -145,7 +145,7 @@ namespace Buttplug.Devices
                 ident.Add(aConfigurations.First());
             }
 
-            await _protocol.ConfigureAsync(ident.First(), aToken);
+            await _protocol.ConfigureAsync(ident.Any() ? ident.First() : null, aToken);
         }
 
         /// <inheritdoc />
