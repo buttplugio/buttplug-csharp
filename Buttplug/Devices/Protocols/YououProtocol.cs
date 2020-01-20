@@ -53,6 +53,7 @@ namespace Buttplug.Devices.Protocols
                 return new Ok(cmdMsg.Id);
             }
 
+            _vibratorSpeed = v.Speed;
             SentVibration = true;
 
             // Byte 2 seems to be a monotonically increasing packet id of some kind Speed seems to be
