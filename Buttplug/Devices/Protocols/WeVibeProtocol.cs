@@ -40,6 +40,7 @@ namespace Buttplug.Devices.Protocols
 
         private static readonly string[] EightBitSpeed =
         {
+            "Melt",
             "Moxie",
             "Vector",
         };
