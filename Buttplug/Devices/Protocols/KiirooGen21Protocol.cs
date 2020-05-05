@@ -87,6 +87,17 @@ namespace Buttplug.Devices.Protocols
                     VibeOrder = new[] { 0u },
                 }
             },
+            {
+                "Onyx+",
+                new KiirooGen21Type
+                {
+                    Brand = "Kiiroo",
+                    Name = "Onyx+",
+                    HasLinear = true,
+                    VibeCount = 0,
+                    VibeOrder = new uint[0],
+                }
+            },
         };
 
         private readonly KiirooGen21Type _devInfo;
