@@ -120,8 +120,6 @@ jobs:
   - job: Deploy
     dependsOn:
       - Windows
-      - MacOS
-      - Linux
     condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     pool:
       vmImage: 'windows-2019'
