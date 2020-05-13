@@ -1,9 +1,22 @@
+# 0.5.7 (2020-05-12)
+
+## Features
+
+- New hardware support
+  - Kiiroo Onyx+
+
+## Bugfixes
+
+- Youou will now stop on StopDeviceCmd/StopAllDevices
+- WeVibe Melt protocol fix
+
 # 0.5.6 (2019-12-10)
 
 ## Features
 
 - New hardware support
-  - Kiiroo Pearl 2, OhMiBod Esca 2
+  - Kiiroo Pearl 2
+  - OhMiBod Esca 2
 - Merged Kiiroo support into single protocol, so Titan should work as
   a vibrator now.
 
