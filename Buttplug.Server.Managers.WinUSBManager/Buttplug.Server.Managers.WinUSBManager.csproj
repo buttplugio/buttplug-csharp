@@ -12,11 +12,11 @@
     <Description>WinUSB device support (Rez Trancevibrator) for Buttplug Servers. (.Net Framework 4.7+ only)</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="2.0.21">
+    <PackageReference Include="GitInfo" Version="2.0.26">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="WinUSBNet" Version="1.0.3" />
+    <PackageReference Include="WinUSBNet" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
