@@ -32,7 +32,7 @@ namespace Buttplug.Test.Devices.Protocols
         public async Task Init()
         {
             testUtil = new ProtocolTestUtils();
-            await testUtil.SetupTest<YououProtocol>("Youou", new List<DeviceConfiguration>());
+            await testUtil.SetupTest<YououProtocol>("Youou");
         }
 
         [Test]
