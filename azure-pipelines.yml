@@ -30,7 +30,7 @@ jobs:
         parameters:
           platform: "win-x64"
       # Set up key after build start, otherwise we won't have nuget to update yet.
-      # - template: build/setup-signing-key.yml
+      - template: build/setup-signing-key.yml
       - task: VSBuild@1
         displayName: "Build Project"
         inputs:
@@ -59,16 +59,16 @@ jobs:
           contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
           targetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
           cleanTargetFolder: true
-      # - task: PowerShell@2
-      #   displayName: 'Sign Exported Nuget Packages'
-      #   # Only sign on dev/master builds
-      #   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
-      #   inputs:
-      #     targetType: inline
-      #     script: |
-      #       Get-ChildItem -Path $(Build.ArtifactStagingDirectory) -Filter *.nupkg -Recurse -File -Name| ForEach-Object {
-      #           nuget sign $(Build.ArtifactStagingDirectory)\$_ -CertificatePath SigningCert.pfx -CertificatePassword "$(NPLabsRepoSigningKey)" -Timestamper http://timestamp.comodoca.com/rfc3161
-      #       }
+      - task: PowerShell@2
+        displayName: 'Sign Exported Nuget Packages'
+        # Only sign on dev/master builds
+        condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
+        inputs:
+          targetType: inline
+          script: |
+            Get-ChildItem -Path $(Build.ArtifactStagingDirectory) -Filter *.nupkg -Recurse -File -Name| ForEach-Object {
+                nuget sign $(Build.ArtifactStagingDirectory)\$_ -CertificatePath SigningCert.pfx -CertificatePassword "$(NPLabsRepoSigningKey)" -Timestamper http://timestamp.comodoca.com/rfc3161
+            }
       - task: PublishPipelineArtifact@0
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)'
