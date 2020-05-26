@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core.Logging;
@@ -21,6 +22,7 @@ namespace Buttplug.Devices.Protocols
         {
             CycloneOrUnknown = 1,
             UFO = 2,
+            Piston = 3,
             Bach = 6,
         }
 
@@ -28,10 +30,24 @@ namespace Buttplug.Devices.Protocols
         {
             Rotate = 1,
             Vibrate = 3,
+            Linear = 10,
         }
+
+        public struct VorzePistonCommand
+        {
+            public uint parentMsgId;
+            public LinearCmd.VectorSubcommand cmd;
+            public CancellationToken aToken;
+        }
+        private DateTime _currentTime;
+        private DateTime _nextDispatchTime;
+        private Queue<VorzePistonCommand> _linearCmdQueue;
+        private byte _beforeLinearCmdPosition;
 
         private DeviceType _deviceType = DeviceType.CycloneOrUnknown;
         private CommandType _commandType = CommandType.Rotate;
+
+        private bool isEnable = false;
 
         public VorzeSAProtocol(IButtplugLogManager aLogManager,
                        IButtplugDeviceImpl aInterface)
@@ -53,6 +69,11 @@ namespace Buttplug.Devices.Protocols
                     Name = "Vorze UFO SA";
                     break;
 
+                case "VorzePiston":
+                    _deviceType = DeviceType.Piston;
+                    _commandType = CommandType.Linear;
+                    Name = "Vorze A10 Piston SA";
+                    break;
                 case "Bach smart":
                     _deviceType = DeviceType.Bach;
                     _commandType = CommandType.Vibrate;
@@ -76,6 +97,10 @@ namespace Buttplug.Devices.Protocols
                     AddMessageHandler<SingleMotorVibrateCmd>(HandleSingleMotorVibrateCmd);
                     AddMessageHandler<VibrateCmd>(HandleVibrateCmd, new MessageAttributes() { FeatureCount = 1 });
                     break;
+                case CommandType.Linear:
+                    AddMessageHandler<LinearCmd>(HandleLinearCmd, new MessageAttributes() { FeatureCount = 1 });
+                    _linearCmdQueue = new Queue<VorzePistonCommand>();
+                    break;
 
                 default:
                     BpLogger.Error("Unhandled command type.");
@@ -85,12 +110,38 @@ namespace Buttplug.Devices.Protocols
             AddMessageHandler<StopDeviceCmd>(HandleStopDeviceCmd);
         }
 
+
+        private async void ObserveLinearCmdQueue()
+        {
+            while (isEnable)
+            {
+                _currentTime = DateTime.Now;
+                if (this._linearCmdQueue.Count > 0 && _currentTime >= _nextDispatchTime)
+                {
+                    var cmd = _linearCmdQueue.Dequeue();
+                    await DispatchLinearCmd(cmd.cmd, cmd.aToken, cmd.parentMsgId);
+                    _nextDispatchTime = _currentTime.AddMilliseconds(cmd.cmd.Duration);
+                }
+                await Task.Delay(TimeSpan.FromMilliseconds(10));
+            }
+        }
+
+
         private async Task<ButtplugMessage> HandleStopDeviceCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
         {
             BpLogger.Debug("Stopping Device " + Name);
 
-            await Interface.WriteValueAsync(new byte[] { (byte)_deviceType, (byte)_commandType, 0 },
-                aToken).ConfigureAwait(false);
+            if (_deviceType == DeviceType.Piston)
+            {
+                // Forced transition to the front
+                await Interface.WriteValueAsync(new byte[] { (byte)_deviceType, 0, 60 }, aToken).ConfigureAwait(false);
+            }
+            else
+            {
+                await Interface.WriteValueAsync(new byte[] { (byte)_deviceType, (byte)_commandType, 0 }, aToken).ConfigureAwait(false);
+            }
+            isEnable = false;
+
             return new Ok(aMsg.Id);
         }
 
@@ -157,6 +208,80 @@ namespace Buttplug.Devices.Protocols
             await Interface.WriteValueAsync(new[] { (byte)_deviceType, (byte)_commandType, (byte)_speed },
                 aToken).ConfigureAwait(false);
             return new Ok(aMsg.Id);
+        }
+
+
+        private async Task<ButtplugMessage> HandleLinearCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+        {
+            if (!isEnable && _commandType == CommandType.Linear)
+            {
+                _linearCmdQueue.Clear();
+            }
+
+            var cmdMsg = CheckMessageHandler<LinearCmd>(aMsg);
+            foreach (var cmd in cmdMsg.Vectors)
+            {
+                VorzePistonCommand cmdWrapper;
+                cmdWrapper.parentMsgId = aMsg.Id;
+                cmdWrapper.cmd = cmd;
+                cmdWrapper.aToken = aToken;
+                _linearCmdQueue.Enqueue(cmdWrapper);
+            }
+
+            if (!isEnable && _commandType == CommandType.Linear)
+            {
+                _currentTime = DateTime.Now;
+                _nextDispatchTime = _currentTime;
+                isEnable = true;
+                await Task.Run(async () => { ObserveLinearCmdQueue(); });
+            }
+
+            return new Ok(aMsg.Id);
+        }
+        private async Task<ButtplugMessage> DispatchLinearCmd(LinearCmd.VectorSubcommand cmd, CancellationToken aToken, uint parentMsgId)
+        {
+            //byte position = (byte)Math.Ceiling((1d / 200d) * (cmd.Position * 100) * 100);
+            byte position = (byte)Math.Ceiling(cmd.Position * 200);
+            byte direction = (byte)(_beforeLinearCmdPosition > position ? 0 : 1);
+            byte speed = ResolveLinearCmdSpeed(cmd.Duration, direction);
+
+            await Interface.WriteValueAsync(new[] { (byte)_deviceType, position, speed }, aToken).ConfigureAwait(false);
+            _beforeLinearCmdPosition = position;
+
+            return new Ok(parentMsgId);
+        }
+
+        public byte ResolveLinearCmdSpeed(uint duration, byte direction)
+        {
+            // Convert back to stroke speed from the interval.
+            //
+            // Front and back stroke speed is asymmetric.
+            // (From back to front is slower than front to back.)
+            //
+            byte speed = 10; // defaults. minimum.
+
+            if (duration <= 200)
+            {
+                speed = 60;
+            }
+            else if (duration <= 300)
+            {
+                speed = direction > 0 ? (byte)20 : (byte)30;
+            }
+            else if (duration <= 550)
+            {
+                speed = direction > 0 ? (byte)15 : (byte)20;
+            }
+            else if (duration <= 700)
+            {
+                speed = direction > 0 ? (byte)13 : (byte)20;
+            }
+            else
+            {
+                speed = 10;
+            }
+
+            return speed;
         }
     }
 }

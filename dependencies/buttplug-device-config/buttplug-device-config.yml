@@ -405,6 +405,7 @@ protocols:
         - CycSA
         - Bach smart
         - UFOSA
+        - VorzePiston
       services:
         40ee1111-63ec-4b7f-8ce7-712efd55b90e:
           tx: 40ee2222-63ec-4b7f-8ce7-712efd55b90e

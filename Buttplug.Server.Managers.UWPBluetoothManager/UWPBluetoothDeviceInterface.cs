@@ -35,7 +35,7 @@ namespace Buttplug.Server.Managers.UWPBluetoothManager
         [CanBeNull]
         private BluetoothLEDevice _bleDevice;
 
-        public override bool Connected => _bleDevice != null && _bleDevice.ConnectionStatus == BluetoothConnectionStatus.Connected;
+        public override bool Connected => _bleDevice != null;
 
         protected UWPBluetoothDeviceInterface(
             [NotNull] IButtplugLogManager aLogManager,

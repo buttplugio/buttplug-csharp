@@ -328,7 +328,8 @@
         "names": [
           "CycSA",
           "Bach smart",
-          "UFOSA"
+          "UFOSA",
+          "VorzePiston"
         ],
         "services": {
           "40ee1111-63ec-4b7f-8ce7-712efd55b90e": {
