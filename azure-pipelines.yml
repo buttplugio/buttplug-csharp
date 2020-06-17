@@ -58,6 +58,7 @@ jobs:
         inputs:
           contents: "$(System.DefaultWorkingDirectory)/Buttplug/bin/Release/net47/*.dll"
           targetFolder: '$(System.DefaultWorkingDirectory/ButtplugUnity/Runtime'
+          flattenFolders: true
           cleanTargetFolder: true
       - task: CopyFiles@2
         displayName: "Copy buttplug websocket files to unity runtime"
@@ -65,7 +66,8 @@ jobs:
         inputs:
           contents: "$(System.DefaultWorkingDirectory)/Buttplug.Client.Connectors.WebsocketConnector/bin/Release/net47/*.dll"
           targetFolder: '$(System.DefaultWorkingDirectory/ButtplugUnity/Runtime'
-          cleanTargetFolder: true
+          flattenFolders: true
+          cleanTargetFolder: false
       - task: ArchiveFiles@2
         displayName: "Archive unity artifacts"
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
