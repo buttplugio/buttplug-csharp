@@ -53,6 +53,28 @@ jobs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
       - task: CopyFiles@2
+        displayName: "Copy buttplug files to unity runtime"
+        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
+        inputs:
+          contents: "$(System.DefaultWorkingDirectory)/Buttplug/bin/Release/net47/*.dll"
+          targetFolder: '$(System.DefaultWorkingDirectory/ButtplugUnity/Runtime'
+          cleanTargetFolder: true
+      - task: CopyFiles@2
+        displayName: "Copy buttplug websocket files to unity runtime"
+        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
+        inputs:
+          contents: "$(System.DefaultWorkingDirectory)/Buttplug.Client.Connectors.WebsocketConnector/bin/Release/net47/*.dll"
+          targetFolder: '$(System.DefaultWorkingDirectory/ButtplugUnity/Runtime'
+          cleanTargetFolder: true
+      - task: ArchiveFiles@2
+        displayName: "Archive unity artifacts"
+        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
+        inputs:
+          rootFolderOrFile: "$(System.DefaultWorkingDirectory)/ButtplugUnity"
+          archiveType: "zip"
+          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-unity-$(gitVersion).zip"
+          includeRootFolder: true
+      - task: CopyFiles@2
         displayName: "Copy nuget packages to staging"
         inputs:
           # Prefix this with Buttplug, otherwise we'll archive the packages directory too.
@@ -130,20 +152,32 @@ jobs:
         inputs:
           buildType: 'current'
       # Upload coverage to codecov.io
-      - task: PowerShell@2
+      # - task: PowerShell@2
+      #   inputs:
+      #     targetType: inline
+      #     script: |
+      #       cinst -y --no-progress codecov
+      #       codecov.exe -f "$(System.ArtifactsDirectory)/artifacts-Debug/coverage.xml" -t $(CODECOV_TOKEN)
+      #   displayName: Upload coverage to codecov.
+      #   continueOnError: true
+      # - task: NuGetCommand@2
+      #   displayName: "Push NuGet packages to NuGet.org"
+      #   condition: succeeded()
+      #   inputs:
+      #     command: "push"
+      #     nuGetFeedType: "external"
+      #     packagesToPush: "$(System.ArtifactsDirectory)/artifacts-Release/**/!(*.symbols).nupkg"
+      #     allowPackageConflicts: false
+      #     publishFeedCredentials: "NuGet.org"
+      - task: GitHubRelease@0
+        displayName: Upload Unity zip to Github
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
-          targetType: inline
-          script: |
-            cinst -y --no-progress codecov
-            codecov.exe -f "$(System.ArtifactsDirectory)/artifacts-Debug/coverage.xml" -t $(CODECOV_TOKEN)
-        displayName: Upload coverage to codecov.
-        continueOnError: true
-      - task: NuGetCommand@2
-        displayName: "Push NuGet packages to NuGet.org"
-        condition: succeeded()
-        inputs:
-          command: "push"
-          nuGetFeedType: "external"
-          packagesToPush: "$(System.ArtifactsDirectory)/artifacts-Release/**/!(*.symbols).nupkg"
-          allowPackageConflicts: false
-          publishFeedCredentials: "NuGet.org"
+          gitHubConnection: "release"
+          repositoryName: "buttplugio/buttplug-csharp"
+          action: "create"
+          tagSource: "auto"
+          title: "Buttplug Unity Release"
+          assets: |
+            $(System.ArtifactsDirectory)\**\buttplug-unity-*.zip
+          isPreRelease: false
