@@ -51,6 +51,10 @@
           "42300001-0023-4bd4-bbd5-a6920e4c5653": {
             "tx": "42300002-0023-4bd4-bbd5-a6920e4c5653",
             "rx": "42300003-0023-4bd4-bbd5-a6920e4c5653"
+          },
+          "43300001-0023-4bd4-bbd5-a6920e4c5653": {
+            "tx": "43300002-0023-4bd4-bbd5-a6920e4c5653",
+            "rx": "43300003-0023-4bd4-bbd5-a6920e4c5653"
           }
         }
       }
@@ -163,6 +167,7 @@
           "Bloom",
           "classic",
           "Classic",
+          "Chorus",
           "Ditto",
           "Gala",
           "Jive",
@@ -178,9 +183,11 @@
           "imassager",
           "Interactive Massager",
           "03",
+          "Skeena",
           "Sync",
           "Vector",
           "Verge",
+          "Wand",
           "Wish"
         ],
         "services": {
@@ -221,7 +228,8 @@
           "Pearl2",
           "Fuse",
           "Virtual Blowbot",
-          "Titan"
+          "Titan",
+          "Virtual Rabbit"
         ],
         "services": {
           "88f82580-0000-01e6-aace-0002a5d5c51b": {
@@ -236,7 +244,8 @@
       "btle": {
         "names": [
           "Onyx2.1",
-          "Titan1.1"
+          "Titan1.1",
+          "Onyx+"
         ],
         "services": {
           "00001900-0000-1000-8000-00805f9b34fb": {
@@ -250,13 +259,19 @@
     "kiiroo-v21-vibrator": {
       "btle": {
         "names": [
-          "Cliona"
+          "Cliona",
+          "Pearl2.1",
+          "OhMiBod 4.0"
         ],
         "services": {
           "00001900-0000-1000-8000-00805f9b34fb": {
             "whitelist": "00001901-0000-1000-8000-00805f9b34fb",
             "tx": "00001902-0000-1000-8000-00805f9b34fb",
             "rx": "00001903-0000-1000-8000-00805f9b34fb"
+          },
+          "a0d70001-4c16-4ba7-977a-d394920e13a3": {
+            "tx": "a0d70002-4c16-4ba7-977a-d394920e13a3",
+            "rx": "a0d70003-4c16-4ba7-977a-d394920e13a3"
           }
         }
       }
@@ -322,7 +337,8 @@
         "names": [
           "CycSA",
           "Bach smart",
-          "UFOSA"
+          "UFOSA",
+          "VorzePiston"
         ],
         "services": {
           "40ee1111-63ec-4b7f-8ce7-712efd55b90e": {
@@ -390,7 +406,8 @@
     "motorbunny": {
       "btle": {
         "names": [
-          "MB Controller"
+          "MB Controller",
+          "MB LINK 201"
         ],
         "services": {
           "0000fff0-0000-1000-8000-00805f9b34fb": {
@@ -484,6 +501,19 @@
           "00000a60-0000-1000-8000-00805f9b34fb": {
             "tx": "00000a66-0000-1000-8000-00805f9b34fb",
             "rx": "00000a67-0000-1000-8000-00805f9b34fb"
+          }
+        }
+      }
+    },
+    "lovenuts": {
+      "btle": {
+        "names": [
+          "Love_Nuts"
+        ],
+        "services": {
+          "0000fff0-0000-1000-8000-00805f9b34fb": {
+            "tx": "0000fff1-0000-1000-8000-00805f9b34fb",
+            "rx": "0000fff1-0000-1000-8000-00805f9b34fb"
           }
         }
       }
