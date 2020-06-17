@@ -35,17 +35,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentAssertions, Version=5.9.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.5.9.0\lib\net47\FluentAssertions.dll</HintPath>
+    <Reference Include="FluentAssertions, Version=5.10.3.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.5.10.3\lib\net47\FluentAssertions.dll</HintPath>
     </Reference>
-    <Reference Include="Namotion.Reflection, Version=1.0.11.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102, processorArchitecture=MSIL">
-      <HintPath>..\packages\Namotion.Reflection.1.0.11\lib\net45\Namotion.Reflection.dll</HintPath>
+    <Reference Include="Namotion.Reflection, Version=1.0.12.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102, processorArchitecture=MSIL">
+      <HintPath>..\packages\Namotion.Reflection.1.0.12\lib\net45\Namotion.Reflection.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NJsonSchema, Version=10.1.15.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102, processorArchitecture=MSIL">
-      <HintPath>..\packages\NJsonSchema.10.1.15\lib\net45\NJsonSchema.dll</HintPath>
+    <Reference Include="NJsonSchema, Version=10.1.21.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102, processorArchitecture=MSIL">
+      <HintPath>..\packages\NJsonSchema.10.1.21\lib\net45\NJsonSchema.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
