@@ -42,23 +42,14 @@ Desktop](https://intiface.com/desktop).
 ## Support The Project
 
 If you find this project helpful, you can [support us via
-Patreon](http://patreon.com/qdot)! Every donation helps us afford more
-hardware to reverse, document, and write code for!
+Patreon](http://patreon.com/qdot) or [Github
+Sponsors](https://github.com/sponsors/qdot)! Every donation helps us
+afford more hardware to reverse, document, and write code for!
 
 ## Documentation
 
 Documentation is available for the Buttplug Protocol and Frameworks,
 as well as this specific library.
-
-### Developer Guide
-
-The [Buttplug Developer
-Guide](https://buttplug-developer-guide.docs.buttplug.io) is the best
-introduction to how Buttplug works as a system. It provides an
-architectural overview of the various libraries and development
-strategies, as well as code examples in multiple languages.
-
-[https://buttplug-developer-guide.docs.buttplug.io](https://buttplug-developer-guide.docs.buttplug.io)
 
 ### Library Usage Examples
 
@@ -72,8 +63,6 @@ includes some heavily commented examples!
 - [Part 5 - Device Control](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.05.DeviceControl/Program.cs)
 - [Part 6 - Logging and Error Handling](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.06.LoggingAndErrorHandling/Program.cs)
 - [Part 7 - Full Example Program](https://github.com/buttplugio/buttplug-csharp/blob/master/Buttplug.Examples.07.FullProgram/Program.cs)
-
-For examples of Xamarin (Android/iOS) applications, [see the buttplug-xamarin-examples repo](https://github.com/buttplugio/buttplug-xamarin-examples).
 
 ### Library API Documentation
 
@@ -92,27 +81,7 @@ website](https://buttplug.io).
 
 ## Hardware Support
 
-Buttplug C# Supports the following Devices:
-  - BLE Devices
-    - Fleshlight Launch
-    - Kiiroo Toys (Onyx, Pearl, Onyx 2, Pearl 2)
-    - LiBo Toys
-    - Lovense Toys
-    - Magic Motion Toys
-    - Mysteryvibe Crescendo and Tenuto
-    - OhMiBod Fuse
-    - Svakom Ella
-    - Vibratissimo Toys
-    - Vorze Interactive A10 Cyclone SA
-    - Vorze UFO SA
-    - WeVibe Toys
-    - Youcups Warrior II
-  - USB Devices
-    - Rez Trancevibrator
-    - Vorze Cyclone X10
-    - RealTouch
-  - Other Devices
-    - Xbox Compatible Gamepads (XInput, Vibration Control Only)
+For a full list of supported devices, check out [IOSTIndex](https://iostindex.com/?filter0ButtplugSupport=1).
 
 Operating System support is as follows:
 
@@ -121,16 +90,6 @@ Operating System support is as follows:
 
 - Windows 7/8 and 10 pre 15063
   - All USB/Serial/Other Devices (No Bluetooth)
-
-- Linux/Mac (Mono)
-  - All USB/Serial Devices (No Bluetooth, No XInput)
-    
-- Android/iOS (Xamarin)
-  - All Bluetooth LE devices (No USB, No XInput, No Serial)
-
-Check [https://buttplug.io](https://buttplug.io) for a list a fully
-up-to-date list of supported hardware, as well as planned hardware
-support.
 
 ## Installation
 
@@ -164,6 +123,14 @@ Note that some of the Windows 10 SDK links in the UWP Bluetooth
 Manager project are hard-linked to the C:\ drive. If your program
 files and SDKs are not on your C: drive, you may need to readjust
 these paths by hand.
+
+## Unity Support
+
+Unity support is provided via a Unity Custom Package file, and is
+available in the
+[Releases](https://github.com/buttplug-csharp/releases) section.
+
+For information on installing and using the Buttplug Unity Package, see the [ButtplugUnity README file](https://github.com/buttplugio/buttplug-csharp/tree/master/ButtplugUnity)
 
 ## Third Party Applications Using Buttplug C#
 
