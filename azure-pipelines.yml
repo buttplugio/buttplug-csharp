@@ -155,7 +155,7 @@ jobs:
       #     publishFeedCredentials: "NuGet.org"
       - task: GitHubRelease@0
         displayName: Upload Unity zip to Github
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           gitHubConnection: "release"
           repositoryName: "buttplugio/buttplug-csharp"
