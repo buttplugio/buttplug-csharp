@@ -124,14 +124,14 @@ jobs:
           script: |
             npm i -g netlify-cli
             netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site
-      - task: PowerShell@2
-        displayName: Deploy Dev Documentation to Netlify
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
-        inputs:
-          targetType: inline
-          script: |
-            npm i -g netlify-cli
-            netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site    
+      # - task: PowerShell@2
+      #   displayName: Deploy Dev Documentation to Netlify
+      #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+      #   inputs:
+      #     targetType: inline
+      #     script: |
+      #       npm i -g netlify-cli
+      #       netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site    
   - job: Deploy
     dependsOn:
       - Windows
@@ -144,18 +144,18 @@ jobs:
         displayName: Download Artifacts from other jobs
         inputs:
           buildType: 'current'
-      # - task: NuGetCommand@2
-      #   displayName: "Push NuGet packages to NuGet.org"
-      #   condition: succeeded()
-      #   inputs:
-      #     command: "push"
-      #     nuGetFeedType: "external"
-      #     packagesToPush: "$(System.ArtifactsDirectory)/artifacts-Release/**/!(*.symbols).nupkg"
-      #     allowPackageConflicts: false
-      #     publishFeedCredentials: "NuGet.org"
+      - task: NuGetCommand@2
+        displayName: "Push NuGet packages to NuGet.org"
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        inputs:
+          command: "push"
+          nuGetFeedType: "external"
+          packagesToPush: "$(System.ArtifactsDirectory)/artifacts-Release/**/!(*.symbols).nupkg"
+          allowPackageConflicts: false
+          publishFeedCredentials: "NuGet.org"
       - task: GitHubRelease@0
         displayName: Upload Unity zip to Github
-        # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           gitHubConnection: "release"
           repositoryName: "buttplugio/buttplug-csharp"
