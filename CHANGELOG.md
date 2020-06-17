@@ -1,3 +1,11 @@
+# 0.5.8 (2020-06-16)
+
+## Features
+
+- Added Unity Package to repo
+- New hardware support
+  - Vorze Piston SA
+
 # 0.5.7 (2020-05-12)
 
 ## Features
