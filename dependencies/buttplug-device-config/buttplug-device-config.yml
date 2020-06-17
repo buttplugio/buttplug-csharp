@@ -177,6 +177,9 @@ protocols:
         42300001-0023-4bd4-bbd5-a6920e4c5653: # Max 2
           tx: 42300002-0023-4bd4-bbd5-a6920e4c5653
           rx: 42300003-0023-4bd4-bbd5-a6920e4c5653
+        43300001-0023-4bd4-bbd5-a6920e4c5653:
+          tx: 43300002-0023-4bd4-bbd5-a6920e4c5653
+          rx: 43300003-0023-4bd4-bbd5-a6920e4c5653
   xinput:
     # This will actually be ANY gamepad that supports XInput. XInput
     # is its own connector type, so we don't have any special
@@ -278,6 +281,7 @@ protocols:
         - Bloom
         - classic
         - Classic
+        - Chorus
         - Ditto
         - Gala
         - Jive
@@ -293,9 +297,11 @@ protocols:
         - imassager # Reina alias
         - Interactive Massager # Reina alias
         - "03" # Reina alias
+        - Skeena # WeVibe 6? Possible alias for Chrous
         - Sync
         - Vector
         - Verge
+        - Wand
         - Wish
       services:
         f000bb03-0451-4000-b000-000000000000:
@@ -324,6 +330,7 @@ protocols:
         - Fuse
         - Virtual Blowbot
         - Titan
+        - Virtual Rabbit
       services:
         88f82580-0000-01e6-aace-0002a5d5c51b:
           tx: 88f82581-0000-01e6-aace-0002a5d5c51b
@@ -334,6 +341,7 @@ protocols:
       names:
         - Onyx2.1
         - Titan1.1
+        - Onyx+
       services:
         00001900-0000-1000-8000-00805f9b34fb:
           # Used to clear the whitelist
@@ -405,6 +413,7 @@ protocols:
         - CycSA
         - Bach smart
         - UFOSA
+        - VorzePiston
       services:
         40ee1111-63ec-4b7f-8ce7-712efd55b90e:
           tx: 40ee2222-63ec-4b7f-8ce7-712efd55b90e
@@ -446,6 +455,7 @@ protocols:
     btle:
       names:
         - MB Controller
+        - MB LINK 201
       services:
         0000fff0-0000-1000-8000-00805f9b34fb:
           tx: 0000fff6-0000-1000-8000-00805f9b34fb
@@ -514,6 +524,14 @@ protocols:
         00000a60-0000-1000-8000-00805f9b34fb:
           tx: 00000a66-0000-1000-8000-00805f9b34fb
           rx: 00000a67-0000-1000-8000-00805f9b34fb
+  lovenuts:
+    btle:
+      names:
+        - Love_Nuts
+      services:
+        0000fff0-0000-1000-8000-00805f9b34fb:
+          tx: 0000fff1-0000-1000-8000-00805f9b34fb
+          rx: 0000fff1-0000-1000-8000-00805f9b34fb
   # nintendo-joycon:
   #   hid:
   #     vendor-id: 0x057e
