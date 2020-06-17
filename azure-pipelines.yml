@@ -38,17 +38,8 @@ jobs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
           maximumCpuCount: true
-      - task: PowerShell@2
-        inputs:
-          targetType: inline
-          script: |
-            cinst -y --no-progress opencover.portable nunit-console-runner
-            OpenCover.Console.exe -returntargetcode -register:user -target:"nunit3-console.exe" -targetargs:"Buttplug.Test/bin/$(buildConfiguration)/net47/Buttplug.Test.dll Buttplug.Client.Connectors.WebsocketConnector.Test/bin/$(buildConfiguration)/Buttplug.Client.Connectors.WebsocketConnector.Test.dll --inprocess --result=$(Build.ArtifactStagingDirectory)/myresults.xml" -output:"$(Build.ArtifactStagingDirectory)/coverage.xml" -excludebyfile:"*/*LibLog.cs" -filter:"+[*]* -[nunit*]*"
-        displayName: 'Test with Code Coverage'
-        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Debug'))
       - task: VSTest@2
         displayName: "Test Project"
-        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
         inputs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
@@ -153,15 +144,6 @@ jobs:
         displayName: Download Artifacts from other jobs
         inputs:
           buildType: 'current'
-      # Upload coverage to codecov.io
-      # - task: PowerShell@2
-      #   inputs:
-      #     targetType: inline
-      #     script: |
-      #       cinst -y --no-progress codecov
-      #       codecov.exe -f "$(System.ArtifactsDirectory)/artifacts-Debug/coverage.xml" -t $(CODECOV_TOKEN)
-      #   displayName: Upload coverage to codecov.
-      #   continueOnError: true
       # - task: NuGetCommand@2
       #   displayName: "Push NuGet packages to NuGet.org"
       #   condition: succeeded()
