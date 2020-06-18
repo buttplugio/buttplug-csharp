@@ -48,7 +48,7 @@ jobs:
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
         inputs:
           contents: "$(System.DefaultWorkingDirectory)/Buttplug/bin/Release/net47/*.dll"
-          targetFolder: '$(System.DefaultWorkingDirectory)/ButtplugUnity/Runtime'
+          targetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
           flattenFolders: true
           cleanTargetFolder: true
       - task: CopyFiles@2
@@ -56,17 +56,17 @@ jobs:
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
         inputs:
           contents: "$(System.DefaultWorkingDirectory)/Buttplug.Client.Connectors.WebsocketConnector/bin/Release/net47/*.dll"
-          targetFolder: '$(System.DefaultWorkingDirectory)/ButtplugUnity/Runtime'
+          targetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
           flattenFolders: true
           cleanTargetFolder: false
       - task: ArchiveFiles@2
         displayName: "Archive unity artifacts"
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
         inputs:
-          rootFolderOrFile: "$(System.DefaultWorkingDirectory)/ButtplugUnity"
+          rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/ButtplugUnity"
           archiveType: "zip"
-          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-unity-$(gitVersion).zip"
-          includeRootFolder: true
+          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-unity-libraries-$(gitVersion).zip"
+          includeRootFolder: false
       - task: CopyFiles@2
         displayName: "Copy nuget packages to staging"
         inputs:
@@ -160,6 +160,7 @@ jobs:
           gitHubConnection: "release"
           repositoryName: "buttplugio/buttplug-csharp"
           action: "create"
+          releaseNotes: "Buttplug C# releases are stored on NuGet, please retrieve libraries from there. The only files released here are for Buttplug Unity building. To download the Unity package, see [the Buttplug Unity repo](https://github.com/buttplugio/buttplug-unity) for more info."
           tagSource: "auto"
           title: "Buttplug Unity Release"
           assets: |
