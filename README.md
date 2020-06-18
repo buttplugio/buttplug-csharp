@@ -35,7 +35,7 @@ Desktop](https://intiface.com/desktop).
 - [Installation](#installation)
 - [Development Branches](#development-branches)
 - [Compiling](#compiling)
-- [Client Software (Buttplug Server, Game Vibration Router)](#client-software)
+- [Unity Game Engine Support](#unity-game-engine-support)
 - [Third Party Applications Using Buttplug-C#](#third-party-applications-using-buttplug-c)
 - [License](#license)
 
@@ -124,20 +124,19 @@ Manager project are hard-linked to the C:\ drive. If your program
 files and SDKs are not on your C: drive, you may need to readjust
 these paths by hand.
 
-## Unity Support
+## Unity Game Engine Support
 
 Unity support is provided via a Unity Custom Package file, and is
 available in the
-[Releases](https://github.com/buttplug-csharp/releases) section.
+[Buttplug Unity Repo](https://github.com/buttplugio/buttplug-unity).
 
 For information on installing and using the Buttplug Unity Package, see the [ButtplugUnity README file](https://github.com/buttplugio/buttplug-csharp/tree/master/ButtplugUnity)
 
-## Third Party Applications Using Buttplug C#
+## Applications Using Buttplug C#
 
 - [Intiface Desktop](https://intiface.com/desktop) - Intiface Desktop sex toy server software
 - [Intiface Game Haptics Router](https://intiface.com/ghr) - Reroute game vibration to sex toys
 - [ScriptPlayer](https://github.com/FredTungsten/ScriptPlayer) - Native hardware synced movie player for Windows.
-- [Caveman BIOS Teaches Typing](https://curiousjp.itch.io/caveman-bios-teaches-erotic-typing) - Typing Training Game
 
 ## License
 
