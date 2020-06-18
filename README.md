@@ -130,8 +130,6 @@ Unity support is provided via a Unity Custom Package file, and is
 available in the
 [Buttplug Unity Repo](https://github.com/buttplugio/buttplug-unity).
 
-For information on installing and using the Buttplug Unity Package, see the [ButtplugUnity README file](https://github.com/buttplugio/buttplug-csharp/tree/master/ButtplugUnity)
-
 ## Applications Using Buttplug C#
 
 - [Intiface Desktop](https://intiface.com/desktop) - Intiface Desktop sex toy server software

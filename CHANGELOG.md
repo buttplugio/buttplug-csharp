@@ -1,3 +1,9 @@
+# 0.5.9 (2020-06-17)
+
+## Bugfixes
+
+- Move Unity package building from C# repo to its own repo
+
 # 0.5.8 (2020-06-16)
 
 ## Features
