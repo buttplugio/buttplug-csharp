@@ -28,6 +28,7 @@ namespace Buttplug.Devices.Protocols
             "NOVAV2",
             "Sync",
             "Vector",
+            "Chorus"
         };
 
         private static readonly Dictionary<string, string> NameMap = new Dictionary<string, string>()
