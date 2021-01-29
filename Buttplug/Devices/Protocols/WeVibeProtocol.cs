@@ -62,8 +62,8 @@ namespace Buttplug.Devices.Protocols
             { "Melt",   new CommConfig(12, CommunicationMode.EightBit) },
             { "Moxie",  new CommConfig(12, CommunicationMode.EightBit) },
             { "Vector", new CommConfig(12, CommunicationMode.EightBit) },
-            { "Nova 2", new CommConfig(15, CommunicationMode.EightBitVersion2) },
-            { "Chorus", new CommConfig(15, CommunicationMode.EightBitVersion2) },
+            { "Nova 2", new CommConfig(30, CommunicationMode.EightBitVersion2) },
+            { "Chorus", new CommConfig(30, CommunicationMode.EightBitVersion2) },
         };
 
         /// <summary>
@@ -165,8 +165,8 @@ namespace Buttplug.Devices.Protocols
                 rSpeedInt = Convert.ToUInt16(_vibratorSpeed[0] * _commConfig.NumberOfLevels);
                 rSpeedExt = Convert.ToUInt16(_vibratorSpeed[_vibratorCount - 1] * _commConfig.NumberOfLevels);
 
-                data[2] = Convert.ToByte(rSpeedExt << 1); // External
-                data[3] = Convert.ToByte(rSpeedInt << 1); // Internal
+                data[2] = Convert.ToByte(rSpeedExt); // External
+                data[3] = Convert.ToByte(rSpeedInt); // Internal
                 data[5] = Convert.ToByte(rSpeedInt == 0 ? 0 : 1);
                 data[5] |= Convert.ToByte(rSpeedExt == 0 ? 0 : 2);
             }

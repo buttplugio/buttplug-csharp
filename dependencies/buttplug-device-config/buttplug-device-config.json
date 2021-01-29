@@ -199,6 +199,18 @@
         }
       }
     },
+    "witmotion": {
+      "btle": {
+        "names": [
+          "WT901BLE58"
+        ],
+        "services": {
+          "0000ffe5-0000-1000-8000-00805F9A34fb": {
+            "rx": "0000ffe4-0000-1000-8000-00805F9A34fb"
+          }
+        }
+      }
+    },
     "youcups": {
       "btle": {
         "names": [
