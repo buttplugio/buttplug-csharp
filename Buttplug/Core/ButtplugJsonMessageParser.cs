@@ -38,15 +38,15 @@ namespace Buttplug.Core
         /// <param name="aLogManager">Log manager, passed from the parser owner.</param>
         public ButtplugJsonMessageParser()
         {
-            this._serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
-            this._messageTypes = new Dictionary<string, Type>();
+            _serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
+            _messageTypes = new Dictionary<string, Type>();
             foreach (var aMessageType in ButtplugUtils.GetAllMessageTypes())
             {
-                this._messageTypes.Add(aMessageType.Name, aMessageType);
+                _messageTypes.Add(aMessageType.Name, aMessageType);
             }
 
             // If we can't find any message types in our assembly, the system is basically useless.
-            if (!this._messageTypes.Any())
+            if (!_messageTypes.Any())
             {
                 throw new ButtplugMessageException("No message types available.");
             }
@@ -107,13 +107,13 @@ namespace Buttplug.Core
 
                     // Only way we should get here is if the schema includes a class that we don't
                     // have a matching C# class for.
-                    if (!this._messageTypes.ContainsKey(msgName))
+                    if (!_messageTypes.ContainsKey(msgName))
                     {
                         throw new ButtplugMessageException($"{msgName} is not a valid message class");
                     }
 
                     // This specifically could fail due to object conversion.
-                    msgList.Add(this.DeserializeAs(jsonObj, this._messageTypes[msgName]));
+                    msgList.Add(DeserializeAs(jsonObj, _messageTypes[msgName]));
                 }
             }
 
@@ -138,7 +138,7 @@ namespace Buttplug.Core
             try
             {
                 var msgObj = aObject[msgName].Value<JObject>();
-                var msg = (ButtplugMessage)msgObj.ToObject(aMsgType, this._serializer);
+                var msg = (ButtplugMessage)msgObj.ToObject(aMsgType, _serializer);
                 return msg;
             }
             catch (InvalidCastException e)
@@ -156,7 +156,7 @@ namespace Buttplug.Core
                         $"Could not create message for JSON {aObject}: {e.Message}");
                 }
 
-                return this.DeserializeAs(aObject, prevType);
+                return DeserializeAs(aObject, prevType);
             }
         }
 
@@ -172,7 +172,7 @@ namespace Buttplug.Core
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             // Support downgrading messages
 
-            var jsonMsg = this.ButtplugMessageToJObject(aMsg, aClientSchemaVersion);
+            var jsonMsg = ButtplugMessageToJObject(aMsg, aClientSchemaVersion);
 
             // If we get nothing back, throw now, because if we don't the schema verifier will.
             if (jsonMsg == null)
@@ -199,7 +199,7 @@ namespace Buttplug.Core
             var msgArray = new JArray();
             foreach (var msg in aMsgs)
             {
-                var obj = this.ButtplugMessageToJObject(msg, aClientSchemaVersion);
+                var obj = ButtplugMessageToJObject(msg, aClientSchemaVersion);
                 if (obj == null)
                 {
                     continue;
@@ -261,7 +261,7 @@ namespace Buttplug.Core
                         aMsg.Id);
                 }
 
-                return this.ButtplugMessageToJObject(newMsg, aClientSpecVersion);
+                return ButtplugMessageToJObject(newMsg, aClientSpecVersion);
             }
 
             return new JObject(new JProperty(aMsg.Name, JObject.FromObject(aMsg)));

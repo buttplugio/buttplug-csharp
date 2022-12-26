@@ -60,7 +60,7 @@ namespace Buttplug.Client
         /// <value>
         /// A list of connected Buttplug devices.
         /// </value>
-        public ButtplugClientDevice[] Devices => this._devices.Values.ToArray();
+        public ButtplugClientDevice[] Devices => _devices.Values.ToArray();
 
         /// <summary>
         /// Gets a value indicating whether the client is connected to a server.
@@ -68,7 +68,7 @@ namespace Buttplug.Client
         /// <value>
         /// Value indicating whether the client is connected to a server.
         /// </value>
-        public bool Connected => this._connector != null && this._connector.Connected;
+        public bool Connected => _connector != null && _connector.Connected;
 
         /// <summary>
         /// Ping timer.
@@ -98,13 +98,13 @@ namespace Buttplug.Client
         public ButtplugClient(string aClientName, IButtplugClientConnector aConnector)
         {
             ButtplugUtils.ArgumentNotNull(aConnector, nameof(aConnector));
-            this.Name = aClientName;
-            this._connector = aConnector;
-            this._connector.Disconnected += (aObj, aEventArgs) =>
+            Name = aClientName;
+            _connector = aConnector;
+            _connector.Disconnected += (aObj, aEventArgs) =>
             {
-                this.ServerDisconnect?.Invoke(aObj, aEventArgs);
+                ServerDisconnect?.Invoke(aObj, aEventArgs);
             };
-            this._connector.InvalidMessageReceived += this.ConnectorErrorHandler;
+            _connector.InvalidMessageReceived += ConnectorErrorHandler;
         }
 
         /// <summary>
@@ -113,43 +113,43 @@ namespace Buttplug.Client
         /// </summary>
         ~ButtplugClient()
         {
-            this.DisconnectAsync().Wait();
+            DisconnectAsync().Wait();
         }
 
         // ReSharper disable once UnusedMember.Global
-        public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
+        public async Task ConnectAsync(CancellationToken token = default(CancellationToken))
         {
-            if (this.Connected)
+            if (Connected)
             {
                 throw new ButtplugHandshakeException("Client already connected to a server.");
             }
 
-            this._connector.MessageReceived += this.MessageReceivedHandler;
-            await this._connector.ConnectAsync(aToken).ConfigureAwait(false);
+            _connector.MessageReceived += MessageReceivedHandler;
+            await _connector.ConnectAsync(token).ConfigureAwait(false);
 
-            var res = await this.SendMessageAsync(new RequestServerInfo(this.Name), aToken).ConfigureAwait(false);
+            var res = await SendMessageAsync(new RequestServerInfo(Name), token).ConfigureAwait(false);
             switch (res)
             {
                 case ServerInfo si:
                     if (si.MaxPingTime > 0)
                     {
-                        this._pingTimer = new Timer(this.OnPingTimer, null, 0,
+                        _pingTimer = new Timer(OnPingTimer, null, 0,
                             Convert.ToInt32(Math.Round(((double)si.MaxPingTime) / 2, 0)));
                     }
 
                     if (si.MessageVersion < ButtplugConsts.CurrentSpecVersion)
                     {
-                        await this.DisconnectAsync().ConfigureAwait(false);
+                        await DisconnectAsync().ConfigureAwait(false);
                         throw new ButtplugHandshakeException(
                             $"Buttplug Server's schema version ({si.MessageVersion}) is less than the client's ({ButtplugConsts.CurrentSpecVersion}). A newer server is required.",
                             res.Id);
                     }
 
                     // Get full device list and populate internal list
-                    var resp = await this.SendMessageAsync(new RequestDeviceList()).ConfigureAwait(false);
+                    var resp = await SendMessageAsync(new RequestDeviceList()).ConfigureAwait(false);
                     if (!(resp is DeviceList))
                     {
-                        await this.DisconnectAsync().ConfigureAwait(false);
+                        await DisconnectAsync().ConfigureAwait(false);
                         if (resp is Error errResp)
                         {
                             throw ButtplugException.FromError(errResp);
@@ -161,38 +161,38 @@ namespace Buttplug.Client
 
                     foreach (var d in (resp as DeviceList).Devices)
                     {
-                        if (this._devices.ContainsKey(d.DeviceIndex))
+                        if (_devices.ContainsKey(d.DeviceIndex))
                         {
                             continue;
                         }
 
-                        var device = new ButtplugClientDevice(this, this.SendDeviceMessageAsync, d);
-                        this._devices[d.DeviceIndex] = device;
-                        this.DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(device));
+                        var device = new ButtplugClientDevice(this, SendDeviceMessageAsync, d);
+                        _devices[d.DeviceIndex] = device;
+                        DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(device));
                     }
 
                     break;
 
                 case Error e:
-                    await this.DisconnectAsync().ConfigureAwait(false);
+                    await DisconnectAsync().ConfigureAwait(false);
                     throw ButtplugException.FromError(e);
 
                 default:
-                    await this.DisconnectAsync().ConfigureAwait(false);
+                    await DisconnectAsync().ConfigureAwait(false);
                     throw new ButtplugHandshakeException($"Unrecognized message {res.Name} during handshake", res.Id);
             }
         }
 
         public async Task DisconnectAsync()
         {
-            if (!this.Connected)
+            if (!Connected)
             {
                 return;
             }
 
-            this._connector.MessageReceived -= this.MessageReceivedHandler;
-            await this._connector.DisconnectAsync().ConfigureAwait(false);
-            this.ServerDisconnect?.Invoke(this, new EventArgs());
+            _connector.MessageReceived -= MessageReceivedHandler;
+            await _connector.DisconnectAsync().ConfigureAwait(false);
+            ServerDisconnect?.Invoke(this, new EventArgs());
         }
 
         /// <summary>
@@ -200,64 +200,64 @@ namespace Buttplug.Client
         /// cref="DeviceAdded"/> events. When scanning completes, an <see cref="ScanningFinished"/>
         /// event will be triggered.
         /// </summary>
-        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
+        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
         // ReSharper disable once UnusedMember.Global
-        public async Task StartScanningAsync(CancellationToken aToken = default(CancellationToken))
+        public async Task StartScanningAsync(CancellationToken token = default(CancellationToken))
         {
-            await this.SendMessageExpectOk(new StartScanning(), aToken).ConfigureAwait(false);
+            await SendMessageExpectOk(new StartScanning(), token).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Instructs the server to stop scanning for devices. If scanning was in progress, a <see
         /// cref="ScanningFinished"/> event will be sent when the server has stopped scanning.
         /// </summary>
-        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
+        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
         // ReSharper disable once UnusedMember.Global
-        public async Task StopScanningAsync(CancellationToken aToken = default(CancellationToken))
+        public async Task StopScanningAsync(CancellationToken token = default(CancellationToken))
         {
-            await this.SendMessageExpectOk(new StopScanning(), aToken).ConfigureAwait(false);
+            await SendMessageExpectOk(new StopScanning(), token).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Sends a DeviceMessage (e.g. <see cref="VibrateCmd"/> or <see cref="LinearCmd"/>). Handles
         /// constructing some parts of the message for the user.
         /// </summary>
-        /// <param name="aDevice">The device to be controlled by the message.</param>
-        /// <param name="aDeviceMsg">The device message (Id and DeviceIndex will be overriden).</param>
-        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
+        /// <param name="device">The device to be controlled by the message.</param>
+        /// <param name="deviceMsg">The device message (Id and DeviceIndex will be overriden).</param>
+        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
-        protected async Task SendDeviceMessageAsync(ButtplugClientDevice aDevice, ButtplugDeviceMessage aDeviceMsg, CancellationToken aToken = default(CancellationToken))
+        protected async Task SendDeviceMessageAsync(ButtplugClientDevice device, ButtplugDeviceMessage deviceMsg, CancellationToken token = default(CancellationToken))
         {
-            await this.SendMessageExpectOk(aDeviceMsg, aToken).ConfigureAwait(false);
+            await SendMessageExpectOk(deviceMsg, token).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Sends a message to the server, and handles asynchronously waiting for the reply from the server.
         /// </summary>
-        /// <param name="aMsg">Message to send.</param>
-        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
+        /// <param name="msg">Message to send.</param>
+        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>The response, which will derive from <see cref="ButtplugMessage"/>.</returns>
-        protected async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        protected async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
         {
-            if (!this.Connected)
+            if (!Connected)
             {
                 throw new ButtplugClientConnectorException("Client not connected.");
             }
 
-            return await this._connector.SendAsync(aMsg, aToken).ConfigureAwait(false);
+            return await _connector.SendAsync(msg, token).ConfigureAwait(false);
         }
 
         private void ConnectorErrorHandler(object aSender, ButtplugExceptionEventArgs aException)
         {
-            this.ErrorReceived?.Invoke(this, aException);
+            ErrorReceived?.Invoke(this, aException);
         }
 
         /// <summary>
@@ -274,15 +274,15 @@ namespace Buttplug.Client
             switch (msg)
             {
                 case DeviceAdded d:
-                    var dev = new ButtplugClientDevice(this, this.SendDeviceMessageAsync, d);
-                    this._devices.Add(d.DeviceIndex, dev);
-                    this.DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(dev));
+                    var dev = new ButtplugClientDevice(this, SendDeviceMessageAsync, d);
+                    _devices.Add(d.DeviceIndex, dev);
+                    DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(dev));
                     break;
 
                 case DeviceRemoved d:
-                    if (!this._devices.ContainsKey(d.DeviceIndex))
+                    if (!_devices.ContainsKey(d.DeviceIndex))
                     {
-                        this.ErrorReceived?.Invoke(this,
+                        ErrorReceived?.Invoke(this,
                             new ButtplugExceptionEventArgs(
                                 new ButtplugDeviceException(
                                     "Got device removed message for unknown device.",
@@ -290,30 +290,30 @@ namespace Buttplug.Client
                         return;
                     }
 
-                    var oldDev = this._devices[d.DeviceIndex];
-                    this._devices.Remove(d.DeviceIndex);
-                    this.DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
+                    var oldDev = _devices[d.DeviceIndex];
+                    _devices.Remove(d.DeviceIndex);
+                    DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
                     break;
 
                 case ScanningFinished _:
                     // The scanning finished event is self explanatory and doesn't require extra arguments.
-                    this.ScanningFinished?.Invoke(this, new EventArgs());
+                    ScanningFinished?.Invoke(this, new EventArgs());
                     break;
 
                 case Error e:
                     // This will both log the error and fire it from our ErrorReceived event handler.
-                    this.ErrorReceived?.Invoke(this, new ButtplugExceptionEventArgs(ButtplugException.FromError(e)));
+                    ErrorReceived?.Invoke(this, new ButtplugExceptionEventArgs(ButtplugException.FromError(e)));
 
                     if (e.ErrorCode == Error.ErrorClass.ERROR_PING)
                     {
-                        this.PingTimeout?.Invoke(this, EventArgs.Empty);
-                        await this.DisconnectAsync().ConfigureAwait(false);
+                        PingTimeout?.Invoke(this, EventArgs.Empty);
+                        await DisconnectAsync().ConfigureAwait(false);
                     }
 
                     break;
 
                 default:
-                    this.ErrorReceived?.Invoke(this,
+                    ErrorReceived?.Invoke(this,
                         new ButtplugExceptionEventArgs(
                             new ButtplugMessageException(
                                 $"Got unhandled message: {msg}",
@@ -332,14 +332,14 @@ namespace Buttplug.Client
         {
             try
             {
-                await this.SendMessageExpectOk(new Ping()).ConfigureAwait(false);
+                await SendMessageExpectOk(new Ping()).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                this.ErrorReceived?.Invoke(this, new ButtplugExceptionEventArgs(new ButtplugPingException("Exception thrown during ping update", ButtplugConsts.SystemMsgId, e)));
+                ErrorReceived?.Invoke(this, new ButtplugExceptionEventArgs(new ButtplugPingException("Exception thrown during ping update", ButtplugConsts.SystemMsgId, e)));
 
                 // If SendMessageAsync throws, we're probably already disconnected, but just make sure.
-                await this.DisconnectAsync().ConfigureAwait(false);
+                await DisconnectAsync().ConfigureAwait(false);
             }
         }
 
@@ -351,7 +351,7 @@ namespace Buttplug.Client
         /// <returns>True if successful.</returns>
         private async Task SendMessageExpectOk(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
-            var msg = await this.SendMessageAsync(aMsg, aToken).ConfigureAwait(false);
+            var msg = await SendMessageAsync(aMsg, aToken).ConfigureAwait(false);
             switch (msg)
             {
                 case Ok _:

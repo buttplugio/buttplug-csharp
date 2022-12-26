@@ -24,14 +24,14 @@ namespace Buttplug.Client
 
         protected Tuple<string, Task<ButtplugMessage>> PrepareMessage(ButtplugMessage aMsg)
         {
-            var promise = this._msgSorter.PrepareMessage(aMsg);
-            var jsonMsg = this._jsonSerializer.Serialize(aMsg);
+            var promise = _msgSorter.PrepareMessage(aMsg);
+            var jsonMsg = _jsonSerializer.Serialize(aMsg);
             return new Tuple<string, Task<ButtplugMessage>>(jsonMsg, promise);
         }
 
         protected void Shutdown()
         {
-            this._msgSorter.Shutdown();
+            _msgSorter.Shutdown();
         }
 
         protected void ReceiveMessages(string aJSONMsg)
@@ -39,11 +39,11 @@ namespace Buttplug.Client
             IEnumerable<ButtplugMessage> msgs;
             try
             {
-                msgs = this._jsonSerializer.Deserialize(aJSONMsg);
+                msgs = _jsonSerializer.Deserialize(aJSONMsg);
             }
             catch (ButtplugMessageException e)
             {
-                this.InvalidMessageReceived?.Invoke(this, new ButtplugExceptionEventArgs(e));
+                InvalidMessageReceived?.Invoke(this, new ButtplugExceptionEventArgs(e));
                 return;
             }
 
@@ -51,17 +51,17 @@ namespace Buttplug.Client
             {
                 if (msg.Id == 0)
                 {
-                    this.MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
+                    MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
                     continue;
                 }
 
                 try
                 {
-                    this._msgSorter.CheckMessage(msg);
+                    _msgSorter.CheckMessage(msg);
                 }
                 catch (ButtplugMessageException e)
                 {
-                    this.InvalidMessageReceived?.Invoke(this, new ButtplugExceptionEventArgs(e));
+                    InvalidMessageReceived?.Invoke(this, new ButtplugExceptionEventArgs(e));
                 }
             }
         }

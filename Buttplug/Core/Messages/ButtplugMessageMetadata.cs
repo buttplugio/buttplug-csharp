@@ -1,4 +1,10 @@
-﻿using System;
+﻿// <copyright file="ButtplugMessageMetadata.cs" company="Nonpolynomial Labs LLC">
+// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
+// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Buttplug.Core.Messages
 {
@@ -22,9 +28,9 @@ namespace Buttplug.Core.Messages
 
         public ButtplugMessageMetadata(string aName, uint aSpecVersion, Type aPreviousType = null)
         {
-            this.Name = aName;
-            this.Version = aSpecVersion;
-            this.PreviousType = aPreviousType;
+            Name = aName;
+            Version = aSpecVersion;
+            PreviousType = aPreviousType;
         }
     }
 }

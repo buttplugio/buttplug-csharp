@@ -1,4 +1,10 @@
-﻿using System;
+﻿// <copyright file="ButtplugMessage.cs" company="Nonpolynomial Labs LLC">
+// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
+// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -16,13 +22,13 @@ namespace Buttplug.Core.Messages
         public uint Id { get; set; }
 
         [JsonIgnore]
-        public string Name => GetName(this.GetType());
+        public string Name => GetName(GetType());
 
         [JsonIgnore]
-        public uint SpecVersion => GetSpecVersion(this.GetType());
+        public uint SpecVersion => GetSpecVersion(GetType());
 
         [JsonIgnore]
-        public Type PreviousType => GetPreviousType(this.GetType());
+        public Type PreviousType => GetPreviousType(GetType());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugMessage"/> class.
@@ -30,7 +36,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aId">Message ID.</param>
         protected ButtplugMessage(uint aId)
         {
-            this.Id = aId;
+            Id = aId;
         }
 
         private static Dictionary<Type, ButtplugMessageMetadata> _metadataCache = new Dictionary<Type, ButtplugMessageMetadata>();

@@ -24,7 +24,7 @@ namespace Buttplug.Client
         /// <summary>
         /// Gets the next available message ID. In most cases, setting the message ID is done automatically.
         /// </summary>
-        public uint NextMsgId => Convert.ToUInt32(Interlocked.Increment(ref this._counter));
+        public uint NextMsgId => Convert.ToUInt32(Interlocked.Increment(ref _counter));
 
         /// <summary>
         /// Stores messages waiting for reply from the server.
@@ -34,13 +34,13 @@ namespace Buttplug.Client
 
         ~ButtplugConnectorMessageSorter()
         {
-            this.Shutdown();
+            Shutdown();
         }
 
         public void Shutdown()
         {
             // If we've somehow destructed while holding tasks, throw exceptions at all of them.
-            foreach (var task in this._waitingMsgs.Values)
+            foreach (var task in _waitingMsgs.Values)
             {
                 task.TrySetException(new Exception("Sorter has been destroyed with live tasks still in queue."));
             }
@@ -49,10 +49,10 @@ namespace Buttplug.Client
         public Task<ButtplugMessage> PrepareMessage(ButtplugMessage aMsg)
         {
             // The client always increments the IDs on outgoing messages
-            aMsg.Id = this.NextMsgId;
+            aMsg.Id = NextMsgId;
 
             var promise = new TaskCompletionSource<ButtplugMessage>();
-            this._waitingMsgs.TryAdd(aMsg.Id, promise);
+            _waitingMsgs.TryAdd(aMsg.Id, promise);
 
             return promise.Task;
         }
@@ -67,7 +67,7 @@ namespace Buttplug.Client
 
             // If we haven't gotten a system message and we're not currently waiting for the message
             // id, throw.
-            if (!this._waitingMsgs.TryRemove(aMsg.Id, out var queued))
+            if (!_waitingMsgs.TryRemove(aMsg.Id, out var queued))
             {
                 throw new ButtplugMessageException("Message with non-matching ID received.", aMsg.Id);
             }

@@ -23,7 +23,7 @@ namespace Buttplug.Client
         /// <param name="aDevice">Device being added.</param>
         public DeviceAddedEventArgs(ButtplugClientDevice aDevice)
         {
-            this.Device = aDevice;
+            Device = aDevice;
         }
     }
 }

@@ -1,4 +1,10 @@
-﻿using System;
+﻿// <copyright file="ButtplugClientIPCConnector.cs" company="Nonpolynomial Labs LLC">
+// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
+// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.IO.Pipes;
 using System.Security.Principal;
 using System.Text;
@@ -31,7 +37,7 @@ namespace Buttplug.Client.Connectors
         /// Status of the client connection.
         /// </summary>
         /// <returns>True if client is currently connected.</returns>
-        public bool Connected => this._pipeClient?.IsConnected ?? false;
+        public bool Connected => _pipeClient?.IsConnected ?? false;
 
         /// <summary>
         /// </summary>
@@ -40,47 +46,47 @@ namespace Buttplug.Client.Connectors
         /// </param>
         public ButtplugClientIPCConnector(string aIPCSocketName = "ButtplugPipe")
         {
-            this._ipcSocketName = aIPCSocketName;
+            _ipcSocketName = aIPCSocketName;
         }
 
         public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
         {
-            if (this.Connected)
+            if (Connected)
             {
                 throw new InvalidOperationException("Already connected!");
             }
 
-            this._pipeClient = new NamedPipeClientStream(".",
-                this._ipcSocketName,
+            _pipeClient = new NamedPipeClientStream(".",
+                _ipcSocketName,
                 PipeDirection.InOut, PipeOptions.Asynchronous,
                 TokenImpersonationLevel.Impersonation);
 
-            await this._pipeClient.ConnectAsync(aToken).ConfigureAwait(false);
+            await _pipeClient.ConnectAsync(aToken).ConfigureAwait(false);
 
-            this._readTask = new Task(async () => { await this.pipeReader(aToken).ConfigureAwait(false); },
+            _readTask = new Task(async () => { await pipeReader(aToken).ConfigureAwait(false); },
                 aToken,
                 TaskCreationOptions.LongRunning);
-            this._readTask.Start();
+            _readTask.Start();
         }
 
         public async Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
         {
             // TODO Create internal token for cancellation and use link source with external key
             //_cancellationToken.Cancel();
-            this._pipeClient.Close();
-            await this._readTask.ConfigureAwait(false);
+            _pipeClient.Close();
+            await _readTask.ConfigureAwait(false);
         }
 
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
         {
-            var (msgString, promise) = this.PrepareMessage(aMsg);
+            var (msgString, promise) = PrepareMessage(aMsg);
             var output = Encoding.UTF8.GetBytes(msgString);
 
-            lock (this._sendLock)
+            lock (_sendLock)
             {
-                if (this.Connected)
+                if (Connected)
                 {
-                    this._pipeClient.Write(output, 0, output.Length);
+                    _pipeClient.Write(output, 0, output.Length);
                 }
                 else
                 {
@@ -93,7 +99,7 @@ namespace Buttplug.Client.Connectors
 
         private async Task pipeReader(CancellationToken aCancellationToken)
         {
-            while (!aCancellationToken.IsCancellationRequested && this._pipeClient != null && this._pipeClient.IsConnected)
+            while (!aCancellationToken.IsCancellationRequested && _pipeClient != null && _pipeClient.IsConnected)
             {
                 var buffer = new byte[4096];
                 var msg = string.Empty;
@@ -102,13 +108,13 @@ namespace Buttplug.Client.Connectors
                 {
                     try
                     {
-                        len = await this._pipeClient.ReadAsync(buffer, 0, buffer.Length, aCancellationToken).ConfigureAwait(false);
+                        len = await _pipeClient.ReadAsync(buffer, 0, buffer.Length, aCancellationToken).ConfigureAwait(false);
                     }
                     catch
                     {
-                        if (!this.Connected)
+                        if (!Connected)
                         {
-                            this._owningDispatcher.Send(_ => this.Disconnected?.Invoke(this, new EventArgs()), null);
+                            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
                             return;
                         }
 
@@ -121,10 +127,10 @@ namespace Buttplug.Client.Connectors
                     }
                 }
 
-                this.ReceiveMessages(msg);
+                ReceiveMessages(msg);
             }
 
-            this._owningDispatcher.Send(_ => this.Disconnected?.Invoke(this, new EventArgs()), null);
+            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
         }
     }
 }
