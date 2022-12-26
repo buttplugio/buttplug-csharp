@@ -8,13 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 // Namespace containing all Buttplug messages, as specified by the Buttplug Message Spec at
-// https://docs.buttplug.io/buttplug. For consistency sake, all message descriptions are stated in
+// https://docs.buttplug.io/spec. For consistency sake, all message descriptions are stated in
 // relation to the server, i.e. message are sent "(from client) to server" or "(to client) from server".
 namespace Buttplug.Core.Messages
 {
@@ -463,24 +461,6 @@ namespace Buttplug.Core.Messages
     public class ServerInfo : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
-        /// Product major version.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public int MajorVersion;
-
-        /// <summary>
-        /// Product minor version.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public int MinorVersion;
-
-        /// <summary>
-        /// Product build version.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public int BuildVersion;
-
-        /// <summary>
         /// The schema version of the server. Must be greater or equal to version client reported in <see cref="RequestServerInfo"/>.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
@@ -511,10 +491,6 @@ namespace Buttplug.Core.Messages
             ServerName = serverName;
             MessageVersion = messageVersion;
             MaxPingTime = maxPingTime;
-            var assembly = Assembly.GetAssembly(typeof(ServerInfo));
-            MajorVersion = assembly.GetName().Version.Major;
-            MinorVersion = assembly.GetName().Version.Minor;
-            BuildVersion = assembly.GetName().Version.Build;
         }
     }
 

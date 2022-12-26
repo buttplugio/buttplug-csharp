@@ -26,6 +26,6 @@ namespace Buttplug.Core
         /// <summary>
         /// Spec version this Buttplug library is based on.
         /// </summary>
-        public const uint CurrentSpecVersion = 1;
+        public const uint CurrentSpecVersion = 3;
     }
 }
