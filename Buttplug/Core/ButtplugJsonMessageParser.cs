@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Buttplug.Core.Logging;
+
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -30,12 +30,6 @@ namespace Buttplug.Core
         private readonly Dictionary<string, Type> _messageTypes;
 
         /// <summary>
-        /// Logger for reporting information and errors.
-        /// </summary>
-        [NotNull]
-        private readonly IButtplugLog _bpLogger;
-
-        /// <summary>
         /// Schema object, for checking message validity against the spec schema.
         /// </summary>
         [NotNull]
@@ -51,29 +45,19 @@ namespace Buttplug.Core
         /// Initializes a new instance of the <see cref="ButtplugJsonMessageParser"/> class.
         /// </summary>
         /// <param name="aLogManager">Log manager, passed from the parser owner.</param>
-        public ButtplugJsonMessageParser([NotNull] IButtplugLogManager aLogManager)
+        public ButtplugJsonMessageParser()
         {
-            // Set up logging.
-            if (aLogManager == null)
-            {
-                throw new ArgumentNullException(nameof(aLogManager));
-            }
-
-            _bpLogger = aLogManager.GetLogger(GetType());
-            _bpLogger?.Info($"Setting up {GetType().Name}");
-
             _serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
             _messageTypes = new Dictionary<string, Type>();
             foreach (var aMessageType in ButtplugUtils.GetAllMessageTypes())
             {
-                _bpLogger?.Debug($"- {aMessageType.Name}");
                 _messageTypes.Add(aMessageType.Name, aMessageType);
             }
 
             // If we can't find any message types in our assembly, the system is basically useless.
             if (!_messageTypes.Any())
             {
-                throw new ButtplugMessageException(_bpLogger, "No message types available.");
+                throw new ButtplugMessageException("No message types available.");
             }
 
             // Load the schema for validation. Schema file is an embedded resource in the library.
@@ -89,8 +73,8 @@ namespace Buttplug.Core
         [NotNull]
         public IEnumerable<ButtplugMessage> Deserialize(string aJsonMsg)
         {
-            _bpLogger.Trace($"Got JSON Message: {aJsonMsg}");
             var textReader = new StringReader(aJsonMsg);
+
             // While we aren't receiving from a stream here, we may get multiple JSON arrays
             // depending on how we received messages.
             var reader = new JsonTextReader(textReader)
@@ -115,7 +99,7 @@ namespace Buttplug.Core
                 }
                 catch (JsonReaderException e)
                 {
-                    throw new ButtplugMessageException(_bpLogger, $"Not valid JSON: {aJsonMsg} - {e.Message}");
+                    throw new ButtplugMessageException($"Not valid JSON: {aJsonMsg} - {e.Message}");
                 }
 
                 JArray msgArray;
@@ -125,13 +109,13 @@ namespace Buttplug.Core
                 }
                 catch (JsonReaderException e)
                 {
-                    throw new ButtplugMessageException(_bpLogger, $"Not valid JSON: {aJsonMsg} - {e.Message}");
+                    throw new ButtplugMessageException($"Not valid JSON: {aJsonMsg} - {e.Message}");
                 }
 
                 var errors = _schema.Validate(msgArray);
                 if (errors.Any())
                 {
-                    throw new ButtplugMessageException(_bpLogger,
+                    throw new ButtplugMessageException(
                         "Message does not conform to schema: " + string.Join(", ",
                             errors.Select(aErr => aErr?.ToString()).ToArray()));
                 }
@@ -144,7 +128,7 @@ namespace Buttplug.Core
                     // have a matching C# class for.
                     if (!_messageTypes.ContainsKey(msgName))
                     {
-                        throw new ButtplugMessageException(_bpLogger, $"{msgName} is not a valid message class");
+                        throw new ButtplugMessageException($"{msgName} is not a valid message class");
                     }
 
                     // This specifically could fail due to object conversion.
@@ -165,7 +149,7 @@ namespace Buttplug.Core
         {
             if (!aMsgType.IsSubclassOf(typeof(ButtplugMessage)))
             {
-                throw new ButtplugMessageException(_bpLogger,
+                throw new ButtplugMessageException(
                     $"Type {aMsgType.Name} is not a subclass of ButtplugMessage");
             }
 
@@ -174,12 +158,11 @@ namespace Buttplug.Core
             {
                 var msgObj = aObject[msgName].Value<JObject>();
                 var msg = (ButtplugMessage)msgObj.ToObject(aMsgType, _serializer);
-                _bpLogger.Trace($"Message successfully parsed as {msgName} type");
                 return msg;
             }
             catch (InvalidCastException e)
             {
-                throw new ButtplugMessageException(_bpLogger,
+                throw new ButtplugMessageException(
                     $"Could not create message for JSON {aObject}: {e.Message}");
             }
             catch (JsonSerializationException e)
@@ -188,7 +171,7 @@ namespace Buttplug.Core
                 var prevType = ButtplugMessage.GetPreviousType(aMsgType);
                 if (prevType == null)
                 {
-                    throw new ButtplugMessageException(_bpLogger,
+                    throw new ButtplugMessageException(
                         $"Could not create message for JSON {aObject}: {e.Message}");
                 }
 
@@ -213,7 +196,7 @@ namespace Buttplug.Core
             // If we get nothing back, throw now, because if we don't the schema verifier will.
             if (jsonMsg == null)
             {
-                throw new ButtplugMessageException(_bpLogger,
+                throw new ButtplugMessageException(
                     "Message cannot be converted to JSON.", aMsg.Id);
             }
 
@@ -225,12 +208,11 @@ namespace Buttplug.Core
             if (errors.Any())
             {
                 Debug.WriteLine(msgArray);
-                throw new ButtplugMessageException(_bpLogger,
+                throw new ButtplugMessageException(
                     "Message does not conform to schema: " + string.Join(", ",
                         errors.Select(aErr => aErr?.ToString()).ToArray()), aMsg.Id);
             }
 
-            _bpLogger.Trace($"Message serialized to: {jsonMsg.ToString(Formatting.None)}", true);
             return msgArray.ToString(Formatting.None);
         }
 
@@ -260,7 +242,7 @@ namespace Buttplug.Core
             // of nothing through the schema verifier and it will throw.
             if (!msgArray.Any())
             {
-                throw new ButtplugMessageException(_bpLogger,
+                throw new ButtplugMessageException(
                     "No messages serialized.");
             }
 
@@ -269,12 +251,11 @@ namespace Buttplug.Core
             var errors = _schema.Validate(msgArray);
             if (errors.Any())
             {
-                throw new ButtplugMessageException(_bpLogger,
+                throw new ButtplugMessageException(
                     "Message does not conform to schema: " + string.Join(", ",
                         errors.Select(aErr => aErr?.ToString()).ToArray()));
             }
 
-            _bpLogger.Trace($"Message serialized to: {msgArray.ToString(Formatting.None)}", true);
             return msgArray.ToString(Formatting.None);
         }
 
@@ -300,7 +281,7 @@ namespace Buttplug.Core
                 {
                     if (aMsg.Id != ButtplugConsts.SystemMsgId)
                     {
-                        throw new ButtplugMessageException(_bpLogger,
+                        throw new ButtplugMessageException(
                             $"No backwards compatible version for message #{aMsg.Name} at Schema Version {aClientSpecVersion}!", aMsg.Id);
                     }
 
@@ -309,7 +290,6 @@ namespace Buttplug.Core
                     // However, this isn't exactly an error, because there's no real way to recover
                     // from this and it's not like it'd do any good to send it. Therefore we just log
                     // and throw the message away.
-                    _bpLogger.Warn($"System message skipped due to version mismatch - {aMsg}");
                     return null;
                 }
 
@@ -317,7 +297,7 @@ namespace Buttplug.Core
                     new[] { aMsg.GetType() })?.Invoke(new object[] { aMsg });
                 if (newMsg == null)
                 {
-                    throw new ButtplugMessageException(_bpLogger, $"No default constructor for message #{aMsg.GetType().Name}!",
+                    throw new ButtplugMessageException($"No default constructor for message #{aMsg.GetType().Name}!",
                         aMsg.Id);
                 }
 

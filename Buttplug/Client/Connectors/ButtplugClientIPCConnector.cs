@@ -77,19 +77,19 @@ namespace Buttplug.Client.Connectors
             var (msgString, promise) = PrepareMessage(aMsg);
             var output = Encoding.UTF8.GetBytes(msgString);
 
-                lock (_sendLock)
+            lock (_sendLock)
+            {
+                if (Connected)
                 {
-                    if (Connected)
-                    {
-                        _pipeClient.Write(output, 0, output.Length);
-                    }
-                    else
-                    {
-                        throw new ButtplugClientConnectorException("Bad Pipe state!");
-                    }
+                    _pipeClient.Write(output, 0, output.Length);
                 }
+                else
+                {
+                    throw new ButtplugClientConnectorException("Bad Pipe state!");
+                }
+            }
 
-                return await promise.ConfigureAwait(false);
+            return await promise.ConfigureAwait(false);
         }
 
         private async Task pipeReader(CancellationToken aCancellationToken)

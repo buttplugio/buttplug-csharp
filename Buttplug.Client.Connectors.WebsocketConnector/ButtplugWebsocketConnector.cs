@@ -58,7 +58,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         {
             if (_ws != null)
             {
-                throw new ButtplugHandshakeException(_logger, "Websocket connector is already connected.");
+                throw new ButtplugHandshakeException("Websocket connector is already connected.");
             }
 
             const int bufferSize = 1024 * 8; // 8KiB
@@ -82,7 +82,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             }
             catch (Exception e)
             {
-                throw new ButtplugClientConnectorException(_logger, "Websocket Connection Exception! See Inner Exception", e);
+                throw new ButtplugClientConnectorException("Websocket Connection Exception! See Inner Exception", e);
             }
 
             _readTask = new Task(async () => { await RunClientLoop(aToken).ConfigureAwait(false); },
@@ -164,14 +164,14 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                         {
                             // Probably means we're replying to a message we received just before shutdown.
                             // TODO This is on its own task. Where does it throw to?
-                            throw new ButtplugClientConnectorException(_logger, "Websocket Client Read Error", e);
+                            throw new ButtplugClientConnectorException("Websocket Client Read Error", e);
                         }
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                _logger.Error(e.Message, true);
+                // TODO Figure out how to error here?
             }
             finally
             {

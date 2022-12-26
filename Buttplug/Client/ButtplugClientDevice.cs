@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Core.Logging;
+
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
@@ -46,9 +46,6 @@ namespace Buttplug.Client
 
         private readonly Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> _sendClosure;
 
-        [NotNull]
-        private readonly IButtplugLog _bpLogger;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
         /// information received via a DeviceList, DeviceAdded, or DeviceRemoved message from the server.
@@ -56,11 +53,11 @@ namespace Buttplug.Client
         /// <param name="aDevInfo">
         /// A Buttplug protocol message implementing the IButtplugDeviceInfoMessage interface.
         /// </param>
-        public ButtplugClientDevice(IButtplugLogManager aLogManager,
+        public ButtplugClientDevice(
             ButtplugClient aOwningClient,
             Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure,
             IButtplugDeviceInfoMessage aDevInfo)
-           : this(aLogManager, aOwningClient, aSendClosure, aDevInfo.DeviceIndex, aDevInfo.DeviceName, aDevInfo.DeviceMessages)
+           : this(aOwningClient, aSendClosure, aDevInfo.DeviceIndex, aDevInfo.DeviceName, aDevInfo.DeviceMessages)
         {
             ButtplugUtils.ArgumentNotNull(aDevInfo, nameof(aDevInfo));
         }
@@ -72,17 +69,15 @@ namespace Buttplug.Client
         /// <param name="aIndex">The device index.</param>
         /// <param name="aName">The device name.</param>
         /// <param name="aMessages">The device allowed message list, with corresponding attributes.</param>
-        public ButtplugClientDevice(IButtplugLogManager aLogManager,
+        public ButtplugClientDevice(
             ButtplugClient aOwningClient,
             Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure,
             uint aIndex,
             string aName,
             Dictionary<string, MessageAttributes> aMessages)
         {
-            ButtplugUtils.ArgumentNotNull(aLogManager, nameof(aLogManager));
             ButtplugUtils.ArgumentNotNull(aOwningClient, nameof(aOwningClient));
             ButtplugUtils.ArgumentNotNull(aSendClosure, nameof(aSendClosure));
-            _bpLogger = aLogManager.GetLogger(GetType());
             _owningClient = aOwningClient;
             _sendClosure = aSendClosure;
             Index = aIndex;
@@ -128,17 +123,17 @@ namespace Buttplug.Client
 
             if (!_owningClient.Connected)
             {
-                throw new ButtplugClientConnectorException(_bpLogger, "Client that owns device is not connected");
+                throw new ButtplugClientConnectorException("Client that owns device is not connected");
             }
 
             if (!_owningClient.Devices.Contains(this))
             {
-                throw new ButtplugDeviceException(_bpLogger, "Device no longer connected or valid");
+                throw new ButtplugDeviceException("Device no longer connected or valid");
             }
 
             if (!AllowedMessages.ContainsKey(aMsg.GetType()))
             {
-                throw new ButtplugDeviceException(_bpLogger,
+                throw new ButtplugDeviceException(
                     $"Device {Name} does not support message type {aMsg.GetType().Name}");
             }
 
@@ -178,17 +173,17 @@ namespace Buttplug.Client
             {
                 if (aLimitValue == 1)
                 {
-                    throw new ButtplugDeviceException(_bpLogger, $"{typeof(T).Name} requires 1 subcommand for this device, {aCmdList.Count()} present.");
+                    throw new ButtplugDeviceException($"{typeof(T).Name} requires 1 subcommand for this device, {aCmdList.Count()} present.");
                 }
 
-                throw new ButtplugDeviceException(_bpLogger, $"{typeof(T).Name} requires between 1 and {aLimitValue} subcommands for this device, {aCmdList.Count()} present.");
+                throw new ButtplugDeviceException($"{typeof(T).Name} requires between 1 and {aLimitValue} subcommands for this device, {aCmdList.Count()} present.");
             }
 
             foreach (var cmd in aCmdList)
             {
                 if (cmd.Index >= aLimitValue)
                 {
-                    throw new ButtplugDeviceException(_bpLogger, $"Index {cmd.Index} is out of bounds for {typeof(T).Name} for this device.");
+                    throw new ButtplugDeviceException($"Index {cmd.Index} is out of bounds for {typeof(T).Name} for this device.");
                 }
             }
         }

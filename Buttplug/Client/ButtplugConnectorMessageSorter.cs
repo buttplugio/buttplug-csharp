@@ -9,7 +9,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Core.Logging;
+
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
@@ -59,19 +59,19 @@ namespace Buttplug.Client
             return promise.Task;
         }
 
-        public void CheckMessage(ButtplugMessage aMsg, IButtplugLog aLog = null)
+        public void CheckMessage(ButtplugMessage aMsg)
         {
             // We'll never match a system message, those are server -> client only.
             if (aMsg.Id == 0)
             {
-                throw new ButtplugMessageException(aLog, "Cannot sort message with System ID", aMsg.Id);
+                throw new ButtplugMessageException("Cannot sort message with System ID", aMsg.Id);
             }
 
             // If we haven't gotten a system message and we're not currently waiting for the message
             // id, throw.
             if (!_waitingMsgs.TryRemove(aMsg.Id, out var queued))
             {
-                throw new ButtplugMessageException(aLog, "Message with non-matching ID received.", aMsg.Id);
+                throw new ButtplugMessageException("Message with non-matching ID received.", aMsg.Id);
             }
 
             if (aMsg is Error errMsg)

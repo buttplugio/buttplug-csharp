@@ -19,7 +19,7 @@ namespace Buttplug.Core.Messages
         /// </summary>
         /// <param name="aId">Message ID.</param>
         /// <param name="aDeviceIndex">Device index.</param>
-        public ButtplugDeviceMessage(uint aId = ButtplugConsts.DefaultMsgId, uint aDeviceIndex = UInt32.MaxValue)
+        public ButtplugDeviceMessage(uint aId = ButtplugConsts.DefaultMsgId, uint aDeviceIndex = uint.MaxValue)
             : base(aId)
         {
             DeviceIndex = aDeviceIndex;

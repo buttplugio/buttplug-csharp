@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using Buttplug.Core.Logging;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -522,52 +522,6 @@ namespace Buttplug.Core.Messages
             : base(ButtplugConsts.SystemMsgId)
         {
         }
-    }
-
-    /// <summary>
-    /// Sent to server to request log entries be relayed to client.
-    /// </summary>
-    [ButtplugMessageMetadata("RequestLog", 0)]
-    public class RequestLog : ButtplugMessage
-    {
-        /// <summary>
-        /// Level of log detail that should be relayed.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public ButtplugLogLevel LogLevel;
-
-        /// <inheritdoc />
-        public RequestLog(ButtplugLogLevel aLogLevel = ButtplugLogLevel.Off, uint aId = ButtplugConsts.DefaultMsgId)
-            : base(aId) => LogLevel = aLogLevel;
-    }
-
-    /// <summary>
-    /// Sent from server when logs have been requested. Contains a single log entry.
-    /// </summary>
-    [ButtplugMessageMetadata("Log", 0)]
-    public class Log : ButtplugMessage, IButtplugMessageOutgoingOnly
-    {
-        /// <summary>
-        /// Log level of message.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public ButtplugLogLevel LogLevel;
-
-        /// <summary>
-        /// Log message.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public string LogMessage;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Log"/> class.
-        /// </summary>
-        /// <param name="aLogLevel">Log level.</param>
-        /// <param name="aLogMessage">Log message.</param>
-        public Log(ButtplugLogLevel aLogLevel, string aLogMessage)
-            : base(ButtplugConsts.SystemMsgId) => (LogLevel, LogMessage) = (aLogLevel, aLogMessage);
     }
 
     /// <summary>

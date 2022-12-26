@@ -6,7 +6,7 @@
 
 using System.Collections.Generic;
 using Buttplug.Core;
-using Buttplug.Core.Logging;
+
 using Buttplug.Core.Messages;
 using JetBrains.Annotations;
 
@@ -19,7 +19,7 @@ namespace Buttplug.Client
         /// Used for converting messages between JSON and Objects.
         /// </summary>
         [NotNull]
-        private readonly ButtplugJsonMessageParser _parser = new ButtplugJsonMessageParser(new ButtplugLogManager());
+        private readonly ButtplugJsonMessageParser _parser = new ButtplugJsonMessageParser();
 
         /// <summary>
         /// Converts a single <see cref="ButtplugMessage"/> into a JSON string.

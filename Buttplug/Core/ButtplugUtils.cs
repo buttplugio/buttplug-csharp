@@ -18,6 +18,7 @@ namespace Buttplug.Core
         public static IEnumerable<Type> GetAllMessageTypes()
         {
             IEnumerable<Type> allTypes;
+
             // Some classes in the library may not load on certain platforms due to missing symbols.
             // If this is the case, we should still find messages even though an exception was thrown.
             try
