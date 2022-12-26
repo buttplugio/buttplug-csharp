@@ -21,7 +21,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Signifies the success of the last message/query.
     /// </summary>
-    [ButtplugMessageMetadata("Ok", 0)]
+    [ButtplugMessageMetadata("Ok")]
     public class Ok : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -37,7 +37,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sends text to a server, expected to be echoed back.
     /// </summary>
-    [ButtplugMessageMetadata("Test", 0)]
+    [ButtplugMessageMetadata("Test")]
     public class Test : ButtplugMessage
     {
         private string _testStringImpl;
@@ -76,7 +76,7 @@ namespace Buttplug.Core.Messages
     /// Indicator that there has been an error in the system, either due to the last message/query
     /// sent, or due to an internal error.
     /// </summary>
-    [ButtplugMessageMetadata("Error", 0)]
+    [ButtplugMessageMetadata("Error")]
     public class Error : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -255,7 +255,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// List of devices connected to the server.
     /// </summary>
-    [ButtplugMessageMetadata("DeviceList", 1, typeof(DeviceListVersion0))]
+    [ButtplugMessageMetadata("DeviceList")]
     public class DeviceList : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -283,62 +283,9 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// List of devices connected to the server. Represents a prior spec version of the message, kept
-    /// for downgrade support.
-    /// </summary>
-    [ButtplugMessageMetadata("DeviceList", 0)]
-    public class DeviceListVersion0 : ButtplugMessage, IButtplugMessageOutgoingOnly
-    {
-        /// <summary>
-        /// List of connected devices.
-        /// </summary>
-        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public readonly DeviceMessageInfoVersion0[] Devices = new DeviceMessageInfoVersion0[0];
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceListVersion0"/> class.
-        /// </summary>
-        /// <param name="deviceList">List of connected devices.</param>
-        /// <param name="id">Message ID.</param>
-        public DeviceListVersion0(DeviceMessageInfoVersion0[] deviceList, uint id)
-             : base(id)
-        {
-            Devices = deviceList;
-        }
-
-        /// <inheritdoc />
-        public DeviceListVersion0()
-            : base(0)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceListVersion0"/> class. Downgrade constructor, for creating a <see cref="DeviceListVersion0"/> from a <see cref="DeviceList"/>.
-        /// </summary>
-        /// <param name="msg"><see cref="DeviceList"/> Message to convert to <see cref="DeviceListVersion0"/>.</param>
-        public DeviceListVersion0(DeviceList msg)
-             : base(msg.Id)
-        {
-            var tmp = new List<DeviceMessageInfoVersion0>();
-            foreach (var dev in msg.Devices)
-            {
-                var tmp2 = new List<string>();
-                foreach (var k in dev.DeviceMessages.Keys)
-                {
-                    tmp2.Add(k);
-                }
-
-                tmp.Add(new DeviceMessageInfoVersion0(dev.DeviceIndex, dev.DeviceName, tmp2.ToArray()));
-            }
-
-            Devices = tmp.ToArray();
-        }
-    }
-
-    /// <summary>
     /// Sent from server when a new device is discovered.
     /// </summary>
-    [ButtplugMessageMetadata("DeviceAdded", 1, typeof(DeviceAddedVersion0))]
+    [ButtplugMessageMetadata("DeviceAdded")]
     public class DeviceAdded : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
     {
         /// <summary>
@@ -370,7 +317,7 @@ namespace Buttplug.Core.Messages
 
         /// <inheritdoc />
         internal DeviceAdded()
-            : base(0, 0)
+            : base(0)
         {
         }
 
@@ -383,64 +330,9 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// Sent from server when a new device is discovered. Represents a prior spec version of the message, kept for downgrade support.
-    /// </summary>
-    [ButtplugMessageMetadata("DeviceAdded", 0)]
-    public class DeviceAddedVersion0 : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly
-    {
-        /// <summary>
-        /// Device name.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public string DeviceName;
-
-        /// <summary>
-        /// Commands supported by device.
-        /// </summary>
-        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public string[] DeviceMessages = new string[0];
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceAddedVersion0"/> class.
-        /// </summary>
-        /// <param name="index">Device index.</param>
-        /// <param name="name">Device name.</param>
-        /// <param name="messages">Commands supported by device.</param>
-        public DeviceAddedVersion0(uint index, string name, string[] messages)
-            : base(ButtplugConsts.SystemMsgId, index)
-        {
-            DeviceName = name;
-            DeviceMessages = messages;
-        }
-
-        /// <inheritdoc />
-        public DeviceAddedVersion0()
-            : base(0, 0)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceAddedVersion0"/> class. Downgrade constructor, for creating a <see cref="DeviceAddedVersion0"/> from a <see cref="DeviceAdded"/>.
-        /// </summary>
-        /// <param name="msg"><see cref="DeviceAdded"/> Message to convert to <see cref="DeviceAddedVersion0"/>.</param>
-        public DeviceAddedVersion0(DeviceAdded msg)
-            : base(msg.Id, msg.DeviceIndex)
-        {
-            DeviceName = msg.DeviceName;
-            var tmp = new List<string>();
-            foreach (var k in msg.DeviceMessages.Keys)
-            {
-                tmp.Add(k);
-            }
-
-            DeviceMessages = tmp.ToArray();
-        }
-    }
-
-    /// <summary>
     /// Sent from server when a device is disconnected.
     /// </summary>
-    [ButtplugMessageMetadata("DeviceRemoved", 0)]
+    [ButtplugMessageMetadata("DeviceRemoved")]
     public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
     {
         /// <summary>
@@ -470,7 +362,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent to server to request a list of all connected devices.
     /// </summary>
-    [ButtplugMessageMetadata("RequestDeviceList", 0)]
+    [ButtplugMessageMetadata("RequestDeviceList")]
     public class RequestDeviceList : ButtplugMessage
     {
         /// <summary>
@@ -486,7 +378,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent to server, to start scanning for devices across supported busses.
     /// </summary>
-    [ButtplugMessageMetadata("StartScanning", 0)]
+    [ButtplugMessageMetadata("StartScanning")]
     public class StartScanning : ButtplugMessage
     {
         /// <summary>
@@ -502,7 +394,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent to server, to stop scanning for devices across supported busses.
     /// </summary>
-    [ButtplugMessageMetadata("StopScanning", 0)]
+    [ButtplugMessageMetadata("StopScanning")]
     public class StopScanning : ButtplugMessage
     {
         /// <summary>
@@ -518,7 +410,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent from server when scanning has finished.
     /// </summary>
-    [ButtplugMessageMetadata("ScanningFinished", 0)]
+    [ButtplugMessageMetadata("ScanningFinished")]
     public class ScanningFinished : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -534,7 +426,7 @@ namespace Buttplug.Core.Messages
     /// Sent to server to set up client information, including client name and schema version.
     /// Denotes the beginning of a connection handshake.
     /// </summary>
-    [ButtplugMessageMetadata("RequestServerInfo", 0)]
+    [ButtplugMessageMetadata("RequestServerInfo")]
     public class RequestServerInfo : ButtplugMessage
     {
         /// <summary>
@@ -567,7 +459,7 @@ namespace Buttplug.Core.Messages
     /// Sent from server, in response to <see cref="RequestServerInfo"/>. Contains server name,
     /// message version, ping information, etc...
     /// </summary>
-    [ButtplugMessageMetadata("ServerInfo", 0)]
+    [ButtplugMessageMetadata("ServerInfo")]
     public class ServerInfo : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
@@ -632,7 +524,7 @@ namespace Buttplug.Core.Messages
     /// </summary>
     // Resharper doesn't seem to be able to deduce that though.
     // ReSharper disable once ClassNeverInstantiated.Global
-    [ButtplugMessageMetadata("Ping", 0)]
+    [ButtplugMessageMetadata("Ping")]
     public class Ping : ButtplugMessage
     {
         /// <summary>
@@ -642,297 +534,6 @@ namespace Buttplug.Core.Messages
         public Ping(uint id = ButtplugConsts.DefaultMsgId)
             : base(id)
         {
-        }
-    }
-
-    /// <summary>
-    /// Sent to server, denotes commands for devices that can take Fleshlight Launch Firmware v1.2
-    /// style messages. See https://docs.buttplug.io/stphikal for protocol info.
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    [ButtplugMessageMetadata("FleshlightLaunchFW12Cmd", 0)]
-    public class FleshlightLaunchFW12Cmd : ButtplugDeviceMessage
-    {
-        private uint _speedImpl;
-
-        /// <summary>
-        /// Gets or sets the speed at which the fleshlight should move (0-99).
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public uint Speed
-        {
-            get => _speedImpl;
-            set
-            {
-                if (value > 99)
-                {
-                    throw new ArgumentException("FleshlightLaunchRawMessage cannot have a speed higher than 99!");
-                }
-
-                _speedImpl = value;
-            }
-        }
-
-        private uint _positionImpl;
-
-        /// <summary>
-        /// Gets or sets the position the fleshlight should move to (0-99).
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public uint Position
-        {
-            get => _positionImpl;
-            set
-            {
-                if (value > 99)
-                {
-                    throw new ArgumentException("FleshlightLaunchRawMessage cannot have a position higher than 99!");
-                }
-
-                _positionImpl = value;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FleshlightLaunchFW12Cmd"/> class.
-        /// </summary>
-        /// <param name="deviceIndex">Device index.</param>
-        /// <param name="speed">Speed to move the fleshlight (0-99).</param>
-        /// <param name="position">Position to move the fleshlight to (0-99).</param>
-        /// <param name="id">Message ID.</param>
-        [JsonConstructor]
-        public FleshlightLaunchFW12Cmd(uint deviceIndex, uint speed, uint position, uint id = ButtplugConsts.DefaultMsgId)
-            : base(id, deviceIndex)
-        {
-            Speed = speed;
-            Position = position;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FleshlightLaunchFW12Cmd"/> class.
-        /// </summary>
-        /// <param name="speed">Speed to move the fleshlight (0-99).</param>
-        /// <param name="position">Position to move the fleshlight to (0-99).</param>
-        public FleshlightLaunchFW12Cmd(uint speed, uint position)
-        {
-            Speed = speed;
-            Position = position;
-        }
-    }
-
-    /// <summary>
-    /// Sent to server, denotes commands for devices that can take Lovense style messages. See
-    /// https://docs.buttplug.io/stphikal for protocol info.
-    /// </summary>
-    // ReSharper disable once UnusedMember.Global
-    [ButtplugMessageMetadata("LovenseCmd", 0)]
-    public class LovenseCmd : ButtplugDeviceMessage
-    {
-        /// <summary>
-        /// Command string to send to the Lovense device.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public string Command;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LovenseCmd"/> class.
-        /// </summary>
-        /// <param name="deviceIndex">Device index.</param>
-        /// <param name="deviceCmd">Lovense-formatted command string.</param>
-        /// <param name="id">Message ID.</param>
-        [JsonConstructor]
-        public LovenseCmd(uint deviceIndex, string deviceCmd, uint id = ButtplugConsts.DefaultMsgId)
-            : base(id, deviceIndex)
-        {
-            Command = deviceCmd;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LovenseCmd"/> class.
-        /// </summary>
-        /// <param name="deviceCmd">Lovense-formatted command string.</param>
-        public LovenseCmd(string deviceCmd)
-        {
-            Command = deviceCmd;
-        }
-    }
-
-    /// <summary>
-    /// Sent to server, denotes commands for devices that can take Kiiroo (Generation 1) style
-    /// messages. See https://docs.buttplug.io/stphikal for protocol info.
-    /// </summary>
-    [ButtplugMessageMetadata("KiirooCmd", 0)]
-    public class KiirooCmd : ButtplugDeviceMessage
-    {
-        /// <summary>
-        /// The Kiiroo command (in string form).
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public string Command;
-
-        /// <summary>
-        /// Gets or sets the Kiiroo command (in numeric form).
-        /// </summary>
-        [JsonIgnore]
-        public uint Position
-        {
-            get
-            {
-                if (uint.TryParse(Command, out uint pos) && pos <= 4)
-                {
-                    return pos;
-                }
-
-                return 0;
-            }
-
-            set
-            {
-                if (value > 4)
-                {
-                    throw new ArgumentException("KiirooRawCmd Position cannot be greater than 4");
-                }
-
-                Command = value.ToString();
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="KiirooCmd"/> class.
-        /// </summary>
-        /// <param name="deviceIndex">Device index.</param>
-        /// <param name="position">Position or vibration speed (0-4).</param>
-        /// <param name="id">Message ID.</param>
-        [JsonConstructor]
-        public KiirooCmd(uint deviceIndex, uint position, uint id = ButtplugConsts.DefaultMsgId)
-            : base(id, deviceIndex)
-        {
-            Position = position;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="KiirooCmd"/> class.
-        /// </summary>
-        /// <param name="position">Position or vibration speed (0-4).</param>
-        public KiirooCmd(uint position)
-        {
-            Position = position;
-        }
-    }
-
-    /// <summary>
-    /// Sent to server, denotes commands for devices that can take Vorze A10 Cyclone style messages.
-    /// See https://docs.buttplug.io/stphikal for protocol info.
-    /// </summary>
-    [ButtplugMessageMetadata("VorzeA10CycloneCmd", 0)]
-    public class VorzeA10CycloneCmd : ButtplugDeviceMessage
-    {
-        private uint _speedImpl;
-
-        /// <summary>
-        /// Gets or sets the speed to rotate.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public uint Speed
-        {
-            get => _speedImpl;
-            set
-            {
-                if (value > 99)
-                {
-                    throw new ArgumentException("VorzeA10CycloneCmd cannot have a speed higher than 99!");
-                }
-
-                _speedImpl = value;
-            }
-        }
-
-        /// <summary>
-        /// The rotation direction.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public bool Clockwise;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="VorzeA10CycloneCmd"/> class.
-        /// </summary>
-        /// <param name="deviceIndex">Device Index.</param>
-        /// <param name="speed">Rotation speed (0-99).</param>
-        /// <param name="clockwise">Direction to rotate.</param>
-        /// <param name="id">Message ID.</param>
-        [JsonConstructor]
-        public VorzeA10CycloneCmd(uint deviceIndex, uint speed, bool clockwise, uint id = ButtplugConsts.DefaultMsgId)
-            : base(id, deviceIndex)
-        {
-            Speed = speed;
-            Clockwise = clockwise;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="VorzeA10CycloneCmd"/> class.
-        /// </summary>
-        /// <param name="speed">Rotation speed (0-99).</param>
-        /// <param name="clockwise">Direction to rotate.</param>
-        public VorzeA10CycloneCmd(uint speed, bool clockwise)
-        {
-            Speed = speed;
-            Clockwise = clockwise;
-        }
-    }
-
-    /// <summary>
-    /// Sent to server, generic message that can control any vibrating device. If sent to device with
-    /// multiple vibrators, causes all vibrators to vibrate at same speed. This has been superseded
-    /// by <see cref="VibrateCmd"/>.
-    /// </summary>
-    [ButtplugMessageMetadata("SingleMotorVibrateCmd", 0)]
-    public class SingleMotorVibrateCmd : ButtplugDeviceMessage
-    {
-        private double _speedImpl;
-
-        /// <summary>
-        /// Gets or sets vibration speed (0.0-1.0).
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public double Speed
-        {
-            get => _speedImpl;
-            set
-            {
-                if (value < 0)
-                {
-                    throw new ArgumentException("SingleMotorVibrateMessage Speed cannot be less than 0!");
-                }
-
-                if (value > 1)
-                {
-                    throw new ArgumentException("SingleMotorVibrateMessage Speed cannot be greater than 1!");
-                }
-
-                _speedImpl = value;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SingleMotorVibrateCmd"/> class.
-        /// </summary>
-        /// <param name="deviceIndex">Device index.</param>
-        /// <param name="speed">Vibration speed (0.0-1.0).</param>
-        /// <param name="id">Message ID.</param>
-        [JsonConstructor]
-        public SingleMotorVibrateCmd(uint deviceIndex, double speed, uint id = ButtplugConsts.DefaultMsgId)
-            : base(id, deviceIndex)
-        {
-            Speed = speed;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SingleMotorVibrateCmd"/> class.
-        /// </summary>
-        /// <param name="speed">Vibration speed (0.0-1.0).</param>
-        public SingleMotorVibrateCmd(double speed)
-        {
-            Speed = speed;
         }
     }
 
@@ -956,7 +557,7 @@ namespace Buttplug.Core.Messages
     /// cref="SingleMotorVibrateCmd"/>, this message can take multiple commands for devices with
     /// multiple vibrators.
     /// </summary>
-    [ButtplugMessageMetadata("VibrateCmd", 1)]
+    [ButtplugMessageMetadata("VibrateCmd")]
     public class VibrateCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -1064,7 +665,7 @@ namespace Buttplug.Core.Messages
     /// Sent to server, generic message that can control any rotating device. This message can take
     /// multiple commands for devices with multiple rotators.
     /// </summary>
-    [ButtplugMessageMetadata("RotateCmd", 1)]
+    [ButtplugMessageMetadata("RotateCmd")]
     public class RotateCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -1179,7 +780,7 @@ namespace Buttplug.Core.Messages
     /// Sent to server, generic message that can control any linear-actuated device. This message can
     /// take multiple commands for devices with multiple actuators.
     /// </summary>
-    [ButtplugMessageMetadata("LinearCmd", 1)]
+    [ButtplugMessageMetadata("LinearCmd")]
     public class LinearCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -1289,7 +890,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent to server, stops actions of a specific device.
     /// </summary>
-    [ButtplugMessageMetadata("StopDeviceCmd", 0)]
+    [ButtplugMessageMetadata("StopDeviceCmd")]
     public class StopDeviceCmd : ButtplugDeviceMessage
     {
         /// <summary>
@@ -1306,7 +907,7 @@ namespace Buttplug.Core.Messages
     /// <summary>
     /// Sent to server, stops actions of all currently connected devices.
     /// </summary>
-    [ButtplugMessageMetadata("StopAllDevices", 0)]
+    [ButtplugMessageMetadata("StopAllDevices")]
     public class StopAllDevices : ButtplugMessage
     {
         /// <summary>

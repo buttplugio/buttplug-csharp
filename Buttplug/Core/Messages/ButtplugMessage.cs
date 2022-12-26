@@ -24,11 +24,6 @@ namespace Buttplug.Core.Messages
         [JsonIgnore]
         public string Name => GetName(GetType());
 
-        [JsonIgnore]
-        public uint SpecVersion => GetSpecVersion(GetType());
-
-        [JsonIgnore]
-        public Type PreviousType => GetPreviousType(GetType());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugMessage"/> class.
@@ -89,26 +84,6 @@ namespace Buttplug.Core.Messages
         public static string GetName(Type msgType)
         {
             return GetMessageAttribute(msgType, (md) => md.Name);
-        }
-
-        /// <summary>
-        /// Returns spec version of a ButtplugMessage with ButtplugMessageMetadata attributes.
-        /// </summary>
-        /// <param name="msgType">Type to get data from.</param>
-        /// <returns>Spec version of ButtplugMessage class type.</returns>
-        public static uint GetSpecVersion(Type msgType)
-        {
-            return GetMessageAttribute(msgType, (md) => md.Version);
-        }
-
-        /// <summary>
-        /// Returns previous type of a ButtplugMessage with ButtplugMessageMetadata attributes, if it exists.
-        /// </summary>
-        /// <param name="msgType">Type to get data from.</param>
-        /// <returns>Previous message type version of ButtplugMessage class type, or null if no previous message type exists.</returns>
-        public static Type GetPreviousType(Type msgType)
-        {
-            return GetMessageAttribute(msgType, (md) => md.PreviousType);
         }
     }
 

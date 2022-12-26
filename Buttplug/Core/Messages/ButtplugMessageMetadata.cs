@@ -16,21 +16,9 @@ namespace Buttplug.Core.Messages
         /// </summary>
         public string Name { get; }
 
-        /// <summary>
-        /// Current message spec version. History of versions can be seen at https://github.com/metafetish/buttplug-spec.
-        /// </summary>
-        public uint Version { get; }
-
-        /// <summary>
-        /// Previous message type, if the message has changed between schema versions. Can be null.
-        /// </summary>
-        public Type PreviousType { get; }
-
-        public ButtplugMessageMetadata(string name, uint specVersion, Type previousType = null)
+        public ButtplugMessageMetadata(string name)
         {
             Name = name;
-            Version = specVersion;
-            PreviousType = previousType;
         }
     }
 }

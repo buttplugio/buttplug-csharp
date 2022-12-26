@@ -236,35 +236,11 @@ namespace Buttplug.Client
             await SendMessageAsync(LinearCmd.Create(cmds)).ConfigureAwait(false);
         }
 
-        public async Task SendFleshlightLaunchFW12Cmd(uint speed, uint position)
-        {
-            CheckAllowedMessageType<FleshlightLaunchFW12Cmd>();
-            await SendMessageAsync(new FleshlightLaunchFW12Cmd(Index, speed, position)).ConfigureAwait(false);
-        }
-
-        public async Task SendLovenseCmd(string deviceCmd)
-        {
-            CheckAllowedMessageType<LovenseCmd>();
-            await SendMessageAsync(new LovenseCmd(Index, deviceCmd)).ConfigureAwait(false);
-        }
-
-        public async Task SendVorzeA10CycloneCmd(uint speed, bool clockwise)
-        {
-            CheckAllowedMessageType<VorzeA10CycloneCmd>();
-            await SendMessageAsync(new VorzeA10CycloneCmd(Index, speed, clockwise)).ConfigureAwait(false);
-        }
-
         public async Task StopDeviceCmd()
         {
             // Every message should support this, but it doesn't hurt to check
             CheckAllowedMessageType<StopDeviceCmd>();
             await SendMessageAsync(new StopDeviceCmd(Index)).ConfigureAwait(false);
-        }
-
-        public async Task KiirooCmd(uint position)
-        {
-            CheckAllowedMessageType<KiirooCmd>();
-            await SendMessageAsync(new KiirooCmd(Index, position)).ConfigureAwait(false);
         }
     }
 }

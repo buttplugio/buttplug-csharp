@@ -148,15 +148,8 @@ namespace Buttplug.Core
             }
             catch (JsonSerializationException e)
             {
-                // Object didn't fit. Downgrade?
-                var prevType = ButtplugMessage.GetPreviousType(msgType);
-                if (prevType == null)
-                {
-                    throw new ButtplugMessageException(
-                        $"Could not create message for JSON {obj}: {e.Message}");
-                }
-
-                return DeserializeAs(obj, prevType);
+                throw new ButtplugMessageException(
+                    $"Could not create message for JSON {obj}: {e.Message}");
             }
         }
 
@@ -167,12 +160,12 @@ namespace Buttplug.Core
         /// <param name="msg"><see cref="ButtplugMessage"/> object.</param>
         /// <param name="clientSchemversion">Target schema version.</param>
         /// <returns>JSON string representing a Buttplug message.</returns>
-        public string Serialize(ButtplugMessage msg, uint clientSchemversion)
+        public string Serialize(ButtplugMessage msg)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             // Support downgrading messages
 
-            var jsonMsg = ButtplugMessageToJObject(msg, clientSchemversion);
+            var jsonMsg = ButtplugMessageToJObject(msg);
 
             // If we get nothing back, throw now, because if we don't the schema verifier will.
             if (jsonMsg == null)
@@ -193,13 +186,13 @@ namespace Buttplug.Core
         /// <param name="msgs">A collection of ButtplugMessage objects.</param>
         /// <param name="clientSchemversion">The target schema version.</param>
         /// <returns>A JSON string representing one or more Buttplug messages.</returns>
-        public string Serialize(IEnumerable<ButtplugMessage> msgs, uint clientSchemversion)
+        public string Serialize(IEnumerable<ButtplugMessage> msgs)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             var msgArray = new JArray();
             foreach (var msg in msgs)
             {
-                var obj = ButtplugMessageToJObject(msg, clientSchemversion);
+                var obj = ButtplugMessageToJObject(msg);
                 if (obj == null)
                 {
                     continue;
@@ -224,46 +217,13 @@ namespace Buttplug.Core
         /// This method can return null in some cases, which should be checked for by callers.
         /// </summary>
         /// <param name="msg">Message to convert to JSON.</param>
-        /// <param name="clientSpecVersion">
-        /// Schema version of the client the message will be sent to.
-        /// </param>
         /// <exception cref="ButtplugMessageException">
         /// Throws when no backward compatible non-system message can be found, or when a default
         /// constructor for a message is not available.
         /// </exception>
         /// <returns>JObject on success, but can return null in cases where a system message is not compatible with a client schema.</returns>
-        private JObject ButtplugMessageToJObject(ButtplugMessage msg, uint clientSpecVersion)
+        private JObject ButtplugMessageToJObject(ButtplugMessage msg)
         {
-            // Support downgrading messages
-            while (msg.SpecVersion > clientSpecVersion)
-            {
-                if (msg.PreviousType == null)
-                {
-                    if (msg.Id != ButtplugConsts.SystemMsgId)
-                    {
-                        throw new ButtplugMessageException(
-                            $"No backwards compatible version for message #{msg.Name} at Schema Version {clientSpecVersion}!", msg.Id);
-                    }
-
-                    // There's no previous version of this system message. We can't send the current
-                    // version, because whoever is on the other side won't be able to parse it.
-                    // However, this isn't exactly an error, because there's no real way to recover
-                    // from this and it's not like it'd do any good to send it. Therefore we just log
-                    // and throw the message away.
-                    return null;
-                }
-
-                var newMsg = (ButtplugMessage)msg.PreviousType.GetConstructor(
-                    new[] { msg.GetType() })?.Invoke(new object[] { msg });
-                if (newMsg == null)
-                {
-                    throw new ButtplugMessageException($"No default constructor for message #{msg.GetType().Name}!",
-                        msg.Id);
-                }
-
-                return ButtplugMessageToJObject(newMsg, clientSpecVersion);
-            }
-
             return new JObject(new JProperty(msg.Name, JObject.FromObject(msg)));
         }
     }
