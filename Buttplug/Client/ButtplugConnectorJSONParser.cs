@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using Buttplug.Core;
 
 using Buttplug.Core.Messages;
-using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
@@ -18,7 +17,6 @@ namespace Buttplug.Client
         /// <summary>
         /// Used for converting messages between JSON and Objects.
         /// </summary>
-        [NotNull]
         private readonly ButtplugJsonMessageParser _parser = new ButtplugJsonMessageParser();
 
         /// <summary>
@@ -28,7 +26,7 @@ namespace Buttplug.Client
         /// <returns>The JSON string representation of the message.</returns>
         public string Serialize(ButtplugMessage aMsg)
         {
-            return _parser.Serialize(aMsg, ButtplugConsts.CurrentSpecVersion);
+            return this._parser.Serialize(aMsg, ButtplugConsts.CurrentSpecVersion);
         }
 
         /// <summary>
@@ -38,7 +36,7 @@ namespace Buttplug.Client
         /// <returns>The JSON string representation of the messages.</returns>
         public string Serialize(ButtplugMessage[] aMsgs)
         {
-            return _parser.Serialize(aMsgs, ButtplugConsts.CurrentSpecVersion);
+            return this._parser.Serialize(aMsgs, ButtplugConsts.CurrentSpecVersion);
         }
 
         /// <summary>
@@ -48,7 +46,7 @@ namespace Buttplug.Client
         /// <returns>An array of <see cref="ButtplugMessage"/>.</returns>
         public IEnumerable<ButtplugMessage> Deserialize(string aMsg)
         {
-            return _parser.Deserialize(aMsg);
+            return this._parser.Deserialize(aMsg);
         }
     }
 }

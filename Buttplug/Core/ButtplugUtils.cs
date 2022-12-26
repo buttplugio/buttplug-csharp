@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Buttplug.Core.Messages;
-using JetBrains.Annotations;
 
 namespace Buttplug.Core
 {
@@ -45,8 +44,7 @@ namespace Buttplug.Core
         /// <param name="argument">The argument.</param>
         /// <remarks>https://stackoverflow.com/questions/29184887/best-way-to-check-for-null-parameters-guard-clauses.</remarks>
         [DebuggerStepThrough]
-        [ContractAnnotation("halt <= argument:null")]
-        public static void ArgumentNotNull(object aArgument, [InvokerParameterName] string aArgumentName)
+        public static void ArgumentNotNull(object aArgument, string aArgumentName)
         {
             if (aArgument == null)
             {

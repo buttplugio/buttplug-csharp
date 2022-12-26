@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Buttplug.Core;
 
 using Buttplug.Core.Messages;
-using JetBrains.Annotations;
 
 namespace Buttplug.Client
 {
@@ -25,24 +24,23 @@ namespace Buttplug.Client
         /// <summary>
         /// Gets the next available message ID. In most cases, setting the message ID is done automatically.
         /// </summary>
-        public uint NextMsgId => Convert.ToUInt32(Interlocked.Increment(ref _counter));
+        public uint NextMsgId => Convert.ToUInt32(Interlocked.Increment(ref this._counter));
 
         /// <summary>
         /// Stores messages waiting for reply from the server.
         /// </summary>
-        [NotNull]
         private readonly ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs =
             new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
 
         ~ButtplugConnectorMessageSorter()
         {
-            Shutdown();
+            this.Shutdown();
         }
 
         public void Shutdown()
         {
             // If we've somehow destructed while holding tasks, throw exceptions at all of them.
-            foreach (var task in _waitingMsgs.Values)
+            foreach (var task in this._waitingMsgs.Values)
             {
                 task.TrySetException(new Exception("Sorter has been destroyed with live tasks still in queue."));
             }
@@ -51,10 +49,10 @@ namespace Buttplug.Client
         public Task<ButtplugMessage> PrepareMessage(ButtplugMessage aMsg)
         {
             // The client always increments the IDs on outgoing messages
-            aMsg.Id = NextMsgId;
+            aMsg.Id = this.NextMsgId;
 
             var promise = new TaskCompletionSource<ButtplugMessage>();
-            _waitingMsgs.TryAdd(aMsg.Id, promise);
+            this._waitingMsgs.TryAdd(aMsg.Id, promise);
 
             return promise.Task;
         }
@@ -69,7 +67,7 @@ namespace Buttplug.Client
 
             // If we haven't gotten a system message and we're not currently waiting for the message
             // id, throw.
-            if (!_waitingMsgs.TryRemove(aMsg.Id, out var queued))
+            if (!this._waitingMsgs.TryRemove(aMsg.Id, out var queued))
             {
                 throw new ButtplugMessageException("Message with non-matching ID received.", aMsg.Id);
             }

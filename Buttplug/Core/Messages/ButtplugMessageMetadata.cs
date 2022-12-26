@@ -22,9 +22,9 @@ namespace Buttplug.Core.Messages
 
         public ButtplugMessageMetadata(string aName, uint aSpecVersion, Type aPreviousType = null)
         {
-            Name = aName;
-            Version = aSpecVersion;
-            PreviousType = aPreviousType;
+            this.Name = aName;
+            this.Version = aSpecVersion;
+            this.PreviousType = aPreviousType;
         }
     }
 }

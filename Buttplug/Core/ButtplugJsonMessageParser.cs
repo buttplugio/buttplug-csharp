@@ -11,10 +11,9 @@ using System.IO;
 using System.Linq;
 
 using Buttplug.Core.Messages;
-using JetBrains.Annotations;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NJsonSchema;
 
 namespace Buttplug.Core
 {
@@ -26,19 +25,11 @@ namespace Buttplug.Core
         /// <summary>
         /// Map of message names to message types.
         /// </summary>
-        [NotNull]
         private readonly Dictionary<string, Type> _messageTypes;
-
-        /// <summary>
-        /// Schema object, for checking message validity against the spec schema.
-        /// </summary>
-        [NotNull]
-        private readonly JsonSchema _schema;
 
         /// <summary>
         /// Serializes/deserializes object to/from JSON.
         /// </summary>
-        [NotNull]
         private readonly JsonSerializer _serializer;
 
         /// <summary>
@@ -47,22 +38,21 @@ namespace Buttplug.Core
         /// <param name="aLogManager">Log manager, passed from the parser owner.</param>
         public ButtplugJsonMessageParser()
         {
-            _serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
-            _messageTypes = new Dictionary<string, Type>();
+            this._serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
+            this._messageTypes = new Dictionary<string, Type>();
             foreach (var aMessageType in ButtplugUtils.GetAllMessageTypes())
             {
-                _messageTypes.Add(aMessageType.Name, aMessageType);
+                this._messageTypes.Add(aMessageType.Name, aMessageType);
             }
 
             // If we can't find any message types in our assembly, the system is basically useless.
-            if (!_messageTypes.Any())
+            if (!this._messageTypes.Any())
             {
                 throw new ButtplugMessageException("No message types available.");
             }
 
             // Load the schema for validation. Schema file is an embedded resource in the library.
             var jsonSchemaString = ButtplugUtils.GetStringFromFileResource("Buttplug.buttplug-schema.json");
-            _schema = JsonSchema.FromJsonAsync(jsonSchemaString)?.GetAwaiter().GetResult() ?? throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -70,7 +60,6 @@ namespace Buttplug.Core
         /// </summary>
         /// <param name="aJsonMsg">String containing one or more Buttplug messages in JSON format.</param>
         /// <returns>Enumerable of <see cref="ButtplugMessage"/> objects.</returns>
-        [NotNull]
         public IEnumerable<ButtplugMessage> Deserialize(string aJsonMsg)
         {
             var textReader = new StringReader(aJsonMsg);
@@ -112,27 +101,19 @@ namespace Buttplug.Core
                     throw new ButtplugMessageException($"Not valid JSON: {aJsonMsg} - {e.Message}");
                 }
 
-                var errors = _schema.Validate(msgArray);
-                if (errors.Any())
-                {
-                    throw new ButtplugMessageException(
-                        "Message does not conform to schema: " + string.Join(", ",
-                            errors.Select(aErr => aErr?.ToString()).ToArray()));
-                }
-
                 foreach (var jsonObj in msgArray.Children<JObject>())
                 {
                     var msgName = jsonObj.Properties().First().Name;
 
                     // Only way we should get here is if the schema includes a class that we don't
                     // have a matching C# class for.
-                    if (!_messageTypes.ContainsKey(msgName))
+                    if (!this._messageTypes.ContainsKey(msgName))
                     {
                         throw new ButtplugMessageException($"{msgName} is not a valid message class");
                     }
 
                     // This specifically could fail due to object conversion.
-                    msgList.Add(DeserializeAs(jsonObj, _messageTypes[msgName]));
+                    msgList.Add(this.DeserializeAs(jsonObj, this._messageTypes[msgName]));
                 }
             }
 
@@ -157,7 +138,7 @@ namespace Buttplug.Core
             try
             {
                 var msgObj = aObject[msgName].Value<JObject>();
-                var msg = (ButtplugMessage)msgObj.ToObject(aMsgType, _serializer);
+                var msg = (ButtplugMessage)msgObj.ToObject(aMsgType, this._serializer);
                 return msg;
             }
             catch (InvalidCastException e)
@@ -175,7 +156,7 @@ namespace Buttplug.Core
                         $"Could not create message for JSON {aObject}: {e.Message}");
                 }
 
-                return DeserializeAs(aObject, prevType);
+                return this.DeserializeAs(aObject, prevType);
             }
         }
 
@@ -186,12 +167,12 @@ namespace Buttplug.Core
         /// <param name="aMsg"><see cref="ButtplugMessage"/> object.</param>
         /// <param name="aClientSchemaVersion">Target schema version.</param>
         /// <returns>JSON string representing a Buttplug message.</returns>
-        public string Serialize([NotNull] ButtplugMessage aMsg, uint aClientSchemaVersion)
+        public string Serialize(ButtplugMessage aMsg, uint aClientSchemaVersion)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             // Support downgrading messages
 
-            var jsonMsg = ButtplugMessageToJObject(aMsg, aClientSchemaVersion);
+            var jsonMsg = this.ButtplugMessageToJObject(aMsg, aClientSchemaVersion);
 
             // If we get nothing back, throw now, because if we don't the schema verifier will.
             if (jsonMsg == null)
@@ -201,17 +182,6 @@ namespace Buttplug.Core
             }
 
             var msgArray = new JArray { jsonMsg };
-
-            // Shove our JSON objects through the schema validator, just to make sure it'll be
-            // accepted on the other end.
-            var errors = _schema.Validate(msgArray);
-            if (errors.Any())
-            {
-                Debug.WriteLine(msgArray);
-                throw new ButtplugMessageException(
-                    "Message does not conform to schema: " + string.Join(", ",
-                        errors.Select(aErr => aErr?.ToString()).ToArray()), aMsg.Id);
-            }
 
             return msgArray.ToString(Formatting.None);
         }
@@ -223,13 +193,13 @@ namespace Buttplug.Core
         /// <param name="aMsgs">A collection of ButtplugMessage objects.</param>
         /// <param name="aClientSchemaVersion">The target schema version.</param>
         /// <returns>A JSON string representing one or more Buttplug messages.</returns>
-        public string Serialize([NotNull] IEnumerable<ButtplugMessage> aMsgs, uint aClientSchemaVersion)
+        public string Serialize(IEnumerable<ButtplugMessage> aMsgs, uint aClientSchemaVersion)
         {
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             var msgArray = new JArray();
             foreach (var msg in aMsgs)
             {
-                var obj = ButtplugMessageToJObject(msg, aClientSchemaVersion);
+                var obj = this.ButtplugMessageToJObject(msg, aClientSchemaVersion);
                 if (obj == null)
                 {
                     continue;
@@ -244,16 +214,6 @@ namespace Buttplug.Core
             {
                 throw new ButtplugMessageException(
                     "No messages serialized.");
-            }
-
-            // Shove our JSON objects through the schema validator, just to make sure it'll be
-            // accepted on the other end.
-            var errors = _schema.Validate(msgArray);
-            if (errors.Any())
-            {
-                throw new ButtplugMessageException(
-                    "Message does not conform to schema: " + string.Join(", ",
-                        errors.Select(aErr => aErr?.ToString()).ToArray()));
             }
 
             return msgArray.ToString(Formatting.None);
@@ -272,7 +232,7 @@ namespace Buttplug.Core
         /// constructor for a message is not available.
         /// </exception>
         /// <returns>JObject on success, but can return null in cases where a system message is not compatible with a client schema.</returns>
-        private JObject ButtplugMessageToJObject([NotNull] ButtplugMessage aMsg, uint aClientSpecVersion)
+        private JObject ButtplugMessageToJObject(ButtplugMessage aMsg, uint aClientSpecVersion)
         {
             // Support downgrading messages
             while (aMsg.SpecVersion > aClientSpecVersion)
@@ -301,7 +261,7 @@ namespace Buttplug.Core
                         aMsg.Id);
                 }
 
-                return ButtplugMessageToJObject(newMsg, aClientSpecVersion);
+                return this.ButtplugMessageToJObject(newMsg, aClientSpecVersion);
             }
 
             return new JObject(new JProperty(aMsg.Name, JObject.FromObject(aMsg)));

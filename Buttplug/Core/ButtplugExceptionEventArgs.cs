@@ -8,7 +8,7 @@ namespace Buttplug.Core
 
         public ButtplugExceptionEventArgs(ButtplugException ex)
         {
-            Exception = ex;
+            this.Exception = ex;
         }
     }
 }

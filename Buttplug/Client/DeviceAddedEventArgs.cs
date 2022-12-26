@@ -4,8 +4,6 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using JetBrains.Annotations;
-
 namespace Buttplug.Client
 {
     /// <summary>
@@ -17,7 +15,6 @@ namespace Buttplug.Client
         /// <summary>
         /// The client representation of a Buttplug Device.
         /// </summary>
-        [NotNull]
         public readonly ButtplugClientDevice Device;
 
         /// <summary>
@@ -26,7 +23,7 @@ namespace Buttplug.Client
         /// <param name="aDevice">Device being added.</param>
         public DeviceAddedEventArgs(ButtplugClientDevice aDevice)
         {
-            Device = aDevice;
+            this.Device = aDevice;
         }
     }
 }

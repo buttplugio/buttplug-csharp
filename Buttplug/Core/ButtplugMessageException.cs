@@ -1,7 +1,6 @@
 ﻿using System;
 
 using Buttplug.Core.Messages;
-using JetBrains.Annotations;
 
 namespace Buttplug.Core
 {

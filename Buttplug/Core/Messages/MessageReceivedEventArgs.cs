@@ -18,7 +18,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aMessage">Buttplug message that was received.</param>
         public MessageReceivedEventArgs(ButtplugMessage aMessage)
         {
-            Message = aMessage;
+            this.Message = aMessage;
         }
     }
 }

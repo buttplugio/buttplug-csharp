@@ -1,5 +1,5 @@
 ﻿using Buttplug.Core;
-using JetBrains.Annotations;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,9 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         /// <summary>
         /// Websocket access object.
         /// </summary>
-        [CanBeNull] private WebSocketClient _wsClient;
+        private WebSocketClient _wsClient;
 
-        [CanBeNull] private WebSocket _ws;
+        private WebSocket _ws;
 
         public bool Connected => _ws != null && _ws.IsConnected;
 
@@ -32,7 +32,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
         private readonly Uri _uri;
 
-        [NotNull] private readonly BufferBlock<string> _outgoingMessages = new BufferBlock<string>();
+        private readonly BufferBlock<string> _outgoingMessages = new BufferBlock<string>();
 
         private Task _readTask;
 
@@ -138,7 +138,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
                     if (completedTaskIndex == 0)
                     {
-                        var incomingMsg = await ((Task<string>) msgTasks[0]).ConfigureAwait(false);
+                        var incomingMsg = await ((Task<string>)msgTasks[0]).ConfigureAwait(false);
                         if (incomingMsg != null)
                         {
                             ReceiveMessages(incomingMsg);

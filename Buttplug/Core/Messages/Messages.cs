@@ -42,7 +42,7 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always)]
         public string TestString
         {
-            get => _testStringImpl;
+            get => this._testStringImpl;
             set
             {
                 if (value == "Error")
@@ -50,7 +50,7 @@ namespace Buttplug.Core.Messages
                     throw new ArgumentException("Got an Error Message");
                 }
 
-                _testStringImpl = value;
+                this._testStringImpl = value;
             }
         }
 
@@ -62,7 +62,7 @@ namespace Buttplug.Core.Messages
         public Test(string aString, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
-            TestString = aString;
+            this.TestString = aString;
         }
     }
 
@@ -128,8 +128,8 @@ namespace Buttplug.Core.Messages
         public Error(string aErrorMessage, ErrorClass aErrorCode, uint aId)
             : base(aId)
         {
-            ErrorMessage = aErrorMessage;
-            ErrorCode = aErrorCode;
+            this.ErrorMessage = aErrorMessage;
+            this.ErrorCode = aErrorCode;
         }
     }
 
@@ -150,12 +150,12 @@ namespace Buttplug.Core.Messages
 
         public MessageAttributes(uint aFeatureCount)
         {
-            FeatureCount = aFeatureCount;
+            this.FeatureCount = aFeatureCount;
         }
 
         public bool Equals(MessageAttributes aAttrs)
         {
-            return FeatureCount == aAttrs.FeatureCount;
+            return this.FeatureCount == aAttrs.FeatureCount;
         }
     }
 
@@ -194,17 +194,17 @@ namespace Buttplug.Core.Messages
         public DeviceMessageInfo(uint aIndex, string aName,
             Dictionary<string, MessageAttributes> aMessages)
         {
-            DeviceName = aName;
-            DeviceIndex = aIndex;
-            DeviceMessages = aMessages;
+            this.DeviceName = aName;
+            this.DeviceIndex = aIndex;
+            this.DeviceMessages = aMessages;
         }
 
         // Implementation details for IButtplugDeviceInfoMessage interface
-        string IButtplugDeviceInfoMessage.DeviceName => DeviceName;
+        string IButtplugDeviceInfoMessage.DeviceName => this.DeviceName;
 
-        uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
+        uint IButtplugDeviceInfoMessage.DeviceIndex => this.DeviceIndex;
 
-        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
+        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => this.DeviceMessages;
     }
 
     /// <summary>
@@ -240,9 +240,9 @@ namespace Buttplug.Core.Messages
         /// <param name="aMessages">Commands supported by device.</param>
         public DeviceMessageInfoVersion0(uint aIndex, string aName, string[] aMessages)
         {
-            DeviceName = aName;
-            DeviceIndex = aIndex;
-            DeviceMessages = aMessages;
+            this.DeviceName = aName;
+            this.DeviceIndex = aIndex;
+            this.DeviceMessages = aMessages;
         }
     }
 
@@ -266,7 +266,7 @@ namespace Buttplug.Core.Messages
         public DeviceList(DeviceMessageInfo[] aDeviceList, uint aId)
             : base(aId)
         {
-            Devices = aDeviceList;
+            this.Devices = aDeviceList;
         }
 
         /// <inheritdoc />
@@ -297,7 +297,7 @@ namespace Buttplug.Core.Messages
         public DeviceListVersion0(DeviceMessageInfoVersion0[] aDeviceList, uint aId)
              : base(aId)
         {
-            Devices = aDeviceList;
+            this.Devices = aDeviceList;
         }
 
         /// <inheritdoc />
@@ -325,7 +325,7 @@ namespace Buttplug.Core.Messages
                 tmp.Add(new DeviceMessageInfoVersion0(dev.DeviceIndex, dev.DeviceName, tmp2.ToArray()));
             }
 
-            Devices = tmp.ToArray();
+            this.Devices = tmp.ToArray();
         }
     }
 
@@ -358,8 +358,8 @@ namespace Buttplug.Core.Messages
             Dictionary<string, MessageAttributes> aMessages)
             : base(ButtplugConsts.SystemMsgId, aIndex)
         {
-            DeviceName = aName;
-            DeviceMessages = aMessages;
+            this.DeviceName = aName;
+            this.DeviceMessages = aMessages;
         }
 
         /// <inheritdoc />
@@ -369,11 +369,11 @@ namespace Buttplug.Core.Messages
         }
 
         // Implementation details for IButtplugDeviceInfoMessage interface
-        string IButtplugDeviceInfoMessage.DeviceName => DeviceName;
+        string IButtplugDeviceInfoMessage.DeviceName => this.DeviceName;
 
-        uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
+        uint IButtplugDeviceInfoMessage.DeviceIndex => this.DeviceIndex;
 
-        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
+        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => this.DeviceMessages;
     }
 
     /// <summary>
@@ -403,8 +403,8 @@ namespace Buttplug.Core.Messages
         public DeviceAddedVersion0(uint aIndex, string aName, string[] aMessages)
             : base(ButtplugConsts.SystemMsgId, aIndex)
         {
-            DeviceName = aName;
-            DeviceMessages = aMessages;
+            this.DeviceName = aName;
+            this.DeviceMessages = aMessages;
         }
 
         /// <inheritdoc />
@@ -420,14 +420,14 @@ namespace Buttplug.Core.Messages
         public DeviceAddedVersion0(DeviceAdded aMsg)
             : base(aMsg.Id, aMsg.DeviceIndex)
         {
-            DeviceName = aMsg.DeviceName;
+            this.DeviceName = aMsg.DeviceName;
             var tmp = new List<string>();
             foreach (var k in aMsg.DeviceMessages.Keys)
             {
                 tmp.Add(k);
             }
 
-            DeviceMessages = tmp.ToArray();
+            this.DeviceMessages = tmp.ToArray();
         }
     }
 
@@ -450,13 +450,13 @@ namespace Buttplug.Core.Messages
         public DeviceRemoved(uint aIndex)
             : base(ButtplugConsts.SystemMsgId)
         {
-            DeviceIndex = aIndex;
+            this.DeviceIndex = aIndex;
         }
 
         // Implementation details for IButtplugDeviceInfoMessage interface
         string IButtplugDeviceInfoMessage.DeviceName => string.Empty;
 
-        uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
+        uint IButtplugDeviceInfoMessage.DeviceIndex => this.DeviceIndex;
 
         Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => new Dictionary<string, MessageAttributes>();
     }
@@ -552,8 +552,8 @@ namespace Buttplug.Core.Messages
         public RequestServerInfo(string aClientName, uint aId = ButtplugConsts.DefaultMsgId, uint aSchemaVersion = ButtplugConsts.CurrentSpecVersion)
             : base(aId)
         {
-            ClientName = aClientName;
-            MessageVersion = aSchemaVersion;
+            this.ClientName = aClientName;
+            this.MessageVersion = aSchemaVersion;
         }
     }
 
@@ -610,13 +610,13 @@ namespace Buttplug.Core.Messages
         public ServerInfo(string aServerName, uint aMessageVersion, uint aMaxPingTime, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId)
         {
-            ServerName = aServerName;
-            MessageVersion = aMessageVersion;
-            MaxPingTime = aMaxPingTime;
+            this.ServerName = aServerName;
+            this.MessageVersion = aMessageVersion;
+            this.MaxPingTime = aMaxPingTime;
             var assembly = Assembly.GetAssembly(typeof(ServerInfo));
-            MajorVersion = assembly.GetName().Version.Major;
-            MinorVersion = assembly.GetName().Version.Minor;
-            BuildVersion = assembly.GetName().Version.Build;
+            this.MajorVersion = assembly.GetName().Version.Major;
+            this.MinorVersion = assembly.GetName().Version.Minor;
+            this.BuildVersion = assembly.GetName().Version.Build;
         }
     }
 
@@ -655,7 +655,7 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always)]
         public uint Speed
         {
-            get => _speedImpl;
+            get => this._speedImpl;
             set
             {
                 if (value > 99)
@@ -663,7 +663,7 @@ namespace Buttplug.Core.Messages
                     throw new ArgumentException("FleshlightLaunchRawMessage cannot have a speed higher than 99!");
                 }
 
-                _speedImpl = value;
+                this._speedImpl = value;
             }
         }
 
@@ -675,7 +675,7 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always)]
         public uint Position
         {
-            get => _positionImpl;
+            get => this._positionImpl;
             set
             {
                 if (value > 99)
@@ -683,7 +683,7 @@ namespace Buttplug.Core.Messages
                     throw new ArgumentException("FleshlightLaunchRawMessage cannot have a position higher than 99!");
                 }
 
-                _positionImpl = value;
+                this._positionImpl = value;
             }
         }
 
@@ -698,8 +698,8 @@ namespace Buttplug.Core.Messages
         public FleshlightLaunchFW12Cmd(uint aDeviceIndex, uint aSpeed, uint aPosition, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
-            Speed = aSpeed;
-            Position = aPosition;
+            this.Speed = aSpeed;
+            this.Position = aPosition;
         }
 
         /// <summary>
@@ -709,8 +709,8 @@ namespace Buttplug.Core.Messages
         /// <param name="aPosition">Position to move the fleshlight to (0-99).</param>
         public FleshlightLaunchFW12Cmd(uint aSpeed, uint aPosition)
         {
-            Speed = aSpeed;
-            Position = aPosition;
+            this.Speed = aSpeed;
+            this.Position = aPosition;
         }
     }
 
@@ -738,7 +738,7 @@ namespace Buttplug.Core.Messages
         public LovenseCmd(uint aDeviceIndex, string aDeviceCmd, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
-            Command = aDeviceCmd;
+            this.Command = aDeviceCmd;
         }
 
         /// <summary>
@@ -747,7 +747,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aDeviceCmd">Lovense-formatted command string.</param>
         public LovenseCmd(string aDeviceCmd)
         {
-            Command = aDeviceCmd;
+            this.Command = aDeviceCmd;
         }
     }
 
@@ -772,7 +772,7 @@ namespace Buttplug.Core.Messages
         {
             get
             {
-                if (uint.TryParse(Command, out uint pos) && pos <= 4)
+                if (uint.TryParse(this.Command, out uint pos) && pos <= 4)
                 {
                     return pos;
                 }
@@ -787,7 +787,7 @@ namespace Buttplug.Core.Messages
                     throw new ArgumentException("KiirooRawCmd Position cannot be greater than 4");
                 }
 
-                Command = value.ToString();
+                this.Command = value.ToString();
             }
         }
 
@@ -801,7 +801,7 @@ namespace Buttplug.Core.Messages
         public KiirooCmd(uint aDeviceIndex, uint aPosition, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
-            Position = aPosition;
+            this.Position = aPosition;
         }
 
         /// <summary>
@@ -810,7 +810,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aPosition">Position or vibration speed (0-4).</param>
         public KiirooCmd(uint aPosition)
         {
-            Position = aPosition;
+            this.Position = aPosition;
         }
     }
 
@@ -829,7 +829,7 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always)]
         public uint Speed
         {
-            get => _speedImpl;
+            get => this._speedImpl;
             set
             {
                 if (value > 99)
@@ -837,7 +837,7 @@ namespace Buttplug.Core.Messages
                     throw new ArgumentException("VorzeA10CycloneCmd cannot have a speed higher than 99!");
                 }
 
-                _speedImpl = value;
+                this._speedImpl = value;
             }
         }
 
@@ -858,8 +858,8 @@ namespace Buttplug.Core.Messages
         public VorzeA10CycloneCmd(uint aDeviceIndex, uint aSpeed, bool aClockwise, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
-            Speed = aSpeed;
-            Clockwise = aClockwise;
+            this.Speed = aSpeed;
+            this.Clockwise = aClockwise;
         }
 
         /// <summary>
@@ -869,8 +869,8 @@ namespace Buttplug.Core.Messages
         /// <param name="aClockwise">Direction to rotate.</param>
         public VorzeA10CycloneCmd(uint aSpeed, bool aClockwise)
         {
-            Speed = aSpeed;
-            Clockwise = aClockwise;
+            this.Speed = aSpeed;
+            this.Clockwise = aClockwise;
         }
     }
 
@@ -890,7 +890,7 @@ namespace Buttplug.Core.Messages
         [JsonProperty(Required = Required.Always)]
         public double Speed
         {
-            get => _speedImpl;
+            get => this._speedImpl;
             set
             {
                 if (value < 0)
@@ -903,7 +903,7 @@ namespace Buttplug.Core.Messages
                     throw new ArgumentException("SingleMotorVibrateMessage Speed cannot be greater than 1!");
                 }
 
-                _speedImpl = value;
+                this._speedImpl = value;
             }
         }
 
@@ -917,7 +917,7 @@ namespace Buttplug.Core.Messages
         public SingleMotorVibrateCmd(uint aDeviceIndex, double aSpeed, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
-            Speed = aSpeed;
+            this.Speed = aSpeed;
         }
 
         /// <summary>
@@ -926,7 +926,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aSpeed">Vibration speed (0.0-1.0).</param>
         public SingleMotorVibrateCmd(double aSpeed)
         {
-            Speed = aSpeed;
+            this.Speed = aSpeed;
         }
     }
 
@@ -941,7 +941,7 @@ namespace Buttplug.Core.Messages
 
         protected GenericMessageSubcommand(uint aIndex)
         {
-            Index = aIndex;
+            this.Index = aIndex;
         }
     }
 
@@ -967,7 +967,7 @@ namespace Buttplug.Core.Messages
             [JsonProperty(Required = Required.Always)]
             public double Speed
             {
-                get => _speedImpl;
+                get => this._speedImpl;
                 set
                 {
                     if (value < 0)
@@ -980,7 +980,7 @@ namespace Buttplug.Core.Messages
                         throw new ArgumentException("VibrateCmd Speed cannot be greater than 1!");
                     }
 
-                    _speedImpl = value;
+                    this._speedImpl = value;
                 }
             }
 
@@ -992,7 +992,7 @@ namespace Buttplug.Core.Messages
             public VibrateSubcommand(uint aIndex, double aSpeed)
             : base(aIndex)
             {
-                Speed = aSpeed;
+                this.Speed = aSpeed;
             }
         }
 
@@ -1041,7 +1041,7 @@ namespace Buttplug.Core.Messages
         public VibrateCmd(uint aDeviceIndex, List<VibrateSubcommand> aSpeeds, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
-            Speeds = aSpeeds;
+            this.Speeds = aSpeeds;
         }
 
         /// <summary>
@@ -1075,7 +1075,7 @@ namespace Buttplug.Core.Messages
             [JsonProperty(Required = Required.Always)]
             public double Speed
             {
-                get => _speedImpl;
+                get => this._speedImpl;
                 set
                 {
                     if (value < 0)
@@ -1088,7 +1088,7 @@ namespace Buttplug.Core.Messages
                         throw new ArgumentException("RotateCmd Speed cannot be greater than 1!");
                     }
 
-                    _speedImpl = value;
+                    this._speedImpl = value;
                 }
             }
 
@@ -1107,8 +1107,8 @@ namespace Buttplug.Core.Messages
             public RotateSubcommand(uint aIndex, double aSpeed, bool aClockwise)
             : base(aIndex)
             {
-                Speed = aSpeed;
-                Clockwise = aClockwise;
+                this.Speed = aSpeed;
+                this.Clockwise = aClockwise;
             }
         }
 
@@ -1156,7 +1156,7 @@ namespace Buttplug.Core.Messages
         public RotateCmd(uint aDeviceIndex, List<RotateSubcommand> aRotations, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
-            Rotations = aRotations;
+            this.Rotations = aRotations;
         }
 
         /// <summary>
@@ -1196,7 +1196,7 @@ namespace Buttplug.Core.Messages
             [JsonProperty(Required = Required.Always)]
             public double Position
             {
-                get => _positionImpl;
+                get => this._positionImpl;
                 set
                 {
                     if (value < 0)
@@ -1209,7 +1209,7 @@ namespace Buttplug.Core.Messages
                         throw new ArgumentException("LinearCmd Speed cannot be greater than 1!");
                     }
 
-                    _positionImpl = value;
+                    this._positionImpl = value;
                 }
             }
 
@@ -1222,8 +1222,8 @@ namespace Buttplug.Core.Messages
             public VectorSubcommand(uint aIndex, uint aDuration, double aPosition)
             : base(aIndex)
             {
-                Duration = aDuration;
-                Position = aPosition;
+                this.Duration = aDuration;
+                this.Position = aPosition;
             }
         }
 
@@ -1271,7 +1271,7 @@ namespace Buttplug.Core.Messages
         public LinearCmd(uint aDeviceIndex, List<VectorSubcommand> aVectors, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
-            Vectors = aVectors;
+            this.Vectors = aVectors;
         }
 
         public LinearCmd(List<VectorSubcommand> aVectors)

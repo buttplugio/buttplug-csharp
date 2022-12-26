@@ -1,7 +1,6 @@
 ﻿using System;
 
 using Buttplug.Core.Messages;
-using JetBrains.Annotations;
 
 namespace Buttplug.Core
 {
@@ -54,7 +53,7 @@ namespace Buttplug.Core
         public ButtplugException(string aMessage, Error.ErrorClass aClass = Error.ErrorClass.ERROR_UNKNOWN, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null)
             : base(aMessage, aInner)
         {
-            ButtplugErrorMessage = new Error(aMessage, aClass, aId);
+            this.ButtplugErrorMessage = new Error(aMessage, aClass, aId);
         }
     }
 }

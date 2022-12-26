@@ -16,13 +16,13 @@ namespace Buttplug.Core.Messages
         public uint Id { get; set; }
 
         [JsonIgnore]
-        public string Name => GetName(GetType());
+        public string Name => GetName(this.GetType());
 
         [JsonIgnore]
-        public uint SpecVersion => GetSpecVersion(GetType());
+        public uint SpecVersion => GetSpecVersion(this.GetType());
 
         [JsonIgnore]
-        public Type PreviousType => GetPreviousType(GetType());
+        public Type PreviousType => GetPreviousType(this.GetType());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugMessage"/> class.
@@ -30,7 +30,7 @@ namespace Buttplug.Core.Messages
         /// <param name="aId">Message ID.</param>
         protected ButtplugMessage(uint aId)
         {
-            Id = aId;
+            this.Id = aId;
         }
 
         private static Dictionary<Type, ButtplugMessageMetadata> _metadataCache = new Dictionary<Type, ButtplugMessageMetadata>();

@@ -22,7 +22,7 @@ namespace Buttplug.Core.Messages
         public ButtplugDeviceMessage(uint aId = ButtplugConsts.DefaultMsgId, uint aDeviceIndex = uint.MaxValue)
             : base(aId)
         {
-            DeviceIndex = aDeviceIndex;
+            this.DeviceIndex = aDeviceIndex;
         }
     }
 }
