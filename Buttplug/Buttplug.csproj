@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
   <Import Project="..\Buttplug.ProjectFiles\CommonProjectProperties.targets" />
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-      <TargetFramework>netstandard2.0</TargetFramework>
+      <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' "> 
-      <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+      <TargetFrameworks>netstandard2.1;net48</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup>
     <PackageId />
@@ -12,6 +12,7 @@
     <AssemblyName>Buttplug</AssemblyName>
     <Summary>Buttplug Sex Toy Control Library</Summary>
     <Description>Buttplug Sex Toy Control Library. Contains Core (messages, logging, etc), Server (device management), and Client (API) components. (.Net Framework 4.7+/.Net Standard 2.0)</Description>
+    <TargetFrameworks>netstandard2.1;net48</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,6 +47,10 @@
 
   <ItemGroup>
     <AdditionalFiles Include="..\Buttplug.ProjectFiles\stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Test\" />
   </ItemGroup>
 
 </Project>

@@ -991,7 +991,6 @@ namespace Buttplug.Core.Messages
         }
     }
 
-
     /// <summary>
     /// Sent to server, generic message that can control any vibrating device. Unlike <see
     /// cref="SingleMotorVibrateCmd"/>, this message can take multiple commands for devices with
@@ -1338,7 +1337,7 @@ namespace Buttplug.Core.Messages
         /// </summary>
         /// <param name="aDeviceIndex">Device index.</param>
         /// <param name="aId">Message ID.</param>
-        public StopDeviceCmd(uint aDeviceIndex = UInt32.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
+        public StopDeviceCmd(uint aDeviceIndex = uint.MaxValue, uint aId = ButtplugConsts.DefaultMsgId)
             : base(aId, aDeviceIndex)
         {
         }

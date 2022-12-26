@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-      <TargetFramework>netcoreapp2.1</TargetFramework>
+      <TargetFramework>netcoreapp7.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' "> 
-      <TargetFrameworks>netcoreapp2.1;net47</TargetFrameworks>
+      <TargetFrameworks>netcoreapp7.0;net48</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <TargetFrameworks>netcoreapp7.0;net48</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
