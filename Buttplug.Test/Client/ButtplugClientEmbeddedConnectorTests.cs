@@ -29,21 +29,21 @@ namespace Buttplug.Client.Test
             _server = new TestServer();
 
             // This is a test, so just ignore the logger requirement for now.
-            _server.AddDeviceSubtypeManager(aLog => _subtypeMgr);
+            _server.AddDeviceSubtypeManager(log => _subtypeMgr);
             _connector = new ButtplugEmbeddedConnector(_server);
             _client = new ButtplugClient("Test Client", _connector);
         }
 
         private class ButtplugNoPingTestClient : ButtplugClient
         {
-            public ButtplugNoPingTestClient(IButtplugClientConnector aConnector)
-                : base("TestClient", aConnector)
+            public ButtplugNoPingTestClient(IButtplugClientConnector connector)
+                : base("TestClient", connector)
             {
             }
 
-            public new async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
+            public new async Task ConnectAsync(CancellationToken token = default(CancellationToken))
             {
-                await base.ConnectAsync(aToken);
+                await base.ConnectAsync(token);
 
                 // Run connection, then just get rid of the ping timer.
                 _pingTimer.Dispose();
@@ -59,7 +59,7 @@ namespace Buttplug.Client.Test
             // This is a test, so just ignore the logger requirement for now.
             _connector = new ButtplugEmbeddedConnector(_server);
             _client = new ButtplugNoPingTestClient(_connector);
-            _client.PingTimeout += (aObj, aEventArgs) =>
+            _client.PingTimeout += (obj, eventArgs) =>
             {
                 if (signal.CurrentCount == 0)
                 {

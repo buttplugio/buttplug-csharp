@@ -42,36 +42,36 @@ namespace Buttplug.Client.Test
             };
         }
 
-        public void SetMessageResponse<T>(ButtplugMessage aMsg)
+        public void SetMessageResponse<T>(ButtplugMessage msg)
             where T : ButtplugMessage
         {
             _messageResponse.Remove(typeof(T));
-            _messageResponse.Add(typeof(T), aMsg);
+            _messageResponse.Add(typeof(T), msg);
         }
 
-        public void SendServerMessage(ButtplugMessage aMsg)
+        public void SendServerMessage(ButtplugMessage msg)
         {
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(aMsg));
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
         }
 
-        public Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
+        public Task ConnectAsync(CancellationToken token = default(CancellationToken))
         {
             Connected = true;
             return Task.CompletedTask;
         }
 
-        public Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
+        public Task DisconnectAsync(CancellationToken token = default(CancellationToken))
         {
             Connected = false;
             return Task.CompletedTask;
         }
 
-        public Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        public Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
         {
             // This will just throw if we don't have a corresponding reply to the message, which is fine.
-            var msg = _messageResponse[aMsg.GetType()];
+            var msg = _messageResponse[msg.GetType()];
 
-            msg.Id = aMsg.Id;
+            msg.Id = msg.Id;
             return Task.FromResult(msg);
         }
     }

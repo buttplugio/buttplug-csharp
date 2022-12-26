@@ -51,23 +51,23 @@ namespace Buttplug.Examples._07.FullProgram
             // At this point, if you want to see everything that's happening, uncomment this block to
             // turn on logging. Warning, it might be pretty spammy.
 
-            // void HandleLogMessage(object aObj, LogEventArgs aArgs) { Console.WriteLine($"LOG: {aArgs.Message.LogMessage}"); }
+            // void HandleLogMessage(object obj, LogEventArgs args) { Console.WriteLine($"LOG: {args.Message.LogMessage}"); }
             // client.Log += HandleLogMessage; await client.RequestLogAsync(ButtplugLogLevel.Debug);
 
             // Now we scan for devices. Since we didn't add any Subtype Managers yet, this will go
             // out and find them for us. They'll be reported in the logs as they are found.
             //
             // We'll scan for devices, and print any time we find one.
-            void HandleDeviceAdded(object aObj, DeviceAddedEventArgs aArgs)
+            void HandleDeviceAdded(object obj, DeviceAddedEventArgs args)
             {
-                Console.WriteLine($"Device connected: {aArgs.Device.Name}");
+                Console.WriteLine($"Device connected: {args.Device.Name}");
             }
 
             client.DeviceAdded += HandleDeviceAdded;
 
-            void HandleDeviceRemoved(object aObj, DeviceRemovedEventArgs aArgs)
+            void HandleDeviceRemoved(object obj, DeviceRemovedEventArgs args)
             {
-                Console.WriteLine($"Device connected: {aArgs.Device.Name}");
+                Console.WriteLine($"Device connected: {args.Device.Name}");
             }
 
             client.DeviceRemoved += HandleDeviceRemoved;

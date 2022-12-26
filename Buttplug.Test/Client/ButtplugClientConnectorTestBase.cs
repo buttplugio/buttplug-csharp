@@ -77,7 +77,7 @@ namespace Buttplug.Client.Test
             _client.Connected.Should().BeFalse();
             await _client.ConnectAsync();
             _client.Connected.Should().BeTrue();
-            _client.Awaiting(async aClient => await aClient.ConnectAsync())
+            _client.Awaiting(async client => await client.ConnectAsync())
                 .Should().Throw<ButtplugHandshakeException>();
         }
 
@@ -94,14 +94,14 @@ namespace Buttplug.Client.Test
 
             await _client.ConnectAsync();
 
-            _client.ScanningFinished += (aSender, aArg) =>
+            _client.ScanningFinished += (sender, arg) =>
             {
                 SetEvent();
             };
 
-            _client.DeviceAdded += (aSender, aArg) =>
+            _client.DeviceAdded += (sender, arg) =>
             {
-                testDevice.Should().BeEquivalentTo(aArg.Device);
+                testDevice.Should().BeEquivalentTo(arg.Device);
                 SetEvent();
             };
             await _client.StartScanningAsync();
@@ -120,7 +120,7 @@ namespace Buttplug.Client.Test
             var device = _client.Devices[0];
 
             // Test device only takes vibration commands
-            device.Awaiting(async aDevice => await aDevice.SendMessageAsync(new FleshlightLaunchFW12Cmd(0, 0, 0))).Should().Throw<ButtplugDeviceException>();
+            device.Awaiting(async device => await device.SendMessageAsync(new FleshlightLaunchFW12Cmd(0, 0, 0))).Should().Throw<ButtplugDeviceException>();
 
             // Shouldn't throw.
             await device.SendMessageAsync(new SingleMotorVibrateCmd(0, 0.5));
@@ -140,7 +140,7 @@ namespace Buttplug.Client.Test
             var device = _client.Devices[0];
 
             // Test device only takes vibration commands
-            device.Awaiting(async aDevice => await aDevice.SendFleshlightLaunchFW12Cmd(0, 0)).Should()
+            device.Awaiting(async device => await device.SendFleshlightLaunchFW12Cmd(0, 0)).Should()
                 .Throw<ButtplugDeviceException>();
 
             // Shouldn't throw.
@@ -165,9 +165,9 @@ namespace Buttplug.Client.Test
             await _client.StopScanningAsync();
 
             var testDevice = _client.Devices[0];
-            _client.DeviceRemoved += (aSender, aArg) =>
+            _client.DeviceRemoved += (sender, arg) =>
             {
-                testDevice.Should().BeEquivalentTo(aArg.Device);
+                testDevice.Should().BeEquivalentTo(arg.Device);
                 SetEvent();
             };
             _subtypeMgr.Device.Disconnect();
@@ -180,7 +180,7 @@ namespace Buttplug.Client.Test
         {
             var signal = new SemaphoreSlim(1, 1);
             await _client.ConnectAsync();
-            _client.Log += (aObj, aLogEvent) =>
+            _client.Log += (obj, logEvent) =>
             {
                 if (signal.CurrentCount == 0)
                 {
@@ -197,7 +197,7 @@ namespace Buttplug.Client.Test
         [Test]
         public void TestSendWithoutConnecting()
         {
-            _client.Awaiting(async aClient => await aClient.StartScanningAsync()).Should().Throw<ButtplugClientConnectorException>();
+            _client.Awaiting(async client => await client.StartScanningAsync()).Should().Throw<ButtplugClientConnectorException>();
         }
 
         [Test]

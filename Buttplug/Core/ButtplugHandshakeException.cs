@@ -13,8 +13,8 @@ namespace Buttplug.Core
     public class ButtplugHandshakeException : ButtplugException
     {
         /// <inheritdoc />
-        public ButtplugHandshakeException(string aMessage, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null)
-            : base(aMessage, Error.ErrorClass.ERROR_INIT, aId, aInner)
+        public ButtplugHandshakeException(string message, uint id = ButtplugConsts.SystemMsgId, Exception inner = null)
+            : base(message, Error.ErrorClass.ERROR_INIT, id, inner)
         {
         }
     }

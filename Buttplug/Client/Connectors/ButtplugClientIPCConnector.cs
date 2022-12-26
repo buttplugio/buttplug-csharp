@@ -41,15 +41,15 @@ namespace Buttplug.Client.Connectors
 
         /// <summary>
         /// </summary>
-        /// <param name="aIPCSocketName">
+        /// <param name="iPCSocketName">
         /// Name of the IPC Socket to use. Defaults to "ButtplugPipe".
         /// </param>
-        public ButtplugClientIPCConnector(string aIPCSocketName = "ButtplugPipe")
+        public ButtplugClientIPCConnector(string iPCSocketName = "ButtplugPipe")
         {
-            _ipcSocketName = aIPCSocketName;
+            _ipcSocketName = iPCSocketName;
         }
 
-        public async Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
+        public async Task ConnectAsync(CancellationToken token = default(CancellationToken))
         {
             if (Connected)
             {
@@ -61,15 +61,15 @@ namespace Buttplug.Client.Connectors
                 PipeDirection.InOut, PipeOptions.Asynchronous,
                 TokenImpersonationLevel.Impersonation);
 
-            await _pipeClient.ConnectAsync(aToken).ConfigureAwait(false);
+            await _pipeClient.ConnectAsync(token).ConfigureAwait(false);
 
-            _readTask = new Task(async () => { await pipeReader(aToken).ConfigureAwait(false); },
-                aToken,
+            _readTask = new Task(async () => { await pipeReader(token).ConfigureAwait(false); },
+                token,
                 TaskCreationOptions.LongRunning);
             _readTask.Start();
         }
 
-        public async Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
+        public async Task DisconnectAsync(CancellationToken token = default(CancellationToken))
         {
             // TODO Create internal token for cancellation and use link source with external key
             //_cancellationToken.Cancel();
@@ -77,9 +77,9 @@ namespace Buttplug.Client.Connectors
             await _readTask.ConfigureAwait(false);
         }
 
-        public async Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        public async Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
         {
-            var (msgString, promise) = PrepareMessage(aMsg);
+            var (msgString, promise) = PrepareMessage(msg);
             var output = Encoding.UTF8.GetBytes(msgString);
 
             lock (_sendLock)
@@ -97,9 +97,9 @@ namespace Buttplug.Client.Connectors
             return await promise.ConfigureAwait(false);
         }
 
-        private async Task pipeReader(CancellationToken aCancellationToken)
+        private async Task pipeReader(CancellationToken cancellationToken)
         {
-            while (!aCancellationToken.IsCancellationRequested && _pipeClient != null && _pipeClient.IsConnected)
+            while (!cancellationToken.IsCancellationRequested && _pipeClient != null && _pipeClient.IsConnected)
             {
                 var buffer = new byte[4096];
                 var msg = string.Empty;
@@ -108,7 +108,7 @@ namespace Buttplug.Client.Connectors
                 {
                     try
                     {
-                        len = await _pipeClient.ReadAsync(buffer, 0, buffer.Length, aCancellationToken).ConfigureAwait(false);
+                        len = await _pipeClient.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
                     }
                     catch
                     {

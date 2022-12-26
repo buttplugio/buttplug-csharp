@@ -32,11 +32,11 @@ namespace Buttplug.Core.Test
             _parser = new ButtplugJsonMessageParser(_logManager);
         }
 
-        private T CheckParsedVersion<T>(ButtplugMessage aMsg, uint aSchemaVersion, string aJsonStr)
+        private T CheckParsedVersion<T>(ButtplugMessage msg, uint schemversion, string jsonStr)
             where T : ButtplugMessage
         {
-            var str = _parser.Serialize(aMsg, aSchemaVersion);
-            str.Should().Be(aJsonStr);
+            var str = _parser.Serialize(msg, schemversion);
+            str.Should().Be(jsonStr);
             var msgs = _parser.Deserialize(str).ToArray();
             msgs.Length.Should().Be(1);
             var msg = msgs[0];
@@ -57,11 +57,11 @@ namespace Buttplug.Core.Test
         [Test]
         public void TestLovenseCmd()
         {
-            void CheckMsg(LovenseCmd aMsg)
+            void CheckMsg(LovenseCmd msg)
             {
-                aMsg.DeviceIndex.Should().Be(2);
-                aMsg.Id.Should().Be(4);
-                aMsg.Command.Should().Be("Vibrate:2;");
+                msg.DeviceIndex.Should().Be(2);
+                msg.Id.Should().Be(4);
+                msg.Command.Should().Be("Vibrate:2;");
             }
 
             var origMsg = new LovenseCmd(2, "Vibrate:2;", 4);
@@ -73,14 +73,14 @@ namespace Buttplug.Core.Test
         [Test]
         public void TestDeviceAddedCmdVersion1()
         {
-            void CheckMsg(DeviceAdded aMsg)
+            void CheckMsg(DeviceAdded msg)
             {
-                aMsg.DeviceIndex.Should().Be(2);
-                aMsg.Id.Should().Be(0);
-                aMsg.DeviceName.Should().Be("testDev");
-                aMsg.DeviceMessages.Count.Should().Be(2);
-                aMsg.DeviceMessages.Keys.Should().Contain(new[] { "StopDeviceCmd", "VibrateCmd" });
-                aMsg.DeviceMessages["VibrateCmd"].FeatureCount.Should().Be(1);
+                msg.DeviceIndex.Should().Be(2);
+                msg.Id.Should().Be(0);
+                msg.DeviceName.Should().Be("testDev");
+                msg.DeviceMessages.Count.Should().Be(2);
+                msg.DeviceMessages.Keys.Should().Contain(new[] { "StopDeviceCmd", "VibrateCmd" });
+                msg.DeviceMessages["VibrateCmd"].FeatureCount.Should().Be(1);
             }
 
             var msg = new DeviceAdded(2, "testDev", new Dictionary<string, MessageAttributes>
@@ -90,21 +90,21 @@ namespace Buttplug.Core.Test
             });
 
             CheckMsg(msg);
-            var msgSchemaV1 = CheckParsedVersion<DeviceAdded>(msg, 1,
+            var msgSchemv1 = CheckParsedVersion<DeviceAdded>(msg, 1,
                 "[{\"DeviceAdded\":{\"DeviceName\":\"testDev\",\"DeviceMessages\":{\"StopDeviceCmd\":{},\"VibrateCmd\":{\"FeatureCount\":1}},\"DeviceIndex\":2,\"Id\":0}}]");
-            CheckMsg(msgSchemaV1);
+            CheckMsg(msgSchemv1);
         }
 
         [Test]
         public void TestDeviceAddedCmdVersion0()
         {
-            void CheckMsg(DeviceAddedVersion0 aMsg)
+            void CheckMsg(DeviceAddedVersion0 msg)
             {
-                aMsg.DeviceIndex.Should().Be(2);
-                aMsg.Id.Should().Be(0);
-                aMsg.DeviceName.Should().Be("testDev");
-                aMsg.DeviceMessages.Length.Should().Be(2);
-                aMsg.DeviceMessages.Should().Contain(new[] { "StopDeviceCmd", "VibrateCmd" });
+                msg.DeviceIndex.Should().Be(2);
+                msg.Id.Should().Be(0);
+                msg.DeviceName.Should().Be("testDev");
+                msg.DeviceMessages.Length.Should().Be(2);
+                msg.DeviceMessages.Should().Contain(new[] { "StopDeviceCmd", "VibrateCmd" });
             }
 
             var msg = new DeviceAdded(2, "testDev", new Dictionary<string, MessageAttributes>
@@ -113,31 +113,31 @@ namespace Buttplug.Core.Test
                 { "VibrateCmd", new MessageAttributes() { FeatureCount = 1 } },
             });
 
-            var msgSchemaV0 = CheckParsedVersion<DeviceAddedVersion0>(msg, 0,
+            var msgSchemv0 = CheckParsedVersion<DeviceAddedVersion0>(msg, 0,
                 "[{\"DeviceAdded\":{\"DeviceName\":\"testDev\",\"DeviceMessages\":[\"StopDeviceCmd\",\"VibrateCmd\"],\"DeviceIndex\":2,\"Id\":0}}]");
-            CheckMsg(msgSchemaV0);
+            CheckMsg(msgSchemv0);
         }
 
         [Test]
         public void TestDeviceListCmdVersion1()
         {
-            void CheckMsg(DeviceList aMsg)
+            void CheckMsg(DeviceList msg)
             {
-                aMsg.Id.Should().Be(6);
-                aMsg.Devices.Length.Should().Be(2);
-                aMsg.Devices[0].DeviceName.Should().Be("testDev0");
-                aMsg.Devices[0].DeviceIndex.Should().Be(2);
-                aMsg.Devices[0].DeviceMessages.Count.Should().Be(2);
-                aMsg.Devices[0].DeviceMessages.Should().ContainKeys("StopDeviceCmd", "VibrateCmd");
-                aMsg.Devices[0].DeviceMessages["StopDeviceCmd"].FeatureCount.Should().BeNull();
-                aMsg.Devices[0].DeviceMessages["VibrateCmd"].FeatureCount.Should().Be(1);
+                msg.Id.Should().Be(6);
+                msg.Devices.Length.Should().Be(2);
+                msg.Devices[0].DeviceName.Should().Be("testDev0");
+                msg.Devices[0].DeviceIndex.Should().Be(2);
+                msg.Devices[0].DeviceMessages.Count.Should().Be(2);
+                msg.Devices[0].DeviceMessages.Should().ContainKeys("StopDeviceCmd", "VibrateCmd");
+                msg.Devices[0].DeviceMessages["StopDeviceCmd"].FeatureCount.Should().BeNull();
+                msg.Devices[0].DeviceMessages["VibrateCmd"].FeatureCount.Should().Be(1);
 
-                aMsg.Devices[1].DeviceName.Should().Be("testDev1");
-                aMsg.Devices[1].DeviceIndex.Should().Be(5);
-                aMsg.Devices[1].DeviceMessages.Count.Should().Be(2);
-                aMsg.Devices[1].DeviceMessages.Should().ContainKeys("StopDeviceCmd", "RotateCmd");
-                aMsg.Devices[1].DeviceMessages["StopDeviceCmd"].FeatureCount.Should().BeNull();
-                aMsg.Devices[1].DeviceMessages["RotateCmd"].FeatureCount.Should().Be(2);
+                msg.Devices[1].DeviceName.Should().Be("testDev1");
+                msg.Devices[1].DeviceIndex.Should().Be(5);
+                msg.Devices[1].DeviceMessages.Count.Should().Be(2);
+                msg.Devices[1].DeviceMessages.Should().ContainKeys("StopDeviceCmd", "RotateCmd");
+                msg.Devices[1].DeviceMessages["StopDeviceCmd"].FeatureCount.Should().BeNull();
+                msg.Devices[1].DeviceMessages["RotateCmd"].FeatureCount.Should().Be(2);
             }
 
             var msg = new DeviceList(new[]
@@ -166,19 +166,19 @@ namespace Buttplug.Core.Test
         [Test]
         public void TestDeviceListCmdVersion0()
         {
-            void CheckMsg(DeviceListVersion0 aMsg)
+            void CheckMsg(DeviceListVersion0 msg)
             {
-                aMsg.Id.Should().Be(6);
-                aMsg.Devices.Length.Should().Be(2);
-                aMsg.Devices[0].DeviceName.Should().Be("testDev0");
-                aMsg.Devices[0].DeviceIndex.Should().Be(2);
-                aMsg.Devices[0].DeviceMessages.Length.Should().Be(2);
-                aMsg.Devices[0].DeviceMessages.Should().Contain("StopDeviceCmd", "VibrateCmd");
+                msg.Id.Should().Be(6);
+                msg.Devices.Length.Should().Be(2);
+                msg.Devices[0].DeviceName.Should().Be("testDev0");
+                msg.Devices[0].DeviceIndex.Should().Be(2);
+                msg.Devices[0].DeviceMessages.Length.Should().Be(2);
+                msg.Devices[0].DeviceMessages.Should().Contain("StopDeviceCmd", "VibrateCmd");
 
-                aMsg.Devices[1].DeviceName.Should().Be("testDev1");
-                aMsg.Devices[1].DeviceIndex.Should().Be(5);
-                aMsg.Devices[1].DeviceMessages.Length.Should().Be(2);
-                aMsg.Devices[1].DeviceMessages.Should().Contain("StopDeviceCmd", "RotateCmd");
+                msg.Devices[1].DeviceName.Should().Be("testDev1");
+                msg.Devices[1].DeviceIndex.Should().Be(5);
+                msg.Devices[1].DeviceMessages.Length.Should().Be(2);
+                msg.Devices[1].DeviceMessages.Should().Contain("StopDeviceCmd", "RotateCmd");
             }
 
             var msg = new DeviceListVersion0(new[]
@@ -200,13 +200,13 @@ namespace Buttplug.Core.Test
         [Test]
         public void TestVibrateCmd()
         {
-            void CheckMsg(VibrateCmd aMsg)
+            void CheckMsg(VibrateCmd msg)
             {
-                aMsg.Id.Should().Be(4);
-                aMsg.DeviceIndex.Should().Be(2);
-                aMsg.Speeds.Count.Should().Be(1);
-                aMsg.Speeds[0].Index.Should().Be(0);
-                aMsg.Speeds[0].Speed.Should().Be(0.5);
+                msg.Id.Should().Be(4);
+                msg.DeviceIndex.Should().Be(2);
+                msg.Speeds.Count.Should().Be(1);
+                msg.Speeds[0].Index.Should().Be(0);
+                msg.Speeds[0].Speed.Should().Be(0.5);
             }
 
             var msg = new VibrateCmd(2, new List<VibrateCmd.VibrateSubcommand> { new VibrateCmd.VibrateSubcommand(0, 0.5) }, 4);
@@ -223,14 +223,14 @@ namespace Buttplug.Core.Test
         [Test]
         public void TestLinearCmd()
         {
-            void CheckMsg(LinearCmd aMsg)
+            void CheckMsg(LinearCmd msg)
             {
-                aMsg.Id.Should().Be(4);
-                aMsg.DeviceIndex.Should().Be(2);
-                aMsg.Vectors.Count.Should().Be(1);
-                aMsg.Vectors[0].Index.Should().Be(0);
-                aMsg.Vectors[0].Duration.Should().Be(100);
-                aMsg.Vectors[0].Position.Should().Be(0.5);
+                msg.Id.Should().Be(4);
+                msg.DeviceIndex.Should().Be(2);
+                msg.Vectors.Count.Should().Be(1);
+                msg.Vectors[0].Index.Should().Be(0);
+                msg.Vectors[0].Duration.Should().Be(100);
+                msg.Vectors[0].Position.Should().Be(0.5);
             }
 
             var msg = new LinearCmd(2, new List<LinearCmd.VectorSubcommand> { new LinearCmd.VectorSubcommand(0, 100, 0.5) }, 4);
@@ -247,14 +247,14 @@ namespace Buttplug.Core.Test
         [Test]
         public void TestRotateCmd()
         {
-            void CheckMsg(RotateCmd aMsg)
+            void CheckMsg(RotateCmd msg)
             {
-                aMsg.Id.Should().Be(4);
-                aMsg.DeviceIndex.Should().Be(2);
-                aMsg.Rotations.Count.Should().Be(1);
-                aMsg.Rotations[0].Index.Should().Be(0);
-                aMsg.Rotations[0].Speed.Should().Be(0.5);
-                aMsg.Rotations[0].Clockwise.Should().Be(true);
+                msg.Id.Should().Be(4);
+                msg.DeviceIndex.Should().Be(2);
+                msg.Rotations.Count.Should().Be(1);
+                msg.Rotations[0].Index.Should().Be(0);
+                msg.Rotations[0].Speed.Should().Be(0.5);
+                msg.Rotations[0].Clockwise.Should().Be(true);
             }
 
             var msg = new RotateCmd(2, new List<RotateCmd.RotateSubcommand> { new RotateCmd.RotateSubcommand(0, 0.5, true) }, 4);
@@ -271,12 +271,12 @@ namespace Buttplug.Core.Test
         [Test]
         public void TestVorzeA10CycloneCmd()
         {
-            void CheckMsg(VorzeA10CycloneCmd aMsg)
+            void CheckMsg(VorzeA10CycloneCmd msg)
             {
-                aMsg.Id.Should().Be(4);
-                aMsg.DeviceIndex.Should().Be(2);
-                aMsg.Speed.Should().Be(50);
-                aMsg.Clockwise.Should().Be(true);
+                msg.Id.Should().Be(4);
+                msg.DeviceIndex.Should().Be(2);
+                msg.Speed.Should().Be(50);
+                msg.Clockwise.Should().Be(true);
             }
 
             var msg = new VorzeA10CycloneCmd(2, 50, true, 4);
@@ -288,7 +288,7 @@ namespace Buttplug.Core.Test
                 "[{\"VorzeA10CycloneCmd\":{\"Clockwise\":true,\"Speed\":50,\"DeviceIndex\":2,\"Id\":4}}]");
             CheckMsg(newMsg);
 
-            msg.Invoking(aMsg => aMsg.Speed = 1000).Should().Throw<ArgumentException>();
+            msg.Invoking(msg => msg.Speed = 1000).Should().Throw<ArgumentException>();
         }
 
         [Test]

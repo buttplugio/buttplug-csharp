@@ -22,31 +22,31 @@ namespace Buttplug.Client
         /// <summary>
         /// Converts a single <see cref="ButtplugMessage"/> into a JSON string.
         /// </summary>
-        /// <param name="aMsg">Message to convert.</param>
+        /// <param name="msg">Message to convert.</param>
         /// <returns>The JSON string representation of the message.</returns>
-        public string Serialize(ButtplugMessage aMsg)
+        public string Serialize(ButtplugMessage msg)
         {
-            return _parser.Serialize(aMsg, ButtplugConsts.CurrentSpecVersion);
+            return _parser.Serialize(msg, ButtplugConsts.CurrentSpecVersion);
         }
 
         /// <summary>
         /// Converts an array of <see cref="ButtplugMessage"/> into a JSON string.
         /// </summary>
-        /// <param name="aMsgs">An array of messages to convert.</param>
+        /// <param name="msgs">An array of messages to convert.</param>
         /// <returns>The JSON string representation of the messages.</returns>
-        public string Serialize(ButtplugMessage[] aMsgs)
+        public string Serialize(ButtplugMessage[] msgs)
         {
-            return _parser.Serialize(aMsgs, ButtplugConsts.CurrentSpecVersion);
+            return _parser.Serialize(msgs, ButtplugConsts.CurrentSpecVersion);
         }
 
         /// <summary>
         /// Converts a JSON string into an array of <see cref="ButtplugMessage"/>.
         /// </summary>
-        /// <param name="aMsg">A JSON string representing one or more messages.</param>
+        /// <param name="msg">A JSON string representing one or more messages.</param>
         /// <returns>An array of <see cref="ButtplugMessage"/>.</returns>
-        public IEnumerable<ButtplugMessage> Deserialize(string aMsg)
+        public IEnumerable<ButtplugMessage> Deserialize(string msg)
         {
-            return _parser.Deserialize(aMsg);
+            return _parser.Deserialize(msg);
         }
     }
 }

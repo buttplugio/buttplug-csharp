@@ -17,22 +17,22 @@ namespace Buttplug.Core
         /// </summary>
         public Error ButtplugErrorMessage { get; }
 
-        public static ButtplugException FromError(Error aMsg)
+        public static ButtplugException FromError(Error msg)
         {
-            switch (aMsg.ErrorCode)
+            switch (msg.ErrorCode)
             {
                 case Error.ErrorClass.ERROR_DEVICE:
-                    return new ButtplugDeviceException(aMsg.ErrorMessage, aMsg.Id);
+                    return new ButtplugDeviceException(msg.ErrorMessage, msg.Id);
                 case Error.ErrorClass.ERROR_INIT:
-                    return new ButtplugHandshakeException(aMsg.ErrorMessage, aMsg.Id);
+                    return new ButtplugHandshakeException(msg.ErrorMessage, msg.Id);
                 case Error.ErrorClass.ERROR_MSG:
-                    return new ButtplugMessageException(aMsg.ErrorMessage, aMsg.Id);
+                    return new ButtplugMessageException(msg.ErrorMessage, msg.Id);
                 case Error.ErrorClass.ERROR_PING:
-                    return new ButtplugPingException(aMsg.ErrorMessage, aMsg.Id);
+                    return new ButtplugPingException(msg.ErrorMessage, msg.Id);
                 case Error.ErrorClass.ERROR_UNKNOWN:
-                    return new ButtplugException(aMsg.ErrorMessage, aMsg.Id);
+                    return new ButtplugException(msg.ErrorMessage, msg.Id);
                 default:
-                    return new ButtplugException(aMsg.ErrorMessage, aMsg.Id);
+                    return new ButtplugException(msg.ErrorMessage, msg.Id);
             }
         }
 
@@ -40,11 +40,11 @@ namespace Buttplug.Core
         /// <summary>
         /// Creates a ButtplugException.
         /// </summary>
-        /// <param name="aMessage">Exception message.</param>
-        /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
-        /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugException(string aMessage, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null)
-            : this(aMessage, Error.ErrorClass.ERROR_UNKNOWN, aId, aInner)
+        /// <param name="message">Exception message.</param>
+        /// <param name="id">Message ID for the resulting Buttplug Error Message.</param>
+        /// <param name="inner">Optional inner exception.</param>
+        public ButtplugException(string message, uint id = ButtplugConsts.SystemMsgId, Exception inner = null)
+            : this(message, Error.ErrorClass.ERROR_UNKNOWN, id, inner)
         {
         }
 
@@ -52,14 +52,14 @@ namespace Buttplug.Core
         /// <summary>
         /// Creates a ButtplugException.
         /// </summary>
-        /// <param name="aMessage">Exception message.</param>
-        /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. (https://buttplug-spec.docs.buttplug.io/status.html#error).</param>
-        /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
-        /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugException(string aMessage, Error.ErrorClass aClass = Error.ErrorClass.ERROR_UNKNOWN, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null)
-            : base(aMessage, aInner)
+        /// <param name="message">Exception message.</param>
+        /// <param name="class">Exception class, based on Buttplug Error Message Classes. (https://buttplug-spec.docs.buttplug.io/status.html#error).</param>
+        /// <param name="id">Message ID for the resulting Buttplug Error Message.</param>
+        /// <param name="inner">Optional inner exception.</param>
+        public ButtplugException(string message, Error.ErrorClass err = Error.ErrorClass.ERROR_UNKNOWN, uint id = ButtplugConsts.SystemMsgId, Exception inner = null)
+            : base(message, inner)
         {
-            ButtplugErrorMessage = new Error(aMessage, aClass, aId);
+            ButtplugErrorMessage = new Error(message, err, id);
         }
     }
 }

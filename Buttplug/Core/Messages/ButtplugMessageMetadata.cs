@@ -26,11 +26,11 @@ namespace Buttplug.Core.Messages
         /// </summary>
         public Type PreviousType { get; }
 
-        public ButtplugMessageMetadata(string aName, uint aSpecVersion, Type aPreviousType = null)
+        public ButtplugMessageMetadata(string name, uint specVersion, Type previousType = null)
         {
-            Name = aName;
-            Version = aSpecVersion;
-            PreviousType = aPreviousType;
+            Name = name;
+            Version = specVersion;
+            PreviousType = previousType;
         }
     }
 }

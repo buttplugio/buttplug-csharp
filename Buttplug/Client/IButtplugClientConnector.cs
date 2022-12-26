@@ -21,11 +21,11 @@ namespace Buttplug.Client
 
         event EventHandler Disconnected;
 
-        Task ConnectAsync(CancellationToken aToken = default(CancellationToken));
+        Task ConnectAsync(CancellationToken token = default(CancellationToken));
 
-        Task DisconnectAsync(CancellationToken aToken = default(CancellationToken));
+        Task DisconnectAsync(CancellationToken token = default(CancellationToken));
 
-        Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken));
+        Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken));
 
         bool Connected { get; }
     }

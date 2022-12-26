@@ -39,23 +39,23 @@ namespace Buttplug.Core.Test
 
             (await dev.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken))).Should().BeOfType<Ok>();
 
-            dev.Awaiting(async aDevice => await dev.ParseMessageAsync(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken))).Should().Throw<ButtplugDeviceException>();
+            dev.Awaiting(async device => await dev.ParseMessageAsync(new RotateCmd(2, new List<RotateCmd.RotateSubcommand>()), default(CancellationToken))).Should().Throw<ButtplugDeviceException>();
 
             dev.Disconnect();
-            dev.Awaiting(async aDevice => await aDevice.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken))).Should().Throw<ButtplugDeviceException>();
+            dev.Awaiting(async device => await device.ParseMessageAsync(new StopDeviceCmd(2), default(CancellationToken))).Should().Throw<ButtplugDeviceException>();
         }
 
         protected class TestProtocolDoubleAdd : TestProtocol
         {
-            public TestProtocolDoubleAdd(ButtplugLogManager aLogger, IButtplugDeviceImpl aDevice)
-                : base(aLogger, aDevice)
+            public TestProtocolDoubleAdd(ButtplugLogManager logger, IButtplugDeviceImpl device)
+                : base(logger, device)
             {
                 // Add HandleRotateCmd twice, should throw
                 AddMessageHandler<RotateCmd>(HandleRotateCmd);
                 AddMessageHandler<RotateCmd>(HandleRotateCmd);
             }
 
-            public Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage aMsg, CancellationToken aToken)
+            public Task<ButtplugMessage> HandleRotateCmd(ButtplugDeviceMessage msg, CancellationToken token)
             {
                 return Task.FromResult(new Ok(ButtplugConsts.SystemMsgId) as ButtplugMessage);
             }

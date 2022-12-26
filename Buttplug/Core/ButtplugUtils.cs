@@ -37,10 +37,10 @@ namespace Buttplug.Core
 
             // Classes should derive from ButtplugMessage. ButtplugDeviceMessage is a special generic case.
             return (allTypes ?? throw new InvalidOperationException())
-                    .Where(aType => aType != null &&
-                                    aType.IsClass &&
-                                    aType.IsSubclassOf(typeof(ButtplugMessage)) &&
-                                    aType != typeof(ButtplugDeviceMessage));
+                    .Where(type => type != null &&
+                                    type.IsClass &&
+                                    type.IsSubclassOf(typeof(ButtplugMessage)) &&
+                                    type != typeof(ButtplugDeviceMessage));
         }
 
         /// <summary>
@@ -50,11 +50,11 @@ namespace Buttplug.Core
         /// <param name="argument">The argument.</param>
         /// <remarks>https://stackoverflow.com/questions/29184887/best-way-to-check-for-null-parameters-guard-clauses.</remarks>
         [DebuggerStepThrough]
-        public static void ArgumentNotNull(object aArgument, string aArgumentName)
+        public static void ArgumentNotNull(object argument, string argumentName)
         {
-            if (aArgument == null)
+            if (argument == null)
             {
-                throw new ArgumentNullException(aArgumentName);
+                throw new ArgumentNullException(argumentName);
             }
         }
 
@@ -64,17 +64,17 @@ namespace Buttplug.Core
         /// <remarks>
         /// Added as part of the Buttplug.Core utils so we don't have to worry about Assembly resolution.
         /// </remarks>
-        /// <param name="aMessageName">Name of the message type to find a Type for. Case-sensitive.</param>
+        /// <param name="messageName">Name of the message type to find a Type for. Case-sensitive.</param>
         /// <returns>Type object of message type if it exists, otherwise null.</returns>
-        public static Type GetMessageType(string aMessageName)
+        public static Type GetMessageType(string messageName)
         {
-            return Type.GetType($"Buttplug.Core.Messages.{aMessageName}");
+            return Type.GetType($"Buttplug.Core.Messages.{messageName}");
         }
 
-        public static string GetStringFromFileResource(string aResourceName)
+        public static string GetStringFromFileResource(string resourceName)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(aResourceName);
+            var stream = assembly.GetManifestResourceStream(resourceName);
             string result;
             try
             {

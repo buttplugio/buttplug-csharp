@@ -62,7 +62,7 @@ namespace Buttplug.Examples._06.LoggingAndErrorHandling
             var server = connector.Server;
             var testDevice = new TestDevice(new ButtplugLogManager(), "Test Device");
             server.AddDeviceSubtypeManager(
-                aLogManager => new TestDeviceSubtypeManager(testDevice));
+                logManager => new TestDeviceSubtypeManager(testDevice));
             await client.ConnectAsync();
 
             Console.WriteLine("Connected!");
@@ -73,9 +73,9 @@ namespace Buttplug.Examples._06.LoggingAndErrorHandling
             //
             // First off, we'll want to assign a Log event handler to the client, to make sure we do
             // something when we get log messages.
-            void HandleLogMessage(object aObj, LogEventArgs aArgs)
+            void HandleLogMessage(object obj, LogEventArgs args)
             {
-                Console.WriteLine($"LOG: {aArgs.Message.LogMessage}");
+                Console.WriteLine($"LOG: {args.Message.LogMessage}");
             }
 
             client.Log += HandleLogMessage;

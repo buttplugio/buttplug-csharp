@@ -34,39 +34,39 @@ namespace Buttplug.Client.Test
             SetMessageResponse<RequestDeviceList>(new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId));
         }
 
-        public void SetMessageResponse<T>(ButtplugMessage aMsg)
+        public void SetMessageResponse<T>(ButtplugMessage msg)
             where T : ButtplugMessage
         {
             _messageResponse.Remove(typeof(T));
-            _messageResponse.Add(typeof(T), aMsg);
+            _messageResponse.Add(typeof(T), msg);
         }
 
-        public void SendServerMessage(string aMsgString)
+        public void SendServerMessage(string msgString)
         {
-            ReceiveMessages(aMsgString);
+            ReceiveMessages(msgString);
         }
 
-        public Task ConnectAsync(CancellationToken aToken = default(CancellationToken))
+        public Task ConnectAsync(CancellationToken token = default(CancellationToken))
         {
             Connected = true;
             return Task.CompletedTask;
         }
 
-        public Task DisconnectAsync(CancellationToken aToken = default(CancellationToken))
+        public Task DisconnectAsync(CancellationToken token = default(CancellationToken))
         {
             Connected = false;
             return Task.CompletedTask;
         }
 
-        public Task<ButtplugMessage> SendAsync(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        public Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
         {
-            var msg = _messageResponse[aMsg.GetType()];
+            var msg = _messageResponse[msg.GetType()];
             if (msg == null)
             {
-                Assert.Fail($"Don't have a message to respond to {aMsg.GetType()} with.");
+                Assert.Fail($"Don't have a message to respond to {msg.GetType()} with.");
             }
 
-            msg.Id = aMsg.Id;
+            msg.Id = msg.Id;
             return Task.FromResult(msg);
         }
     }

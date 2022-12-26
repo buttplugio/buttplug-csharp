@@ -93,16 +93,16 @@ namespace Buttplug.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClient"/> class.
         /// </summary>
-        /// <param name="aClientName">The name of the client (used by the server for UI and permissions).</param>
-        /// <param name="aConnector">Connector for the client.</param>
-        public ButtplugClient(string aClientName, IButtplugClientConnector aConnector)
+        /// <param name="clientName">The name of the client (used by the server for UI and permissions).</param>
+        /// <param name="connector">Connector for the client.</param>
+        public ButtplugClient(string clientName, IButtplugClientConnector connector)
         {
-            ButtplugUtils.ArgumentNotNull(aConnector, nameof(aConnector));
-            Name = aClientName;
-            _connector = aConnector;
-            _connector.Disconnected += (aObj, aEventArgs) =>
+            ButtplugUtils.ArgumentNotNull(connector, nameof(connector));
+            Name = clientName;
+            _connector = connector;
+            _connector.Disconnected += (obj, eventArgs) =>
             {
-                ServerDisconnect?.Invoke(aObj, aEventArgs);
+                ServerDisconnect?.Invoke(obj, eventArgs);
             };
             _connector.InvalidMessageReceived += ConnectorErrorHandler;
         }
@@ -255,9 +255,9 @@ namespace Buttplug.Client
             return await _connector.SendAsync(msg, token).ConfigureAwait(false);
         }
 
-        private void ConnectorErrorHandler(object aSender, ButtplugExceptionEventArgs aException)
+        private void ConnectorErrorHandler(object sender, ButtplugExceptionEventArgs exception)
         {
-            ErrorReceived?.Invoke(this, aException);
+            ErrorReceived?.Invoke(this, exception);
         }
 
         /// <summary>
@@ -265,11 +265,11 @@ namespace Buttplug.Client
         /// messages we've sent, or fires an event related to an incoming event, like device
         /// additions/removals, log messages, etc.
         /// </summary>
-        /// <param name="aSender">Object sending the open event, unused.</param>
-        /// <param name="aArgs">Event parameters, including the data received.</param>
-        private async void MessageReceivedHandler(object aSender, MessageReceivedEventArgs aArgs)
+        /// <param name="sender">Object sending the open event, unused.</param>
+        /// <param name="args">Event parameters, including the data received.</param>
+        private async void MessageReceivedHandler(object sender, MessageReceivedEventArgs args)
         {
-            var msg = aArgs.Message;
+            var msg = args.Message;
 
             switch (msg)
             {
@@ -327,8 +327,8 @@ namespace Buttplug.Client
         /// the ping timer handler does not run, it means the event loop is blocked, and the server
         /// will stop all devices and disconnect.
         /// </summary>
-        /// <param name="aState">State of the Timer.</param>
-        private async void OnPingTimer(object aState)
+        /// <param name="state">State of the Timer.</param>
+        private async void OnPingTimer(object state)
         {
             try
             {
@@ -346,13 +346,13 @@ namespace Buttplug.Client
         /// <summary>
         /// Sends a message, expecting a response of message type <see cref="Ok"/>.
         /// </summary>
-        /// <param name="aMsg">Message to send.</param>
-        /// <param name="aToken">Cancellation token, for cancelling action externally if it is not yet finished.</param>
+        /// <param name="msg">Message to send.</param>
+        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>True if successful.</returns>
-        private async Task SendMessageExpectOk(ButtplugMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        private async Task SendMessageExpectOk(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
         {
-            var msg = await SendMessageAsync(aMsg, aToken).ConfigureAwait(false);
-            switch (msg)
+            var result = await SendMessageAsync(msg, token).ConfigureAwait(false);
+            switch (result)
             {
                 case Ok _:
                     return;

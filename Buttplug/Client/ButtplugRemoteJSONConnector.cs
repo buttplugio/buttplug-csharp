@@ -22,10 +22,10 @@ namespace Buttplug.Client
         private readonly ButtplugConnectorJSONParser _jsonSerializer = new ButtplugConnectorJSONParser();
         private readonly ButtplugConnectorMessageSorter _msgSorter = new ButtplugConnectorMessageSorter();
 
-        protected Tuple<string, Task<ButtplugMessage>> PrepareMessage(ButtplugMessage aMsg)
+        protected Tuple<string, Task<ButtplugMessage>> PrepareMessage(ButtplugMessage msg)
         {
-            var promise = _msgSorter.PrepareMessage(aMsg);
-            var jsonMsg = _jsonSerializer.Serialize(aMsg);
+            var promise = _msgSorter.PrepareMessage(msg);
+            var jsonMsg = _jsonSerializer.Serialize(msg);
             return new Tuple<string, Task<ButtplugMessage>>(jsonMsg, promise);
         }
 
@@ -34,12 +34,12 @@ namespace Buttplug.Client
             _msgSorter.Shutdown();
         }
 
-        protected void ReceiveMessages(string aJSONMsg)
+        protected void ReceiveMessages(string jSONMsg)
         {
             IEnumerable<ButtplugMessage> msgs;
             try
             {
-                msgs = _jsonSerializer.Deserialize(aJSONMsg);
+                msgs = _jsonSerializer.Deserialize(jSONMsg);
             }
             catch (ButtplugMessageException e)
             {

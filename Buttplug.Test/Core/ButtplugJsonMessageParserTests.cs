@@ -78,23 +78,23 @@ namespace Buttplug.Core.Test
         };
 
         [Theory]
-        public void DeserializeIncorrectMessages(string aMsgStr)
+        public void DeserializeIncorrectMessages(string msgStr)
         {
-            _parser.Invoking(aParser => aParser.Deserialize(aMsgStr)).Should().Throw<ButtplugMessageException>();
+            _parser.Invoking(parser => parser.Deserialize(msgStr)).Should().Throw<ButtplugMessageException>();
         }
 
-        private void CheckValidTestMessage([NotNull] ButtplugMessage aMsg)
+        private void CheckValidTestMessage([NotNull] ButtplugMessage msg)
         {
-            aMsg.Should().BeOfType<Messages.Test>();
-            (aMsg as Messages.Test).TestString.Should().Be("Test");
+            msg.Should().BeOfType<Messages.Test>();
+            (msg as Messages.Test).TestString.Should().Be("Test");
         }
 
         [Test]
         public void DeserializePartiallyInvalidMessageArray()
         {
             _parser
-                .Invoking(aParser =>
-                    aParser.Deserialize(
+                .Invoking(parser =>
+                    parser.Deserialize(
                         "[{\"Test\":{\"TestString\":\"Test\",\"Id\":0}},{\"Test\":{\"TestString\":\"Error\",\"Id\":1}},{\"Test\":{\"TestString\":\"Test\",\"Id\":1}}]"))
                 .Should()
                 .Throw<ButtplugMessageException>();
@@ -122,16 +122,16 @@ namespace Buttplug.Core.Test
         [ButtplugMessageMetadata("FakeMessage", 0)]
         private class FakeMessage : ButtplugMessage
         {
-            public FakeMessage(uint aId)
-                : base(aId)
+            public FakeMessage(uint id)
+                : base(id)
             {
             }
         }
 
         private class FakeMessageNoMetadata : ButtplugMessage
         {
-            public FakeMessageNoMetadata(uint aId)
-                : base(aId)
+            public FakeMessageNoMetadata(uint id)
+                : base(id)
             {
             }
         }

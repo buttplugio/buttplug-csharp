@@ -13,8 +13,8 @@ namespace Buttplug.Core
     public class ButtplugMessageException : ButtplugException
     {
         /// <inheritdoc />
-        public ButtplugMessageException(string aMessage, uint aId = ButtplugConsts.SystemMsgId, Exception aInner = null)
-            : base(aMessage, Error.ErrorClass.ERROR_MSG, aId, aInner)
+        public ButtplugMessageException(string message, uint id = ButtplugConsts.SystemMsgId, Exception inner = null)
+            : base(message, Error.ErrorClass.ERROR_MSG, id, inner)
         {
         }
     }

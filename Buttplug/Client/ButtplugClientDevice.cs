@@ -47,40 +47,40 @@ namespace Buttplug.Client
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
         /// information received via a DeviceList, DeviceAdded, or DeviceRemoved message from the server.
         /// </summary>
-        /// <param name="aDevInfo">
+        /// <param name="devInfo">
         /// A Buttplug protocol message implementing the IButtplugDeviceInfoMessage interface.
         /// </param>
         public ButtplugClientDevice(
-            ButtplugClient aOwningClient,
-            Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure,
-            IButtplugDeviceInfoMessage aDevInfo)
-           : this(aOwningClient, aSendClosure, aDevInfo.DeviceIndex, aDevInfo.DeviceName, aDevInfo.DeviceMessages)
+            ButtplugClient owningClient,
+            Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> sendClosure,
+            IButtplugDeviceInfoMessage devInfo)
+           : this(owningClient, sendClosure, devInfo.DeviceIndex, devInfo.DeviceName, devInfo.DeviceMessages)
         {
-            ButtplugUtils.ArgumentNotNull(aDevInfo, nameof(aDevInfo));
+            ButtplugUtils.ArgumentNotNull(devInfo, nameof(devInfo));
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
         /// discrete parameters.
         /// </summary>
-        /// <param name="aIndex">The device index.</param>
-        /// <param name="aName">The device name.</param>
-        /// <param name="aMessages">The device allowed message list, with corresponding attributes.</param>
+        /// <param name="index">The device index.</param>
+        /// <param name="name">The device name.</param>
+        /// <param name="messages">The device allowed message list, with corresponding attributes.</param>
         public ButtplugClientDevice(
-            ButtplugClient aOwningClient,
-            Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> aSendClosure,
-            uint aIndex,
-            string aName,
-            Dictionary<string, MessageAttributes> aMessages)
+            ButtplugClient owningClient,
+            Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> sendClosure,
+            uint index,
+            string name,
+            Dictionary<string, MessageAttributes> messages)
         {
-            ButtplugUtils.ArgumentNotNull(aOwningClient, nameof(aOwningClient));
-            ButtplugUtils.ArgumentNotNull(aSendClosure, nameof(aSendClosure));
-            _owningClient = aOwningClient;
-            _sendClosure = aSendClosure;
-            Index = aIndex;
-            Name = aName;
+            ButtplugUtils.ArgumentNotNull(owningClient, nameof(owningClient));
+            ButtplugUtils.ArgumentNotNull(sendClosure, nameof(sendClosure));
+            _owningClient = owningClient;
+            _sendClosure = sendClosure;
+            Index = index;
+            Name = name;
             AllowedMessages = new Dictionary<Type, MessageAttributes>();
-            foreach (var msg in aMessages)
+            foreach (var msg in messages)
             {
                 var msgType = ButtplugUtils.GetMessageType(msg.Key);
                 if (msgType == null)
@@ -92,20 +92,20 @@ namespace Buttplug.Client
             }
         }
 
-        public MessageAttributes GetMessageAttributes(Type aMsgType)
+        public MessageAttributes GetMessageAttributes(Type msgType)
         {
-            ButtplugUtils.ArgumentNotNull(aMsgType, nameof(aMsgType));
-            if (!aMsgType.IsSubclassOf(typeof(ButtplugDeviceMessage)))
+            ButtplugUtils.ArgumentNotNull(msgType, nameof(msgType));
+            if (!msgType.IsSubclassOf(typeof(ButtplugDeviceMessage)))
             {
                 throw new ArgumentException("Argument must be subclass of ButtplugDeviceMessage");
             }
 
-            if (!AllowedMessages.ContainsKey(aMsgType))
+            if (!AllowedMessages.ContainsKey(msgType))
             {
-                throw new ButtplugDeviceException($"Message type {aMsgType.Name} not allowed for device {Name}.");
+                throw new ButtplugDeviceException($"Message type {msgType.Name} not allowed for device {Name}.");
             }
 
-            return AllowedMessages[aMsgType];
+            return AllowedMessages[msgType];
         }
 
         public MessageAttributes GetMessageAttributes<T>()
@@ -114,9 +114,9 @@ namespace Buttplug.Client
             return GetMessageAttributes(typeof(T));
         }
 
-        public async Task SendMessageAsync(ButtplugDeviceMessage aMsg, CancellationToken aToken = default(CancellationToken))
+        public async Task SendMessageAsync(ButtplugDeviceMessage msg, CancellationToken token = default(CancellationToken))
         {
-            ButtplugUtils.ArgumentNotNull(aMsg, nameof(aMsg));
+            ButtplugUtils.ArgumentNotNull(msg, nameof(msg));
 
             if (!_owningClient.Connected)
             {
@@ -128,24 +128,24 @@ namespace Buttplug.Client
                 throw new ButtplugDeviceException("Device no longer connected or valid");
             }
 
-            if (!AllowedMessages.ContainsKey(aMsg.GetType()))
+            if (!AllowedMessages.ContainsKey(msg.GetType()))
             {
                 throw new ButtplugDeviceException(
-                    $"Device {Name} does not support message type {aMsg.GetType().Name}");
+                    $"Device {Name} does not support message type {msg.GetType().Name}");
             }
 
-            aMsg.DeviceIndex = Index;
+            msg.DeviceIndex = Index;
 
-            await _sendClosure(this, aMsg, aToken).ConfigureAwait(false);
+            await _sendClosure(this, msg, token).ConfigureAwait(false);
         }
 
-        public bool Equals(ButtplugClientDevice aDevice)
+        public bool Equals(ButtplugClientDevice device)
         {
-            if (_owningClient != aDevice._owningClient ||
-                Index != aDevice.Index ||
-                Name != aDevice.Name ||
-                AllowedMessages.Count != aDevice.AllowedMessages.Count ||
-                !AllowedMessages.Keys.SequenceEqual(aDevice.AllowedMessages.Keys))
+            if (_owningClient != device._owningClient ||
+                Index != device.Index ||
+                Name != device.Name ||
+                AllowedMessages.Count != device.AllowedMessages.Count ||
+                !AllowedMessages.Keys.SequenceEqual(device.AllowedMessages.Keys))
             {
                 return false;
             }
@@ -154,7 +154,7 @@ namespace Buttplug.Client
             try
             {
                 // https://stackoverflow.com/a/9547463/4040754
-                return !aDevice.AllowedMessages.Where(entry => !AllowedMessages[entry.Key].Equals(entry.Value))
+                return !device.AllowedMessages.Where(entry => !AllowedMessages[entry.Key].Equals(entry.Value))
                     .ToDictionary(entry => entry.Key, entry => entry.Value).Any();
             }
             catch
@@ -163,22 +163,22 @@ namespace Buttplug.Client
             }
         }
 
-        public void CheckGenericSubcommandList<T>(IEnumerable<T> aCmdList, uint aLimitValue)
+        public void CheckGenericSubcommandList<T>(IEnumerable<T> cmdList, uint limitValue)
             where T : GenericMessageSubcommand
         {
-            if (!aCmdList.Any() || aCmdList.Count() > aLimitValue)
+            if (!cmdList.Any() || cmdList.Count() > limitValue)
             {
-                if (aLimitValue == 1)
+                if (limitValue == 1)
                 {
-                    throw new ButtplugDeviceException($"{typeof(T).Name} requires 1 subcommand for this device, {aCmdList.Count()} present.");
+                    throw new ButtplugDeviceException($"{typeof(T).Name} requires 1 subcommand for this device, {cmdList.Count()} present.");
                 }
 
-                throw new ButtplugDeviceException($"{typeof(T).Name} requires between 1 and {aLimitValue} subcommands for this device, {aCmdList.Count()} present.");
+                throw new ButtplugDeviceException($"{typeof(T).Name} requires between 1 and {limitValue} subcommands for this device, {cmdList.Count()} present.");
             }
 
-            foreach (var cmd in aCmdList)
+            foreach (var cmd in cmdList)
             {
-                if (cmd.Index >= aLimitValue)
+                if (cmd.Index >= limitValue)
                 {
                     throw new ButtplugDeviceException($"Index {cmd.Index} is out of bounds for {typeof(T).Name} for this device.");
                 }
@@ -194,64 +194,64 @@ namespace Buttplug.Client
             }
         }
 
-        public async Task SendVibrateCmd(double aSpeed)
+        public async Task SendVibrateCmd(double speed)
         {
             CheckAllowedMessageType<VibrateCmd>();
-            await SendMessageAsync(VibrateCmd.Create(aSpeed, GetMessageAttributes<VibrateCmd>().FeatureCount.Value)).ConfigureAwait(false);
+            await SendMessageAsync(VibrateCmd.Create(speed, GetMessageAttributes<VibrateCmd>().FeatureCount.Value)).ConfigureAwait(false);
         }
 
-        public async Task SendVibrateCmd(IEnumerable<double> aCmds)
+        public async Task SendVibrateCmd(IEnumerable<double> cmds)
         {
             CheckAllowedMessageType<VibrateCmd>();
-            var msg = VibrateCmd.Create(aCmds);
+            var msg = VibrateCmd.Create(cmds);
             CheckGenericSubcommandList(msg.Speeds, GetMessageAttributes<VibrateCmd>().FeatureCount.Value);
-            await SendMessageAsync(VibrateCmd.Create(aCmds)).ConfigureAwait(false);
+            await SendMessageAsync(VibrateCmd.Create(cmds)).ConfigureAwait(false);
         }
 
-        public async Task SendRotateCmd(double aSpeed, bool aClockwise)
+        public async Task SendRotateCmd(double speed, bool clockwise)
         {
             CheckAllowedMessageType<RotateCmd>();
-            await SendMessageAsync(RotateCmd.Create(aSpeed, aClockwise, GetMessageAttributes<RotateCmd>().FeatureCount.Value)).ConfigureAwait(false);
+            await SendMessageAsync(RotateCmd.Create(speed, clockwise, GetMessageAttributes<RotateCmd>().FeatureCount.Value)).ConfigureAwait(false);
         }
 
-        public async Task SendRotateCmd(IEnumerable<(double, bool)> aCmds)
+        public async Task SendRotateCmd(IEnumerable<(double, bool)> cmds)
         {
             CheckAllowedMessageType<RotateCmd>();
-            var msg = RotateCmd.Create(aCmds);
+            var msg = RotateCmd.Create(cmds);
             CheckGenericSubcommandList(msg.Rotations, GetMessageAttributes<RotateCmd>().FeatureCount.Value);
-            await SendMessageAsync(RotateCmd.Create(aCmds)).ConfigureAwait(false);
+            await SendMessageAsync(RotateCmd.Create(cmds)).ConfigureAwait(false);
         }
 
-        public async Task SendLinearCmd(uint aDuration, double aPosition)
+        public async Task SendLinearCmd(uint duration, double position)
         {
             CheckAllowedMessageType<LinearCmd>();
-            await SendMessageAsync(LinearCmd.Create(aDuration, aPosition, GetMessageAttributes<LinearCmd>().FeatureCount.Value)).ConfigureAwait(false);
+            await SendMessageAsync(LinearCmd.Create(duration, position, GetMessageAttributes<LinearCmd>().FeatureCount.Value)).ConfigureAwait(false);
         }
 
-        public async Task SendLinearCmd(IEnumerable<(uint, double)> aCmds)
+        public async Task SendLinearCmd(IEnumerable<(uint, double)> cmds)
         {
             CheckAllowedMessageType<LinearCmd>();
-            var msg = LinearCmd.Create(aCmds);
+            var msg = LinearCmd.Create(cmds);
             CheckGenericSubcommandList(msg.Vectors, GetMessageAttributes<LinearCmd>().FeatureCount.Value);
-            await SendMessageAsync(LinearCmd.Create(aCmds)).ConfigureAwait(false);
+            await SendMessageAsync(LinearCmd.Create(cmds)).ConfigureAwait(false);
         }
 
-        public async Task SendFleshlightLaunchFW12Cmd(uint aSpeed, uint aPosition)
+        public async Task SendFleshlightLaunchFW12Cmd(uint speed, uint position)
         {
             CheckAllowedMessageType<FleshlightLaunchFW12Cmd>();
-            await SendMessageAsync(new FleshlightLaunchFW12Cmd(Index, aSpeed, aPosition)).ConfigureAwait(false);
+            await SendMessageAsync(new FleshlightLaunchFW12Cmd(Index, speed, position)).ConfigureAwait(false);
         }
 
-        public async Task SendLovenseCmd(string aDeviceCmd)
+        public async Task SendLovenseCmd(string deviceCmd)
         {
             CheckAllowedMessageType<LovenseCmd>();
-            await SendMessageAsync(new LovenseCmd(Index, aDeviceCmd)).ConfigureAwait(false);
+            await SendMessageAsync(new LovenseCmd(Index, deviceCmd)).ConfigureAwait(false);
         }
 
-        public async Task SendVorzeA10CycloneCmd(uint aSpeed, bool aClockwise)
+        public async Task SendVorzeA10CycloneCmd(uint speed, bool clockwise)
         {
             CheckAllowedMessageType<VorzeA10CycloneCmd>();
-            await SendMessageAsync(new VorzeA10CycloneCmd(Index, aSpeed, aClockwise)).ConfigureAwait(false);
+            await SendMessageAsync(new VorzeA10CycloneCmd(Index, speed, clockwise)).ConfigureAwait(false);
         }
 
         public async Task StopDeviceCmd()
@@ -261,10 +261,10 @@ namespace Buttplug.Client
             await SendMessageAsync(new StopDeviceCmd(Index)).ConfigureAwait(false);
         }
 
-        public async Task KiirooCmd(uint aPosition)
+        public async Task KiirooCmd(uint position)
         {
             CheckAllowedMessageType<KiirooCmd>();
-            await SendMessageAsync(new KiirooCmd(Index, aPosition)).ConfigureAwait(false);
+            await SendMessageAsync(new KiirooCmd(Index, position)).ConfigureAwait(false);
         }
     }
 }

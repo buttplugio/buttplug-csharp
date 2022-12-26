@@ -33,82 +33,82 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugMessage"/> class.
         /// </summary>
-        /// <param name="aId">Message ID.</param>
-        protected ButtplugMessage(uint aId)
+        /// <param name="id">Message ID.</param>
+        protected ButtplugMessage(uint id)
         {
-            Id = aId;
+            Id = id;
         }
 
-        private static Dictionary<Type, ButtplugMessageMetadata> _metadataCache = new Dictionary<Type, ButtplugMessageMetadata>();
+        private static Dictionary<Type, ButtplugMessageMetadata> _metadatcache = new Dictionary<Type, ButtplugMessageMetadata>();
 
         /// <summary>
         /// Gets a certain ButtplugMessageMetadata attributes for a ButtplugMessage.
         /// </summary>
         /// <typeparam name="T">Return type expected. </typeparam>
-        /// <param name="aMsgType">Type to get attribute from.</param>
-        /// <param name="aFunc">Lambda that returns the required attribute.</param>
+        /// <param name="msgType">Type to get attribute from.</param>
+        /// <param name="func">Lambda that returns the required attribute.</param>
         /// <returns>Attribute requested.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if aMsgType or aFunc is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if aMsgType does not have ButtplugMessageMetadata Attributes.</exception>
-        private static T GetMessageAttribute<T>(Type aMsgType, Func<ButtplugMessageMetadata, T> aFunc)
+        /// <exception cref="ArgumentNullException">Thrown if msgType or func is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if msgType does not have ButtplugMessageMetadata Attributes.</exception>
+        private static T GetMessageAttribute<T>(Type msgType, Func<ButtplugMessageMetadata, T> func)
         {
-            ButtplugUtils.ArgumentNotNull(aMsgType, nameof(aMsgType));
-            ButtplugUtils.ArgumentNotNull(aFunc, nameof(aFunc));
-            if (!aMsgType.IsSubclassOf(typeof(ButtplugMessage)))
+            ButtplugUtils.ArgumentNotNull(msgType, nameof(msgType));
+            ButtplugUtils.ArgumentNotNull(func, nameof(func));
+            if (!msgType.IsSubclassOf(typeof(ButtplugMessage)))
             {
-                throw new ArgumentException($"Argument {aMsgType.Name} must be a subclass of ButtplugMessage");
+                throw new ArgumentException($"Argument {msgType.Name} must be a subclass of ButtplugMessage");
             }
 
-            if (_metadataCache.ContainsKey(aMsgType))
+            if (_metadatcache.ContainsKey(msgType))
             {
-                return aFunc(_metadataCache[aMsgType]);
+                return func(_metadatcache[msgType]);
             }
 
             // Message creation is extremely hot path, and these are queried a lot. All of
             // these loops for lookups may get slow.
-            var attrs = Attribute.GetCustomAttributes(aMsgType);
+            var attrs = Attribute.GetCustomAttributes(msgType);
 
             // Displaying output.
             foreach (var attr in attrs)
             {
                 if (attr is ButtplugMessageMetadata metadata)
                 {
-                    _metadataCache[aMsgType] = metadata;
-                    return aFunc(metadata);
+                    _metadatcache[msgType] = metadata;
+                    return func(metadata);
                 }
             }
 
-            throw new ArgumentException($"Type {aMsgType} does not have ButtplugMessageMetadata Attributes");
+            throw new ArgumentException($"Type {msgType} does not have ButtplugMessageMetadata Attributes");
         }
 
         /// <summary>
         /// Returns name of a ButtplugMessage with ButtplugMessageMetadata attributes.
         /// </summary>
-        /// <param name="aMsgType">Type to get data from.</param>
+        /// <param name="msgType">Type to get data from.</param>
         /// <returns>Message name of ButtplugMessage class type.</returns>
-        public static string GetName(Type aMsgType)
+        public static string GetName(Type msgType)
         {
-            return GetMessageAttribute(aMsgType, (aMd) => aMd.Name);
+            return GetMessageAttribute(msgType, (md) => md.Name);
         }
 
         /// <summary>
         /// Returns spec version of a ButtplugMessage with ButtplugMessageMetadata attributes.
         /// </summary>
-        /// <param name="aMsgType">Type to get data from.</param>
+        /// <param name="msgType">Type to get data from.</param>
         /// <returns>Spec version of ButtplugMessage class type.</returns>
-        public static uint GetSpecVersion(Type aMsgType)
+        public static uint GetSpecVersion(Type msgType)
         {
-            return GetMessageAttribute(aMsgType, (aMd) => aMd.Version);
+            return GetMessageAttribute(msgType, (md) => md.Version);
         }
 
         /// <summary>
         /// Returns previous type of a ButtplugMessage with ButtplugMessageMetadata attributes, if it exists.
         /// </summary>
-        /// <param name="aMsgType">Type to get data from.</param>
+        /// <param name="msgType">Type to get data from.</param>
         /// <returns>Previous message type version of ButtplugMessage class type, or null if no previous message type exists.</returns>
-        public static Type GetPreviousType(Type aMsgType)
+        public static Type GetPreviousType(Type msgType)
         {
-            return GetMessageAttribute(aMsgType, (aMd) => aMd.PreviousType);
+            return GetMessageAttribute(msgType, (md) => md.PreviousType);
         }
     }
 

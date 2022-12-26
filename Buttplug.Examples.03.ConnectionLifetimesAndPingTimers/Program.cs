@@ -13,8 +13,8 @@ namespace Buttplug.Examples._03.ConnectionLifetimesAndPingTimers
         // Dummy client class that ignores ping timing, just used here for show.
         private class ButtplugNoPingTestClient : ButtplugClient
         {
-            public ButtplugNoPingTestClient(IButtplugClientConnector aConnector)
-                : base("TestClient", aConnector)
+            public ButtplugNoPingTestClient(IButtplugClientConnector connector)
+                : base("TestClient", connector)
             {
             }
 
@@ -57,8 +57,8 @@ namespace Buttplug.Examples._03.ConnectionLifetimesAndPingTimers
             // the thread that the timer is sending on, or sometimes the client's connection to the
             // server can be severed. In these cases, the client has events we can listen to so we
             // know when either we pinged out, or the server was disconnected.
-            client.PingTimeout += (aObj, aEventArgs) => Console.WriteLine("Buttplug ping timeout!");
-            client.ServerDisconnect += (aObj, aEventArgs) => Console.WriteLine("Buttplug disconnected!");
+            client.PingTimeout += (obj, eventArgs) => Console.WriteLine("Buttplug ping timeout!");
+            client.ServerDisconnect += (obj, eventArgs) => Console.WriteLine("Buttplug disconnected!");
 
             // Let's go ahead and connect.
             await client.ConnectAsync();

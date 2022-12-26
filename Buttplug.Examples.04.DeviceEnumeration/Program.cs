@@ -73,12 +73,12 @@ namespace Buttplug.Examples._03.DeviceEnumeration
             // hardware subtype manager.
             var testDevice = new TestDevice(new ButtplugLogManager(), "Test Device");
             server.AddDeviceSubtypeManager(
-                aLogManager => new TestDeviceSubtypeManager(testDevice));
+                logManager => new TestDeviceSubtypeManager(testDevice));
 
             // If you'd like to see what manual setup looks like with an actual hardware manager,
             // here's how we'd add the XInput (Xbox Gamepad) manager to the server.
             //
-            // server.AddDeviceSubtypeManager((IButtplugLogManager aLogManager) => new XInputGamepadManager(aLogManager));
+            // server.AddDeviceSubtypeManager((IButtplugLogManager logManager) => new XInputGamepadManager(logManager));
 
             // Now that the server has at least one device subtype manager, whenever we ask it to
             // scan for devices, it will use the subtype manager to find new devices that it
@@ -108,11 +108,11 @@ namespace Buttplug.Examples._03.DeviceEnumeration
             //
             // Anyways, let's set up some simple event handlers.
 
-            client.DeviceAdded += (aObj, aDeviceEventArgs) =>
-                Console.WriteLine($"Device {aDeviceEventArgs.Device.Name} Connected!");
+            client.DeviceAdded += (obj, deviceEventArgs) =>
+                Console.WriteLine($"Device {deviceEventArgs.Device.Name} Connected!");
 
-            client.DeviceRemoved += (aObj, aDeviceEventArgs) =>
-                Console.WriteLine($"Device {aDeviceEventArgs.Device.Name} Removed!");
+            client.DeviceRemoved += (obj, deviceEventArgs) =>
+                Console.WriteLine($"Device {deviceEventArgs.Device.Name} Removed!");
 
             // Now that everything is set up, we can connect.
             try
@@ -141,7 +141,7 @@ namespace Buttplug.Examples._03.DeviceEnumeration
             // Sometimes, when all device managers are finished scanning, the ScanningFinished event
             // can be fired even without calling StopScanning, so that should be set up first.
 
-            client.ScanningFinished += (aObj, aScanningFinishedArgs) =>
+            client.ScanningFinished += (obj, scanningFinishedArgs) =>
                 Console.WriteLine("Device scanning is finished!");
 
             // Now we can start scanning for devices, and any time a device is found, we should see

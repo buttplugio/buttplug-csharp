@@ -17,12 +17,12 @@ namespace Buttplug.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientConnectorException"/> class.
         /// </summary>
-        /// <param name="aMessage">Exception message.</param>
-        /// <param name="aClass">Exception class, based on Buttplug Error Message Classes. See https://buttplug-spec.docs.buttplug.io/status.html#error for more info.</param>
-        /// <param name="aId">Message ID for the resulting Buttplug Error Message.</param>
-        /// <param name="aInner">Optional inner exception.</param>
-        public ButtplugClientConnectorException(string aMessage, Exception aInner = null)
-            : base(aMessage, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId, aInner)
+        /// <param name="message">Exception message.</param>
+        /// <param name="class">Exception class, based on Buttplug Error Message Classes. See https://buttplug-spec.docs.buttplug.io/status.html#error for more info.</param>
+        /// <param name="id">Message ID for the resulting Buttplug Error Message.</param>
+        /// <param name="inner">Optional inner exception.</param>
+        public ButtplugClientConnectorException(string message, Exception inner = null)
+            : base(message, Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId, inner)
         {
         }
     }

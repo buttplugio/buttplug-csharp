@@ -35,7 +35,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
             await _websocketServer.StartServerAsync(() =>
             {
                 var server = new TestServer();
-                server.AddDeviceSubtypeManager(aLogger => _subtypeMgr);
+                server.AddDeviceSubtypeManager(logger => _subtypeMgr);
                 return server;
             });
         }
@@ -51,7 +51,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
         {
             var wrongConnector = new ButtplugWebsocketConnector(new Uri("w://invalid:12345/buttplug"));
             var wrongClient = new ButtplugClient("Websocket Client", wrongConnector);
-            wrongClient.Awaiting(async aClient => await aClient.ConnectAsync()).Should()
+            wrongClient.Awaiting(async client => await client.ConnectAsync()).Should()
                 .Throw<ButtplugClientConnectorException>();
         }
 
@@ -60,7 +60,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
         {
             var wrongConnector = new ButtplugWebsocketConnector(new Uri("ws://invalid:12345/buttplug"));
             var wrongClient = new ButtplugClient("Websocket Client", wrongConnector);
-            wrongClient.Awaiting(async aClient => await aClient.ConnectAsync()).Should()
+            wrongClient.Awaiting(async client => await client.ConnectAsync()).Should()
                 .Throw<ButtplugClientConnectorException>();
         }
 
@@ -69,7 +69,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector.Test
         {
             SetUpConnector();
             var signal = new SemaphoreSlim(0, 1);
-            _client.ServerDisconnect += (aObj, aEventArgs) =>
+            _client.ServerDisconnect += (obj, eventArgs) =>
             {
                 if (signal.CurrentCount == 0)
                 {

@@ -46,39 +46,39 @@ namespace Buttplug.Client
             }
         }
 
-        public Task<ButtplugMessage> PrepareMessage(ButtplugMessage aMsg)
+        public Task<ButtplugMessage> PrepareMessage(ButtplugMessage msg)
         {
             // The client always increments the IDs on outgoing messages
-            aMsg.Id = NextMsgId;
+            msg.Id = NextMsgId;
 
             var promise = new TaskCompletionSource<ButtplugMessage>();
-            _waitingMsgs.TryAdd(aMsg.Id, promise);
+            _waitingMsgs.TryAdd(msg.Id, promise);
 
             return promise.Task;
         }
 
-        public void CheckMessage(ButtplugMessage aMsg)
+        public void CheckMessage(ButtplugMessage msg)
         {
             // We'll never match a system message, those are server -> client only.
-            if (aMsg.Id == 0)
+            if (msg.Id == 0)
             {
-                throw new ButtplugMessageException("Cannot sort message with System ID", aMsg.Id);
+                throw new ButtplugMessageException("Cannot sort message with System ID", msg.Id);
             }
 
             // If we haven't gotten a system message and we're not currently waiting for the message
             // id, throw.
-            if (!_waitingMsgs.TryRemove(aMsg.Id, out var queued))
+            if (!_waitingMsgs.TryRemove(msg.Id, out var queued))
             {
-                throw new ButtplugMessageException("Message with non-matching ID received.", aMsg.Id);
+                throw new ButtplugMessageException("Message with non-matching ID received.", msg.Id);
             }
 
-            if (aMsg is Error errMsg)
+            if (msg is Error errMsg)
             {
                 queued.SetException(ButtplugException.FromError(errMsg));
                 return;
             }
 
-            queued.SetResult(aMsg);
+            queued.SetResult(msg);
         }
     }
 }

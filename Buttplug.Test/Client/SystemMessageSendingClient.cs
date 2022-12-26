@@ -16,8 +16,8 @@ namespace Buttplug.Client.Test
 {
     public class SystemMessageSendingClient : ButtplugClient
     {
-        public SystemMessageSendingClient([NotNull] string aClientName, [NotNull] IButtplugClientConnector aConnector)
-            : base(aClientName, aConnector)
+        public SystemMessageSendingClient([NotNull] string clientName, [NotNull] IButtplugClientConnector connector)
+            : base(clientName, connector)
         {
         }
 

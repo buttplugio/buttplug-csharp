@@ -33,7 +33,7 @@ namespace Buttplug.Client.Connectors.IPCConnector.Test
             _ipcServer.StartServer(() =>
             {
                 var server = new TestServer();
-                server.AddDeviceSubtypeManager(aLogger => _subtypeMgr);
+                server.AddDeviceSubtypeManager(logger => _subtypeMgr);
                 return server;
             });
         }
@@ -50,7 +50,7 @@ namespace Buttplug.Client.Connectors.IPCConnector.Test
         {
             SetUpConnector();
             var signal = new SemaphoreSlim(0, 1);
-            _client.ServerDisconnect += (aObj, aEventArgs) =>
+            _client.ServerDisconnect += (obj, eventArgs) =>
             {
                 if (signal.CurrentCount == 0)
                 {

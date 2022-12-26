@@ -20,10 +20,10 @@ namespace Buttplug.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceRemovedEventArgs"/> class.
         /// </summary>
-        /// <param name="aDevice">Device being removed.</param>
-        public DeviceRemovedEventArgs(ButtplugClientDevice aDevice)
+        /// <param name="device">Device being removed.</param>
+        public DeviceRemovedEventArgs(ButtplugClientDevice device)
         {
-            Device = aDevice;
+            Device = device;
         }
     }
 }
