@@ -296,7 +296,6 @@ namespace Buttplug.Client
                     {
                         DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
                     }                    
-                    DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
                     break;
 
                 case ScanningFinished _:
