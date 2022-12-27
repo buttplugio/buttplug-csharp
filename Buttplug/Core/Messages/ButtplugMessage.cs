@@ -34,7 +34,7 @@ namespace Buttplug.Core.Messages
             Id = id;
         }
 
-        private static Dictionary<Type, ButtplugMessageMetadata> _metadatcache = new Dictionary<Type, ButtplugMessageMetadata>();
+        private static Dictionary<Type, ButtplugMessageMetadata> _metadataCache = new Dictionary<Type, ButtplugMessageMetadata>();
 
         /// <summary>
         /// Gets a certain ButtplugMessageMetadata attributes for a ButtplugMessage.
@@ -54,9 +54,9 @@ namespace Buttplug.Core.Messages
                 throw new ArgumentException($"Argument {msgType.Name} must be a subclass of ButtplugMessage");
             }
 
-            if (_metadatcache.ContainsKey(msgType))
+            if (_metadataCache.ContainsKey(msgType))
             {
-                return func(_metadatcache[msgType]);
+                return func(_metadataCache[msgType]);
             }
 
             // Message creation is extremely hot path, and these are queried a lot. All of
@@ -68,7 +68,7 @@ namespace Buttplug.Core.Messages
             {
                 if (attr is ButtplugMessageMetadata metadata)
                 {
-                    _metadatcache[msgType] = metadata;
+                    _metadataCache[msgType] = metadata;
                     return func(metadata);
                 }
             }

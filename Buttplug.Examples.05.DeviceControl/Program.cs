@@ -93,6 +93,10 @@ namespace Buttplug.Examples._05.DeviceControl
                     // support this message.
                     Console.WriteLine($"  - Vibrator Info: {msgInfo.FeatureDescriptor}, {msgInfo.StepCount} levels.");
                 }
+                if (device.HasBattery)
+                {
+                    Console.WriteLine($"  - Battery Level: {await device.BatteryAsync()}");
+                }
             }
 
             Console.WriteLine("Sending commands");

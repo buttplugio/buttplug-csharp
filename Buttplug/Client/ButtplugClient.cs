@@ -234,9 +234,9 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
-        protected async Task SendDeviceMessageAsync(ButtplugClientDevice device, ButtplugDeviceMessage deviceMsg, CancellationToken token = default(CancellationToken))
+        protected async Task<ButtplugMessage> SendDeviceMessageAsync(ButtplugClientDevice device, ButtplugDeviceMessage deviceMsg, CancellationToken token = default(CancellationToken))
         {
-            await SendMessageExpectOk(deviceMsg, token).ConfigureAwait(false);
+            return await SendMessageAsync(deviceMsg, token).ConfigureAwait(false);
         }
 
         /// <summary>

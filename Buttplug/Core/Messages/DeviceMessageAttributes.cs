@@ -23,6 +23,7 @@ namespace Buttplug.Core.Messages
         Position
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum SensorType
     {
         [EnumMember(Value = "Battery")]
@@ -64,7 +65,7 @@ namespace Buttplug.Core.Messages
         [JsonConverter(typeof(StringEnumConverter))]
         public readonly SensorType SensorType;
         [JsonProperty(Required = Required.Always)]
-        public readonly uint[][] StepRange;
+        public readonly uint[][] SensorRange;
     }
 
     public class RawDeviceMessageAttributes
