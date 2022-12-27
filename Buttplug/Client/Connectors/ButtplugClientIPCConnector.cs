@@ -18,10 +18,6 @@ namespace Buttplug.Client.Connectors
     {
         public event EventHandler Disconnected;
 
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-
-        private readonly object _sendLock = new object();
-
         /// <summary>
         /// Used for dispatching events to the owning application context.
         /// </summary>
@@ -82,16 +78,13 @@ namespace Buttplug.Client.Connectors
             var (msgString, promise) = PrepareMessage(msg);
             var output = Encoding.UTF8.GetBytes(msgString);
 
-            lock (_sendLock)
+            if (Connected)
             {
-                if (Connected)
-                {
-                    _pipeClient.Write(output, 0, output.Length);
-                }
-                else
-                {
-                    throw new ButtplugClientConnectorException("Bad Pipe state!");
-                }
+                _pipeClient.Write(output, 0, output.Length);
+            }
+            else
+            {
+                throw new ButtplugClientConnectorException("Bad Pipe state!");
             }
 
             return await promise.ConfigureAwait(false);
