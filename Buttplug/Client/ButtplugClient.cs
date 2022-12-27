@@ -134,6 +134,7 @@ namespace Buttplug.Client
                 case ServerInfo si:
                     if (si.MaxPingTime > 0)
                     {
+                        _pingTimer.Dispose();
                         _pingTimer = new Timer(OnPingTimer, null, 0,
                             Convert.ToInt32(Math.Round(((double)si.MaxPingTime) / 2, 0)));
                     }
