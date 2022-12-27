@@ -5,7 +5,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -83,8 +83,8 @@ namespace Buttplug.Client
         /// <summary>
         /// Stores information about devices currently connected to the server.
         /// </summary>
-        private readonly Dictionary<uint, ButtplugClientDevice> _devices =
-            new Dictionary<uint, ButtplugClientDevice>();
+        private readonly ConcurrentDictionary<uint, ButtplugClientDevice> _devices =
+            new ConcurrentDictionary<uint, ButtplugClientDevice>();
 
         /// <summary>
         /// Connector to use for the client. Can be local (server embedded), IPC, Websocket, etc...
@@ -276,7 +276,7 @@ namespace Buttplug.Client
             {
                 case DeviceAdded d:
                     var dev = new ButtplugClientDevice(this, SendDeviceMessageAsync, d);
-                    _devices.Add(d.DeviceIndex, dev);
+                    _devices.AddOrUpdate(d.DeviceIndex, dev, (u, device) => dev);
                     DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(dev));
                     break;
 
@@ -292,7 +292,10 @@ namespace Buttplug.Client
                     }
 
                     var oldDev = _devices[d.DeviceIndex];
-                    _devices.Remove(d.DeviceIndex);
+                    if (_devices.TryRemove(d.DeviceIndex, out _))
+                    {
+                        DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
+                    }                    
                     DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
                     break;
 
