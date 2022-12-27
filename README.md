@@ -17,6 +17,14 @@ That project ended up being a partial failure.
 
 While the FFI system is handy for languages where it is very difficult to rebuild some parts of the library (C/C++/Java/etc...), for managed langauges like Javascript and C#, requiring both the client and server to use the FFI was overkill, and caused many extremely difficult to debug issues. With that in mind, the C# implementation is being turned into a Client only, .Net native implementation that should run on all platforms.
 
+## Didn't ManagedButtplugIo already do this?
+
+[ManagedButtplugIo](https://github.com/Er1807/ManagedButtplugIo/) is a community produced, .Net native version of the Buttplug C# API, modeled off the FFI (which itself was modeled off of the original C# API). It's been helping the community along while the C# FFI implementation went off a cliff.
+
+They did a very good job and I'm very appreicative of it (and I've used it in some of my own projects)!
+
+The main reason I'm still keeping up my own C# client is that this is a big part of a LOT of the systems I maintain, like the Unity plugin. As part of how I fund this project is consulting on those, I need an implementation I'm responsible for. That said, this doesn't have to be the *only* implementation, and I'll still be keeping all imeplementations listed both in this README and on our [Awesome List](https://awesome.buttplug.io)
+
 ## Nuget and Packages
 
 In order to reduce the amount of required dependencies, Buttplug is currently split into 3 Nuget packages.
