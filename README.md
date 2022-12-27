@@ -15,7 +15,7 @@ Then I rewrote everything in Rust because I like Rust more and it's far easier f
 
 That project ended up being a partial failure.
 
-While the FFI system is handy for languages where it is very difficult to rebuild some parts of the library (C/C++/Java/etc...), for managed langauges like Javascript and C#, requiring both the client and server to use the FFI was overkill, and caused many extremely difficult to debug issues. With that in mind, the C# implementation is being turned into a Client only, .Net native implementation that should run on all platforms.
+While the FFI system is handy for languages where it is very difficult to rebuild some parts of the library (C/C++/Java/etc...), for managed langauges like Javascript and C#, requiring both the client and server to use the FFI was overkill, and caused many extremely difficult-to-debug issues. With that in mind, the C# implementation is being turned into a Client only, .Net native implementation that should run on all platforms.
 
 ## Didn't ManagedButtplugIo already do this?
 
