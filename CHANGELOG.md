@@ -1,3 +1,16 @@
+# 3.0.0 (2022-12-26)
+
+Welcome Back, Buttplug C#
+
+## Features
+
+- All Server Components stripped out, library is now Client Only, expected to be run against either
+  Intiface Central or Intiface engine.
+- Updated to the Buttplug v3 spec, including ScalarCmd and SensorReadCmd
+- JsonSchema removed
+- Reflection requirements removed
+- Added .Net 4.8/Standard 2.1 support (Alongside .Net 4.7/Standard 2.0)
+
 # 0.5.9 (2020-06-17)
 
 ## Bugfixes
