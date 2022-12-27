@@ -10,6 +10,264 @@ Welcome Back, Buttplug C#
 - JsonSchema removed
 - Reflection requirements removed
 - Added .Net 4.8/Standard 2.1 support (Alongside .Net 4.7/Standard 2.0)
+- Websocket Client Connector returns to being its own package.
+
+# 2.0.5 (2021-08-29)
+
+## Features
+
+- Update to Buttplug v5
+  - New version of btleplug
+  - New comm managers and other features that need to be ported to FFI
+
+# 2.0.4 (2021-08-21)
+
+## Bugfixes
+
+- #87: Update ButtplugClient to use ConcurrentDictionary for device storage
+
+# 2.0.3 (2021-05-17)
+
+## Bugfixes
+
+- #78: Fix key duplication exception when > 1 client instances created.
+- #79: Fix issue with re-entrancy causing double-disposes
+
+# 2.0.2 (2021-05-15)
+
+## Features
+
+- #77: C# Cleanup/Linting
+
+## Bugfixes
+
+- #76: Fix issue with log messages causing exceptions on device drop in FFI
+
+# 2.0.1 (2021-04-24)
+
+## Bugfixes
+
+- #69: Sorter now throws a ButtplugConnectorException (similar to disconnect errors) for tasks that
+  are still live during shutdown.
+- Update to buttplug-rs v3.0.3, fixing issue with RawWriteCmd JSON Schema
+
+# 2.0.0 (2021-04-22)
+
+## Features
+
+- Update to buttplug-rs v3.0.2, using tokio runtimes and with better scoping for runtime
+  setup/teardown
+  - Mostly because it's the only way to get Buttplug Unity v1 working.
+  - Also fixes some bugs with battery reading in Lovense and Magic Motion toys.
+
+## Breaking Changes
+
+- Log object signatures/names changed.
+
+# 1.0.18 (2021-04-04)
+
+## Bugfixes
+
+- Update to buttplug-rs 2.1.9, fixes Lovense battery read issues, should reduce bluetooth disconnect
+  panics on windows, cleans up some error log messages that aren't actually errors.
+
+# 1.0.17 (2021-03-21)
+
+## Features
+
+- #53: Nuget package now contains both .net standard and .net framework 4.7 builds
+- #37: Added IsScanning status to client
+- Update to buttplug-rs 2.1.7, Lovense Desire Egg support, new btleplug version
+
+## Bugfixes
+
+- #58 / #61: Sorter callback now processes future results on C#/.Net executor, and catches errors on
+  possible races.
+
+# 1.0.16 (2021-02-20)
+
+## Bugfixes
+
+- Update to buttplug-rs v2.1.5, fixes issues with connection status races and some devices panicing
+  on disconnect while running initialize()
+- Fix issue in FFI where multiple reconnects on the same client can cause multiple events to be sent
+
+# 1.0.15 (2021-02-15)
+
+## Features
+
+- Update to buttplug-rs v2.1.4
+- Add hardware support
+  - The Handy
+
+## Bugfixes
+
+- Fix issue with Lovense Serial Dongle timing
+- Fix LoveAi Dolp compat
+
+# 1.0.14 (2020-02-13)
+
+## Bugfixes
+
+- Update to buttplug-rs v2.1.3, fix issues with max speed causing errors/crashes
+
+# 1.0.13 (2020-02-07)
+
+## Bugfixes
+
+- Update to buttplug-rs v2.1.2, fix issue where StopDeviceCmd may not work in in-process instances
+
+# 1.0.12 (2020-02-06)
+
+## Features
+
+- Update to buttplug-rs v2.1.1, more error handling/bugfixes, Lovense/Nobra device handling
+
+# 1.0.11 (2020-01-24)
+
+## Bugfixes
+
+- Update to buttplug-rs v2.0.5, fixes issues with XInput misaddressing, and DeviceMessageInfo
+  serialization issues.
+
+# 1.0.10 (2020-01-22)
+
+## Bugfixes
+
+- Update to buttplug-rs v2.0.3, fixing some message compat issues and restoring access to some
+  stroking and rotating devices.
+
+# 1.0.9 (2020-01-19)
+
+## Features
+
+- Update to buttplug-rs v2.0.2, hardware support for Lovense Ferri, lots of internal cleanup,
+  lovense dongle fixes.
+
+# 1.0.8 (2020-01-09)
+
+## Features
+
+- Update to buttplug-rs v1.0.5, with new hardware support for libo, prettylove, etc
+
+## Bugfixes
+
+- #47: Sending single commands should now trigger on all motors.
+
+# 1.0.7 (2020-01-08)
+
+## Bugfixes
+
+- Fix issue with event emitters missing null conditionals, causing null throws if no handlers exist.
+
+# 1.0.6 (2020-01-04)
+
+## Bugfixes
+
+- #45: Fix issue with disconnect/reconnect causing device index collisions.
+
+# 1.0.5 (2020-01-02)
+
+## Bugfixes
+
+- Update to buttplug-rs v1.0.4 (via buttplug-rs-ffi v1.0.3), fixes XInput devices not emitting
+  disconnected events.
+
+# 1.0.4 (2021-01-01)
+
+## Bugfixes
+
+- Update to buttplug-rs v1.0.3 (via buttplug-rs-ffi v1.0.2, yay dependency trees), fixes btle device
+  scanning issues, added XInput rescanning
+
+# 1.0.3 (2020-12-31)
+
+## Bugfixes
+
+- Update to buttplug-rs v1.0.1, fixes device scanning race issue 
+
+# 1.0.2 (2020-12-29)
+
+## Bugfixes
+
+- Hold a reference to the LogCallback Delegate for the duration of the process lifetime, otherwise
+  we'll crash on callback setup for logging.
+
+# 1.0.1 (2020-12-27)
+
+## Features
+
+- Update to buttplug-rs v1.0.1, with new device config format
+- Expose new env logger handler
+
+## Notes
+
+- Due to a mishandled test version 2 years about in Buttplug C#, v1.0.0 is taken. Therefore we're
+  moving straight to v1.0.1
+
+# 1.0.0 Beta 8 (2020-12-20)
+
+## Bugfixes
+
+- Update to buttplug-rs 0.11.3 via ButtplugFFI v1b6. Fixes memory leaks and possible race condition
+  issues.
+
+# 1.0.0 Beta 7 (2020-12-13)
+
+## Features
+
+- Added Connected getter to client
+- Added ability to request log level output, and emit logs via event.
+
+# 1.0.0 Beta 6 (2020-12-11)
+
+## Bugfixes
+
+- Fixes emitting of ServerDisconnected and ScanningFinished events in client.
+
+# 1.0.0 Beta 5 (2020-11-28)
+
+## Bugfixes
+
+- Change Build system to account for .Net Core or .Net Framework building. Currently only works on
+  x64 builds, "Any CPU" will not work.
+
+# 1.0.0 Beta 4 (2020-11-26)
+
+## Features
+
+- Added client ping method
+- Added utility method for console logging
+
+## Bugfixes
+
+- StopDeviceCmd should now work on all devices, not just device with index 0
+- Disconnect should now actually disconnect
+
+# 1.0.0 Beta 3 (2020-11-23)
+
+## Bugfixes
+
+- Remove all Console log calls
+
+## API Changes
+
+- Suffix all Async methods with "Async"
+- Make WebsocketConnector take a URI, not a string
+
+# 1.0.0 Beta 2 (2020-11-22)
+
+## API Changes
+
+- Move back to a connector-object-like mechanism, using C# method overloading for the Connect call.
+- Change main namespace to "Buttplug" to match older libraries. 
+
+# 1.0.0 Beta 1 (2020-11-21)
+
+## Features
+
+- Initial nuget release of C# FFI API. Includes most basic functionality to run Buttplug.
+- Contains very little code from Buttplug C# v0.x. Consider this a complete restart.
 
 # 0.5.9 (2020-06-17)
 
