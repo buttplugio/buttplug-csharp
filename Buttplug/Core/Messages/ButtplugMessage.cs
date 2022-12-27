@@ -112,6 +112,6 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Buttplug messages supported by this device, with additional attributes.
         /// </summary>
-        Dictionary<string, MessageAttributes> DeviceMessages { get; }
+        DeviceMessageAttributes DeviceMessages { get; }
     }
 }

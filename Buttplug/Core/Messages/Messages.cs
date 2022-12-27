@@ -172,22 +172,30 @@ namespace Buttplug.Core.Messages
         /// Name of the device.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public string DeviceName;
+        public readonly string DeviceName;
 
         /// <summary>
         /// Device index.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public uint DeviceIndex;
+        public readonly uint DeviceIndex;
+
+        /// <summary>
+        /// Device display name, set up by the user.
+        /// </summary>
+        public readonly string DeviceDisplayName;
+
+        /// <summary>
+        /// Recommended amount of time between commands, in milliseconds.
+        /// </summary>
+        [JsonProperty(Required = Required.Default)]
+        public readonly uint DeviceMessageTimingGap;
 
         /// <summary>
         /// List of messages that a device supports, with additional attribute data.
         /// </summary>
-        /// While this is set in the constructor, it needs to be initialized here in order to keep
-        /// the JSON parser from setting it to null.
-        [SuppressMessage("ReSharper", "MemberInitializerValueIgnored", Justification = "JSON.net doesn't use the constructor")]
-        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, MessageAttributes> DeviceMessages = new Dictionary<string, MessageAttributes>();
+        [JsonProperty(Required = Required.Always)]
+        public readonly DeviceMessageAttributes DeviceMessages;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceMessageInfo"/> class.
@@ -196,7 +204,7 @@ namespace Buttplug.Core.Messages
         /// <param name="name">Device name.</param>
         /// <param name="messages">List of device messages/attributes supported.</param>
         public DeviceMessageInfo(uint index, string name,
-            Dictionary<string, MessageAttributes> messages)
+            DeviceMessageAttributes messages)
         {
             DeviceName = name;
             DeviceIndex = index;
@@ -208,46 +216,7 @@ namespace Buttplug.Core.Messages
 
         uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
 
-        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
-    }
-
-    /// <summary>
-    /// Container class for describing a device. Represents a prior spec version of the message, kept
-    /// for downgrade support.
-    /// </summary>
-    public class DeviceMessageInfoVersion0
-    {
-        /// <summary>
-        /// Device name.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public string DeviceName;
-
-        /// <summary>
-        /// Devices index.
-        /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public uint DeviceIndex;
-
-        /// <summary>
-        /// Commands supported by device.
-        /// </summary>
-        [SuppressMessage("ReSharper", "MemberInitializerValueIgnored", Justification = "JSON.net doesn't use the constructor")]
-        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public string[] DeviceMessages = new string[0];
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceMessageInfoVersion0"/> class.
-        /// </summary>
-        /// <param name="index">Device index.</param>
-        /// <param name="name">Device name.</param>
-        /// <param name="messages">Commands supported by device.</param>
-        public DeviceMessageInfoVersion0(uint index, string name, string[] messages)
-        {
-            DeviceName = name;
-            DeviceIndex = index;
-            DeviceMessages = messages;
-        }
+        DeviceMessageAttributes IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
     }
 
     /// <summary>
@@ -295,9 +264,8 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Commands supported by device.
         /// </summary>
-        [JsonProperty(Required = Required.Always, NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, MessageAttributes> DeviceMessages =
-            new Dictionary<string, MessageAttributes>();
+        [JsonProperty(Required = Required.Always)]
+        public readonly DeviceMessageAttributes DeviceMessages;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceAdded"/> class.
@@ -306,7 +274,7 @@ namespace Buttplug.Core.Messages
         /// <param name="name">Device name.</param>
         /// <param name="messages">Commands supported by device.</param>
         public DeviceAdded(uint index, string name,
-            Dictionary<string, MessageAttributes> messages)
+            DeviceMessageAttributes messages)
             : base(ButtplugConsts.SystemMsgId, index)
         {
             DeviceName = name;
@@ -324,7 +292,7 @@ namespace Buttplug.Core.Messages
 
         uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
 
-        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
+        DeviceMessageAttributes IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
     }
 
     /// <summary>
@@ -354,7 +322,7 @@ namespace Buttplug.Core.Messages
 
         uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
 
-        Dictionary<string, MessageAttributes> IButtplugDeviceInfoMessage.DeviceMessages => new Dictionary<string, MessageAttributes>();
+        DeviceMessageAttributes IButtplugDeviceInfoMessage.DeviceMessages => null;
     }
 
     /// <summary>
@@ -529,110 +497,82 @@ namespace Buttplug.Core.Messages
     }
 
     /// <summary>
-    /// Sent to server, generic message that can control any vibrating device. Unlike <see
-    /// cref="SingleMotorVibrateCmd"/>, this message can take multiple commands for devices with
-    /// multiple vibrators.
+    /// Sent to server, generic message that can control any device that takes a single value and staticly
+    /// sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).
     /// </summary>
-    [ButtplugMessageMetadata("VibrateCmd")]
-    public class VibrateCmd : ButtplugDeviceMessage
+    [ButtplugMessageMetadata("ScalarCmd")]
+    public class ScalarCmd : ButtplugDeviceMessage
     {
         /// <summary>
-        /// Container object for representing a single vibration speed on a device that may have
-        /// multiple independent vibrators.
+        /// Container object for representing a single scalar value on a device that may have
+        /// multiple independent scalar actuators.
         /// </summary>
-        public class VibrateSubcommand : GenericMessageSubcommand
+        public class ScalarSubcommand : GenericMessageSubcommand
         {
-            private double _speedImpl;
+            private double _scalarImpl;
+            public readonly ActuatorType ActuatorType;
 
             /// <summary>
             /// Gets/sets vibration speed (0.0-1.0).
             /// </summary>
             [JsonProperty(Required = Required.Always)]
-            public double Speed
+            public double Scalar
             {
-                get => _speedImpl;
+                get => _scalarImpl;
                 set
                 {
                     if (value < 0)
                     {
-                        throw new ArgumentException("VibrateCmd Speed cannot be less than 0!");
+                        throw new ArgumentException("ScalarCmd value cannot be less than 0!");
                     }
 
                     if (value > 1)
                     {
-                        throw new ArgumentException("VibrateCmd Speed cannot be greater than 1!");
+                        throw new ArgumentException("ScalarCmd value cannot be greater than 1!");
                     }
 
-                    _speedImpl = value;
+                    _scalarImpl = value;
                 }
             }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="VibrateSubcommand"/> class.
+            /// Initializes a new instance of the <see cref="ScalarSubcommand"/> class.
             /// </summary>
-            /// <param name="index">Vibration feature index.</param>
-            /// <param name="speed">Vibration speed.</param>
-            public VibrateSubcommand(uint index, double speed)
+            /// <param name="index">Scalar feature index.</param>
+            /// <param name="scalar">Scalar value.</param>
+            public ScalarSubcommand(uint index, double scalar, ActuatorType actuatorType)
             : base(index)
             {
-                Speed = speed;
+                Scalar = scalar;
+                ActuatorType = actuatorType;
             }
-        }
-
-        public static VibrateCmd Create(double speed, uint cmdCount)
-        {
-            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat(speed, (int)cmdCount).ToArray());
-        }
-
-        public static VibrateCmd Create(IEnumerable<double> speeds)
-        {
-            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, speeds);
-        }
-
-        public static VibrateCmd Create(uint deviceIndex, uint msgId, double speed, uint cmdCount)
-        {
-            return Create(deviceIndex, msgId, Enumerable.Repeat(speed, (int)cmdCount).ToArray());
-        }
-
-        public static VibrateCmd Create(uint deviceIndex, uint msgId, IEnumerable<double> speeds)
-        {
-            var cmdList = new List<VibrateSubcommand>(speeds.Count());
-
-            uint i = 0;
-            foreach (var speed in speeds)
-            {
-                cmdList.Add(new VibrateSubcommand(i, speed));
-                ++i;
-            }
-
-            return new VibrateCmd(deviceIndex, cmdList, msgId);
         }
 
         /// <summary>
         /// List of vibrator speeds.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public List<VibrateSubcommand> Speeds;
+        public List<ScalarSubcommand> Scalars;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VibrateCmd"/> class.
+        /// Initializes a new instance of the <see cref="ScalarCmd"/> class.
         /// </summary>
         /// <param name="deviceIndex">Device index.</param>
-        /// <param name="speeds">List of per-vibrator speed commands.</param>
+        /// <param name="scalars">List of per-actuator scalar commands.</param>
         /// <param name="id">Message ID.</param>
         [JsonConstructor]
-        public VibrateCmd(uint deviceIndex, List<VibrateSubcommand> speeds, uint id = ButtplugConsts.DefaultMsgId)
+        public ScalarCmd(uint deviceIndex, List<ScalarSubcommand> scalars, uint id = ButtplugConsts.DefaultMsgId)
             : base(id, deviceIndex)
         {
-            Speeds = speeds;
+            Scalars = scalars;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VibrateCmd"/> class.
+        /// Initializes a new instance of the <see cref="ScalarCmd"/> class.
         /// </summary>
-        /// <param name="speeds">List of per-vibrator speed commands.</param>
-        public VibrateCmd(List<VibrateSubcommand> speeds)
-            : this(uint.MaxValue, speeds)
+        /// <param name="scalars">List of per-actuator scalar commands.</param>
+        public ScalarCmd(List<ScalarSubcommand> scalars)
+            : this(uint.MaxValue, scalars)
         {
         }
     }

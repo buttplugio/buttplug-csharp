@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Buttplug.Client;
-using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Test;
+using Buttplug.Client.Connectors.WebsocketConnector;
 
 // Tutorial file, disable ConfigureAwait checking since it's an actual program.
 // ReSharper disable ConsiderUsingConfigureAwait
@@ -30,12 +29,8 @@ namespace Buttplug.Examples._05.DeviceControl
             // simulation of something moving. Sorry to get you all excited.)
 
             // Let's go ahead, put our client/server together, and get connected.
-            var connector = new ButtplugEmbeddedConnector("Example Server");
+            var connector = new ButtplugWebsocketConnector(new Uri("ws://127.0.0.1:12345"));
             var client = new ButtplugClient("Example Client", connector);
-            var server = connector.Server;
-            var testDevice = new TestDevice(new ButtplugLogManager(), "Test Device");
-            server.AddDeviceSubtypeManager(
-                logManager => new TestDeviceSubtypeManager(testDevice));
             try
             {
                 await client.ConnectAsync();
@@ -76,7 +71,7 @@ namespace Buttplug.Examples._05.DeviceControl
             foreach (var device in client.Devices)
             {
                 Console.WriteLine($"{device.Name} supports the following messages:");
-                foreach (var msgInfo in device.AllowedMessages)
+                foreach (var msgInfo in device.VibrateAttributes)
                 {
                     // msgInfo will have two pieces of information
                     // - Message Type, which will represent the classes of messages we can send
@@ -96,11 +91,7 @@ namespace Buttplug.Examples._05.DeviceControl
                     // vibrate at the same speed.
                     // - StopDeviceCmd, which stops all output on a device. All devices should
                     // support this message.
-                    Console.WriteLine($"- {msgInfo.Key.Name}");
-                    if (msgInfo.Value.FeatureCount != null)
-                    {
-                        Console.WriteLine($"  - Feature Count: {msgInfo.Value.FeatureCount}");
-                    }
+                    Console.WriteLine($"  - Vibrator Info: {msgInfo.FeatureDescriptor}, {msgInfo.StepCount} levels.");
                 }
             }
 
@@ -115,7 +106,7 @@ namespace Buttplug.Examples._05.DeviceControl
 
             // We can use the convenience functions on ButtplugClientDevice to send the message. This
             // version sets all of the motors on a vibrating device to the same speed.
-            await testClientDevice.SendVibrateCmd(1.0);
+            await testClientDevice.VibrateAsync(1.0);
 
             // If we wanted to just set one motor on and the other off, we could try this version
             // that uses an array. It'll throw an exception if the array isn't the same size as the
@@ -123,8 +114,8 @@ namespace Buttplug.Examples._05.DeviceControl
             //
             // You can get the vibrator count using the following code, though we know it's 2 so we
             // don't really have to use it.
-            var vibratorCount = testClientDevice.GetMessageAttributes<VibrateCmd>().FeatureCount;
-            await testClientDevice.SendVibrateCmd(new[] { 1.0, 0.0 } );
+            var vibratorCount = testClientDevice.VibrateAttributes.Count;
+            //await testClientDevice.VibrateAsync(new[] { 1.0, 0.0 } );
 
             await WaitForKey();
 
@@ -135,7 +126,7 @@ namespace Buttplug.Examples._05.DeviceControl
             // an exception thrown.
             try
             {
-                await testClientDevice.SendVibrateCmd(1.0);
+                await testClientDevice.VibrateAsync(1.0);
             }
             catch (ButtplugClientConnectorException e)
             {

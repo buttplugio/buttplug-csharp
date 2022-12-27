@@ -49,9 +49,6 @@ namespace Buttplug.Core
             {
                 throw new ButtplugMessageException("No message types available.");
             }
-
-            // Load the schema for validation. Schema file is an embedded resource in the library.
-            var jsonSchemstring = ButtplugUtils.GetStringFromFileResource("Buttplug.buttplug-schema.json");
         }
 
         /// <summary>

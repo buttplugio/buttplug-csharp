@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -37,7 +38,7 @@ namespace Buttplug.Client
         /// <summary>
         /// The Buttplug Protocol messages supported by this device, with additional attributes.
         /// </summary>
-        public Dictionary<Type, MessageAttributes> AllowedMessages { get; }
+        public readonly DeviceMessageAttributes MessageAttributes;
 
         private readonly ButtplugClient _owningClient;
 
@@ -71,7 +72,7 @@ namespace Buttplug.Client
             Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task> sendClosure,
             uint index,
             string name,
-            Dictionary<string, MessageAttributes> messages)
+            DeviceMessageAttributes messages)
         {
             ButtplugUtils.ArgumentNotNull(owningClient, nameof(owningClient));
             ButtplugUtils.ArgumentNotNull(sendClosure, nameof(sendClosure));
@@ -79,39 +80,7 @@ namespace Buttplug.Client
             _sendClosure = sendClosure;
             Index = index;
             Name = name;
-            AllowedMessages = new Dictionary<Type, MessageAttributes>();
-            foreach (var msg in messages)
-            {
-                var msgType = ButtplugUtils.GetMessageType(msg.Key);
-                if (msgType == null)
-                {
-                    throw new ButtplugDeviceException($"Message type {msg.Key} does not exist.");
-                }
-
-                AllowedMessages[msgType] = msg.Value;
-            }
-        }
-
-        public MessageAttributes GetMessageAttributes(Type msgType)
-        {
-            ButtplugUtils.ArgumentNotNull(msgType, nameof(msgType));
-            if (!msgType.IsSubclassOf(typeof(ButtplugDeviceMessage)))
-            {
-                throw new ArgumentException("Argument must be subclass of ButtplugDeviceMessage");
-            }
-
-            if (!AllowedMessages.ContainsKey(msgType))
-            {
-                throw new ButtplugDeviceException($"Message type {msgType.Name} not allowed for device {Name}.");
-            }
-
-            return AllowedMessages[msgType];
-        }
-
-        public MessageAttributes GetMessageAttributes<T>()
-        where T : ButtplugDeviceMessage
-        {
-            return GetMessageAttributes(typeof(T));
+            MessageAttributes = messages;
         }
 
         public async Task SendMessageAsync(ButtplugDeviceMessage msg, CancellationToken token = default(CancellationToken))
@@ -128,12 +97,6 @@ namespace Buttplug.Client
                 throw new ButtplugDeviceException("Device no longer connected or valid");
             }
 
-            if (!AllowedMessages.ContainsKey(msg.GetType()))
-            {
-                throw new ButtplugDeviceException(
-                    $"Device {Name} does not support message type {msg.GetType().Name}");
-            }
-
             msg.DeviceIndex = Index;
 
             await _sendClosure(this, msg, token).ConfigureAwait(false);
@@ -141,105 +104,107 @@ namespace Buttplug.Client
 
         public bool Equals(ButtplugClientDevice device)
         {
-            if (_owningClient != device._owningClient ||
-                Index != device.Index ||
-                Name != device.Name ||
-                AllowedMessages.Count != device.AllowedMessages.Count ||
-                !AllowedMessages.Keys.SequenceEqual(device.AllowedMessages.Keys))
-            {
-                return false;
-            }
-
-            // If we made it this far, do actual value comparison in the attributes
-            try
-            {
-                // https://stackoverflow.com/a/9547463/4040754
-                return !device.AllowedMessages.Where(entry => !AllowedMessages[entry.Key].Equals(entry.Value))
-                    .ToDictionary(entry => entry.Key, entry => entry.Value).Any();
-            }
-            catch
-            {
-                return false;
-            }
+            // We never reuse indexes within a session, so if the client and index are the same, assume it's the same device.
+            return _owningClient != device._owningClient && Index != device.Index;
         }
 
-        public void CheckGenericSubcommandList<T>(IEnumerable<T> cmdList, uint limitValue)
-            where T : GenericMessageSubcommand
+        public List<GenericDeviceMessageAttributes> GenericAcutatorAttributes(ActuatorType actuator)
         {
-            if (!cmdList.Any() || cmdList.Count() > limitValue)
-            {
-                if (limitValue == 1)
-                {
-                    throw new ButtplugDeviceException($"{typeof(T).Name} requires 1 subcommand for this device, {cmdList.Count()} present.");
-                }
-
-                throw new ButtplugDeviceException($"{typeof(T).Name} requires between 1 and {limitValue} subcommands for this device, {cmdList.Count()} present.");
+            if (MessageAttributes.ScalarCmd != null) {
+                return MessageAttributes.ScalarCmd.Where(x => x.ActuatorType == actuator).ToList();
             }
+            return Enumerable.Empty<GenericDeviceMessageAttributes>().ToList();
+        }
 
-            foreach (var cmd in cmdList)
+        public async Task ScalarAsync(ScalarCmd.ScalarSubcommand command)
+        {
+            var scalars = new List<ScalarCmd.ScalarSubcommand>();
+            GenericAcutatorAttributes(command.ActuatorType).ForEach(x => scalars.Add(new ScalarCmd.ScalarSubcommand(x.Index, command.Scalar, command.ActuatorType)));
+
+            await SendMessageAsync(new ScalarCmd(scalars)).ConfigureAwait(false);
+        }
+
+        public async Task ScalarAsync(List<ScalarCmd.ScalarSubcommand> command)
+        {
+            await SendMessageAsync(new ScalarCmd(command)).ConfigureAwait(false);
+        }
+
+        public List<GenericDeviceMessageAttributes> VibrateAttributes
+        {
+            get
             {
-                if (cmd.Index >= limitValue)
-                {
-                    throw new ButtplugDeviceException($"Index {cmd.Index} is out of bounds for {typeof(T).Name} for this device.");
-                }
+                return GenericAcutatorAttributes(ActuatorType.Vibrate);
             }
         }
 
-        private void CheckAllowedMessageType<T>()
-        where T : ButtplugDeviceMessage
+        public async Task VibrateAsync(double speed)
         {
-            if (!AllowedMessages.ContainsKey(typeof(T)))
+            await ScalarAsync(new ScalarCmd.ScalarSubcommand(uint.MaxValue, speed, ActuatorType.Vibrate));
+        }
+
+        public async Task VibrateAsync(IEnumerable<(uint, double)> cmds)
+        {
+            await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(x.Item1, x.Item2, ActuatorType.Vibrate)).ToList()).ConfigureAwait(false);
+        }
+
+        public List<GenericDeviceMessageAttributes> OscillateAttributes
+        {
+            get
             {
-                throw new ButtplugDeviceException($"Device {Name} does not support message type {typeof(T).Name}");
+                return GenericAcutatorAttributes(ActuatorType.Oscillate);
             }
         }
 
-        public async Task SendVibrateCmd(double speed)
+        public async Task OscillateAsync(double speed)
         {
-            CheckAllowedMessageType<VibrateCmd>();
-            await SendMessageAsync(VibrateCmd.Create(speed, GetMessageAttributes<VibrateCmd>().FeatureCount.Value)).ConfigureAwait(false);
+            await ScalarAsync(new ScalarCmd.ScalarSubcommand(uint.MaxValue, speed, ActuatorType.Oscillate));
         }
 
-        public async Task SendVibrateCmd(IEnumerable<double> cmds)
+        public async Task OscillateAsync(IEnumerable<(uint, double)> cmds)
         {
-            CheckAllowedMessageType<VibrateCmd>();
-            var msg = VibrateCmd.Create(cmds);
-            CheckGenericSubcommandList(msg.Speeds, GetMessageAttributes<VibrateCmd>().FeatureCount.Value);
-            await SendMessageAsync(VibrateCmd.Create(cmds)).ConfigureAwait(false);
+            await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(x.Item1, x.Item2, ActuatorType.Oscillate)).ToList()).ConfigureAwait(false);
         }
 
-        public async Task SendRotateCmd(double speed, bool clockwise)
+        public List<GenericDeviceMessageAttributes> RotateAttributes
         {
-            CheckAllowedMessageType<RotateCmd>();
-            await SendMessageAsync(RotateCmd.Create(speed, clockwise, GetMessageAttributes<RotateCmd>().FeatureCount.Value)).ConfigureAwait(false);
+            get
+            {
+                return MessageAttributes.RotateCmd.ToList();
+            }
         }
 
-        public async Task SendRotateCmd(IEnumerable<(double, bool)> cmds)
+        public async Task RotateAsync(double speed, bool clockwise)
         {
-            CheckAllowedMessageType<RotateCmd>();
+            await SendMessageAsync(RotateCmd.Create(speed, clockwise, (uint)RotateAttributes.Count())).ConfigureAwait(false);
+        }
+
+        public async Task RotateAsync(IEnumerable<(double, bool)> cmds)
+        {
             var msg = RotateCmd.Create(cmds);
-            CheckGenericSubcommandList(msg.Rotations, GetMessageAttributes<RotateCmd>().FeatureCount.Value);
             await SendMessageAsync(RotateCmd.Create(cmds)).ConfigureAwait(false);
         }
 
-        public async Task SendLinearCmd(uint duration, double position)
+        public List<GenericDeviceMessageAttributes> LinearAttributes
         {
-            CheckAllowedMessageType<LinearCmd>();
-            await SendMessageAsync(LinearCmd.Create(duration, position, GetMessageAttributes<LinearCmd>().FeatureCount.Value)).ConfigureAwait(false);
+            get
+            {
+                return MessageAttributes.RotateCmd.ToList();
+            }
         }
 
-        public async Task SendLinearCmd(IEnumerable<(uint, double)> cmds)
+        public async Task LinearAsync(uint duration, double position)
         {
-            CheckAllowedMessageType<LinearCmd>();
+            await SendMessageAsync(LinearCmd.Create(duration, position, (uint)LinearAttributes.Count())).ConfigureAwait(false);
+        }
+
+        public async Task LinearAsync(IEnumerable<(uint, double)> cmds)
+        {
             var msg = LinearCmd.Create(cmds);
-            CheckGenericSubcommandList(msg.Vectors, GetMessageAttributes<LinearCmd>().FeatureCount.Value);
             await SendMessageAsync(LinearCmd.Create(cmds)).ConfigureAwait(false);
         }
 
-        public async Task StopDeviceCmd()
+        public async Task Stop()
         {
-            // Every message should support this, but it doesn't hurt to check
-            CheckAllowedMessageType<StopDeviceCmd>();
             await SendMessageAsync(new StopDeviceCmd(Index)).ConfigureAwait(false);
         }
     }
