@@ -134,7 +134,7 @@ namespace Buttplug.Client
                 case ServerInfo si:
                     if (si.MaxPingTime > 0)
                     {
-                        _pingTimer.Dispose();
+                        _pingTimer?.Dispose();
                         _pingTimer = new Timer(OnPingTimer, null, 0,
                             Convert.ToInt32(Math.Round(((double)si.MaxPingTime) / 2, 0)));
                     }
@@ -292,8 +292,7 @@ namespace Buttplug.Client
                         return;
                     }
 
-                    var oldDev = _devices[d.DeviceIndex];
-                    if (_devices.TryRemove(d.DeviceIndex, out _))
+                    if (_devices.TryRemove(d.DeviceIndex, out var oldDev))
                     {
                         DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
                     }                    
