@@ -92,7 +92,7 @@ namespace Buttplug.Client.Connectors
 
         private async Task PipeReader(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested && _pipeClient != null && _pipeClient.IsConnected)
+            while (!cancellationToken.IsCancellationRequested && _pipeClient?.IsConnected == true)
             {
                 var buffer = new byte[4096];
                 var msg = string.Empty;

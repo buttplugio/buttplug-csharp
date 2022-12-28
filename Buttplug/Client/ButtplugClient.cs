@@ -69,7 +69,7 @@ namespace Buttplug.Client
         /// <value>
         /// Value indicating whether the client is connected to a server.
         /// </value>
-        public bool Connected => _connector != null && _connector.Connected;
+        public bool Connected => _connector?.Connected == true;
 
         /// <summary>
         /// Ping timer.
