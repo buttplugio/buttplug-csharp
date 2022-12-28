@@ -179,7 +179,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                 _ws.Dispose();
                 _ws = null;
                 // If we somehow still have some live messages, throw exceptions so they aren't stuck.
-                _owningDispatcher.Send(_ => Shutdown(), null);
+                _owningDispatcher.Send(_ => Dispose(), null);
                 _owningDispatcher.Send(_ => Disconnected?.Invoke(this, EventArgs.Empty), null);
             }
         }
