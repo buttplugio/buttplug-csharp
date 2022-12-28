@@ -14,7 +14,7 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Core
 {
-    public class ButtplugUtils
+    public static class ButtplugUtils
     {
         /// <summary>
         /// Returns all ButtplugMessage deriving types in the assembly the core library is linked to.
