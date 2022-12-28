@@ -654,9 +654,9 @@ namespace Buttplug.Core.Messages
         {
             var cmdList = new List<RotateSubcommand>(cmds.Count());
             uint i = 0;
-            foreach (var cmd in cmds)
+            foreach (var (speed, clockwise) in cmds)
             {
-                cmdList.Add(new RotateSubcommand(i, cmd.speed, cmd.clockwise));
+                cmdList.Add(new RotateSubcommand(i, speed, clockwise));
                 ++i;
             }
 
@@ -769,9 +769,9 @@ namespace Buttplug.Core.Messages
         {
             var cmdList = new List<VectorSubcommand>(cmds.Count());
             uint i = 0;
-            foreach (var cmd in cmds)
+            foreach (var (duration, position) in cmds)
             {
-                cmdList.Add(new VectorSubcommand(i, cmd.duration, cmd.position));
+                cmdList.Add(new VectorSubcommand(i, duration, position));
                 ++i;
             }
 
