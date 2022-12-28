@@ -1,11 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
   <Import Project="..\Buttplug.ProjectFiles\CommonProjectProperties.targets" />
-  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-      <TargetFramework>netstandard2.0;netstandard2.1</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' "> 
-      <TargetFrameworks>netstandard2.0;netstandard2.1;net48;net47;</TargetFrameworks>
-  </PropertyGroup>
   <PropertyGroup>
     <PackageId />
     <Title>Buttplug</Title>
@@ -13,6 +7,7 @@
     <Version>3.0.0</Version>
     <Summary>Buttplug Sex Toy Control Library - Client Implementation</Summary>
     <Description>Buttplug Sex Toy Control Library. Contains Core (messages, errors, etc), and Client components. Server can be found in Buttplug.FFI.Server (.Net Framework 4.7+/.Net Standard 2.0+)</Description>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,11 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
   <Import Project="..\Buttplug.ProjectFiles\CommonProjectProperties.targets" />
-  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-      <TargetFramework>netstandard2.1;netstandard2</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' "> 
-      <TargetFrameworks>netstandard2.1;net48;net47</TargetFrameworks>
-  </PropertyGroup>
 
   <PropertyGroup>
     
@@ -16,6 +10,7 @@
     <Summary>Websocket Connection Capabilities for Buttplug Clients</Summary>
     <Description>Websocket Connection Capabilities for Buttplug Clients. (.Net Framework 4.7+/.Net Standard 2.0+)</Description>
     <Version>1.0.0</Version>
+    <TargetFrameworks>netstandard2.1;netstandard2</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
