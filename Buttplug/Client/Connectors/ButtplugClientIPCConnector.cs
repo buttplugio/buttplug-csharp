@@ -123,6 +123,8 @@ namespace Buttplug.Client.Connectors
                 ReceiveMessages(msg);
             }
 
+            // If we somehow still have some live messages, throw exceptions so they aren't stuck.
+            _owningDispatcher.Send(_ => Dispose(), null);
             _owningDispatcher.Send(_ => Disconnected?.Invoke(this, EventArgs.Empty), null);
         }
     }

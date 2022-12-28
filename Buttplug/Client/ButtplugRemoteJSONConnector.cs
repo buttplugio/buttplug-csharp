@@ -13,7 +13,7 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Client
 {
-    public class ButtplugRemoteJSONConnector
+    public class ButtplugRemoteJSONConnector : IDisposable
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
@@ -27,11 +27,6 @@ namespace Buttplug.Client
             var promise = _msgSorter.PrepareMessage(msg);
             var jsonMsg = _jsonSerializer.Serialize(msg);
             return new Tuple<string, Task<ButtplugMessage>>(jsonMsg, promise);
-        }
-
-        protected void Shutdown()
-        {
-            _msgSorter.Shutdown();
         }
 
         protected void ReceiveMessages(string jSONMsg)
@@ -64,6 +59,17 @@ namespace Buttplug.Client
                     InvalidMessageReceived?.Invoke(this, new ButtplugExceptionEventArgs(e));
                 }
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            _msgSorter.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

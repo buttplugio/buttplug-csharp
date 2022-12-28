@@ -15,7 +15,12 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Client
 {
-    public class ButtplugClient
+    public class ButtplugClient :
+#if NETSTANDARD2_1_OR_GREATER
+        IDisposable, IAsyncDisposable
+#else
+        IDisposable
+#endif
     {
         /// <summary>
         /// Name of the client, used for server UI/permissions.
@@ -103,15 +108,6 @@ namespace Buttplug.Client
             _connector = connector;
             _connector.Disconnected += (obj, eventArgs) => ServerDisconnect?.Invoke(obj, eventArgs);
             _connector.InvalidMessageReceived += ConnectorErrorHandler;
-        }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="ButtplugClient"/> class, closing the connector if
-        /// it is still open.
-        /// </summary>
-        ~ButtplugClient()
-        {
-            DisconnectAsync().Wait();
         }
 
         // ReSharper disable once UnusedMember.Global
@@ -365,5 +361,37 @@ namespace Buttplug.Client
                     throw new ButtplugMessageException($"Message type {msg.Name} not handled by SendMessageExpectOk", msg.Id);
             }
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            DisconnectAsync().GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ButtplugClient"/> class, closing the connector if
+        /// it is still open.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+#if NETSTANDARD2_1_OR_GREATER
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            await DisconnectAsync();
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ButtplugClient"/> class, closing the connector if
+        /// it is still open.
+        /// </summary>
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+#endif
     }
 }

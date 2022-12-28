@@ -14,7 +14,7 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Client
 {
-    public class ButtplugConnectorMessageSorter
+    public class ButtplugConnectorMessageSorter : IDisposable
     {
         /// <summary>
         /// Holds count for message IDs, if needed.
@@ -31,20 +31,6 @@ namespace Buttplug.Client
         /// </summary>
         private readonly ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs =
             new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
-
-        ~ButtplugConnectorMessageSorter()
-        {
-            Shutdown();
-        }
-
-        public void Shutdown()
-        {
-            // If we've somehow destructed while holding tasks, throw exceptions at all of them.
-            foreach (var task in _waitingMsgs.Values)
-            {
-                task.TrySetException(new Exception("Sorter has been destroyed with live tasks still in queue."));
-            }
-        }
 
         public Task<ButtplugMessage> PrepareMessage(ButtplugMessage msg)
         {
@@ -79,6 +65,21 @@ namespace Buttplug.Client
             }
 
             queued.SetResult(msg);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // If we've somehow destructed while holding tasks, throw exceptions at all of them.
+            foreach (var task in _waitingMsgs.Values)
+            {
+                task.TrySetException(new Exception("Sorter has been destroyed with live tasks still in queue."));
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
