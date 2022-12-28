@@ -136,7 +136,7 @@ namespace Buttplug.Client
                     {
                         _pingTimer?.Dispose();
                         _pingTimer = new Timer(OnPingTimer, null, 0,
-                            Convert.ToInt32(Math.Round(((double)si.MaxPingTime) / 2, 0)));
+                            Convert.ToInt32(Math.Round(si.MaxPingTime / 2.0, 0)));
                     }
 
                     if (si.MessageVersion < ButtplugConsts.CurrentSpecVersion)
