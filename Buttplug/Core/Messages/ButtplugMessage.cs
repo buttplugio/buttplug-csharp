@@ -24,7 +24,6 @@ namespace Buttplug.Core.Messages
         [JsonIgnore]
         public string Name => GetName(GetType());
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugMessage"/> class.
         /// </summary>

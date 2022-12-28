@@ -20,7 +20,7 @@ namespace Buttplug.Client
         /// <summary>
         /// Name of the client, used for server UI/permissions.
         /// </summary>
-        /// 
+        ///
         public string Name { get; private set; }
 
         /// <summary>
@@ -295,7 +295,8 @@ namespace Buttplug.Client
                     if (_devices.TryRemove(d.DeviceIndex, out var oldDev))
                     {
                         DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
-                    }                    
+                    }
+
                     break;
 
                 case ScanningFinished _:

@@ -129,9 +129,11 @@ namespace Buttplug.Client
 
         public List<GenericDeviceMessageAttributes> GenericAcutatorAttributes(ActuatorType actuator)
         {
-            if (MessageAttributes.ScalarCmd != null) {
+            if (MessageAttributes.ScalarCmd != null)
+            {
                 return MessageAttributes.ScalarCmd.Where(x => x.ActuatorType == actuator).ToList();
             }
+
             return Enumerable.Empty<GenericDeviceMessageAttributes>().ToList();
         }
 
@@ -228,6 +230,7 @@ namespace Buttplug.Client
             {
                 return MessageAttributes.SensorReadCmd.Where(x => x.SensorType == sensor).ToList();
             }
+
             return Enumerable.Empty<SensorDeviceMessageAttributes>().ToList();
         }
 
@@ -245,6 +248,7 @@ namespace Buttplug.Client
             {
                 throw new ButtplugDeviceException($"Device {Name} does not have battery capabilities.");
             }
+
             var result = await SendMessageAsync(new SensorReadCmd(SensorReadAttributes(SensorType.Battery).ElementAt(0).Index, SensorType.Battery)).ConfigureAwait(false);
             switch (result)
             {

@@ -7,7 +7,7 @@ using Newtonsoft.Json.Converters;
 namespace Buttplug.Core.Messages
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum ActuatorType 
+    public enum ActuatorType
     {
         [EnumMember(Value = "Vibrate")]
         Vibrate,
@@ -36,7 +36,7 @@ namespace Buttplug.Core.Messages
         Pressure
     }
 
-    public class GenericDeviceMessageAttributes 
+    public class GenericDeviceMessageAttributes
     {
         [JsonIgnore]
         public uint Index { get { return _index; } }
@@ -73,7 +73,7 @@ namespace Buttplug.Core.Messages
         public readonly string[] Endpoints;
     }
 
-    public class NullDeviceMessageAttributes 
+    public class NullDeviceMessageAttributes
     {
     }
 
