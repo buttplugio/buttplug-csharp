@@ -88,7 +88,7 @@ namespace Buttplug.Client
         /// <param name="msg">Message to send.</param>
         /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>True if successful.</returns>
-        private async Task SendMessageExpectOk(ButtplugDeviceMessage msg, CancellationToken token = default(CancellationToken))
+        private async Task SendMessageExpectOk(ButtplugDeviceMessage msg, CancellationToken token = default)
         {
             var result = await SendMessageAsync(msg, token).ConfigureAwait(false);
             switch (result)
@@ -102,7 +102,7 @@ namespace Buttplug.Client
             }
         }
 
-        public async Task<ButtplugMessage> SendMessageAsync(ButtplugDeviceMessage msg, CancellationToken token = default(CancellationToken))
+        public async Task<ButtplugMessage> SendMessageAsync(ButtplugDeviceMessage msg, CancellationToken token = default)
         {
             ButtplugUtils.ArgumentNotNull(msg, nameof(msg));
 

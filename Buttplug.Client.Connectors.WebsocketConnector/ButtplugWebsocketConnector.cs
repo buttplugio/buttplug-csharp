@@ -54,7 +54,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         /// Creates the connection to the Buttplug Server and performs the protocol handshake.
         /// </summary>
         /// <returns>Nothing (Task used for async/await)</returns>
-        public async Task ConnectAsync(CancellationToken token = default(CancellationToken))
+        public async Task ConnectAsync(CancellationToken token = default)
         {
             if (_ws != null)
             {
@@ -95,7 +95,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         /// Closes the WebSocket Connection.
         /// </summary>
         /// <returns>Nothing (Task used for async/await)</returns>
-        public async Task DisconnectAsync(CancellationToken token = default(CancellationToken))
+        public async Task DisconnectAsync(CancellationToken token = default)
         {
             try
             {
