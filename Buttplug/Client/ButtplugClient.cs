@@ -21,7 +21,7 @@ namespace Buttplug.Client
         /// Name of the client, used for server UI/permissions.
         /// </summary>
         ///
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// Event fired on Buttplug device added, either after connect or while scanning for devices.
