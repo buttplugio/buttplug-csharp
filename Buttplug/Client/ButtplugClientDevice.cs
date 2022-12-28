@@ -196,7 +196,7 @@ namespace Buttplug.Client
 
         public async Task RotateAsync(double speed, bool clockwise)
         {
-            await SendMessageExpectOk(RotateCmd.Create(speed, clockwise, (uint)RotateAttributes.Count())).ConfigureAwait(false);
+            await SendMessageExpectOk(RotateCmd.Create(speed, clockwise, (uint)RotateAttributes.Count)).ConfigureAwait(false);
         }
 
         public async Task RotateAsync(IEnumerable<(double, bool)> cmds)
@@ -214,7 +214,7 @@ namespace Buttplug.Client
 
         public async Task LinearAsync(uint duration, double position)
         {
-            await SendMessageExpectOk(LinearCmd.Create(duration, position, (uint)LinearAttributes.Count())).ConfigureAwait(false);
+            await SendMessageExpectOk(LinearCmd.Create(duration, position, (uint)LinearAttributes.Count)).ConfigureAwait(false);
         }
 
         public async Task LinearAsync(IEnumerable<(uint, double)> cmds)
