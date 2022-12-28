@@ -201,7 +201,6 @@ namespace Buttplug.Client
 
         public async Task RotateAsync(IEnumerable<(double, bool)> cmds)
         {
-            var msg = RotateCmd.Create(cmds);
             await SendMessageExpectOk(RotateCmd.Create(cmds)).ConfigureAwait(false);
         }
 
@@ -220,7 +219,6 @@ namespace Buttplug.Client
 
         public async Task LinearAsync(IEnumerable<(uint, double)> cmds)
         {
-            var msg = LinearCmd.Create(cmds);
             await SendMessageExpectOk(LinearCmd.Create(cmds)).ConfigureAwait(false);
         }
 
