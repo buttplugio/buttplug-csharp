@@ -107,7 +107,7 @@ namespace Buttplug.Client.Connectors
                     {
                         if (!Connected)
                         {
-                            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
+                            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, EventArgs.Empty), null);
                             return;
                         }
 
@@ -123,7 +123,7 @@ namespace Buttplug.Client.Connectors
                 ReceiveMessages(msg);
             }
 
-            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, new EventArgs()), null);
+            _owningDispatcher.Send(_ => Disconnected?.Invoke(this, EventArgs.Empty), null);
         }
     }
 }

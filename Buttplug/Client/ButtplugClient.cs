@@ -194,7 +194,7 @@ namespace Buttplug.Client
 
             _connector.MessageReceived -= MessageReceivedHandler;
             await _connector.DisconnectAsync().ConfigureAwait(false);
-            ServerDisconnect?.Invoke(this, new EventArgs());
+            ServerDisconnect?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace Buttplug.Client
 
                 case ScanningFinished _:
                     // The scanning finished event is self explanatory and doesn't require extra arguments.
-                    ScanningFinished?.Invoke(this, new EventArgs());
+                    ScanningFinished?.Invoke(this, EventArgs.Empty);
                     break;
 
                 case Error e:
