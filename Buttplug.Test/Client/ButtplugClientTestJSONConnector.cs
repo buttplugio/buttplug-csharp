@@ -60,14 +60,14 @@ namespace Buttplug.Client.Test
 
         public Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
         {
-            var msg = _messageResponse[msg.GetType()];
-            if (msg == null)
+            var result = _messageResponse[msg.GetType()];
+            if (result == null)
             {
                 Assert.Fail($"Don't have a message to respond to {msg.GetType()} with.");
             }
 
-            msg.Id = msg.Id;
-            return Task.FromResult(msg);
+            result.Id = msg.Id;
+            return Task.FromResult(result);
         }
     }
 }

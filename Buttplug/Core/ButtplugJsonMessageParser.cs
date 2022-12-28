@@ -129,6 +129,11 @@ namespace Buttplug.Core
                 throw new ButtplugMessageException(
                     $"Type {msgType.Name} is not a subclass of ButtplugMessage");
             }
+            if (msgType.Namespace != "Buttplug.Core.Messages")
+            {
+                throw new ButtplugMessageException(
+                    $"Type {msgType.Name} ({msgType.Namespace}) is not in the namespace of Buttplug.Core.Messages");
+            }
 
             var msgName = ButtplugMessage.GetName(msgType);
             try
@@ -158,12 +163,17 @@ namespace Buttplug.Core
         /// <returns>JSON string representing a Buttplug message.</returns>
         public string Serialize(ButtplugMessage msg)
         {
+            if (msg.GetType().Namespace != "Buttplug.Core.Messages")
+            {
+                throw new ButtplugMessageException(
+                    $"Type {msg.GetType().Name} ({msg.GetType().Namespace}) is not in the namespace of Buttplug.Core.Messages");
+            }
             // Warning: Any log messages in this function must be localOnly. They will possibly recurse.
             // Support downgrading messages
 
             var jsonMsg = ButtplugMessageToJObject(msg);
 
-            // If we get nothing back, throw now, because if we don't the schema verifier will.
+            // If we get nothing back, throw now.
             if (jsonMsg == null)
             {
                 throw new ButtplugMessageException(

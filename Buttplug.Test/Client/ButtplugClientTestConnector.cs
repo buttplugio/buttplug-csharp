@@ -13,7 +13,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
 
 namespace Buttplug.Client.Test
@@ -26,8 +25,6 @@ namespace Buttplug.Client.Test
         public event EventHandler<ButtplugExceptionEventArgs> InvalidMessageReceived;
 
         public event EventHandler Disconnected;
-
-        public IButtplugLogManager LogManager { private get; set; }
 
         public bool Connected { get; private set; }
 
@@ -69,10 +66,10 @@ namespace Buttplug.Client.Test
         public Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
         {
             // This will just throw if we don't have a corresponding reply to the message, which is fine.
-            var msg = _messageResponse[msg.GetType()];
+            var result = _messageResponse[msg.GetType()];
 
-            msg.Id = msg.Id;
-            return Task.FromResult(msg);
+            result.Id = msg.Id;
+            return Task.FromResult(result);
         }
     }
 }

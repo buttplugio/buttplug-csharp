@@ -7,6 +7,7 @@
 // Test file, disable ConfigureAwait checking.
 // ReSharper disable ConsiderUsingConfigureAwait
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -46,41 +47,41 @@ namespace Buttplug.Client.Test
         }
 
         [Test]
-        public void TestServerSpecOlderThanClientSpec()
+        public async Task TestServerSpecOlderThanClientSpec()
         {
             _connector.SetMessageResponse<RequestServerInfo>(new ServerInfo("Old Server", 0, 0));
-            _client.Awaiting(async client => await client.ConnectAsync()).Should().Throw<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
             _client.Connected.Should().BeFalse();
         }
 
         [Test]
-        public void TestErrorReturnOnRequestServerInfo()
+        public async Task TestErrorReturnOnRequestServerInfo()
         {
             _connector.SetMessageResponse<RequestServerInfo>(new Error("Who even knows", Error.ErrorClass.ERROR_INIT, ButtplugConsts.DefaultMsgId));
-            _client.Awaiting(async client => await client.ConnectAsync()).Should().Throw<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
             _client.Connected.Should().BeFalse();
         }
 
         [Test]
-        public void TestOtherReturnOnRequestServerInfo()
+        public async Task TestOtherReturnOnRequestServerInfo()
         {
             _connector.SetMessageResponse<RequestServerInfo>(new Ok(ButtplugConsts.DefaultMsgId));
-            _client.Awaiting(async client => await client.ConnectAsync()).Should().Throw<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
         }
 
         [Test]
-        public void TestErrorReturnOnDeviceList()
+        public async Task TestErrorReturnOnDeviceList()
         {
             _connector.SetMessageResponse<RequestDeviceList>(new Error("Who even knows", Error.ErrorClass.ERROR_INIT, ButtplugConsts.DefaultMsgId));
-            _client.Awaiting(async client => await client.ConnectAsync()).Should().Throw<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
             _client.Connected.Should().BeFalse();
         }
 
         [Test]
-        public void TestOtherReturnOnDeviceList()
+        public async Task TestOtherReturnOnDeviceList()
         {
             _connector.SetMessageResponse<RequestDeviceList>(new Ok(ButtplugConsts.DefaultMsgId));
-            _client.Awaiting(async client => await client.ConnectAsync()).Should().Throw<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
         }
 
         [Test]
@@ -148,7 +149,7 @@ namespace Buttplug.Client.Test
         {
             _connector.SetMessageResponse<StartScanning>(new Error("Who even knows", Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.DefaultMsgId));
             await _client.ConnectAsync();
-            _client.Awaiting(async client => await client.StartScanningAsync()).Should().Throw<ButtplugDeviceException>();
+            await _client.Awaiting(client => client.StartScanningAsync()).Should().ThrowAsync<ButtplugDeviceException>();
         }
 
         [Test]
@@ -156,7 +157,7 @@ namespace Buttplug.Client.Test
         {
             _connector.SetMessageResponse<StartScanning>(new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId));
             await _client.ConnectAsync();
-            _client.Awaiting(async client => await client.StartScanningAsync()).Should().Throw<ButtplugMessageException>();
+            await _client.Awaiting(client => client.StartScanningAsync()).Should().ThrowAsync<ButtplugMessageException>();
         }
 
         [Test]

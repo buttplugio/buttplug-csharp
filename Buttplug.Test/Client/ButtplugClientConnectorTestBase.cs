@@ -13,9 +13,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-using Buttplug.Core.Logging;
 using Buttplug.Core.Messages;
-using Buttplug.Test;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -27,8 +25,6 @@ namespace Buttplug.Client.Test
         protected volatile TaskCompletionSource<object> _resetSource = new TaskCompletionSource<object>();
         protected ButtplugClient _client;
         protected IButtplugClientConnector _connector;
-        protected TestDeviceSubtypeManager _subtypeMgr;
-        protected ButtplugLogManager _logMgr;
 
         public abstract void SetUpConnector();
 
@@ -36,7 +32,6 @@ namespace Buttplug.Client.Test
         public void SetUp()
         {
             _resetSource = new TaskCompletionSource<object>();
-            _logMgr = new ButtplugLogManager();
             SetUpConnector();
         }
 
@@ -77,15 +72,15 @@ namespace Buttplug.Client.Test
             _client.Connected.Should().BeFalse();
             await _client.ConnectAsync();
             _client.Connected.Should().BeTrue();
-            _client.Awaiting(async client => await client.ConnectAsync())
-                .Should().Throw<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync())
+                .Should().ThrowAsync<ButtplugHandshakeException>();
         }
-
+        /*
         [Test]
         public async Task TestDeviceScanning()
         {
             Task SendFunc(ButtplugClientDevice device, ButtplugMessage msg, CancellationToken token) => Task.CompletedTask;
-            var testDevice = new ButtplugClientDevice(_logMgr, _client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
+            var testDevice = new ButtplugClientDevice(_client, SendFunc, 1, "Test Device", new Dictionary<string, MessageAttributes>()
             {
                 { "SingleMotorVibrateCmd", new MessageAttributes() },
                 { "VibrateCmd", new MessageAttributes(2) },
@@ -109,7 +104,9 @@ namespace Buttplug.Client.Test
             await _client.StopScanningAsync();
             await WaitForEvent();
         }
+        */
 
+        /*
         [Test]
         [Ignore("Doesn't compile under new system, need to figure out device exposure")]
         public async Task TestDeviceMessageRaw()
@@ -156,7 +153,9 @@ namespace Buttplug.Client.Test
             //_subtypeMgr.Device.V1.Should().Be(0.0);
             //_subtypeMgr.Device.V2.Should().Be(0.5);
         }
+        */
 
+        /*
         [Test]
         public async Task TestDeviceRemovalEvent()
         {
@@ -174,30 +173,13 @@ namespace Buttplug.Client.Test
             await WaitForEvent();
             _client.Devices.Length.Should().Be(0);
         }
+        */
+
 
         [Test]
-        public async Task TestLogEvent()
+        public async Task TestSendWithoutConnecting()
         {
-            var signal = new SemaphoreSlim(1, 1);
-            await _client.ConnectAsync();
-            _client.Log += (obj, logEvent) =>
-            {
-                if (signal.CurrentCount == 0)
-                {
-                    signal.Release(1);
-                }
-            };
-            await _client.RequestLogAsync(ButtplugLogLevel.Debug);
-            await _client.StartScanningAsync();
-            await _client.StopScanningAsync();
-
-            await signal.WaitAsync();
-        }
-
-        [Test]
-        public void TestSendWithoutConnecting()
-        {
-            _client.Awaiting(async client => await client.StartScanningAsync()).Should().Throw<ButtplugClientConnectorException>();
+            await _client.Awaiting(client => client.StartScanningAsync()).Should().ThrowAsync<ButtplugClientConnectorException>();
         }
 
         [Test]

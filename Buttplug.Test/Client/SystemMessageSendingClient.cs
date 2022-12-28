@@ -10,13 +10,12 @@
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using JetBrains.Annotations;
 
 namespace Buttplug.Client.Test
 {
     public class SystemMessageSendingClient : ButtplugClient
     {
-        public SystemMessageSendingClient([NotNull] string clientName, [NotNull] IButtplugClientConnector connector)
+        public SystemMessageSendingClient(string clientName, IButtplugClientConnector connector)
             : base(clientName, connector)
         {
         }
