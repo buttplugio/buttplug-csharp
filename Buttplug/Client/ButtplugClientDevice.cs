@@ -34,6 +34,10 @@ namespace Buttplug.Client
         /// </summary>
         public string Name { get; }
 
+        public string DisplayName { get; }
+
+        public uint MessageTimingGap { get; }
+
         /// <summary>
         /// The Buttplug Protocol messages supported by this device, with additional attributes.
         /// </summary>
@@ -54,7 +58,7 @@ namespace Buttplug.Client
             ButtplugClient owningClient,
             Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> sendClosure,
             IButtplugDeviceInfoMessage devInfo)
-           : this(owningClient, sendClosure, devInfo.DeviceIndex, devInfo.DeviceName, devInfo.DeviceMessages)
+           : this(owningClient, sendClosure, devInfo.DeviceIndex, devInfo.DeviceName, devInfo.DeviceMessages, devInfo.DeviceDisplayName, devInfo.DeviceMessageTimingGap)
         {
             ButtplugUtils.ArgumentNotNull(devInfo, nameof(devInfo));
         }
@@ -71,7 +75,9 @@ namespace Buttplug.Client
             Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> sendClosure,
             uint index,
             string name,
-            DeviceMessageAttributes messages)
+            DeviceMessageAttributes messages,
+            string displayName,
+            uint messageTimingGap)
         {
             ButtplugUtils.ArgumentNotNull(owningClient, nameof(owningClient));
             ButtplugUtils.ArgumentNotNull(sendClosure, nameof(sendClosure));
@@ -80,6 +86,8 @@ namespace Buttplug.Client
             Index = index;
             Name = name;
             MessageAttributes = messages;
+            DisplayName = displayName;
+            MessageTimingGap = messageTimingGap;
         }
 
         /// <summary>

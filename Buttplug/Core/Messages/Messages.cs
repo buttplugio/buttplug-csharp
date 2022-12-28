@@ -216,6 +216,10 @@ namespace Buttplug.Core.Messages
         uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
 
         DeviceMessageAttributes IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
+
+        string IButtplugDeviceInfoMessage.DeviceDisplayName => DeviceDisplayName;
+
+        uint IButtplugDeviceInfoMessage.DeviceMessageTimingGap => DeviceMessageTimingGap;
     }
 
     /// <summary>
@@ -261,6 +265,17 @@ namespace Buttplug.Core.Messages
         public string DeviceName;
 
         /// <summary>
+        /// Device display name, set up by the user.
+        /// </summary>
+        public readonly string DeviceDisplayName;
+
+        /// <summary>
+        /// Recommended amount of time between commands, in milliseconds.
+        /// </summary>
+        [JsonProperty(Required = Required.Default)]
+        public readonly uint DeviceMessageTimingGap;
+
+        /// <summary>
         /// Commands supported by device.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
@@ -292,19 +307,23 @@ namespace Buttplug.Core.Messages
         uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
 
         DeviceMessageAttributes IButtplugDeviceInfoMessage.DeviceMessages => DeviceMessages;
+
+        string IButtplugDeviceInfoMessage.DeviceDisplayName => DeviceDisplayName;
+
+        uint IButtplugDeviceInfoMessage.DeviceMessageTimingGap => DeviceMessageTimingGap;
     }
 
     /// <summary>
     /// Sent from server when a device is disconnected.
     /// </summary>
     [ButtplugMessageMetadata("DeviceRemoved")]
-    public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly, IButtplugDeviceInfoMessage
+    public class DeviceRemoved : ButtplugMessage, IButtplugMessageOutgoingOnly
     {
         /// <summary>
         /// Device index.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public uint DeviceIndex;
+        public uint DeviceIndex { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceRemoved"/> class.
@@ -315,13 +334,6 @@ namespace Buttplug.Core.Messages
         {
             DeviceIndex = index;
         }
-
-        // Implementation details for IButtplugDeviceInfoMessage interface
-        string IButtplugDeviceInfoMessage.DeviceName => string.Empty;
-
-        uint IButtplugDeviceInfoMessage.DeviceIndex => DeviceIndex;
-
-        DeviceMessageAttributes IButtplugDeviceInfoMessage.DeviceMessages => null;
     }
 
     /// <summary>

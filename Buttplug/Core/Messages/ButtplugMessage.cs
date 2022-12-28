@@ -112,5 +112,9 @@ namespace Buttplug.Core.Messages
         /// Buttplug messages supported by this device, with additional attributes.
         /// </summary>
         DeviceMessageAttributes DeviceMessages { get; }
+
+        string DeviceDisplayName { get; }
+
+        uint DeviceMessageTimingGap { get; }
     }
 }
