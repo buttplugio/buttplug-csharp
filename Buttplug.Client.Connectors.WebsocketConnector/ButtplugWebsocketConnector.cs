@@ -21,7 +21,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
         private WebSocket _ws;
 
-        public bool Connected => _ws != null && _ws.IsConnected;
+        public bool Connected => _ws?.IsConnected == true;
 
         public event EventHandler Disconnected;
 
@@ -99,7 +99,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         {
             try
             {
-                if (_ws != null && _ws.IsConnected)
+                if (_ws?.IsConnected == true)
                 {
                     await _ws.CloseAsync().ConfigureAwait(false);
                 }
@@ -153,7 +153,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                             IList<string> msgs = new List<string>();
                             _outgoingMessages.TryReceiveAll(out msgs);
                             var outMsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
-                            if (_ws != null && _ws.IsConnected)
+                            if (_ws?.IsConnected == true)
                             {
                                 await _ws.WriteStringAsync(outMsgs, token).ConfigureAwait(false);
                             }
