@@ -7,7 +7,7 @@
 namespace Buttplug.Client
 {
     /// <summary>
-    /// Event wrapper for Buttplug DeviceAdded or DeviceRemoved messages. Used when the the server
+    /// Event wrapper for Buttplug DeviceAdded or DeviceRemoved messages. Used when the server
     /// informs the client of a device connecting or disconnecting.
     /// </summary>
     public class DeviceRemovedEventArgs

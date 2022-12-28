@@ -46,8 +46,8 @@ namespace Buttplug.Core
         /// <summary>
         /// Ensures that the specified argument is not null.
         /// </summary>
-        /// <param name="argumentName">Name of the argument.</param>
         /// <param name="argument">The argument.</param>
+        /// <param name="argumentName">Name of the argument.</param>
         /// <remarks>https://stackoverflow.com/questions/29184887/best-way-to-check-for-null-parameters-guard-clauses.</remarks>
         [DebuggerStepThrough]
         public static void ArgumentNotNull(object argument, string argumentName)
