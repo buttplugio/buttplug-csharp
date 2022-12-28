@@ -6,7 +6,5 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1201:Elements should appear in the correct order", Justification = "<Pending>", Scope = "member", Target = "~M:Buttplug.Core.Messages.MessageReceivedEventArgs.#ctor(Buttplug.Core.Messages.ButtplugMessage)")]
-[assembly: SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:Fields should be private", Justification = "<Pending>", Scope = "member", Target = "~F:Buttplug.Core.Messages.DeviceMessageInfoVersion0.DeviceMessages")]
 [assembly: SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "<Pending>", Scope = "type", Target = "~T:Buttplug.Core.Messages.StopDeviceCmd")]
-[assembly: SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:Fields should be private", Justification = "<Pending>", Scope = "member", Target = "~F:Buttplug.Client.ButtplugClient.Name")]
 [assembly: SuppressMessage("StyleCop.CSharp.NamingRules", "SA1309:Field names should not begin with underscore", Justification = "<Pending>", Scope = "member", Target = "~F:Buttplug.Client.ButtplugConnectorJSONParser._parser")]

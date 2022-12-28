@@ -80,7 +80,6 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Types of errors described by the message.
         /// </summary>
-        [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Defined in external spec")]
         public enum ErrorClass
         {
             /// <summary>
