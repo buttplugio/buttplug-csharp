@@ -33,7 +33,7 @@ namespace Buttplug.Core.Messages
             Id = id;
         }
 
-        private static Dictionary<Type, ButtplugMessageMetadata> _metadataCache = new Dictionary<Type, ButtplugMessageMetadata>();
+        private static readonly Dictionary<Type, ButtplugMessageMetadata> _metadataCache = new Dictionary<Type, ButtplugMessageMetadata>();
 
         /// <summary>
         /// Gets a certain ButtplugMessageMetadata attributes for a ButtplugMessage.
