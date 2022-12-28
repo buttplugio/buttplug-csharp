@@ -59,7 +59,7 @@ namespace Buttplug.Client.Connectors
 
             await _pipeClient.ConnectAsync(token).ConfigureAwait(false);
 
-            _readTask = new Task(async () => { await pipeReader(token).ConfigureAwait(false); },
+            _readTask = new Task(async () => { await PipeReader(token).ConfigureAwait(false); },
                 token,
                 TaskCreationOptions.LongRunning);
             _readTask.Start();
@@ -90,7 +90,7 @@ namespace Buttplug.Client.Connectors
             return await promise.ConfigureAwait(false);
         }
 
-        private async Task pipeReader(CancellationToken cancellationToken)
+        private async Task PipeReader(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested && _pipeClient != null && _pipeClient.IsConnected)
             {
