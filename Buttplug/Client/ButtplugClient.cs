@@ -118,7 +118,7 @@ namespace Buttplug.Client
         }
 
         // ReSharper disable once UnusedMember.Global
-        public async Task ConnectAsync(CancellationToken token = default(CancellationToken))
+        public async Task ConnectAsync(CancellationToken token = default)
         {
             if (Connected)
             {
@@ -207,7 +207,7 @@ namespace Buttplug.Client
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
         // ReSharper disable once UnusedMember.Global
-        public async Task StartScanningAsync(CancellationToken token = default(CancellationToken))
+        public async Task StartScanningAsync(CancellationToken token = default)
         {
             await SendMessageExpectOk(new StartScanning(), token).ConfigureAwait(false);
         }
@@ -221,7 +221,7 @@ namespace Buttplug.Client
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
         // ReSharper disable once UnusedMember.Global
-        public async Task StopScanningAsync(CancellationToken token = default(CancellationToken))
+        public async Task StopScanningAsync(CancellationToken token = default)
         {
             await SendMessageExpectOk(new StopScanning(), token).ConfigureAwait(false);
         }
@@ -236,7 +236,7 @@ namespace Buttplug.Client
         /// <returns>
         /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
         /// </returns>
-        protected async Task<ButtplugMessage> SendDeviceMessageAsync(ButtplugClientDevice device, ButtplugDeviceMessage deviceMsg, CancellationToken token = default(CancellationToken))
+        protected async Task<ButtplugMessage> SendDeviceMessageAsync(ButtplugClientDevice device, ButtplugDeviceMessage deviceMsg, CancellationToken token = default)
         {
             return await SendMessageAsync(deviceMsg, token).ConfigureAwait(false);
         }
@@ -247,7 +247,7 @@ namespace Buttplug.Client
         /// <param name="msg">Message to send.</param>
         /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>The response, which will derive from <see cref="ButtplugMessage"/>.</returns>
-        protected async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
+        protected async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage msg, CancellationToken token = default)
         {
             if (!Connected)
             {
@@ -352,7 +352,7 @@ namespace Buttplug.Client
         /// <param name="msg">Message to send.</param>
         /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
         /// <returns>True if successful.</returns>
-        private async Task SendMessageExpectOk(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
+        private async Task SendMessageExpectOk(ButtplugMessage msg, CancellationToken token = default)
         {
             var result = await SendMessageAsync(msg, token).ConfigureAwait(false);
             switch (result)

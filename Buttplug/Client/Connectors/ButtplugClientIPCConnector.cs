@@ -45,7 +45,7 @@ namespace Buttplug.Client.Connectors
             _ipcSocketName = iPCSocketName;
         }
 
-        public async Task ConnectAsync(CancellationToken token = default(CancellationToken))
+        public async Task ConnectAsync(CancellationToken token = default)
         {
             if (Connected)
             {
@@ -65,7 +65,7 @@ namespace Buttplug.Client.Connectors
             _readTask.Start();
         }
 
-        public async Task DisconnectAsync(CancellationToken token = default(CancellationToken))
+        public async Task DisconnectAsync(CancellationToken token = default)
         {
             // TODO Create internal token for cancellation and use link source with external key
             //_cancellationToken.Cancel();
@@ -73,7 +73,7 @@ namespace Buttplug.Client.Connectors
             await _readTask.ConfigureAwait(false);
         }
 
-        public async Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
+        public async Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default)
         {
             var (msgString, promise) = PrepareMessage(msg);
             var output = Encoding.UTF8.GetBytes(msgString);
