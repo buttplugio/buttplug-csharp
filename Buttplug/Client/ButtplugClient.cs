@@ -146,7 +146,21 @@ namespace Buttplug.Client
 
                     // Get full device list and populate internal list
                     var resp = await SendMessageAsync(new RequestDeviceList()).ConfigureAwait(false);
-                    if (!(resp is DeviceList))
+                    if (resp is DeviceList list)
+                    {
+                        foreach (var d in list.Devices)
+                        {
+                            if (_devices.ContainsKey(d.DeviceIndex))
+                            {
+                                continue;
+                            }
+
+                            var device = new ButtplugClientDevice(this, SendDeviceMessageAsync, d);
+                            _devices[d.DeviceIndex] = device;
+                            DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(device));
+                        }
+                    }
+                    else
                     {
                         await DisconnectAsync().ConfigureAwait(false);
                         if (resp is Error errResp)
@@ -156,18 +170,6 @@ namespace Buttplug.Client
 
                         throw new ButtplugHandshakeException(
                             "Received unknown response to DeviceList handshake query");
-                    }
-
-                    foreach (var d in (resp as DeviceList).Devices)
-                    {
-                        if (_devices.ContainsKey(d.DeviceIndex))
-                        {
-                            continue;
-                        }
-
-                        var device = new ButtplugClientDevice(this, SendDeviceMessageAsync, d);
-                        _devices[d.DeviceIndex] = device;
-                        DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(device));
                     }
 
                     break;
