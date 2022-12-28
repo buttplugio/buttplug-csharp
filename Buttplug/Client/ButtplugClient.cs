@@ -101,10 +101,7 @@ namespace Buttplug.Client
             ButtplugUtils.ArgumentNotNull(connector, nameof(connector));
             Name = clientName;
             _connector = connector;
-            _connector.Disconnected += (obj, eventArgs) =>
-            {
-                ServerDisconnect?.Invoke(obj, eventArgs);
-            };
+            _connector.Disconnected += (obj, eventArgs) => ServerDisconnect?.Invoke(obj, eventArgs);
             _connector.InvalidMessageReceived += ConnectorErrorHandler;
         }
 

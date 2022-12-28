@@ -85,7 +85,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                 throw new ButtplugClientConnectorException("Websocket Connection Exception! See Inner Exception", e);
             }
 
-            _readTask = new Task(async () => { await RunClientLoop(token).ConfigureAwait(false); },
+            _readTask = new Task(async () => await RunClientLoop(token).ConfigureAwait(false),
                 token,
                 TaskCreationOptions.LongRunning);
             _readTask.Start();

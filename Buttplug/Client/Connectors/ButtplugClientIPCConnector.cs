@@ -59,7 +59,7 @@ namespace Buttplug.Client.Connectors
 
             await _pipeClient.ConnectAsync(token).ConfigureAwait(false);
 
-            _readTask = new Task(async () => { await PipeReader(token).ConfigureAwait(false); },
+            _readTask = new Task(async () => await PipeReader(token).ConfigureAwait(false),
                 token,
                 TaskCreationOptions.LongRunning);
             _readTask.Start();
