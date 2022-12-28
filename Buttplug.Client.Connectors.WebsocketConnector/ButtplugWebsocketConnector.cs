@@ -169,7 +169,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                     }
                 }
             }
-            catch (Exception)
+            catch
             {
                 // TODO Figure out how to error here?
             }
