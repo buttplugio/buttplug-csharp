@@ -225,7 +225,11 @@ namespace Buttplug.Client
         {
             get
             {
-                return MessageAttributes.RotateCmd.ToList();
+                if (MessageAttributes.RotateCmd != null)
+                {
+                    return MessageAttributes.RotateCmd.ToList();
+                }
+                return Enumerable.Empty<GenericDeviceMessageAttributes>().ToList();
             }
         }
 
@@ -240,7 +244,7 @@ namespace Buttplug.Client
 
         public async Task RotateAsync(IEnumerable<(double, bool)> cmds)
         {
-            if (!RotateAttributes.Any())
+            if (!RotateAttributes.Any()) 
             {
                 throw new ButtplugDeviceException($"Device {Name} does not support rotation");
             }
@@ -251,7 +255,11 @@ namespace Buttplug.Client
         {
             get
             {
-                return MessageAttributes.LinearCmd.ToList();
+                if (MessageAttributes.LinearCmd != null)
+                {
+                    return MessageAttributes.LinearCmd.ToList();
+                }
+                return Enumerable.Empty<GenericDeviceMessageAttributes>().ToList();
             }
         }
 
