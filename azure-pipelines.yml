@@ -38,11 +38,11 @@ jobs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
           maximumCpuCount: true
-      - task: VSTest@2
-        displayName: "Test Project"
-        inputs:
-          platform: '$(buildPlatform)'
-          configuration: '$(buildConfiguration)'
+      # - task: VSTest@2
+      #   displayName: "Test Project"
+      #   inputs:
+      #     platform: '$(buildPlatform)'
+      #     configuration: '$(buildConfiguration)'
       # - task: CopyFiles@2
       #   displayName: "Copy buttplug files to unity runtime"
       #   condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
