@@ -18,7 +18,7 @@ variables:
 jobs:
   - job: Windows
     pool:
-      vmImage: 'windows-2019'
+      vmImage: 'windows-2022'
     strategy:
       matrix:
         Debug:
@@ -47,18 +47,18 @@ jobs:
         displayName: "Copy buttplug files to unity runtime"
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
         inputs:
-          contents: "$(System.DefaultWorkingDirectory)/Buttplug/bin/Release/net47/*.dll"
-          targetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
+          Contents: "$(System.DefaultWorkingDirectory)/Buttplug/bin/Release/net47/*.dll"
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
           flattenFolders: true
-          cleanTargetFolder: true
+          CleanTargetFolder: true
       - task: CopyFiles@2
         displayName: "Copy buttplug websocket files to unity runtime"
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
         inputs:
-          contents: "$(System.DefaultWorkingDirectory)/Buttplug.Client.Connectors.WebsocketConnector/bin/Release/net47/*.dll"
-          targetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
+          Contents: "$(System.DefaultWorkingDirectory)/Buttplug.Client.Connectors.WebsocketConnector/bin/Release/net47/*.dll"
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
           flattenFolders: true
-          cleanTargetFolder: false
+          CleanTargetFolder: false
       - task: ArchiveFiles@2
         displayName: "Archive unity artifacts"
         condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
@@ -71,9 +71,9 @@ jobs:
         displayName: "Copy nuget packages to staging"
         inputs:
           # Prefix this with Buttplug, otherwise we'll archive the packages directory too.
-          contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
-          targetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
-          cleanTargetFolder: true
+          Contents: "$(System.DefaultWorkingDirectory)/Buttplug*/**/*.nupkg"
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/nuget'
+          CleanTargetFolder: true
       - task: PowerShell@2
         displayName: 'Sign Exported Nuget Packages'
         # Only sign on dev/master builds
@@ -84,85 +84,85 @@ jobs:
             Get-ChildItem -Path $(Build.ArtifactStagingDirectory) -Filter *.nupkg -Recurse -File -Name| ForEach-Object {
                 nuget sign $(Build.ArtifactStagingDirectory)\$_ -CertificatePath SigningCert.pfx -CertificatePassword "$(NPLabsRepoSigningKey)" -Timestamper http://timestamp.comodoca.com/rfc3161
             }
-      - task: PublishPipelineArtifact@0
+      - task: PublishPipelineArtifact@1
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)'
-          artifactName: 'artifacts-$(buildConfiguration)'
-  - job: Documentation
-    pool:
-      vmImage: 'vs2017-win2016'
-    dependsOn:
-      - Windows
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
-    steps:
-      - task: PowerShell@2
-        displayName: Documentation Generation
-        inputs:
-          targetType: inline
-          script: |
-            cinst -y docfx
-            copy-item README.md docs/index.md
-            copy-item *.md docs/articles/
-            docfx docs/docfx.json
-      - task: ArchiveFiles@2
-        displayName: "Archive Documentation Artifacts"
-        inputs:
-          rootFolderOrFile: "docs/_site"
-          archiveType: "zip"
-          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
-          includeRootFolder: true
-      - task: PublishBuildArtifacts@1
-        displayName: "Publish Documentation Artifacts"
-        inputs:
-          pathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
-          artifactName: "buttplug-csharp-docs"
-      - task: PowerShell@2
-        displayName: Deploy Master Documentation to Netlify
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        inputs:
-          targetType: inline
-          script: |
-            npm i -g netlify-cli
-            netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site
-      # - task: PowerShell@2
-      #   displayName: Deploy Dev Documentation to Netlify
-      #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
-      #   inputs:
-      #     targetType: inline
-      #     script: |
-      #       npm i -g netlify-cli
-      #       netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site    
-  - job: Deploy
-    dependsOn:
-      - Windows
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
-    pool:
-      vmImage: 'windows-2019'
-    steps:
-      - template: build/setup-variables.yml
-      - task: DownloadPipelineArtifact@1
-        displayName: Download Artifacts from other jobs
-        inputs:
-          buildType: 'current'
-      - task: NuGetCommand@2
-        displayName: "Push NuGet packages to NuGet.org"
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        inputs:
-          command: "push"
-          nuGetFeedType: "external"
-          packagesToPush: "$(System.ArtifactsDirectory)/artifacts-Release/**/!(*.symbols).nupkg"
-          allowPackageConflicts: false
-          publishFeedCredentials: "NuGet.org"
-      - task: GitHubRelease@0
-        displayName: Upload Unity zip to Github
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        inputs:
-          gitHubConnection: "release"
-          repositoryName: "buttplugio/buttplug-csharp"
-          action: "create"
-          releaseNotes: "Buttplug C# releases are stored on NuGet, please retrieve libraries from there. The only files released here are for Buttplug Unity building. To download the Unity package, see [the Buttplug Unity repo](https://github.com/buttplugio/buttplug-unity) for more info."
-          tagSource: "auto"
-          title: "Buttplug Unity Release"
-          assets: |
-            $(System.ArtifactsDirectory)\**\buttplug-unity-*.zip
-          isPreRelease: false
+          artifact: 'artifacts-$(buildConfiguration)'
+  #- job: Documentation
+  #  pool:
+  #    vmImage: 'vs2017-win2016'
+  #  dependsOn:
+  #    - Windows
+  #  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
+  #  steps:
+  #    - task: PowerShell@2
+  #      displayName: Documentation Generation
+  #      inputs:
+  #        targetType: inline
+  #        script: |
+  #          cinst -y docfx
+  #          copy-item README.md docs/index.md
+  #          copy-item *.md docs/articles/
+  #          docfx docs/docfx.json
+  #    - task: ArchiveFiles@2
+  #      displayName: "Archive Documentation Artifacts"
+  #      inputs:
+  #        rootFolderOrFile: "docs/_site"
+  #        archiveType: "zip"
+  #        archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
+  #        includeRootFolder: true
+  #    # - task: PublishBuildArtifacts@1
+  #    #   displayName: "Publish Documentation Artifacts"
+  #    #   inputs:
+  #    #     PathtoPublish: "$(Build.ArtifactStagingDirectory)/buttplug-csharp-docs-$(gitVersion).zip"
+  #    #     ArtifactName: "buttplug-csharp-docs"
+  #    # - task: PowerShell@2
+  #    #   displayName: Deploy Master Documentation to Netlify
+  #    #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  #    #   inputs:
+  #    #     targetType: inline
+  #    #     script: |
+  #    #       npm i -g netlify-cli
+  #    #       netlify deploy --prod --open --site=$(NETLIFY_MASTER_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site
+  #    # - task: PowerShell@2
+  #    #   displayName: Deploy Dev Documentation to Netlify
+  #    #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+  #    #   inputs:
+  #    #     targetType: inline
+  #    #     script: |
+  #    #       npm i -g netlify-cli
+  #    #       netlify deploy --prod --open --site=$(NETLIFY_DEV_DOC_SITEID) --auth=$(NETLIFY_TOKEN) --dir=docs/_site    
+  #- job: Deploy
+  #  dependsOn:
+  #    - Windows
+  #  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
+  #  pool:
+  #    vmImage: 'windows-2022'
+  #  steps:
+  #    - template: build/setup-variables.yml
+  #    - task: DownloadPipelineArtifact@2
+  #      displayName: Download Artifacts from other jobs
+  #      inputs:
+  #        buildType: 'current'
+  #    - task: NuGetCommand@2
+  #      displayName: "Push NuGet packages to NuGet.org"
+  #      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  #      inputs:
+  #        command: "push"
+  #        nuGetFeedType: "external"
+  #        packagesToPush: "$(System.ArtifactsDirectory)/artifacts-Release/**/!(*.symbols).nupkg"
+  #        allowPackageConflicts: false
+  #        publishFeedCredentials: "NuGet.org"
+  #    - task: GitHubRelease@0
+  #      displayName: Upload Unity zip to Github
+  #      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  #      inputs:
+  #        gitHubConnection: "release"
+  #        repositoryName: "buttplugio/buttplug-csharp"
+  #        action: "create"
+  #        releaseNotes: "Buttplug C# releases are stored on NuGet, please retrieve libraries from there. The only files released here are for Buttplug Unity building. To download the Unity package, see [the Buttplug Unity repo](https://github.com/buttplugio/buttplug-unity) for more info."
+  #        tagSource: "auto"
+  #        title: "Buttplug Unity Release"
+  #        assets: |
+  #          $(System.ArtifactsDirectory)\**\buttplug-unity-*.zip
+  #        isPreRelease: false
