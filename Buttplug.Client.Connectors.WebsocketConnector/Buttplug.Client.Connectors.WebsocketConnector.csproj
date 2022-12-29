@@ -9,7 +9,7 @@
     <Title>Buttplug Client Websocket Connector</Title>
     <Summary>Websocket Connection Capabilities for Buttplug Clients</Summary>
     <Description>Websocket Connection Capabilities for Buttplug Clients. (.Net Framework 4.7+/.Net Standard 2.0+)</Description>
-    <Version>1.0.0</Version>
+    <Version>3.0.0-alpha</Version>
     <TargetFrameworks>netstandard2.1;netstandard2</TargetFrameworks>
   </PropertyGroup>
 
