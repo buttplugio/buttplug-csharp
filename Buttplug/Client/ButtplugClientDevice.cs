@@ -149,12 +149,19 @@ namespace Buttplug.Client
         {
             var scalars = new List<ScalarCmd.ScalarSubcommand>();
             GenericAcutatorAttributes(command.ActuatorType).ForEach(x => scalars.Add(new ScalarCmd.ScalarSubcommand(x.Index, command.Scalar, command.ActuatorType)));
-
+            if (!scalars.Any())
+            {
+                throw new ButtplugDeviceException($"Scalar command for device {Name} did not generate any commands. Are you sure the device supports the ActuatorType sent?");
+            }
             await SendMessageExpectOk(new ScalarCmd(scalars)).ConfigureAwait(false);
         }
 
         public async Task ScalarAsync(List<ScalarCmd.ScalarSubcommand> command)
         {
+            if (!command.Any())
+            {
+                throw new ArgumentException($"Command List for ScalarAsync must have at least 1 command.");
+            }
             await SendMessageExpectOk(new ScalarCmd(command)).ConfigureAwait(false);
         }
 
@@ -224,11 +231,19 @@ namespace Buttplug.Client
 
         public async Task RotateAsync(double speed, bool clockwise)
         {
+            if (!RotateAttributes.Any())
+            {
+                throw new ButtplugDeviceException($"Device {Name} does not support rotation");
+            }
             await SendMessageExpectOk(RotateCmd.Create(speed, clockwise, (uint)RotateAttributes.Count)).ConfigureAwait(false);
         }
 
         public async Task RotateAsync(IEnumerable<(double, bool)> cmds)
         {
+            if (!RotateAttributes.Any())
+            {
+                throw new ButtplugDeviceException($"Device {Name} does not support rotation");
+            }
             await SendMessageExpectOk(RotateCmd.Create(cmds)).ConfigureAwait(false);
         }
 
@@ -242,11 +257,19 @@ namespace Buttplug.Client
 
         public async Task LinearAsync(uint duration, double position)
         {
+            if (!LinearAttributes.Any())
+            {
+                throw new ButtplugDeviceException($"Device {Name} does not support linear position");
+            }
             await SendMessageExpectOk(LinearCmd.Create(duration, position, (uint)LinearAttributes.Count)).ConfigureAwait(false);
         }
 
         public async Task LinearAsync(IEnumerable<(uint, double)> cmds)
         {
+            if (!LinearAttributes.Any())
+            {
+                throw new ButtplugDeviceException($"Device {Name} does not support linear position");
+            }
             await SendMessageExpectOk(LinearCmd.Create(cmds)).ConfigureAwait(false);
         }
 
