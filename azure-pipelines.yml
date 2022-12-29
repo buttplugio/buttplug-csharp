@@ -43,30 +43,30 @@ jobs:
         inputs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
-      - task: CopyFiles@2
-        displayName: "Copy buttplug files to unity runtime"
-        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
-        inputs:
-          Contents: "$(System.DefaultWorkingDirectory)/Buttplug/bin/Release/net47/*.dll"
-          TargetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
-          flattenFolders: true
-          CleanTargetFolder: true
-      - task: CopyFiles@2
-        displayName: "Copy buttplug websocket files to unity runtime"
-        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
-        inputs:
-          Contents: "$(System.DefaultWorkingDirectory)/Buttplug.Client.Connectors.WebsocketConnector/bin/Release/net47/*.dll"
-          TargetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
-          flattenFolders: true
-          CleanTargetFolder: false
-      - task: ArchiveFiles@2
-        displayName: "Archive unity artifacts"
-        condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
-        inputs:
-          rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/ButtplugUnity"
-          archiveType: "zip"
-          archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-unity-libraries-$(gitVersion).zip"
-          includeRootFolder: false
+      # - task: CopyFiles@2
+      #   displayName: "Copy buttplug files to unity runtime"
+      #   condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
+      #   inputs:
+      #     Contents: "$(System.DefaultWorkingDirectory)/Buttplug/bin/Release/net47/*.dll"
+      #     TargetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
+      #     flattenFolders: true
+      #     CleanTargetFolder: true
+      # - task: CopyFiles@2
+      #   displayName: "Copy buttplug websocket files to unity runtime"
+      #   condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
+      #   inputs:
+      #     Contents: "$(System.DefaultWorkingDirectory)/Buttplug.Client.Connectors.WebsocketConnector/bin/Release/net47/*.dll"
+      #     TargetFolder: '$(Build.ArtifactStagingDirectory)/ButtplugUnity'
+      #     flattenFolders: true
+      #     CleanTargetFolder: false
+      # - task: ArchiveFiles@2
+      #   displayName: "Archive unity artifacts"
+      #   condition: and(succeeded(), eq(variables['buildConfiguration'], 'Release'))
+      #   inputs:
+      #     rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/ButtplugUnity"
+      #     archiveType: "zip"
+      #     archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-unity-libraries-$(gitVersion).zip"
+      #     includeRootFolder: false
       - task: CopyFiles@2
         displayName: "Copy nuget packages to staging"
         inputs:
