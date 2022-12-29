@@ -67,11 +67,6 @@ jobs:
       #     archiveType: "zip"
       #     archiveFile: "$(Build.ArtifactStagingDirectory)/buttplug-unity-libraries-$(gitVersion).zip"
       #     includeRootFolder: false
-      - task: NuGetCommand@2
-        inputs:
-          command: pack
-          packagesToPack: '**/*.csproj'
-          packDestination: '$(Build.ArtifactStagingDirectory)'
       - task: CopyFiles@2
         displayName: "Copy nuget packages to staging"
         inputs:

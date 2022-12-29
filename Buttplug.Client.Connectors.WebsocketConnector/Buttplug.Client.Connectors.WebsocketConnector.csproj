@@ -8,9 +8,15 @@
 
     <Title>Buttplug Client Websocket Connector</Title>
     <Summary>Websocket Connection Capabilities for Buttplug Clients</Summary>
-    <Description>Websocket Connection Capabilities for Buttplug Clients. (.Net Framework 4.7+/.Net Standard 2.0+)</Description>
+    <Description>Websocket Connection Capabilities for Buttplug Clients. (.Net Standard 2.0+)</Description>
     <Version>3.0.0-alpha</Version>
     <TargetFrameworks>netstandard2.1;netstandard2</TargetFrameworks>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Copyright>Copyright Nonpolynomial Labs, LLC</Copyright>
+    <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
+    <PackageIcon>buttplug-logo-1.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +29,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\icons\buttplug-logo-1.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 

@@ -6,8 +6,17 @@
     <AssemblyName>Buttplug</AssemblyName>
     <Version>3.0.0-alpha</Version>
     <Summary>Buttplug Sex Toy Control Library - Client Implementation</Summary>
-    <Description>Buttplug Sex Toy Control Library. Contains Core (messages, errors, etc), and Client components. Server can be found in Buttplug.FFI.Server (.Net Framework 4.7+/.Net Standard 2.0+)</Description>
+    <Description>Buttplug Sex Toy Control Library. Contains Core (messages, errors, etc), and Client components. Server can be found in Buttplug.FFI.Server (.Net Standard 2.0+)</Description>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
+    <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
+    <Copyright>Copyright Nonpolynomial Labs, LLC</Copyright>
+    <PackageIcon>buttplug-logo-1.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +25,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\icons\buttplug-logo-1.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="app.config" />
   </ItemGroup>
 
