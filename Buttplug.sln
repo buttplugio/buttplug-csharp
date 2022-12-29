@@ -5,8 +5,6 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.ProjectFiles", "Buttplug.ProjectFiles\Buttplug.ProjectFiles.csproj", "{437B1971-00B6-4638-A700-756F4B7610AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttplug.Client.Connectors.WebsocketConnector.Test", "Buttplug.Client.Connectors.WebsocketConnector.Test\Buttplug.Client.Connectors.WebsocketConnector.Test.csproj", "{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{3376413E-7614-4D02-B8CA-CE753F9B3399}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buttplug.Client.Connectors.WebsocketConnector", "Buttplug.Client.Connectors.WebsocketConnector\Buttplug.Client.Connectors.WebsocketConnector.csproj", "{0D71ED9E-7DD6-4B64-A7C9-BE38759AC6EA}"
@@ -46,12 +44,6 @@ Global
 		{437B1971-00B6-4638-A700-756F4B7610AA}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
 		{437B1971-00B6-4638-A700-756F4B7610AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{437B1971-00B6-4638-A700-756F4B7610AA}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
-		{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C24A0F6-263B-4E2A-A034-DB43EA69BFA1}.ReleaseStandard|Any CPU.ActiveCfg = Release|Any CPU
 		{0D71ED9E-7DD6-4B64-A7C9-BE38759AC6EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0D71ED9E-7DD6-4B64-A7C9-BE38759AC6EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D71ED9E-7DD6-4B64-A7C9-BE38759AC6EA}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
