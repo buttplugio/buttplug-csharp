@@ -171,6 +171,16 @@ namespace Buttplug.Client
             await ScalarAsync(new ScalarCmd.ScalarSubcommand(uint.MaxValue, speed, ActuatorType.Vibrate));
         }
 
+        public async Task VibrateAsync(IEnumerable<double> cmds)
+        {
+            var attrs = VibrateAttributes;
+            if (cmds.Count() > attrs.Count())
+            {
+                throw new ButtplugDeviceException($"Device {Name} only has {attrs.Count()} vibrators, but {cmds.Count()} commands given.");
+            }
+            await ScalarAsync(attrs.Select((x, i) => new ScalarCmd.ScalarSubcommand(x.Index, cmds.ElementAt(i), ActuatorType.Vibrate)).ToList()).ConfigureAwait(false);
+        }
+
         public async Task VibrateAsync(IEnumerable<(uint, double)> cmds)
         {
             await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(x.Item1, x.Item2, ActuatorType.Vibrate)).ToList()).ConfigureAwait(false);
@@ -187,6 +197,16 @@ namespace Buttplug.Client
         public async Task OscillateAsync(double speed)
         {
             await ScalarAsync(new ScalarCmd.ScalarSubcommand(uint.MaxValue, speed, ActuatorType.Oscillate));
+        }
+
+        public async Task OscillateAsync(IEnumerable<double> cmds)
+        {
+            var attrs = OscillateAttributes;
+            if (cmds.Count() > attrs.Count())
+            {
+                throw new ButtplugDeviceException($"Device {Name} only has {attrs.Count()} vibrators, but {cmds.Count()} commands given.");
+            }
+            await ScalarAsync(attrs.Select((x, i) => new ScalarCmd.ScalarSubcommand(x.Index, cmds.ElementAt(i), ActuatorType.Oscillate)).ToList()).ConfigureAwait(false);
         }
 
         public async Task OscillateAsync(IEnumerable<(uint, double)> cmds)
