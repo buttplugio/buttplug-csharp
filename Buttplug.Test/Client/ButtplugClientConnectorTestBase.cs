@@ -60,7 +60,7 @@ namespace Buttplug.Client.Test
         public async Task TestBasicConnectDisconnect()
         {
             _client.Connected.Should().BeFalse();
-            await _client.ConnectAsync();
+            await _client.ConnectAsync(_connector);
             _client.Connected.Should().BeTrue();
             await _client.DisconnectAsync();
             _client.Connected.Should().BeFalse();
@@ -70,9 +70,9 @@ namespace Buttplug.Client.Test
         public async Task TestExceptionOnDoubleConnect()
         {
             _client.Connected.Should().BeFalse();
-            await _client.ConnectAsync();
+            await _client.ConnectAsync(_connector);
             _client.Connected.Should().BeTrue();
-            await _client.Awaiting(client => client.ConnectAsync())
+            await _client.Awaiting(client => client.ConnectAsync(_connector))
                 .Should().ThrowAsync<ButtplugHandshakeException>();
         }
         /*
@@ -185,8 +185,8 @@ namespace Buttplug.Client.Test
         [Test]
         public async Task TestRethrowErrorMessage()
         {
-            var c = new SystemMessageSendingClient("TestClient", _connector);
-            await c.ConnectAsync();
+            var c = new SystemMessageSendingClient("TestClient");
+            await c.ConnectAsync(_connector);
 
             // For some reason, trying this with FluentAssertions Awaiting clauses causes a stall. Back to Asserts.
             try

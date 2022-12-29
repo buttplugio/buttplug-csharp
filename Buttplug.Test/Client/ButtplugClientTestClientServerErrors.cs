@@ -41,7 +41,7 @@ namespace Buttplug.Client.Test
         public void SetUp()
         {
             _connector = new ButtplugClientTestConnector();
-            _client = new ButtplugClient("Other Test Device Client", _connector);
+            _client = new ButtplugClient("Other Test Device Client");
             _client.ErrorReceived += HandleErrorInvoked;
             _errorInvoked = false;
         }
@@ -50,7 +50,7 @@ namespace Buttplug.Client.Test
         public async Task TestServerSpecOlderThanClientSpec()
         {
             _connector.SetMessageResponse<RequestServerInfo>(new ServerInfo("Old Server", 0, 0));
-            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync(_connector)).Should().ThrowAsync<ButtplugHandshakeException>();
             _client.Connected.Should().BeFalse();
         }
 
@@ -58,7 +58,7 @@ namespace Buttplug.Client.Test
         public async Task TestErrorReturnOnRequestServerInfo()
         {
             _connector.SetMessageResponse<RequestServerInfo>(new Error("Who even knows", Error.ErrorClass.ERROR_INIT, ButtplugConsts.DefaultMsgId));
-            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync(_connector)).Should().ThrowAsync<ButtplugHandshakeException>();
             _client.Connected.Should().BeFalse();
         }
 
@@ -66,14 +66,14 @@ namespace Buttplug.Client.Test
         public async Task TestOtherReturnOnRequestServerInfo()
         {
             _connector.SetMessageResponse<RequestServerInfo>(new Ok(ButtplugConsts.DefaultMsgId));
-            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync(_connector)).Should().ThrowAsync<ButtplugHandshakeException>();
         }
 
         [Test]
         public async Task TestErrorReturnOnDeviceList()
         {
             _connector.SetMessageResponse<RequestDeviceList>(new Error("Who even knows", Error.ErrorClass.ERROR_INIT, ButtplugConsts.DefaultMsgId));
-            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync(_connector)).Should().ThrowAsync<ButtplugHandshakeException>();
             _client.Connected.Should().BeFalse();
         }
 
@@ -81,13 +81,13 @@ namespace Buttplug.Client.Test
         public async Task TestOtherReturnOnDeviceList()
         {
             _connector.SetMessageResponse<RequestDeviceList>(new Ok(ButtplugConsts.DefaultMsgId));
-            await _client.Awaiting(client => client.ConnectAsync()).Should().ThrowAsync<ButtplugHandshakeException>();
+            await _client.Awaiting(client => client.ConnectAsync(_connector)).Should().ThrowAsync<ButtplugHandshakeException>();
         }
 
         [Test]
         public async Task TestUnmatchedOkSent()
         {
-            await _client.ConnectAsync();
+            await _client.ConnectAsync(_connector);
             _connector.SendServerMessage(new Ok(uint.MaxValue));
             _errorInvoked.Should().BeTrue();
         }
@@ -95,7 +95,7 @@ namespace Buttplug.Client.Test
         [Test]
         public async Task TestUnmatchedErrorSent()
         {
-            await _client.ConnectAsync();
+            await _client.ConnectAsync(_connector);
             _connector.SendServerMessage(new Error("This is an error", Error.ErrorClass.ERROR_MSG, uint.MaxValue));
             _errorInvoked.Should().BeTrue();
             _currentException.ButtplugErrorMessage.ErrorCode.Should().Be(Error.ErrorClass.ERROR_MSG);
@@ -104,7 +104,7 @@ namespace Buttplug.Client.Test
         [Test]
         public async Task TestUnmatchedDeviceRemovedSent()
         {
-            await _client.ConnectAsync();
+            await _client.ConnectAsync(_connector);
             _connector.SendServerMessage(new DeviceRemoved(0));
             _errorInvoked.Should().BeTrue();
             _currentException.ButtplugErrorMessage.ErrorCode.Should().Be(Error.ErrorClass.ERROR_DEVICE);
@@ -113,7 +113,7 @@ namespace Buttplug.Client.Test
         [Test]
         public async Task TestForcePingTimeout()
         {
-            await _client.ConnectAsync();
+            await _client.ConnectAsync(_connector);
             _connector.SendServerMessage(new Error("Ping timeout", Error.ErrorClass.ERROR_PING, ButtplugConsts.SystemMsgId));
             _errorInvoked.Should().BeTrue();
             _currentException.ButtplugErrorMessage.ErrorCode.Should().Be(Error.ErrorClass.ERROR_PING);
@@ -139,7 +139,7 @@ namespace Buttplug.Client.Test
             {
                disconnectTask.TrySetResult(true);
             };
-            await _client.ConnectAsync();
+            await _client.ConnectAsync(_connector);
             await waitTask.Task;
             await disconnectTask.Task;
         }
@@ -148,7 +148,7 @@ namespace Buttplug.Client.Test
         public async Task TestExpectedOkErrorSent()
         {
             _connector.SetMessageResponse<StartScanning>(new Error("Who even knows", Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.DefaultMsgId));
-            await _client.ConnectAsync();
+            await _client.ConnectAsync(_connector);
             await _client.Awaiting(client => client.StartScanningAsync()).Should().ThrowAsync<ButtplugDeviceException>();
         }
 
@@ -156,7 +156,7 @@ namespace Buttplug.Client.Test
         public async Task TestExpectedOkWrongMessageSent()
         {
             _connector.SetMessageResponse<StartScanning>(new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId));
-            await _client.ConnectAsync();
+            await _client.ConnectAsync(_connector);
             await _client.Awaiting(client => client.StartScanningAsync()).Should().ThrowAsync<ButtplugMessageException>();
         }
 
@@ -164,9 +164,9 @@ namespace Buttplug.Client.Test
         public async Task TestBadIncomingJSON()
         {
             var jsonConnector = new ButtplugClientTestJSONConnector();
-            var client = new ButtplugClient("JSON Test", jsonConnector);
+            var client = new ButtplugClient("JSON Test");
             client.ErrorReceived += HandleErrorInvoked;
-            await client.ConnectAsync();
+            await client.ConnectAsync(jsonConnector);
             jsonConnector.SendServerMessage("This is not json.");
             _errorInvoked.Should().BeTrue();
             _currentException.Should().BeOfType<ButtplugMessageException>();

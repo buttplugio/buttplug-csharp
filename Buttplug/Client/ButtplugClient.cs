@@ -94,31 +94,35 @@ namespace Buttplug.Client
         /// <summary>
         /// Connector to use for the client. Can be local (server embedded), IPC, Websocket, etc...
         /// </summary>
-        private readonly IButtplugClientConnector _connector;
+        private IButtplugClientConnector _connector;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClient"/> class.
         /// </summary>
         /// <param name="clientName">The name of the client (used by the server for UI and permissions).</param>
         /// <param name="connector">Connector for the client.</param>
-        public ButtplugClient(string clientName, IButtplugClientConnector connector)
+        public ButtplugClient(string clientName)
         {
-            ButtplugUtils.ArgumentNotNull(connector, nameof(connector));
             Name = clientName;
-            _connector = connector;
-            _connector.Disconnected += (obj, eventArgs) => ServerDisconnect?.Invoke(obj, eventArgs);
-            _connector.InvalidMessageReceived += ConnectorErrorHandler;
         }
 
         // ReSharper disable once UnusedMember.Global
-        public async Task ConnectAsync(CancellationToken token = default)
+        public async Task ConnectAsync(IButtplugClientConnector connector, CancellationToken token = default)
         {
             if (Connected)
             {
                 throw new ButtplugHandshakeException("Client already connected to a server.");
             }
+            ButtplugUtils.ArgumentNotNull(connector, nameof(connector));
 
+            // Reset client internals
+            _connector = connector;
+            _connector.Disconnected += (obj, eventArgs) => ServerDisconnect?.Invoke(obj, eventArgs);
+            _connector.InvalidMessageReceived += ConnectorErrorHandler;
             _connector.MessageReceived += MessageReceivedHandler;
+            _devices.Clear();
+
+
             await _connector.ConnectAsync(token).ConfigureAwait(false);
 
             var res = await SendMessageAsync(new RequestServerInfo(Name), token).ConfigureAwait(false);
