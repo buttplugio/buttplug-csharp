@@ -1,4 +1,4 @@
-# 3.0.0 (2022-12-26)
+# 3.0.0 (2022-12-30)
 
 Welcome Back, Buttplug C#
 
@@ -9,7 +9,10 @@ Welcome Back, Buttplug C#
 - Updated to the Buttplug v3 spec, including ScalarCmd and SensorReadCmd
 - JsonSchema removed
 - Reflection requirements removed
-- Added .Net 4.8/Standard 2.1 support (Alongside .Net 4.7/Standard 2.0)
+- IPC Connector removed (Rust implementation won't be using it either, so no reason to have it here)
+- Examples removed (moved to dev guide)
+- Removed .Net Framework support (no longer needed)
+- Added Standard 2.1 support (Alongside Standard 2.0)
 - Websocket Client Connector returns to being its own package.
 
 # 2.0.5 (2021-08-29)

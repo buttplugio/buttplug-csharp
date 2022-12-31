@@ -18,6 +18,12 @@ That project ended up being a partial failure.
 
 While the FFI system is handy for languages where it is very difficult to rebuild some parts of the library (C/C++/Java/etc...), for managed langauges like Javascript and C#, requiring both the client and server to use the FFI was overkill, and caused many extremely difficult-to-debug issues. With that in mind, the C# implementation is being turned into a Client only, .Net native implementation that should run on all platforms.
 
+## Documentation and Examples
+
+Documentation is now available via the [Buttplug Developer Guide](https://docs.buttplug.io/docs/).
+
+C# Examples are in the Dev Guide, and are available in the [Dev Guide Repo](https://github.com/buttplugio/docs.buttplug.io/tree/master/examples/csharp).
+
 ## Didn't ManagedButtplugIo already do this?
 
 [ManagedButtplugIo](https://github.com/Er1807/ManagedButtplugIo/) is a community produced, .Net native version of the Buttplug C# API, modeled off the FFI (which itself was modeled off of the original C# API). It's been helping the community along while the C# FFI implementation went off a cliff.
@@ -30,12 +36,15 @@ The main reason I'm still keeping up my own C# client is that this is a big part
 
 In order to reduce the amount of required dependencies, Buttplug is currently split into 3 Nuget packages.
 
-- Buttplug - The Client Implemenation. Only dependency is NewtonsonJSON (And Microsoft.CSharp 4.7)
-- Buttplug.Client.Connectors.WebsocketConnector - A Websocket connector built in top of
-  [WebsocketListener](https://github.com/deniszykov/WebSocketListener). While a websocket
-  implementation is very much needed to use the client libraries, This is kept as a seperate
-  dependency in case developers want to use a connector built on top of another Websocket library
-  that may work better with or is already integrated in their setup (Like WebsocketSharp).
-- Buttplug.Util.WebsocketDevice - This is a test package that allows simulation of devices via the
-  Buttplug Websocket Device Manager. More info about this can be found in [The Buttplug Developer Guide](https://docs.buttplug.io/).
+- [Buttplug](https://www.nuget.org/packages/Buttplug/) - The Client Implemenation. Only dependency
+  is NewtonsonJSON and Microsoft.CSharp 4.7
+- [Buttplug.Client.Connectors.WebsocketConnector](https://www.nuget.org/packages/Buttplug.Client.Connectors.WebsocketConnector/)
+  - A Websocket connector built in top of
+    [WebsocketListener](https://github.com/deniszykov/WebSocketListener). While a websocket
+    implementation is very much needed to use the client libraries, This is kept as a seperate
+    dependency in case developers want to use a connector built on top of another Websocket library
+    that may work better with or is already integrated in their setup (Like WebsocketSharp).
+- Buttplug.Util.WebsocketDevice (Not yet available) - This is a test package that allows simulation
+  of devices via the Buttplug Websocket Device Manager. More info about this can be found in [The
+  Buttplug Developer Guide](https://docs.buttplug.io/).
 
