@@ -18,6 +18,8 @@ That project ended up being a partial failure.
 
 While the FFI system is handy for languages where it is very difficult to rebuild some parts of the library (C/C++/Java/etc...), for managed langauges like Javascript and C#, requiring both the client and server to use the FFI was overkill, and caused many extremely difficult-to-debug issues. With that in mind, the C# implementation is being turned into a Client only, .Net native implementation that should run on all platforms.
 
+**The embedded server/connector is no longer built for C#.** It's too difficult for me to keep the package up for all of the needed architectures, and debugging it was hell. For now, I'm recommending developers point their users at [Intiface Central](https://intiface.com/central) as a hub application. If you have a reason for needing an embedded server in C#, leave an issue on this repo and we can discuss.
+
 ## Documentation and Examples
 
 Documentation is now available via the [Buttplug Developer Guide](https://docs.buttplug.io/docs/).
