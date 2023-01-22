@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Namespace Buttplug.Core.Messages
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Namespace Buttplug.Core.Messages
+   ">
+    <meta name="generator" content="docfx 2.56.7.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages">
+  
+  <h1 id="Buttplug_Core_Messages" data-uid="Buttplug.Core.Messages" class="text-break">Namespace Buttplug.Core.Messages
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">Classes
+  </h3>
+      <h4><a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a></h4>
+      <section><p>Subclass of Buttplug Messages, that command a device to take an action.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></h4>
+      <section><p>Base class for Buttplug protocol messages.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.ButtplugMessageMetadata.html">ButtplugMessageMetadata</a></h4>
+      <section></section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceAdded.html">DeviceAdded</a></h4>
+      <section><p>Sent from server when a new device is discovered.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceList.html">DeviceList</a></h4>
+      <section><p>List of devices connected to the server.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceMessageAttributes.html">DeviceMessageAttributes</a></h4>
+      <section></section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceMessageInfo.html">DeviceMessageInfo</a></h4>
+      <section><p>Container class for describing a device.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceRemoved.html">DeviceRemoved</a></h4>
+      <section><p>Sent from server when a device is disconnected.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.Error.html">Error</a></h4>
+      <section><p>Indicator that there has been an error in the system, either due to the last message/query
+sent, or due to an internal error.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a></h4>
+      <section></section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.GenericMessageSubcommand.html">GenericMessageSubcommand</a></h4>
+      <section></section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.LinearCmd.html">LinearCmd</a></h4>
+      <section><p>Sent to server, generic message that can control any linear-actuated device. This message can
+take multiple commands for devices with multiple actuators.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorSubcommand.html">LinearCmd.VectorSubcommand</a></h4>
+      <section><p>Container object for representing a single linear motion command on a device that may
+have multiple independent linear actuated features.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.MessageAttributes.html">MessageAttributes</a></h4>
+      <section><p>Container class for device attributes.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.MessageReceivedEventArgs.html">MessageReceivedEventArgs</a></h4>
+      <section><p>Event fired when a new <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a> is received.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.NullDeviceMessageAttributes.html">NullDeviceMessageAttributes</a></h4>
+      <section></section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.Ok.html">Ok</a></h4>
+      <section><p>Signifies the success of the last message/query.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.Ping.html">Ping</a></h4>
+      <section><p>Sent to server, at an interval specified by the server. If ping is not received in a timely
+manner, devices are stopped and client/server connection is severed.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.RawDeviceMessageAttributes.html">RawDeviceMessageAttributes</a></h4>
+      <section></section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.RequestDeviceList.html">RequestDeviceList</a></h4>
+      <section><p>Sent to server to request a list of all connected devices.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.RequestServerInfo.html">RequestServerInfo</a></h4>
+      <section><p>Sent to server to set up client information, including client name and schema version.
+Denotes the beginning of a connection handshake.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.RotateCmd.html">RotateCmd</a></h4>
+      <section><p>Sent to server, generic message that can control any rotating device. This message can take
+multiple commands for devices with multiple rotators.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.RotateCmd.RotateSubcommand.html">RotateCmd.RotateSubcommand</a></h4>
+      <section><p>Container object for representing a single rotation command on a device that may have
+multiple independent rotating features.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.ScalarCmd.html">ScalarCmd</a></h4>
+      <section><p>Sent to server, generic message that can control any device that takes a single value and staticly
+sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a></h4>
+      <section><p>Container object for representing a single scalar value on a device that may have
+multiple independent scalar actuators.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.ScanningFinished.html">ScanningFinished</a></h4>
+      <section><p>Sent from server when scanning has finished.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.SensorDeviceMessageAttributes.html">SensorDeviceMessageAttributes</a></h4>
+      <section></section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.SensorReadCmd.html">SensorReadCmd</a></h4>
+      <section><p>Sent to server, generic message that can control any device that takes a single value and staticly
+sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.SensorReading.html">SensorReading</a></h4>
+      <section><p>Sent to server, generic message that can control any device that takes a single value and staticly
+sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.ServerInfo.html">ServerInfo</a></h4>
+      <section><p>Sent from server, in response to <a class="xref" href="Buttplug.Core.Messages.RequestServerInfo.html">RequestServerInfo</a>. Contains server name,
+message version, ping information, etc...</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.StartScanning.html">StartScanning</a></h4>
+      <section><p>Sent to server, to start scanning for devices across supported busses.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.StopAllDevices.html">StopAllDevices</a></h4>
+      <section><p>Sent to server, stops actions of all currently connected devices.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.StopDeviceCmd.html">StopDeviceCmd</a></h4>
+      <section><p>Sent to server, stops actions of a specific device.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.StopScanning.html">StopScanning</a></h4>
+      <section><p>Sent to server, to stop scanning for devices across supported busses.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.Test.html">Test</a></h4>
+      <section><p>Sends text to a server, expected to be echoed back.</p>
+</section>
+    <h3 id="interfaces">Interfaces
+  </h3>
+      <h4><a class="xref" href="Buttplug.Core.Messages.IButtplugDeviceInfoMessage.html">IButtplugDeviceInfoMessage</a></h4>
+      <section><p>Interface for messages containing Device Info, such as DeviceAdded/Removed.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.IButtplugMessageOutgoingOnly.html">IButtplugMessageOutgoingOnly</a></h4>
+      <section><p>Interface for messages only sent from server to client.</p>
+</section>
+    <h3 id="enums">Enums
+  </h3>
+      <h4><a class="xref" href="Buttplug.Core.Messages.ActuatorType.html">ActuatorType</a></h4>
+      <section></section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.Error.ErrorClass.html">Error.ErrorClass</a></h4>
+      <section><p>Types of errors described by the message.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.SensorType.html">SensorType</a></h4>
+      <section></section>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

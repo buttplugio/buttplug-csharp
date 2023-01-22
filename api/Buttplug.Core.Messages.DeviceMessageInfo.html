@@ -1,0 +1,405 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class DeviceMessageInfo
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class DeviceMessageInfo
+   ">
+    <meta name="generator" content="docfx 2.56.7.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.DeviceMessageInfo">
+  
+  
+  <h1 id="Buttplug_Core_Messages_DeviceMessageInfo" data-uid="Buttplug.Core.Messages.DeviceMessageInfo" class="text-break">Class DeviceMessageInfo
+  </h1>
+  <div class="markdown level0 summary"><p>Container class for describing a device.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level1"><span class="xref">DeviceMessageInfo</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Buttplug.Core.Messages.IButtplugDeviceInfoMessage.html">IButtplugDeviceInfoMessage</a></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
+  <h6><strong>Assembly</strong>: Buttplug.dll</h6>
+  <h5 id="Buttplug_Core_Messages_DeviceMessageInfo_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class DeviceMessageInfo : object, IButtplugDeviceInfoMessage</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <a id="Buttplug_Core_Messages_DeviceMessageInfo__ctor_" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.#ctor*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo__ctor_System_UInt32_System_String_Buttplug_Core_Messages_DeviceMessageAttributes_" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.#ctor(System.UInt32,System.String,Buttplug.Core.Messages.DeviceMessageAttributes)">DeviceMessageInfo(UInt32, String, DeviceMessageAttributes)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.DeviceMessageInfo.html">DeviceMessageInfo</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DeviceMessageInfo(uint index, string name, DeviceMessageAttributes messages)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="parametername">index</span></td>
+        <td><p>Device index.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>Device name.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.DeviceMessageAttributes.html">DeviceMessageAttributes</a></td>
+        <td><span class="parametername">messages</span></td>
+        <td><p>List of device messages/attributes supported.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_DeviceDisplayName" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.DeviceDisplayName">DeviceDisplayName</h4>
+  <div class="markdown level1 summary"><p>Device display name, set up by the user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly string DeviceDisplayName</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_DeviceIndex" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.DeviceIndex">DeviceIndex</h4>
+  <div class="markdown level1 summary"><p>Device index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly uint DeviceIndex</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_DeviceMessages" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.DeviceMessages">DeviceMessages</h4>
+  <div class="markdown level1 summary"><p>List of messages that a device supports, with additional attribute data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly DeviceMessageAttributes DeviceMessages</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.DeviceMessageAttributes.html">DeviceMessageAttributes</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_DeviceMessageTimingGap" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.DeviceMessageTimingGap">DeviceMessageTimingGap</h4>
+  <div class="markdown level1 summary"><p>Recommended amount of time between commands, in milliseconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly uint DeviceMessageTimingGap</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_DeviceName" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.DeviceName">DeviceName</h4>
+  <div class="markdown level1 summary"><p>Name of the device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly string DeviceName</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="eii">Explicit Interface Implementations
+  </h3>
+  <a id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceDisplayName_" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceDisplayName*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceDisplayName" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceDisplayName">IButtplugDeviceInfoMessage.DeviceDisplayName</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string IButtplugDeviceInfoMessage.DeviceDisplayName { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceIndex_" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceIndex*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceIndex" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceIndex">IButtplugDeviceInfoMessage.DeviceIndex</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">uint IButtplugDeviceInfoMessage.DeviceIndex { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceMessages_" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceMessages*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceMessages" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceMessages">IButtplugDeviceInfoMessage.DeviceMessages</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">DeviceMessageAttributes IButtplugDeviceInfoMessage.DeviceMessages { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.DeviceMessageAttributes.html">DeviceMessageAttributes</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceMessageTimingGap_" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceMessageTimingGap*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceMessageTimingGap" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceMessageTimingGap">IButtplugDeviceInfoMessage.DeviceMessageTimingGap</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">uint IButtplugDeviceInfoMessage.DeviceMessageTimingGap { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceName_" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceName*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceMessageInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceName" data-uid="Buttplug.Core.Messages.DeviceMessageInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceName">IButtplugDeviceInfoMessage.DeviceName</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string IButtplugDeviceInfoMessage.DeviceName { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="Buttplug.Core.Messages.IButtplugDeviceInfoMessage.html">IButtplugDeviceInfoMessage</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

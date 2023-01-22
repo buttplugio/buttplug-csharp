@@ -1,0 +1,1164 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class ButtplugClientDevice
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class ButtplugClientDevice
+   ">
+    <meta name="generator" content="docfx 2.56.7.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Client.ButtplugClientDevice">
+  
+  
+  <h1 id="Buttplug_Client_ButtplugClientDevice" data-uid="Buttplug.Client.ButtplugClientDevice" class="text-break">Class ButtplugClientDevice
+  </h1>
+  <div class="markdown level0 summary"><p>The Buttplug Client representation of a Buttplug Device connected to a server.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level1"><span class="xref">ButtplugClientDevice</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Client.html">Buttplug.Client</a></h6>
+  <h6><strong>Assembly</strong>: Buttplug.dll</h6>
+  <h5 id="Buttplug_Client_ButtplugClientDevice_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ButtplugClientDevice : IEquatable&lt;ButtplugClientDevice&gt;</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <a id="Buttplug_Client_ButtplugClientDevice__ctor_" data-uid="Buttplug.Client.ButtplugClientDevice.#ctor*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice__ctor_Buttplug_Client_ButtplugClient_Func_Buttplug_Client_ButtplugClientDevice_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_Task_Buttplug_Core_Messages_ButtplugMessage___Buttplug_Core_Messages_IButtplugDeviceInfoMessage_" data-uid="Buttplug.Client.ButtplugClientDevice.#ctor(Buttplug.Client.ButtplugClient,Func{Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken,Task{Buttplug.Core.Messages.ButtplugMessage}},Buttplug.Core.Messages.IButtplugDeviceInfoMessage)">ButtplugClientDevice(ButtplugClient, Func&lt;ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task&lt;ButtplugMessage&gt;&gt;, IButtplugDeviceInfoMessage)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a> class, using
+information received via a DeviceList, DeviceAdded, or DeviceRemoved message from the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ButtplugClientDevice(ButtplugClient owningClient, Func&lt;ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task&lt;ButtplugMessage&gt;&gt; sendClosure, IButtplugDeviceInfoMessage devInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Client.ButtplugClient.html">ButtplugClient</a></td>
+        <td><span class="parametername">owningClient</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a>, <a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>&gt;&gt;</td>
+        <td><span class="parametername">sendClosure</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.IButtplugDeviceInfoMessage.html">IButtplugDeviceInfoMessage</a></td>
+        <td><span class="parametername">devInfo</span></td>
+        <td><p>A Buttplug protocol message implementing the IButtplugDeviceInfoMessage interface.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice__ctor_" data-uid="Buttplug.Client.ButtplugClientDevice.#ctor*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice__ctor_Buttplug_Client_ButtplugClient_Func_Buttplug_Client_ButtplugClientDevice_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_Task_Buttplug_Core_Messages_ButtplugMessage___System_UInt32_System_String_Buttplug_Core_Messages_DeviceMessageAttributes_System_String_System_UInt32_" data-uid="Buttplug.Client.ButtplugClientDevice.#ctor(Buttplug.Client.ButtplugClient,Func{Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken,Task{Buttplug.Core.Messages.ButtplugMessage}},System.UInt32,System.String,Buttplug.Core.Messages.DeviceMessageAttributes,System.String,System.UInt32)">ButtplugClientDevice(ButtplugClient, Func&lt;ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task&lt;ButtplugMessage&gt;&gt;, UInt32, String, DeviceMessageAttributes, String, UInt32)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a> class, using
+discrete parameters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ButtplugClientDevice(ButtplugClient owningClient, Func&lt;ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task&lt;ButtplugMessage&gt;&gt; sendClosure, uint index, string name, DeviceMessageAttributes messages, string displayName, uint messageTimingGap)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Client.ButtplugClient.html">ButtplugClient</a></td>
+        <td><span class="parametername">owningClient</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a>, <a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>&gt;&gt;</td>
+        <td><span class="parametername">sendClosure</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="parametername">index</span></td>
+        <td><p>The device index.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The device name.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.DeviceMessageAttributes.html">DeviceMessageAttributes</a></td>
+        <td><span class="parametername">messages</span></td>
+        <td><p>The device allowed message list, with corresponding attributes.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="parametername">displayName</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="parametername">messageTimingGap</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <a id="Buttplug_Client_ButtplugClientDevice_DisplayName_" data-uid="Buttplug.Client.ButtplugClientDevice.DisplayName*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_DisplayName" data-uid="Buttplug.Client.ButtplugClientDevice.DisplayName">DisplayName</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DisplayName { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_HasBattery_" data-uid="Buttplug.Client.ButtplugClientDevice.HasBattery*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_HasBattery" data-uid="Buttplug.Client.ButtplugClientDevice.HasBattery">HasBattery</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasBattery { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_Index_" data-uid="Buttplug.Client.ButtplugClientDevice.Index*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_Index" data-uid="Buttplug.Client.ButtplugClientDevice.Index">Index</h4>
+  <div class="markdown level1 summary"><p>The device index, which uniquely identifies the device on the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint Index { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Buttplug_Client_ButtplugClientDevice_Index_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If a device is removed, this may be the only populated field. If the same device
+reconnects, the index should be reused.</p>
+</div>
+  <a id="Buttplug_Client_ButtplugClientDevice_LinearAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAttributes*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_LinearAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAttributes">LinearAttributes</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; LinearAttributes { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_MessageAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.MessageAttributes*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_MessageAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.MessageAttributes">MessageAttributes</h4>
+  <div class="markdown level1 summary"><p>The Buttplug Protocol messages supported by this device, with additional attributes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DeviceMessageAttributes MessageAttributes { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.DeviceMessageAttributes.html">DeviceMessageAttributes</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_MessageTimingGap_" data-uid="Buttplug.Client.ButtplugClientDevice.MessageTimingGap*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_MessageTimingGap" data-uid="Buttplug.Client.ButtplugClientDevice.MessageTimingGap">MessageTimingGap</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint MessageTimingGap { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_Name_" data-uid="Buttplug.Client.ButtplugClientDevice.Name*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_Name" data-uid="Buttplug.Client.ButtplugClientDevice.Name">Name</h4>
+  <div class="markdown level1 summary"><p>The device name, which usually contains the device brand and model.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_OscillateAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAttributes*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAttributes">OscillateAttributes</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; OscillateAttributes { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_RotateAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAttributes*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_RotateAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAttributes">RotateAttributes</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; RotateAttributes { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_VibrateAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAttributes*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAttributes">VibrateAttributes</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; VibrateAttributes { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <a id="Buttplug_Client_ButtplugClientDevice_BatteryAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.BatteryAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_BatteryAsync" data-uid="Buttplug.Client.ButtplugClientDevice.BatteryAsync">BatteryAsync()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;double&gt; BatteryAsync()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_Equals_" data-uid="Buttplug.Client.ButtplugClientDevice.Equals*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_Equals_Buttplug_Client_ButtplugClientDevice_" data-uid="Buttplug.Client.ButtplugClientDevice.Equals(Buttplug.Client.ButtplugClientDevice)">Equals(ButtplugClientDevice)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(ButtplugClientDevice device)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a></td>
+        <td><span class="parametername">device</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_GenericAcutatorAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.GenericAcutatorAttributes*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_GenericAcutatorAttributes_Buttplug_Core_Messages_ActuatorType_" data-uid="Buttplug.Client.ButtplugClientDevice.GenericAcutatorAttributes(Buttplug.Core.Messages.ActuatorType)">GenericAcutatorAttributes(ActuatorType)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; GenericAcutatorAttributes(ActuatorType actuator)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.ActuatorType.html">ActuatorType</a></td>
+        <td><span class="parametername">actuator</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_LinearAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_LinearAsync_IEnumerable_System_ValueTuple_System_UInt32_System_Double___" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})">LinearAsync(IEnumerable&lt;(UInt32, Double)&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task LinearAsync(IEnumerable&lt;(uint, double)&gt; cmds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.valuetuple-2">ValueTuple</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;&gt;</td>
+        <td><span class="parametername">cmds</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_LinearAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_LinearAsync_System_UInt32_System_Double_" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync(System.UInt32,System.Double)">LinearAsync(UInt32, Double)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task LinearAsync(uint duration, double position)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="parametername">duration</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
+        <td><span class="parametername">position</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_System_Double__" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{System.Double})">OscillateAsync(IEnumerable&lt;Double&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task OscillateAsync(IEnumerable&lt;double&gt; cmds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
+        <td><span class="parametername">cmds</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_System_ValueTuple_System_UInt32_System_Double___" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})">OscillateAsync(IEnumerable&lt;(UInt32, Double)&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task OscillateAsync(IEnumerable&lt;(uint, double)&gt; cmds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.valuetuple-2">ValueTuple</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;&gt;</td>
+        <td><span class="parametername">cmds</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_System_Double_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(System.Double)">OscillateAsync(Double)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task OscillateAsync(double speed)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
+        <td><span class="parametername">speed</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_RotateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_RotateAsync_IEnumerable_System_ValueTuple_System_Double_System_Boolean___" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable{System.ValueTuple{System.Double,System.Boolean}})">RotateAsync(IEnumerable&lt;(Double, Boolean)&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RotateAsync(IEnumerable&lt;(double, bool)&gt; cmds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.valuetuple-2">ValueTuple</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a>&gt;&gt;</td>
+        <td><span class="parametername">cmds</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_RotateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_RotateAsync_System_Double_System_Boolean_" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync(System.Double,System.Boolean)">RotateAsync(Double, Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RotateAsync(double speed, bool clockwise)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
+        <td><span class="parametername">speed</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><span class="parametername">clockwise</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_ScalarAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.ScalarAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_ScalarAsync_Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand_" data-uid="Buttplug.Client.ButtplugClientDevice.ScalarAsync(Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand)">ScalarAsync(ScalarCmd.ScalarSubcommand)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ScalarAsync(ScalarCmd.ScalarSubcommand command)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a></td>
+        <td><span class="parametername">command</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_ScalarAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.ScalarAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_ScalarAsync_List_Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand__" data-uid="Buttplug.Client.ButtplugClientDevice.ScalarAsync(List{Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand})">ScalarAsync(List&lt;ScalarCmd.ScalarSubcommand&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ScalarAsync(List&lt;ScalarCmd.ScalarSubcommand&gt; command)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a>&gt;</td>
+        <td><span class="parametername">command</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_SendMessageAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.SendMessageAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_SendMessageAsync_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_" data-uid="Buttplug.Client.ButtplugClientDevice.SendMessageAsync(Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken)">SendMessageAsync(ButtplugDeviceMessage, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ButtplugMessage&gt; SendMessageAsync(ButtplugDeviceMessage msg, CancellationToken token = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a></td>
+        <td><span class="parametername">msg</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">CancellationToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_SensorReadAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.SensorReadAttributes*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_SensorReadAttributes_Buttplug_Core_Messages_SensorType_" data-uid="Buttplug.Client.ButtplugClientDevice.SensorReadAttributes(Buttplug.Core.Messages.SensorType)">SensorReadAttributes(SensorType)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;SensorDeviceMessageAttributes&gt; SensorReadAttributes(SensorType sensor)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.SensorType.html">SensorType</a></td>
+        <td><span class="parametername">sensor</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.SensorDeviceMessageAttributes.html">SensorDeviceMessageAttributes</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_Stop_" data-uid="Buttplug.Client.ButtplugClientDevice.Stop*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_Stop" data-uid="Buttplug.Client.ButtplugClientDevice.Stop">Stop()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task Stop()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_System_Double__" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{System.Double})">VibrateAsync(IEnumerable&lt;Double&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task VibrateAsync(IEnumerable&lt;double&gt; cmds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
+        <td><span class="parametername">cmds</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_System_ValueTuple_System_UInt32_System_Double___" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})">VibrateAsync(IEnumerable&lt;(UInt32, Double)&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task VibrateAsync(IEnumerable&lt;(uint, double)&gt; cmds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.valuetuple-2">ValueTuple</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;&gt;</td>
+        <td><span class="parametername">cmds</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_System_Double_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(System.Double)">VibrateAsync(Double)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task VibrateAsync(double speed)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
+        <td><span class="parametername">speed</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
