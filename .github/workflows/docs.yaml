@@ -14,8 +14,10 @@ jobs:
       with:
         dotnet-version: 6.x
 
-    - run: dotnet install -g docfx
-    - run: docfx docs/docfx.json
+    - name: Build Documentation
+      uses: nikeee/docfx-action@v1.0.0
+      with:
+        args: docs/docfx.json
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
