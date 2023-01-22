@@ -9,7 +9,7 @@
 <div align="center">
   <h3>
     <a href="https://buttplug-csharp.docs.buttplug.io">
-      C# API Documentation
+      C# API Docs
     </a>
     <span> | </span>
     <a href="https://docs.buttplug.io/docs/spec">
@@ -19,7 +19,10 @@
     <a href="https://docs.buttplug.io/docs/dev-guide">
       Developer Guide
     </a>
-    <span> | </span>
+    </h3>
+  </div>
+  <div align="center">
+  <h3>
     <a href="https://how.do.i.get.buttplug.in">
       User FAQ
     </a>
