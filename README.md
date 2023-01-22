@@ -6,6 +6,30 @@
 [![Discord](https://img.shields.io/discord/353303527587708932.svg?logo=discord)](https://discord.buttplug.io)
 [![Twitter](https://img.shields.io/twitter/follow/buttplugio.svg?style=social&logo=twitter)](https://twitter.com/buttplugio)
 
+<div align="center">
+  <h3>
+    <a href="https://buttplug-csharp.docs.buttplug.io">
+      C# API Documentation
+    </a>
+    <span> | </span>
+    <a href="https://docs.buttplug.io/docs/spec">
+      Protocol Spec
+    </a>
+    <span> | </span>
+    <a href="https://docs.buttplug.io/docs/dev-guide">
+      Developer Guide
+    </a>
+    <span> | </span>
+    <a href="https://how.do.i.get.buttplug.in">
+      User FAQ
+    </a>
+    <span> | </span>
+    <a href="https://awesome.buttplug.io">
+      Apps/Games Using Buttplug
+    </a>
+  </h3>
+</div>
+
 This repo houses are pure .Net version of the Buttplug C# Client, runnings the Version 3 Buttplug Spec. It is expected to run against either [Intiface Central (GUI)](https://intiface.com/central) or [Initface Engine (CLI)](https://github.com/intiface/intiface-engine). No Rust FFI bindings are required.
 
 ## What happened? Why is buttplug-csharp back?
@@ -22,9 +46,9 @@ While the FFI system is handy for languages where it is very difficult to rebuil
 
 ## Documentation and Examples
 
-Documentation is now available via the [Buttplug Developer Guide](https://docs.buttplug.io/docs/).
+API Documentation is available at [https://buttplug-csharp.docs.buttplug.io].
 
-C# Examples are in the Dev Guide, and are available in the [Dev Guide Repo](https://github.com/buttplugio/docs.buttplug.io/tree/master/examples/csharp).
+C# Usage Examples are available in the [Buttplug Developer Guide](https://docs.buttplug.io/docs/dev-guide), with source code and VS projects in the [Dev Guide Repo](https://github.com/buttplugio/docs.buttplug.io/tree/master/examples/csharp).
 
 ## Didn't ManagedButtplugIo already do this?
 
