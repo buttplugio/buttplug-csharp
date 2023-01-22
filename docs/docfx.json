@@ -5,7 +5,8 @@
         {
           "src": "..",
           "files": [
-            "Buttplug/**.csproj"
+            "Buttplug/**.csproj",
+            "Buttplug.Client.Connectors.WebsocketConnector/**.csproj"
           ],
           "exclude": [
             "**/obj/**",
@@ -30,19 +31,9 @@
         ]
       },
       {
-        "files": "*.md",
-        "src": ".."
-      },
-      {
         "files": [
-          "articles/**.md",
-          "articles/**/toc.yml",
-          "toc.yml",
-          "*.md"
-        ],
-        "exclude": [
-          "obj/**",
-          "_site/**"
+          "*.md",
+          "toc.yml"
         ]
       }
     ],
@@ -68,6 +59,9 @@
         ]
       }
     ],
+    "globalMetadata": {
+      "_disableContribution": true
+    },
     "dest": "_site",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],

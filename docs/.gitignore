@@ -1,4 +1,4 @@
-*.md
+api/*.md
 gh-pages
 dist_pdf
 api/Buttplug.*
