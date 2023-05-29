@@ -9,6 +9,8 @@ namespace Buttplug.Core.Messages
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ActuatorType
     {
+        [EnumMember(Value = "Unknown")]
+        Unknown,
         [EnumMember(Value = "Vibrate")]
         Vibrate,
         [EnumMember(Value = "Rotate")]
@@ -26,6 +28,8 @@ namespace Buttplug.Core.Messages
     [JsonConverter(typeof(StringEnumConverter))]
     public enum SensorType
     {
+        [EnumMember(Value = "Unknown")]
+        Unknown,
         [EnumMember(Value = "Battery")]
         Battery,
         [EnumMember(Value = "RSSI")]
