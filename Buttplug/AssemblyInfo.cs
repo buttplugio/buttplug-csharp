@@ -7,3 +7,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Buttplug.Test")]
+[assembly: InternalsVisibleTo("Buttplug.Client.Test")]
