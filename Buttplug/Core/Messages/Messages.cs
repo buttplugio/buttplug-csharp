@@ -322,7 +322,7 @@ namespace Buttplug.Core.Messages
         /// Device index.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public uint DeviceIndex { get; }
+        public readonly uint DeviceIndex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceRemoved"/> class.
