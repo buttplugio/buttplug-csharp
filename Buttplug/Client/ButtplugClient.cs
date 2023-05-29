@@ -6,11 +6,11 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-
 using Buttplug.Core.Messages;
 
 namespace Buttplug.Client
@@ -85,6 +85,8 @@ namespace Buttplug.Client
         /// </remarks>
         protected Timer _pingTimer;
 
+        internal ButtplugClientMessageHandler _handler;
+
         /// <summary>
         /// Stores information about devices currently connected to the server.
         /// </summary>
@@ -121,11 +123,12 @@ namespace Buttplug.Client
             _connector.InvalidMessageReceived += ConnectorErrorHandler;
             _connector.MessageReceived += MessageReceivedHandler;
             _devices.Clear();
+            _handler = new ButtplugClientMessageHandler(connector);
 
 
             await _connector.ConnectAsync(token).ConfigureAwait(false);
 
-            var res = await SendMessageAsync(new RequestServerInfo(Name), token).ConfigureAwait(false);
+            var res = await _handler.SendMessageAsync(new RequestServerInfo(Name), token).ConfigureAwait(false);
             switch (res)
             {
                 case ServerInfo si:
@@ -145,7 +148,7 @@ namespace Buttplug.Client
                     }
 
                     // Get full device list and populate internal list
-                    var resp = await SendMessageAsync(new RequestDeviceList()).ConfigureAwait(false);
+                    var resp = await _handler.SendMessageAsync(new RequestDeviceList()).ConfigureAwait(false);
                     if (resp is DeviceList list)
                     {
                         foreach (var d in list.Devices)
@@ -155,7 +158,7 @@ namespace Buttplug.Client
                                 continue;
                             }
 
-                            var device = new ButtplugClientDevice(this, SendDeviceMessageAsync, d);
+                            var device = new ButtplugClientDevice(_handler, d);
                             _devices[d.DeviceIndex] = device;
                             DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(device));
                         }
@@ -208,7 +211,7 @@ namespace Buttplug.Client
         // ReSharper disable once UnusedMember.Global
         public async Task StartScanningAsync(CancellationToken token = default)
         {
-            await SendMessageExpectOk(new StartScanning(), token).ConfigureAwait(false);
+            await _handler.SendMessageExpectOk(new StartScanning(), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -222,38 +225,7 @@ namespace Buttplug.Client
         // ReSharper disable once UnusedMember.Global
         public async Task StopScanningAsync(CancellationToken token = default)
         {
-            await SendMessageExpectOk(new StopScanning(), token).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Sends a DeviceMessage (e.g. <see cref="VibrateCmd"/> or <see cref="LinearCmd"/>). Handles
-        /// constructing some parts of the message for the user.
-        /// </summary>
-        /// <param name="device">The device to be controlled by the message.</param>
-        /// <param name="deviceMsg">The device message (Id and DeviceIndex will be overriden).</param>
-        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
-        /// <returns>
-        /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
-        /// </returns>
-        protected async Task<ButtplugMessage> SendDeviceMessageAsync(ButtplugClientDevice device, ButtplugDeviceMessage deviceMsg, CancellationToken token = default)
-        {
-            return await SendMessageAsync(deviceMsg, token).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Sends a message to the server, and handles asynchronously waiting for the reply from the server.
-        /// </summary>
-        /// <param name="msg">Message to send.</param>
-        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
-        /// <returns>The response, which will derive from <see cref="ButtplugMessage"/>.</returns>
-        protected async Task<ButtplugMessage> SendMessageAsync(ButtplugMessage msg, CancellationToken token = default)
-        {
-            if (!Connected)
-            {
-                throw new ButtplugClientConnectorException("Client not connected.");
-            }
-
-            return await _connector.SendAsync(msg, token).ConfigureAwait(false);
+            await _handler.SendMessageExpectOk(new StopScanning(), token).ConfigureAwait(false);
         }
 
         private void ConnectorErrorHandler(object sender, ButtplugExceptionEventArgs exception)
@@ -275,7 +247,7 @@ namespace Buttplug.Client
             switch (msg)
             {
                 case DeviceAdded d:
-                    var dev = new ButtplugClientDevice(this, SendDeviceMessageAsync, d);
+                    var dev = new ButtplugClientDevice(_handler, d);
                     _devices.AddOrUpdate(d.DeviceIndex, dev, (u, device) => dev);
                     DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(dev));
                     break;
@@ -335,7 +307,7 @@ namespace Buttplug.Client
         {
             try
             {
-                await SendMessageExpectOk(new Ping()).ConfigureAwait(false);
+                await _handler.SendMessageExpectOk(new Ping()).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -343,26 +315,6 @@ namespace Buttplug.Client
 
                 // If SendMessageAsync throws, we're probably already disconnected, but just make sure.
                 await DisconnectAsync().ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Sends a message, expecting a response of message type <see cref="Ok"/>.
-        /// </summary>
-        /// <param name="msg">Message to send.</param>
-        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
-        /// <returns>True if successful.</returns>
-        private async Task SendMessageExpectOk(ButtplugMessage msg, CancellationToken token = default)
-        {
-            var result = await SendMessageAsync(msg, token).ConfigureAwait(false);
-            switch (result)
-            {
-                case Ok _:
-                    return;
-                case Error err:
-                    throw ButtplugException.FromError(err);
-                default:
-                    throw new ButtplugMessageException($"Message type {msg.Name} not handled by SendMessageExpectOk", msg.Id);
             }
         }
 

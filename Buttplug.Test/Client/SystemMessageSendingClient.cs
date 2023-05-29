@@ -22,12 +22,12 @@ namespace Buttplug.Client.Test
 
         public async Task SendSystemIdMessage()
         {
-            await SendMessageAsync(new StartScanning(ButtplugConsts.SystemMsgId));
+            await _handler.SendMessageAsync(new StartScanning(ButtplugConsts.SystemMsgId));
         }
 
         public async Task SendOutgoingOnlyMessage()
         {
-            await SendMessageAsync(new Ok(ButtplugConsts.DefaultMsgId));
+            await _handler.SendMessageAsync(new Ok(ButtplugConsts.DefaultMsgId));
         }
     }
 }

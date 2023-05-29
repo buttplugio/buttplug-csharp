@@ -18,7 +18,7 @@ namespace Buttplug.Client
     /// <summary>
     /// The Buttplug Client representation of a Buttplug Device connected to a server.
     /// </summary>
-    public class ButtplugClientDevice : IEquatable<ButtplugClientDevice>
+    public class ButtplugClientDevice
     {
         /// <summary>
         /// The device index, which uniquely identifies the device on the server.
@@ -43,9 +43,7 @@ namespace Buttplug.Client
         /// </summary>
         public DeviceMessageAttributes MessageAttributes { get; }
 
-        private readonly ButtplugClient _owningClient;
-
-        private readonly Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> _sendClosure;
+        private readonly ButtplugClientMessageHandler _handler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
@@ -54,11 +52,10 @@ namespace Buttplug.Client
         /// <param name="devInfo">
         /// A Buttplug protocol message implementing the IButtplugDeviceInfoMessage interface.
         /// </param>
-        public ButtplugClientDevice(
-            ButtplugClient owningClient,
-            Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> sendClosure,
+        internal ButtplugClientDevice(
+            ButtplugClientMessageHandler handler,
             IButtplugDeviceInfoMessage devInfo)
-           : this(owningClient, sendClosure, devInfo.DeviceIndex, devInfo.DeviceName, devInfo.DeviceMessages, devInfo.DeviceDisplayName, devInfo.DeviceMessageTimingGap)
+           : this(handler, devInfo.DeviceIndex, devInfo.DeviceName, devInfo.DeviceMessages, devInfo.DeviceDisplayName, devInfo.DeviceMessageTimingGap)
         {
             ButtplugUtils.ArgumentNotNull(devInfo, nameof(devInfo));
         }
@@ -70,69 +67,21 @@ namespace Buttplug.Client
         /// <param name="index">The device index.</param>
         /// <param name="name">The device name.</param>
         /// <param name="messages">The device allowed message list, with corresponding attributes.</param>
-        public ButtplugClientDevice(
-            ButtplugClient owningClient,
-            Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>> sendClosure,
+        internal ButtplugClientDevice(
+            ButtplugClientMessageHandler handler,
             uint index,
             string name,
             DeviceMessageAttributes messages,
             string displayName,
             uint messageTimingGap)
         {
-            ButtplugUtils.ArgumentNotNull(owningClient, nameof(owningClient));
-            ButtplugUtils.ArgumentNotNull(sendClosure, nameof(sendClosure));
-            _owningClient = owningClient;
-            _sendClosure = sendClosure;
+            ButtplugUtils.ArgumentNotNull(handler, nameof(handler));
+            _handler = handler;
             Index = index;
             Name = name;
             MessageAttributes = messages;
             DisplayName = displayName;
             MessageTimingGap = messageTimingGap;
-        }
-
-        /// <summary>
-        /// Sends a message, expecting a response of message type <see cref="Ok"/>.
-        /// </summary>
-        /// <param name="msg">Message to send.</param>
-        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
-        /// <returns>True if successful.</returns>
-        private async Task SendMessageExpectOk(ButtplugDeviceMessage msg, CancellationToken token = default)
-        {
-            var result = await SendMessageAsync(msg, token).ConfigureAwait(false);
-            switch (result)
-            {
-                case Ok _:
-                    return;
-                case Error err:
-                    throw ButtplugException.FromError(err);
-                default:
-                    throw new ButtplugMessageException($"Message type {msg.Name} not handled by SendMessageExpectOk", msg.Id);
-            }
-        }
-
-        public async Task<ButtplugMessage> SendMessageAsync(ButtplugDeviceMessage msg, CancellationToken token = default)
-        {
-            ButtplugUtils.ArgumentNotNull(msg, nameof(msg));
-
-            if (!_owningClient.Connected)
-            {
-                throw new ButtplugClientConnectorException("Client that owns device is not connected");
-            }
-
-            if (!_owningClient.Devices.Contains(this))
-            {
-                throw new ButtplugDeviceException("Device no longer connected or valid");
-            }
-
-            msg.DeviceIndex = Index;
-
-            return await _sendClosure(this, msg, token).ConfigureAwait(false);
-        }
-
-        public bool Equals(ButtplugClientDevice device)
-        {
-            // We never reuse indexes within a session, so if the client and index are the same, assume it's the same device.
-            return _owningClient != device._owningClient && Index != device.Index;
         }
 
         public List<GenericDeviceMessageAttributes> GenericAcutatorAttributes(ActuatorType actuator)
@@ -153,7 +102,7 @@ namespace Buttplug.Client
             {
                 throw new ButtplugDeviceException($"Scalar command for device {Name} did not generate any commands. Are you sure the device supports the ActuatorType sent?");
             }
-            await SendMessageExpectOk(new ScalarCmd(scalars)).ConfigureAwait(false);
+            await _handler.SendMessageExpectOk(new ScalarCmd(Index, scalars)).ConfigureAwait(false);
         }
 
         public async Task ScalarAsync(List<ScalarCmd.ScalarSubcommand> command)
@@ -162,7 +111,7 @@ namespace Buttplug.Client
             {
                 throw new ArgumentException($"Command List for ScalarAsync must have at least 1 command.");
             }
-            await SendMessageExpectOk(new ScalarCmd(command)).ConfigureAwait(false);
+            await _handler.SendMessageExpectOk(new ScalarCmd(Index, command)).ConfigureAwait(false);
         }
 
         public List<GenericDeviceMessageAttributes> VibrateAttributes
@@ -239,7 +188,9 @@ namespace Buttplug.Client
             {
                 throw new ButtplugDeviceException($"Device {Name} does not support rotation");
             }
-            await SendMessageExpectOk(RotateCmd.Create(speed, clockwise, (uint)RotateAttributes.Count)).ConfigureAwait(false);
+            var msg = RotateCmd.Create(speed, clockwise, (uint)RotateAttributes.Count);
+            msg.DeviceIndex = Index;
+            await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
         }
 
         public async Task RotateAsync(IEnumerable<(double, bool)> cmds)
@@ -248,7 +199,9 @@ namespace Buttplug.Client
             {
                 throw new ButtplugDeviceException($"Device {Name} does not support rotation");
             }
-            await SendMessageExpectOk(RotateCmd.Create(cmds)).ConfigureAwait(false);
+            var msg = RotateCmd.Create(cmds);
+            msg.DeviceIndex = Index;
+            await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
         }
 
         public List<GenericDeviceMessageAttributes> LinearAttributes
@@ -269,7 +222,9 @@ namespace Buttplug.Client
             {
                 throw new ButtplugDeviceException($"Device {Name} does not support linear position");
             }
-            await SendMessageExpectOk(LinearCmd.Create(duration, position, (uint)LinearAttributes.Count)).ConfigureAwait(false);
+            var msg = LinearCmd.Create(duration, position, (uint)LinearAttributes.Count);
+            msg.DeviceIndex = Index;
+            await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
         }
 
         public async Task LinearAsync(IEnumerable<(uint, double)> cmds)
@@ -278,7 +233,9 @@ namespace Buttplug.Client
             {
                 throw new ButtplugDeviceException($"Device {Name} does not support linear position");
             }
-            await SendMessageExpectOk(LinearCmd.Create(cmds)).ConfigureAwait(false);
+            var msg = LinearCmd.Create(cmds);
+            msg.DeviceIndex = Index;
+            await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
         }
 
         public List<SensorDeviceMessageAttributes> SensorReadAttributes(SensorType sensor)
@@ -306,7 +263,7 @@ namespace Buttplug.Client
                 throw new ButtplugDeviceException($"Device {Name} does not have battery capabilities.");
             }
 
-            var result = await SendMessageAsync(new SensorReadCmd(SensorReadAttributes(SensorType.Battery).ElementAt(0).Index, SensorType.Battery)).ConfigureAwait(false);
+            var result = await _handler.SendMessageAsync(new SensorReadCmd(Index, SensorReadAttributes(SensorType.Battery).ElementAt(0).Index, SensorType.Battery)).ConfigureAwait(false);
             switch (result)
             {
                 case SensorReading response:
@@ -320,7 +277,7 @@ namespace Buttplug.Client
 
         public async Task Stop()
         {
-            await SendMessageAsync(new StopDeviceCmd(Index)).ConfigureAwait(false);
+            await _handler.SendMessageExpectOk(new StopDeviceCmd(Index)).ConfigureAwait(false);
         }
     }
 }
