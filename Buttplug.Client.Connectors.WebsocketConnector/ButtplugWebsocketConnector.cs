@@ -1,4 +1,4 @@
-﻿using Buttplug.Core;
+using Buttplug.Core;
 
 using System;
 using System.Threading;
@@ -67,6 +67,10 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
                 // set buffer manager for buffers re-use (optional but recommended)
                 BufferManager = BufferManager.CreateBufferManager(bufferPoolSize, bufferSize),
+
+                // Turn off client side ping, server will manage this.
+                PingTimeout = Timeout.InfiniteTimeSpan,
+                PingMode = PingMode.Manual,
             };
 
             // register RFC6455 protocol implementation (required)
