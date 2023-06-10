@@ -225,28 +225,57 @@ namespace Buttplug.Client
         {
             get
             {
+                var result = new List<GenericDeviceMessageAttributes>();
                 if (MessageAttributes.RotateCmd != null)
                 {
-                    return MessageAttributes.RotateCmd.ToList();
+                    result.AddRange(MessageAttributes.RotateCmd);
                 }
-                return Enumerable.Empty<GenericDeviceMessageAttributes>().ToList();
+                if (MessageAttributes.ScalarCmd.Any(i => i.ActuatorType == ActuatorType.Rotate){
+                    result.AddRange(MessageAttributes.ScalarCmd.Where(i => i.ActuatorType == ActuatorType.Rotate));
+                }
+                return result;
             }
         }
 
-        public async Task RotateAsync(double speed, bool clockwise)
+        public async Task RotateAsync(double speed)
         {
             if (!RotateAttributes.Any())
             {
                 throw new ButtplugDeviceException($"Device {Name} does not support rotation");
             }
+            if (MessageAttributes.RotateCmd != null)
+            {
+                await RotateAsync(speed, true);
+            }
+            else
+            {
+                await ScalarAsync(new ScalarCmd.ScalarSubcommand(uint.MaxValue, speed, ActuatorType.Rotate));
+            }
+        }
+
+        public async Task RotateAsync(double speed, bool clockwise)
+        {
+            if (MessageAttributes.RotateCmd != null)
+            {
+                throw new ButtplugDeviceException($"Device {Name} does not support rotating with a specified clockwise");
+            }
             await SendMessageExpectOk(RotateCmd.Create(speed, clockwise, (uint)RotateAttributes.Count)).ConfigureAwait(false);
+        }
+
+        public async Task RotateAsync(IEnumerable<double> cmds)
+        {
+            if (!RotateAttributes.Any())
+            {
+                throw new ButtplugDeviceException($"Device {Name} does not support rotation");
+            }
+            await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(uint.MaxValue, x, ActuatorType.Rotate)).ToList()).ConfigureAwait(false);
         }
 
         public async Task RotateAsync(IEnumerable<(double, bool)> cmds)
         {
-            if (!RotateAttributes.Any()) 
+            if (MessageAttributes.RotateCmd != null)
             {
-                throw new ButtplugDeviceException($"Device {Name} does not support rotation");
+                throw new ButtplugDeviceException($"Device {Name} does not support rotating with a specified clockwise");
             }
             await SendMessageExpectOk(RotateCmd.Create(cmds)).ConfigureAwait(false);
         }
