@@ -1,3 +1,13 @@
+# 3.0.1 (2023-06-18)
+
+## Bugfixes
+
+- Readded StopAllDevicesAsync method
+- Moved from using dataflow to channel for websocket connector
+- Fixed bug with DeviceRemoved not exposing indexes correctly
+- Add Unknown to Sensor Types
+- Fix multiple Websocket related bugs (ping, async tasks, etc...)
+
 # 3.0.0 (2022-12-30)
 
 Welcome Back, Buttplug C#

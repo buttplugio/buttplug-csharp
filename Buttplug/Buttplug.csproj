@@ -4,7 +4,7 @@
     <PackageId />
     <Title>Buttplug</Title>
     <AssemblyName>Buttplug</AssemblyName>
-    <Version>3.0.0</Version>
+    <Version>3.0.1</Version>
     <Summary>Buttplug Sex Toy Control Library - Client Implementation</Summary>
     <Description>Buttplug Sex Toy Control Library. Contains Core (messages, errors, etc), and Client components. Server can be found in Buttplug.FFI.Server (.Net Standard 2.0+)</Description>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
