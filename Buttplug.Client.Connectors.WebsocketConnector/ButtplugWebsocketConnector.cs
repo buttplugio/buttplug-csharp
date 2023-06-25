@@ -136,8 +136,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                         writeTask,
                     };
 
-                    var completedTaskIndex = Task.WhenAny(msgTasks);
-
+                    var _ = await Task.WhenAny(msgTasks);
                     if (readTask.IsCompleted)
                     {
                         var incomingMsg = await readTask.ConfigureAwait(false);
@@ -185,6 +184,10 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                             // TODO This is on its own task. Where does it throw to?
                             throw new ButtplugClientConnectorException("Websocket Client Read Error", e);
                         }
+                    }
+                    else if (writeTask.IsCanceled)
+                    {
+                        Console.WriteLine("Write cancelled");
                     }
                 }
             }
