@@ -228,6 +228,20 @@ namespace Buttplug.Client
             await _handler.SendMessageExpectOk(new StopScanning(), token).ConfigureAwait(false);
         }
 
+
+        /// <summary>
+        /// Instructs the server to send stop command to all connected devices.
+        /// </summary>
+        /// <param name="token">Cancellation token, for cancelling action externally if it is not yet finished.</param>
+        /// <returns>
+        /// Void on success, throws <see cref="ButtplugClientException" /> otherwise.
+        /// </returns>
+        // ReSharper disable once UnusedMember.Global
+        public async Task StopAllDevicesAsync(CancellationToken token = default)
+        {
+            await _handler.SendMessageExpectOk(new StopAllDevices(), token).ConfigureAwait(false);
+        }
+
         private void ConnectorErrorHandler(object sender, ButtplugExceptionEventArgs exception)
         {
             ErrorReceived?.Invoke(this, exception);
