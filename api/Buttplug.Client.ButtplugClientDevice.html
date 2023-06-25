@@ -85,108 +85,8 @@
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
   <h5 id="Buttplug_Client_ButtplugClientDevice_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ButtplugClientDevice : IEquatable&lt;ButtplugClientDevice&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public class ButtplugClientDevice : object</code></pre>
   </div>
-  <h3 id="constructors">Constructors
-  </h3>
-  <a id="Buttplug_Client_ButtplugClientDevice__ctor_" data-uid="Buttplug.Client.ButtplugClientDevice.#ctor*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice__ctor_Buttplug_Client_ButtplugClient_Func_Buttplug_Client_ButtplugClientDevice_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_Task_Buttplug_Core_Messages_ButtplugMessage___Buttplug_Core_Messages_IButtplugDeviceInfoMessage_" data-uid="Buttplug.Client.ButtplugClientDevice.#ctor(Buttplug.Client.ButtplugClient,Func{Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken,Task{Buttplug.Core.Messages.ButtplugMessage}},Buttplug.Core.Messages.IButtplugDeviceInfoMessage)">ButtplugClientDevice(ButtplugClient, Func&lt;ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task&lt;ButtplugMessage&gt;&gt;, IButtplugDeviceInfoMessage)</h4>
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a> class, using
-information received via a DeviceList, DeviceAdded, or DeviceRemoved message from the server.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ButtplugClientDevice(ButtplugClient owningClient, Func&lt;ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task&lt;ButtplugMessage&gt;&gt; sendClosure, IButtplugDeviceInfoMessage devInfo)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Client.ButtplugClient.html">ButtplugClient</a></td>
-        <td><span class="parametername">owningClient</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><span class="xref">Func</span>&lt;<a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a>, <a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>&gt;&gt;</td>
-        <td><span class="parametername">sendClosure</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.IButtplugDeviceInfoMessage.html">IButtplugDeviceInfoMessage</a></td>
-        <td><span class="parametername">devInfo</span></td>
-        <td><p>A Buttplug protocol message implementing the IButtplugDeviceInfoMessage interface.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice__ctor_" data-uid="Buttplug.Client.ButtplugClientDevice.#ctor*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice__ctor_Buttplug_Client_ButtplugClient_Func_Buttplug_Client_ButtplugClientDevice_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_Task_Buttplug_Core_Messages_ButtplugMessage___System_UInt32_System_String_Buttplug_Core_Messages_DeviceMessageAttributes_System_String_System_UInt32_" data-uid="Buttplug.Client.ButtplugClientDevice.#ctor(Buttplug.Client.ButtplugClient,Func{Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken,Task{Buttplug.Core.Messages.ButtplugMessage}},System.UInt32,System.String,Buttplug.Core.Messages.DeviceMessageAttributes,System.String,System.UInt32)">ButtplugClientDevice(ButtplugClient, Func&lt;ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task&lt;ButtplugMessage&gt;&gt;, UInt32, String, DeviceMessageAttributes, String, UInt32)</h4>
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a> class, using
-discrete parameters.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ButtplugClientDevice(ButtplugClient owningClient, Func&lt;ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task&lt;ButtplugMessage&gt;&gt; sendClosure, uint index, string name, DeviceMessageAttributes messages, string displayName, uint messageTimingGap)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Client.ButtplugClient.html">ButtplugClient</a></td>
-        <td><span class="parametername">owningClient</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><span class="xref">Func</span>&lt;<a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a>, <a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>&gt;&gt;</td>
-        <td><span class="parametername">sendClosure</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">index</span></td>
-        <td><p>The device index.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>The device name.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.DeviceMessageAttributes.html">DeviceMessageAttributes</a></td>
-        <td><span class="parametername">messages</span></td>
-        <td><p>The device allowed message list, with corresponding attributes.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td><span class="parametername">displayName</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">messageTimingGap</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
   <h3 id="properties">Properties
   </h3>
   <a id="Buttplug_Client_ButtplugClientDevice_DisplayName_" data-uid="Buttplug.Client.ButtplugClientDevice.DisplayName*"></a>
@@ -447,46 +347,6 @@ reconnects, the index should be reused.</p>
     <tbody>
       <tr>
         <td><span class="xref">Task</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_Equals_" data-uid="Buttplug.Client.ButtplugClientDevice.Equals*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_Equals_Buttplug_Client_ButtplugClientDevice_" data-uid="Buttplug.Client.ButtplugClientDevice.Equals(Buttplug.Client.ButtplugClientDevice)">Equals(ButtplugClientDevice)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool Equals(ButtplugClientDevice device)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a></td>
-        <td><span class="parametername">device</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -897,51 +757,6 @@ reconnects, the index should be reused.</p>
     <tbody>
       <tr>
         <td><span class="xref">Task</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_SendMessageAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.SendMessageAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_SendMessageAsync_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_" data-uid="Buttplug.Client.ButtplugClientDevice.SendMessageAsync(Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken)">SendMessageAsync(ButtplugDeviceMessage, CancellationToken)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;ButtplugMessage&gt; SendMessageAsync(ButtplugDeviceMessage msg, CancellationToken token = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a></td>
-        <td><span class="parametername">msg</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><span class="xref">CancellationToken</span></td>
-        <td><span class="parametername">token</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>

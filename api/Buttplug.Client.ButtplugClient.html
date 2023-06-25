@@ -325,111 +325,6 @@ it is still open.</p>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClient_SendDeviceMessageAsync_" data-uid="Buttplug.Client.ButtplugClient.SendDeviceMessageAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClient_SendDeviceMessageAsync_Buttplug_Client_ButtplugClientDevice_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_" data-uid="Buttplug.Client.ButtplugClient.SendDeviceMessageAsync(Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken)">SendDeviceMessageAsync(ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Sends a DeviceMessage (e.g. <see cref="!:VibrateCmd"></see> or <a class="xref" href="Buttplug.Core.Messages.LinearCmd.html">LinearCmd</a>). Handles
-constructing some parts of the message for the user.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected Task&lt;ButtplugMessage&gt; SendDeviceMessageAsync(ButtplugClientDevice device, ButtplugDeviceMessage deviceMsg, CancellationToken token = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a></td>
-        <td><span class="parametername">device</span></td>
-        <td><p>The device to be controlled by the message.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a></td>
-        <td><span class="parametername">deviceMsg</span></td>
-        <td><p>The device message (Id and DeviceIndex will be overriden).</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">CancellationToken</span></td>
-        <td><span class="parametername">token</span></td>
-        <td><p>Cancellation token, for cancelling action externally if it is not yet finished.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>&gt;</td>
-        <td><p>Void on success, throws <see cref="!:ButtplugClientException"></see> otherwise.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClient_SendMessageAsync_" data-uid="Buttplug.Client.ButtplugClient.SendMessageAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClient_SendMessageAsync_Buttplug_Core_Messages_ButtplugMessage_CancellationToken_" data-uid="Buttplug.Client.ButtplugClient.SendMessageAsync(Buttplug.Core.Messages.ButtplugMessage,CancellationToken)">SendMessageAsync(ButtplugMessage, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Sends a message to the server, and handles asynchronously waiting for the reply from the server.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected Task&lt;ButtplugMessage&gt; SendMessageAsync(ButtplugMessage msg, CancellationToken token = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></td>
-        <td><span class="parametername">msg</span></td>
-        <td><p>Message to send.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">CancellationToken</span></td>
-        <td><span class="parametername">token</span></td>
-        <td><p>Cancellation token, for cancelling action externally if it is not yet finished.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>&gt;</td>
-        <td><p>The response, which will derive from <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
   <a id="Buttplug_Client_ButtplugClient_StartScanningAsync_" data-uid="Buttplug.Client.ButtplugClient.StartScanningAsync*"></a>
   <h4 id="Buttplug_Client_ButtplugClient_StartScanningAsync_CancellationToken_" data-uid="Buttplug.Client.ButtplugClient.StartScanningAsync(CancellationToken)">StartScanningAsync(CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Instructs the server to start scanning for devices. New devices will be raised as <a class="xref" href="Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_DeviceAdded">DeviceAdded</a> events. When scanning completes, an <a class="xref" href="Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_ScanningFinished">ScanningFinished</a>
@@ -439,6 +334,49 @@ event will be triggered.</p>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public Task StartScanningAsync(CancellationToken token = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">CancellationToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td><p>Cancellation token, for cancelling action externally if it is not yet finished.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td><p>Void on success, throws <see cref="!:ButtplugClientException"></see> otherwise.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClient_StopAllDevicesAsync_" data-uid="Buttplug.Client.ButtplugClient.StopAllDevicesAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClient_StopAllDevicesAsync_CancellationToken_" data-uid="Buttplug.Client.ButtplugClient.StopAllDevicesAsync(CancellationToken)">StopAllDevicesAsync(CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Instructs the server to send stop command to all connected devices.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task StopAllDevicesAsync(CancellationToken token = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">

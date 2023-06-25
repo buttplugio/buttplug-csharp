@@ -146,32 +146,6 @@ references:
   commentId: E:Buttplug.Client.ButtplugClient.ScanningFinished
   fullName: Buttplug.Client.ButtplugClient.ScanningFinished
   nameWithType: ButtplugClient.ScanningFinished
-- uid: Buttplug.Client.ButtplugClient.SendDeviceMessageAsync(Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken)
-  name: SendDeviceMessageAsync(ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken)
-  href: api/Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_SendDeviceMessageAsync_Buttplug_Client_ButtplugClientDevice_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_
-  commentId: M:Buttplug.Client.ButtplugClient.SendDeviceMessageAsync(Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken)
-  fullName: Buttplug.Client.ButtplugClient.SendDeviceMessageAsync(Buttplug.Client.ButtplugClientDevice, Buttplug.Core.Messages.ButtplugDeviceMessage, CancellationToken)
-  nameWithType: ButtplugClient.SendDeviceMessageAsync(ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken)
-- uid: Buttplug.Client.ButtplugClient.SendDeviceMessageAsync*
-  name: SendDeviceMessageAsync
-  href: api/Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_SendDeviceMessageAsync_
-  commentId: Overload:Buttplug.Client.ButtplugClient.SendDeviceMessageAsync
-  isSpec: "True"
-  fullName: Buttplug.Client.ButtplugClient.SendDeviceMessageAsync
-  nameWithType: ButtplugClient.SendDeviceMessageAsync
-- uid: Buttplug.Client.ButtplugClient.SendMessageAsync(Buttplug.Core.Messages.ButtplugMessage,CancellationToken)
-  name: SendMessageAsync(ButtplugMessage, CancellationToken)
-  href: api/Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_SendMessageAsync_Buttplug_Core_Messages_ButtplugMessage_CancellationToken_
-  commentId: M:Buttplug.Client.ButtplugClient.SendMessageAsync(Buttplug.Core.Messages.ButtplugMessage,CancellationToken)
-  fullName: Buttplug.Client.ButtplugClient.SendMessageAsync(Buttplug.Core.Messages.ButtplugMessage, CancellationToken)
-  nameWithType: ButtplugClient.SendMessageAsync(ButtplugMessage, CancellationToken)
-- uid: Buttplug.Client.ButtplugClient.SendMessageAsync*
-  name: SendMessageAsync
-  href: api/Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_SendMessageAsync_
-  commentId: Overload:Buttplug.Client.ButtplugClient.SendMessageAsync
-  isSpec: "True"
-  fullName: Buttplug.Client.ButtplugClient.SendMessageAsync
-  nameWithType: ButtplugClient.SendMessageAsync
 - uid: Buttplug.Client.ButtplugClient.ServerDisconnect
   name: ServerDisconnect
   href: api/Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_ServerDisconnect
@@ -191,6 +165,19 @@ references:
   isSpec: "True"
   fullName: Buttplug.Client.ButtplugClient.StartScanningAsync
   nameWithType: ButtplugClient.StartScanningAsync
+- uid: Buttplug.Client.ButtplugClient.StopAllDevicesAsync(CancellationToken)
+  name: StopAllDevicesAsync(CancellationToken)
+  href: api/Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_StopAllDevicesAsync_CancellationToken_
+  commentId: M:Buttplug.Client.ButtplugClient.StopAllDevicesAsync(CancellationToken)
+  fullName: Buttplug.Client.ButtplugClient.StopAllDevicesAsync(CancellationToken)
+  nameWithType: ButtplugClient.StopAllDevicesAsync(CancellationToken)
+- uid: Buttplug.Client.ButtplugClient.StopAllDevicesAsync*
+  name: StopAllDevicesAsync
+  href: api/Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_StopAllDevicesAsync_
+  commentId: Overload:Buttplug.Client.ButtplugClient.StopAllDevicesAsync
+  isSpec: "True"
+  fullName: Buttplug.Client.ButtplugClient.StopAllDevicesAsync
+  nameWithType: ButtplugClient.StopAllDevicesAsync
 - uid: Buttplug.Client.ButtplugClient.StopScanningAsync(CancellationToken)
   name: StopScanningAsync(CancellationToken)
   href: api/Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_StopScanningAsync_CancellationToken_
@@ -229,31 +216,6 @@ references:
   commentId: T:Buttplug.Client.ButtplugClientDevice
   fullName: Buttplug.Client.ButtplugClientDevice
   nameWithType: ButtplugClientDevice
-- uid: Buttplug.Client.ButtplugClientDevice.#ctor(Buttplug.Client.ButtplugClient,Func{Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken,Task{Buttplug.Core.Messages.ButtplugMessage}},Buttplug.Core.Messages.IButtplugDeviceInfoMessage)
-  name: ButtplugClientDevice(ButtplugClient, Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>>, IButtplugDeviceInfoMessage)
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice__ctor_Buttplug_Client_ButtplugClient_Func_Buttplug_Client_ButtplugClientDevice_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_Task_Buttplug_Core_Messages_ButtplugMessage___Buttplug_Core_Messages_IButtplugDeviceInfoMessage_
-  commentId: M:Buttplug.Client.ButtplugClientDevice.#ctor(Buttplug.Client.ButtplugClient,Func{Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken,Task{Buttplug.Core.Messages.ButtplugMessage}},Buttplug.Core.Messages.IButtplugDeviceInfoMessage)
-  name.vb: ButtplugClientDevice(ButtplugClient, Func(Of ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task(Of ButtplugMessage)), IButtplugDeviceInfoMessage)
-  fullName: Buttplug.Client.ButtplugClientDevice.ButtplugClientDevice(Buttplug.Client.ButtplugClient, Func<Buttplug.Client.ButtplugClientDevice, Buttplug.Core.Messages.ButtplugDeviceMessage, CancellationToken, Task<Buttplug.Core.Messages.ButtplugMessage>>, Buttplug.Core.Messages.IButtplugDeviceInfoMessage)
-  fullName.vb: Buttplug.Client.ButtplugClientDevice.ButtplugClientDevice(Buttplug.Client.ButtplugClient, Func(Of Buttplug.Client.ButtplugClientDevice, Buttplug.Core.Messages.ButtplugDeviceMessage, CancellationToken, Task(Of Buttplug.Core.Messages.ButtplugMessage)), Buttplug.Core.Messages.IButtplugDeviceInfoMessage)
-  nameWithType: ButtplugClientDevice.ButtplugClientDevice(ButtplugClient, Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>>, IButtplugDeviceInfoMessage)
-  nameWithType.vb: ButtplugClientDevice.ButtplugClientDevice(ButtplugClient, Func(Of ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task(Of ButtplugMessage)), IButtplugDeviceInfoMessage)
-- uid: Buttplug.Client.ButtplugClientDevice.#ctor(Buttplug.Client.ButtplugClient,Func{Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken,Task{Buttplug.Core.Messages.ButtplugMessage}},System.UInt32,System.String,Buttplug.Core.Messages.DeviceMessageAttributes,System.String,System.UInt32)
-  name: ButtplugClientDevice(ButtplugClient, Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>>, UInt32, String, DeviceMessageAttributes, String, UInt32)
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice__ctor_Buttplug_Client_ButtplugClient_Func_Buttplug_Client_ButtplugClientDevice_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_Task_Buttplug_Core_Messages_ButtplugMessage___System_UInt32_System_String_Buttplug_Core_Messages_DeviceMessageAttributes_System_String_System_UInt32_
-  commentId: M:Buttplug.Client.ButtplugClientDevice.#ctor(Buttplug.Client.ButtplugClient,Func{Buttplug.Client.ButtplugClientDevice,Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken,Task{Buttplug.Core.Messages.ButtplugMessage}},System.UInt32,System.String,Buttplug.Core.Messages.DeviceMessageAttributes,System.String,System.UInt32)
-  name.vb: ButtplugClientDevice(ButtplugClient, Func(Of ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task(Of ButtplugMessage)), UInt32, String, DeviceMessageAttributes, String, UInt32)
-  fullName: Buttplug.Client.ButtplugClientDevice.ButtplugClientDevice(Buttplug.Client.ButtplugClient, Func<Buttplug.Client.ButtplugClientDevice, Buttplug.Core.Messages.ButtplugDeviceMessage, CancellationToken, Task<Buttplug.Core.Messages.ButtplugMessage>>, System.UInt32, System.String, Buttplug.Core.Messages.DeviceMessageAttributes, System.String, System.UInt32)
-  fullName.vb: Buttplug.Client.ButtplugClientDevice.ButtplugClientDevice(Buttplug.Client.ButtplugClient, Func(Of Buttplug.Client.ButtplugClientDevice, Buttplug.Core.Messages.ButtplugDeviceMessage, CancellationToken, Task(Of Buttplug.Core.Messages.ButtplugMessage)), System.UInt32, System.String, Buttplug.Core.Messages.DeviceMessageAttributes, System.String, System.UInt32)
-  nameWithType: ButtplugClientDevice.ButtplugClientDevice(ButtplugClient, Func<ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task<ButtplugMessage>>, UInt32, String, DeviceMessageAttributes, String, UInt32)
-  nameWithType.vb: ButtplugClientDevice.ButtplugClientDevice(ButtplugClient, Func(Of ButtplugClientDevice, ButtplugDeviceMessage, CancellationToken, Task(Of ButtplugMessage)), UInt32, String, DeviceMessageAttributes, String, UInt32)
-- uid: Buttplug.Client.ButtplugClientDevice.#ctor*
-  name: ButtplugClientDevice
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice__ctor_
-  commentId: Overload:Buttplug.Client.ButtplugClientDevice.#ctor
-  isSpec: "True"
-  fullName: Buttplug.Client.ButtplugClientDevice.ButtplugClientDevice
-  nameWithType: ButtplugClientDevice.ButtplugClientDevice
 - uid: Buttplug.Client.ButtplugClientDevice.BatteryAsync
   name: BatteryAsync()
   href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_BatteryAsync
@@ -280,19 +242,6 @@ references:
   isSpec: "True"
   fullName: Buttplug.Client.ButtplugClientDevice.DisplayName
   nameWithType: ButtplugClientDevice.DisplayName
-- uid: Buttplug.Client.ButtplugClientDevice.Equals(Buttplug.Client.ButtplugClientDevice)
-  name: Equals(ButtplugClientDevice)
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_Equals_Buttplug_Client_ButtplugClientDevice_
-  commentId: M:Buttplug.Client.ButtplugClientDevice.Equals(Buttplug.Client.ButtplugClientDevice)
-  fullName: Buttplug.Client.ButtplugClientDevice.Equals(Buttplug.Client.ButtplugClientDevice)
-  nameWithType: ButtplugClientDevice.Equals(ButtplugClientDevice)
-- uid: Buttplug.Client.ButtplugClientDevice.Equals*
-  name: Equals
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_Equals_
-  commentId: Overload:Buttplug.Client.ButtplugClientDevice.Equals
-  isSpec: "True"
-  fullName: Buttplug.Client.ButtplugClientDevice.Equals
-  nameWithType: ButtplugClientDevice.Equals
 - uid: Buttplug.Client.ButtplugClientDevice.GenericAcutatorAttributes(Buttplug.Core.Messages.ActuatorType)
   name: GenericAcutatorAttributes(ActuatorType)
   href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_GenericAcutatorAttributes_Buttplug_Core_Messages_ActuatorType_
@@ -507,19 +456,6 @@ references:
   isSpec: "True"
   fullName: Buttplug.Client.ButtplugClientDevice.ScalarAsync
   nameWithType: ButtplugClientDevice.ScalarAsync
-- uid: Buttplug.Client.ButtplugClientDevice.SendMessageAsync(Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken)
-  name: SendMessageAsync(ButtplugDeviceMessage, CancellationToken)
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_SendMessageAsync_Buttplug_Core_Messages_ButtplugDeviceMessage_CancellationToken_
-  commentId: M:Buttplug.Client.ButtplugClientDevice.SendMessageAsync(Buttplug.Core.Messages.ButtplugDeviceMessage,CancellationToken)
-  fullName: Buttplug.Client.ButtplugClientDevice.SendMessageAsync(Buttplug.Core.Messages.ButtplugDeviceMessage, CancellationToken)
-  nameWithType: ButtplugClientDevice.SendMessageAsync(ButtplugDeviceMessage, CancellationToken)
-- uid: Buttplug.Client.ButtplugClientDevice.SendMessageAsync*
-  name: SendMessageAsync
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_SendMessageAsync_
-  commentId: Overload:Buttplug.Client.ButtplugClientDevice.SendMessageAsync
-  isSpec: "True"
-  fullName: Buttplug.Client.ButtplugClientDevice.SendMessageAsync
-  nameWithType: ButtplugClientDevice.SendMessageAsync
 - uid: Buttplug.Client.ButtplugClientDevice.SensorReadAttributes(Buttplug.Core.Messages.SensorType)
   name: SensorReadAttributes(SensorType)
   href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_SensorReadAttributes_Buttplug_Core_Messages_SensorType_
@@ -1297,6 +1233,12 @@ references:
   commentId: F:Buttplug.Core.Messages.ActuatorType.Rotate
   fullName: Buttplug.Core.Messages.ActuatorType.Rotate
   nameWithType: ActuatorType.Rotate
+- uid: Buttplug.Core.Messages.ActuatorType.Unknown
+  name: Unknown
+  href: api/Buttplug.Core.Messages.ActuatorType.html#Buttplug_Core_Messages_ActuatorType_Unknown
+  commentId: F:Buttplug.Core.Messages.ActuatorType.Unknown
+  fullName: Buttplug.Core.Messages.ActuatorType.Unknown
+  nameWithType: ActuatorType.Unknown
 - uid: Buttplug.Core.Messages.ActuatorType.Vibrate
   name: Vibrate
   href: api/Buttplug.Core.Messages.ActuatorType.html#Buttplug_Core_Messages_ActuatorType_Vibrate
@@ -1797,14 +1739,7 @@ references:
 - uid: Buttplug.Core.Messages.DeviceRemoved.DeviceIndex
   name: DeviceIndex
   href: api/Buttplug.Core.Messages.DeviceRemoved.html#Buttplug_Core_Messages_DeviceRemoved_DeviceIndex
-  commentId: P:Buttplug.Core.Messages.DeviceRemoved.DeviceIndex
-  fullName: Buttplug.Core.Messages.DeviceRemoved.DeviceIndex
-  nameWithType: DeviceRemoved.DeviceIndex
-- uid: Buttplug.Core.Messages.DeviceRemoved.DeviceIndex*
-  name: DeviceIndex
-  href: api/Buttplug.Core.Messages.DeviceRemoved.html#Buttplug_Core_Messages_DeviceRemoved_DeviceIndex_
-  commentId: Overload:Buttplug.Core.Messages.DeviceRemoved.DeviceIndex
-  isSpec: "True"
+  commentId: F:Buttplug.Core.Messages.DeviceRemoved.DeviceIndex
   fullName: Buttplug.Core.Messages.DeviceRemoved.DeviceIndex
   nameWithType: DeviceRemoved.DeviceIndex
 - uid: Buttplug.Core.Messages.Error
@@ -2641,6 +2576,12 @@ references:
   commentId: F:Buttplug.Core.Messages.SensorType.RSSI
   fullName: Buttplug.Core.Messages.SensorType.RSSI
   nameWithType: SensorType.RSSI
+- uid: Buttplug.Core.Messages.SensorType.Unknown
+  name: Unknown
+  href: api/Buttplug.Core.Messages.SensorType.html#Buttplug_Core_Messages_SensorType_Unknown
+  commentId: F:Buttplug.Core.Messages.SensorType.Unknown
+  fullName: Buttplug.Core.Messages.SensorType.Unknown
+  nameWithType: SensorType.Unknown
 - uid: Buttplug.Core.Messages.ServerInfo
   name: ServerInfo
   href: api/Buttplug.Core.Messages.ServerInfo.html

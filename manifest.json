@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Client.ButtplugClient.html",
-          "hash": "eI1ciahG2kAJwKjbip0EJw=="
+          "hash": "dsyzEwBquPiBlTJmJBLEIw=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Client.ButtplugClientDevice.html",
-          "hash": "NdKRcWjArJ12szD/PwU4oA=="
+          "hash": "R+uOXHXXa+RzzEdaIexHTw=="
         }
       },
       "is_incremental": false,
@@ -261,7 +261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Core.Messages.ActuatorType.html",
-          "hash": "RkuZgsBd6J/m5u9yAgCKbg=="
+          "hash": "4UnhqzN/k0dWAtgVIrgwaA=="
         }
       },
       "is_incremental": false,
@@ -357,7 +357,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Core.Messages.DeviceRemoved.html",
-          "hash": "gvHrc1l3TceoQH18sWwa5g=="
+          "hash": "DO7NpAS8mKRygeigxW4qbA=="
         }
       },
       "is_incremental": false,
@@ -657,7 +657,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Core.Messages.SensorType.html",
-          "hash": "nTsskVjly/v6ToHgP7mtbg=="
+          "hash": "CfKmkF6i6oWejwpi9ebHUg=="
         }
       },
       "is_incremental": false,
