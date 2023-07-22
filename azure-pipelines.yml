@@ -1,14 +1,14 @@
-trigger:
-  branches:
-    include:
-      - master
-      - dev
-
-pr:
-  branches:
-    include:
-      - master
-      - dev
+#trigger:
+#  branches:
+#    include:
+#      - master
+#      - dev
+#
+#pr:
+#  branches:
+#    include:
+#      - master
+#      - dev
 
 variables:
   solution: 'Buttplug.sln'

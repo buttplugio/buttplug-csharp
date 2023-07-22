@@ -1,0 +1,32 @@
+name: dotnet package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Restore signing pfx
+        id: create-pfx
+        shell: pwsh
+        env:
+          PFX_CONTENT: ${{ secrets.NPLABS_WINDOWS_20210514_SIGNING_CERT }} 
+        run: |
+          $pfxPath = Join-Path -Path $env:RUNNER_TEMP -ChildPath "cert.pfx"; 
+          $encodedBytes = [System.Convert]::FromBase64String($env:PFX_CONTENT); 
+          Set-Content $pfxPath -Value $encodedBytes -AsByteStream;
+          Write-Output "::set-output name=PFX_PATH::$pfxPath";
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
