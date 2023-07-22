@@ -35,4 +35,10 @@ jobs:
           PFX_KEY: ${{ secrets.NPLABS_WINDOWS_20210514_SIGNING_KEY }} 
         run: |
           $pfxPath = Join-Path -Path $env:RUNNER_TEMP -ChildPath "cert.pfx"; 
-          nuget sign **\*.nupkg -CertificatePath $pfxPath -CertificatePassword $env:PFX_KEY -Timestamper http://timestamp.comodoca.com/rfc3161
+          nuget sign **\*.nupkg -CertificatePath "$pfxPath" -CertificatePassword "$env:PFX_KEY" -Timestamper http://timestamp.comodoca.com/rfc3161
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-installer
+          path: |
+            Buttplug*/**/*.*nupkg
