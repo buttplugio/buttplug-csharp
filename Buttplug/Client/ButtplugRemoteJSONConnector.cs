@@ -13,6 +13,18 @@ using Buttplug.Core.Messages;
 
 namespace Buttplug.Client
 {
+    public class ReturnMessage
+    {
+        public readonly string Message;
+        public readonly Task<ButtplugMessage> Promise;
+
+        public ReturnMessage(string message, Task<ButtplugMessage> promise)
+        {
+            Message = message;
+            Promise = promise;
+        }
+    }
+
     public class ButtplugRemoteJSONConnector : IDisposable
     {
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
@@ -22,11 +34,11 @@ namespace Buttplug.Client
         private readonly ButtplugConnectorJSONParser _jsonSerializer = new ButtplugConnectorJSONParser();
         private readonly ButtplugConnectorMessageSorter _msgSorter = new ButtplugConnectorMessageSorter();
 
-        protected Tuple<string, Task<ButtplugMessage>> PrepareMessage(ButtplugMessage msg)
+        public ReturnMessage PrepareMessage(ButtplugMessage msg)
         {
             var promise = _msgSorter.PrepareMessage(msg);
             var jsonMsg = _jsonSerializer.Serialize(msg);
-            return new Tuple<string, Task<ButtplugMessage>>(jsonMsg, promise);
+            return new ReturnMessage(jsonMsg, promise);
         }
 
         protected void ReceiveMessages(string jSONMsg)

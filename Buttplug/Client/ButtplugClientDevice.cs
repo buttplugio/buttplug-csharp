@@ -137,9 +137,9 @@ namespace Buttplug.Client
             await ScalarAsync(attrs.Select((x, i) => new ScalarCmd.ScalarSubcommand(x.Index, cmds.ElementAt(i), ActuatorType.Vibrate)).ToList()).ConfigureAwait(false);
         }
 
-        public async Task VibrateAsync(IEnumerable<(uint, double)> cmds)
+        public async Task VibrateAsync(IEnumerable<ScalarCmd.ScalarCommand> cmds)
         {
-            await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(x.Item1, x.Item2, ActuatorType.Vibrate)).ToList()).ConfigureAwait(false);
+            await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(x.index, x.scalar, ActuatorType.Vibrate)).ToList()).ConfigureAwait(false);
         }
 
         public List<GenericDeviceMessageAttributes> OscillateAttributes
@@ -165,9 +165,9 @@ namespace Buttplug.Client
             await ScalarAsync(attrs.Select((x, i) => new ScalarCmd.ScalarSubcommand(x.Index, cmds.ElementAt(i), ActuatorType.Oscillate)).ToList()).ConfigureAwait(false);
         }
 
-        public async Task OscillateAsync(IEnumerable<(uint, double)> cmds)
+        public async Task OscillateAsync(IEnumerable<ScalarCmd.ScalarCommand> cmds)
         {
-            await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(x.Item1, x.Item2, ActuatorType.Oscillate)).ToList()).ConfigureAwait(false);
+            await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(x.index, x.scalar, ActuatorType.Oscillate)).ToList()).ConfigureAwait(false);
         }
 
         public List<GenericDeviceMessageAttributes> RotateAttributes
@@ -193,7 +193,7 @@ namespace Buttplug.Client
             await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
         }
 
-        public async Task RotateAsync(IEnumerable<(double, bool)> cmds)
+        public async Task RotateAsync(IEnumerable<RotateCmd.RotateCommand> cmds)
         {
             if (!RotateAttributes.Any()) 
             {
@@ -227,7 +227,7 @@ namespace Buttplug.Client
             await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
         }
 
-        public async Task LinearAsync(IEnumerable<(uint, double)> cmds)
+        public async Task LinearAsync(IEnumerable<LinearCmd.VectorCommand> cmds)
         {
             if (!LinearAttributes.Any())
             {

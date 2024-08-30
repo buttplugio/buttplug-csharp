@@ -7,7 +7,7 @@
     <Version>3.0.1</Version>
     <Summary>Buttplug Sex Toy Control Library - Client Implementation</Summary>
     <Description>Buttplug Sex Toy Control Library. Contains Core (messages, errors, etc), and Client components. Server can be found in Buttplug.FFI.Server (.Net Standard 2.0+)</Description>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net462;net47</TargetFrameworks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
     <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
@@ -28,7 +28,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
