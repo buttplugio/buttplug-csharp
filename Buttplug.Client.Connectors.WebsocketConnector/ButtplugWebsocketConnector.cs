@@ -1,4 +1,4 @@
-﻿using Buttplug.Core;
+using Buttplug.Core;
 
 using System;
 using System.Threading;
@@ -7,9 +7,6 @@ using System.Threading.Channels;
 using Buttplug.Core.Messages;
 using vtortola.WebSockets;
 using vtortola.WebSockets.Rfc6455;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
 
 namespace Buttplug.Client.Connectors.WebsocketConnector
 {
@@ -125,8 +122,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         {
             try
             {
-                var utf8NoBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: false);
-                var readTask = _ws.ReadMessageAsync(token);
+                var readTask = _ws.ReadStringAsync(token);
                 var writeTask = _channel.Reader.ReadAsync(token).AsTask();
                 while (_ws.IsConnected && !token.IsCancellationRequested)
                 {
@@ -136,45 +132,26 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                         writeTask,
                     };
 
-                    var completedTaskIndex = Task.WhenAny(msgTasks);
+                    var completedTaskIndex = Task.WaitAny(msgTasks);
 
-                    if (readTask.IsCompleted)
+                    if (completedTaskIndex == 0)
                     {
-                        var incomingMsg = await readTask.ConfigureAwait(false);
-                        if (incomingMsg == null)
+                        var incomingMsg = await ((Task<string>)msgTasks[0]).ConfigureAwait(false);
+                        if (incomingMsg != null)
                         {
-                            break;
-                        }
-                        if (incomingMsg.MessageType == WebSocketMessageType.Text)
-                        {
-                            var msgContent = String.Empty;
-                            using (var reader = new StreamReader(incomingMsg, utf8NoBom))
-                                msgContent = await reader.ReadToEndAsync();
-                            ReceiveMessages(msgContent);
+                            ReceiveMessages(incomingMsg);
                         }
 
-                        readTask = _ws.ReadMessageAsync(token);
-                    } 
-                    else if (readTask.IsCanceled)
-                    {
-                        break;
+                        readTask = _ws.ReadStringAsync(token);
                     }
-                    else if (writeTask.IsCompleted) 
+                    else
                     {
                         try
                         {
-                            var outMsgs = await writeTask.ConfigureAwait(false);
-                            if (outMsgs == null) 
-                            {
-                                break;
-                            }
+                            var outMsgs = await ((Task<string>)msgTasks[1]).ConfigureAwait(false);
                             if (_ws?.IsConnected == true)
                             {
                                 await _ws.WriteStringAsync(outMsgs, token).ConfigureAwait(false);
-                            } 
-                            else 
-                            {
-                                break;
                             }
 
                             writeTask = _channel.Reader.ReadAsync(token).AsTask();
@@ -188,15 +165,14 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
-                    // TODO Figure out how to error here?
-                    Debug.WriteLine(e);
+                // TODO Figure out how to error here?
             }
             finally
             {
                 // Clean up the websocket and fire the disconnection event.
-                _ws.CloseAsync().Dispose();
+                _ws.Dispose();
                 _ws = null;
                 // If we somehow still have some live messages, throw exceptions so they aren't stuck.
                 _owningDispatcher.Send(_ => Dispose(), null);
