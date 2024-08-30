@@ -95,6 +95,18 @@ namespace Buttplug.Core.Messages
 
         public readonly NullDeviceMessageAttributes StopDeviceCmd;
 
+        internal class EnumeratePair<T>
+        {
+            public readonly int index;
+            public readonly T attr;
+
+            public EnumeratePair(T attr, int index)
+            {
+                this.index = index;
+                this.attr = attr;
+            }
+        }
+
         // Set Indexes for all attributes
         //
         // This is a hack to live until when we actually transfer ids as part of buttplug messages,
@@ -102,11 +114,12 @@ namespace Buttplug.Core.Messages
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {
-            ScalarCmd?.Select((x, i) => (x, i)).ToList().ForEach(x => x.x._index = (uint)x.i);
-            RotateCmd?.Select((x, i) => (x, i)).ToList().ForEach(x => x.x._index = (uint)x.i);
-            LinearCmd?.Select((x, i) => (x, i)).ToList().ForEach(x => x.x._index = (uint)x.i);
-            SensorReadCmd?.Select((x, i) => (x, i)).ToList().ForEach(x => x.x._index = (uint)x.i);
-            SensorSubscribeCmd?.Select((x, i) => (x, i)).ToList().ForEach(x => x.x._index = (uint)x.i);
+
+            ScalarCmd?.Select((x, i) => new EnumeratePair<GenericDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
+            RotateCmd?.Select((x, i) => new EnumeratePair<GenericDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
+            LinearCmd?.Select((x, i) => new EnumeratePair<GenericDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
+            SensorReadCmd?.Select((x, i) => new EnumeratePair<SensorDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
+            SensorSubscribeCmd?.Select((x, i) => new EnumeratePair<SensorDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
         }
     }
 }

@@ -115,9 +115,9 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token)
         {
-            var (msgString, msgPromise) = PrepareMessage(msg);
-            await _outgoingMessages.SendAsync(msgString, token).ConfigureAwait(false);
-            return await msgPromise.ConfigureAwait(false);
+            var returnMsg = PrepareMessage(msg);
+            await _outgoingMessages.SendAsync(returnMsg.Message, token).ConfigureAwait(false);
+            return await returnMsg.Promise.ConfigureAwait(false);
         }
 
         private async Task RunClientLoop(CancellationToken token)

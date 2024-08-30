@@ -514,6 +514,22 @@ namespace Buttplug.Core.Messages
     public class ScalarCmd : ButtplugDeviceMessage
     {
         /// <summary>
+        /// Container object for representing a single rotation command on a device that may have
+        /// multiple independent rotating features. Missing index, as it is to be used in enumerative structures that imply index.
+        /// </summary>
+        public class ScalarCommand
+        {
+            public readonly uint index;
+            public readonly double scalar;
+
+            public ScalarCommand(uint index, double scalar)
+            {
+                this.index = index;
+                this.scalar = scalar;
+            }
+        }
+
+        /// <summary>
         /// Container object for representing a single scalar value on a device that may have
         /// multiple independent scalar actuators.
         /// </summary>
@@ -594,6 +610,23 @@ namespace Buttplug.Core.Messages
     [ButtplugMessageMetadata("RotateCmd")]
     public class RotateCmd : ButtplugDeviceMessage
     {
+
+        /// <summary>
+        /// Container object for representing a single rotation command on a device that may have
+        /// multiple independent rotating features. Missing index, as it is to be used in enumerative structures that imply index.
+        /// </summary>
+        public class RotateCommand
+        {
+            public readonly double speed;
+            public readonly bool clockwise;
+
+            public RotateCommand(double speed, bool clockwise)
+            {
+                this.speed = speed;
+                this.clockwise = clockwise;
+            }
+        }
+
         /// <summary>
         /// Container object for representing a single rotation command on a device that may have
         /// multiple independent rotating features.
@@ -647,26 +680,26 @@ namespace Buttplug.Core.Messages
 
         public static RotateCmd Create(double speed, bool clockwise, uint cmdCount)
         {
-            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat((speed, clockwise), (int)cmdCount));
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat(new RotateCommand(speed, clockwise), (int)cmdCount));
         }
 
-        public static RotateCmd Create(IEnumerable<(double speed, bool clockwise)> cmds)
+        public static RotateCmd Create(IEnumerable<RotateCommand> cmds)
         {
             return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, cmds);
         }
 
         public static RotateCmd Create(uint deviceIndex, uint msgId, double speed, bool clockwise, uint cmdCount)
         {
-            return Create(deviceIndex, msgId, Enumerable.Repeat((speed, clockwise), (int)cmdCount));
+            return Create(deviceIndex, msgId, Enumerable.Repeat(new RotateCommand(speed, clockwise), (int)cmdCount));
         }
 
-        public static RotateCmd Create(uint deviceIndex, uint msgId, IEnumerable<(double speed, bool clockwise)> cmds)
+        public static RotateCmd Create(uint deviceIndex, uint msgId, IEnumerable<RotateCommand> cmds)
         {
             var cmdList = new List<RotateSubcommand>(cmds.Count());
             uint i = 0;
-            foreach (var (speed, clockwise) in cmds)
+            foreach (var cmd in cmds)
             {
-                cmdList.Add(new RotateSubcommand(i, speed, clockwise));
+                cmdList.Add(new RotateSubcommand(i, cmd.speed, cmd.clockwise));
                 ++i;
             }
 
@@ -709,6 +742,22 @@ namespace Buttplug.Core.Messages
     [ButtplugMessageMetadata("LinearCmd")]
     public class LinearCmd : ButtplugDeviceMessage
     {
+        /// <summary>
+        /// Container object for representing a single linear motion command on a device that may
+        /// have multiple independent linear actuated features.
+        /// </summary>
+        public class VectorCommand
+        {
+            public readonly double position;
+            public readonly uint duration;
+
+            public VectorCommand(double position, uint duration)
+            {
+                this.position = position;
+                this.duration = duration;
+            }
+        }
+
         /// <summary>
         /// Container object for representing a single linear motion command on a device that may
         /// have multiple independent linear actuated features.
@@ -762,26 +811,26 @@ namespace Buttplug.Core.Messages
 
         public static LinearCmd Create(uint duration, double position, uint cmdCount)
         {
-            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat((duration, position), (int)cmdCount));
+            return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, Enumerable.Repeat(new VectorCommand(position, duration), (int)cmdCount));
         }
 
         public static LinearCmd Create(uint deviceIndex, uint msgId, uint duration, double position, uint cmdCount)
         {
-            return Create(deviceIndex, msgId, Enumerable.Repeat((duration, position), (int)cmdCount));
+            return Create(deviceIndex, msgId, Enumerable.Repeat(new VectorCommand(position, duration), (int)cmdCount));
         }
 
-        public static LinearCmd Create(IEnumerable<(uint duration, double position)> cmds)
+        public static LinearCmd Create(IEnumerable<VectorCommand> cmds)
         {
             return Create(uint.MaxValue, ButtplugConsts.DefaultMsgId, cmds);
         }
 
-        public static LinearCmd Create(uint deviceIndex, uint msgId, IEnumerable<(uint duration, double position)> cmds)
+        public static LinearCmd Create(uint deviceIndex, uint msgId, IEnumerable<VectorCommand> cmds)
         {
             var cmdList = new List<VectorSubcommand>(cmds.Count());
             uint i = 0;
-            foreach (var (duration, position) in cmds)
+            foreach (var cmd in cmds)
             {
-                cmdList.Add(new VectorSubcommand(i, duration, position));
+                cmdList.Add(new VectorSubcommand(i, cmd.duration, cmd.position));
                 ++i;
             }
 

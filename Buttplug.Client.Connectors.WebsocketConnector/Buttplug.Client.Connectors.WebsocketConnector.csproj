@@ -10,7 +10,7 @@
     <Summary>Websocket Connection Capabilities for Buttplug Clients</Summary>
     <Description>Websocket Connection Capabilities for Buttplug Clients. (.Net Standard 2.0+)</Description>
     <Version>3.0.1</Version>
-    <TargetFrameworks>netstandard2.1;netstandard2</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2;net462;net47</TargetFrameworks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Copyright>Copyright Nonpolynomial Labs, LLC</Copyright>
     <PackageProjectUrl>https://buttplug.io</PackageProjectUrl>
