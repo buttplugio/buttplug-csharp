@@ -1,9 +1,11 @@
-using Buttplug.Core;
+﻿using Buttplug.Core;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Channels;
+using System.Threading.Tasks.Dataflow;
 using Buttplug.Core.Messages;
 using vtortola.WebSockets;
 using vtortola.WebSockets.Rfc6455;
@@ -18,6 +20,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         private WebSocketClient _wsClient;
 
         private WebSocket _ws;
+
         public bool Connected => _ws?.IsConnected == true;
 
         public event EventHandler Disconnected;
@@ -29,7 +32,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
         private readonly Uri _uri;
 
-        private Channel<string> _channel = Channel.CreateBounded<string>(256);
+        private readonly BufferBlock<string> _outgoingMessages = new BufferBlock<string>();
 
         private Task _readTask;
 
@@ -67,10 +70,6 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
 
                 // set buffer manager for buffers re-use (optional but recommended)
                 BufferManager = BufferManager.CreateBufferManager(bufferPoolSize, bufferSize),
-
-                // Turn off client side ping, server will manage this.
-                PingTimeout = Timeout.InfiniteTimeSpan,
-                PingMode = PingMode.Manual,
             };
 
             // register RFC6455 protocol implementation (required)
@@ -86,7 +85,10 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                 throw new ButtplugClientConnectorException("Websocket Connection Exception! See Inner Exception", e);
             }
 
-            _readTask = Task.Run(async () => await RunClientLoop(token).ConfigureAwait(false), token);
+            _readTask = new Task(async () => await RunClientLoop(token).ConfigureAwait(false),
+                token,
+                TaskCreationOptions.LongRunning);
+            _readTask.Start();
         }
 
         /// <summary>
@@ -114,7 +116,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token)
         {
             var (msgString, msgPromise) = PrepareMessage(msg);
-            await _channel.Writer.WriteAsync(msgString);
+            await _outgoingMessages.SendAsync(msgString, token).ConfigureAwait(false);
             return await msgPromise.ConfigureAwait(false);
         }
 
@@ -123,7 +125,7 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
             try
             {
                 var readTask = _ws.ReadStringAsync(token);
-                var writeTask = _channel.Reader.ReadAsync(token).AsTask();
+                var writeTask = _outgoingMessages.OutputAvailableAsync(token);
                 while (_ws.IsConnected && !token.IsCancellationRequested)
                 {
                     var msgTasks = new Task[]
@@ -148,13 +150,15 @@ namespace Buttplug.Client.Connectors.WebsocketConnector
                     {
                         try
                         {
-                            var outMsgs = await ((Task<string>)msgTasks[1]).ConfigureAwait(false);
+                            IList<string> msgs = new List<string>();
+                            _outgoingMessages.TryReceiveAll(out msgs);
+                            var outMsgs = msgs.Aggregate(string.Empty, (current, msg) => current + msg);
                             if (_ws?.IsConnected == true)
                             {
                                 await _ws.WriteStringAsync(outMsgs, token).ConfigureAwait(false);
                             }
 
-                            writeTask = _channel.Reader.ReadAsync(token).AsTask();
+                            writeTask = _outgoingMessages.OutputAvailableAsync(token);
                         }
                         catch (WebSocketException e)
                         {
