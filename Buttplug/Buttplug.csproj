@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
   <Import Project="..\Buttplug.ProjectFiles\CommonProjectProperties.targets" />
   <PropertyGroup>
     <PackageId />
     <Title>Buttplug</Title>
     <AssemblyName>Buttplug</AssemblyName>
-    <Version>3.0.1</Version>
+    <Version>3.1.0</Version>
     <Summary>Buttplug Sex Toy Control Library - Client Implementation</Summary>
-    <Description>Buttplug Sex Toy Control Library. Contains Core (messages, errors, etc), and Client components. Server can be found in Buttplug.FFI.Server (.Net Standard 2.0+)</Description>
+    <Description>Buttplug Sex Toy Control Library. Contains Core (messages, errors, etc), Client, and Websocket Connector components</Description>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net462;net47</TargetFrameworks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/buttplugio/buttplug-csharp</RepositoryUrl>
