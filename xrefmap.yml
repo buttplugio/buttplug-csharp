@@ -281,15 +281,15 @@ references:
   isSpec: "True"
   fullName: Buttplug.Client.ButtplugClientDevice.Index
   nameWithType: ButtplugClientDevice.Index
-- uid: Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name: LinearAsync(IEnumerable<(UInt32, Double)>)
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_LinearAsync_IEnumerable_System_ValueTuple_System_UInt32_System_Double___
-  commentId: M:Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name.vb: LinearAsync(IEnumerable(Of (UInt32, Double)))
-  fullName: Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable<System.ValueTuple<System.UInt32, System.Double>>)
-  fullName.vb: Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable(Of System.ValueTuple(Of System.UInt32, System.Double)))
-  nameWithType: ButtplugClientDevice.LinearAsync(IEnumerable<(UInt32, Double)>)
-  nameWithType.vb: ButtplugClientDevice.LinearAsync(IEnumerable(Of (UInt32, Double)))
+- uid: Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})
+  name: LinearAsync(IEnumerable<LinearCmd.VectorCommand>)
+  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_LinearAsync_IEnumerable_Buttplug_Core_Messages_LinearCmd_VectorCommand__
+  commentId: M:Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})
+  name.vb: LinearAsync(IEnumerable(Of LinearCmd.VectorCommand))
+  fullName: Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable<Buttplug.Core.Messages.LinearCmd.VectorCommand>)
+  fullName.vb: Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable(Of Buttplug.Core.Messages.LinearCmd.VectorCommand))
+  nameWithType: ButtplugClientDevice.LinearAsync(IEnumerable<LinearCmd.VectorCommand>)
+  nameWithType.vb: ButtplugClientDevice.LinearAsync(IEnumerable(Of LinearCmd.VectorCommand))
 - uid: Buttplug.Client.ButtplugClientDevice.LinearAsync(System.UInt32,System.Double)
   name: LinearAsync(UInt32, Double)
   href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_LinearAsync_System_UInt32_System_Double_
@@ -355,6 +355,15 @@ references:
   isSpec: "True"
   fullName: Buttplug.Client.ButtplugClientDevice.Name
   nameWithType: ButtplugClientDevice.Name
+- uid: Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{Buttplug.Core.Messages.ScalarCmd.ScalarCommand})
+  name: OscillateAsync(IEnumerable<ScalarCmd.ScalarCommand>)
+  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_Buttplug_Core_Messages_ScalarCmd_ScalarCommand__
+  commentId: M:Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{Buttplug.Core.Messages.ScalarCmd.ScalarCommand})
+  name.vb: OscillateAsync(IEnumerable(Of ScalarCmd.ScalarCommand))
+  fullName: Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable<Buttplug.Core.Messages.ScalarCmd.ScalarCommand>)
+  fullName.vb: Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable(Of Buttplug.Core.Messages.ScalarCmd.ScalarCommand))
+  nameWithType: ButtplugClientDevice.OscillateAsync(IEnumerable<ScalarCmd.ScalarCommand>)
+  nameWithType.vb: ButtplugClientDevice.OscillateAsync(IEnumerable(Of ScalarCmd.ScalarCommand))
 - uid: Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{System.Double})
   name: OscillateAsync(IEnumerable<Double>)
   href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_System_Double__
@@ -364,15 +373,6 @@ references:
   fullName.vb: Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable(Of System.Double))
   nameWithType: ButtplugClientDevice.OscillateAsync(IEnumerable<Double>)
   nameWithType.vb: ButtplugClientDevice.OscillateAsync(IEnumerable(Of Double))
-- uid: Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name: OscillateAsync(IEnumerable<(UInt32, Double)>)
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_System_ValueTuple_System_UInt32_System_Double___
-  commentId: M:Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name.vb: OscillateAsync(IEnumerable(Of (UInt32, Double)))
-  fullName: Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable<System.ValueTuple<System.UInt32, System.Double>>)
-  fullName.vb: Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable(Of System.ValueTuple(Of System.UInt32, System.Double)))
-  nameWithType: ButtplugClientDevice.OscillateAsync(IEnumerable<(UInt32, Double)>)
-  nameWithType.vb: ButtplugClientDevice.OscillateAsync(IEnumerable(Of (UInt32, Double)))
 - uid: Buttplug.Client.ButtplugClientDevice.OscillateAsync(System.Double)
   name: OscillateAsync(Double)
   href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_OscillateAsync_System_Double_
@@ -399,15 +399,15 @@ references:
   isSpec: "True"
   fullName: Buttplug.Client.ButtplugClientDevice.OscillateAttributes
   nameWithType: ButtplugClientDevice.OscillateAttributes
-- uid: Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable{System.ValueTuple{System.Double,System.Boolean}})
-  name: RotateAsync(IEnumerable<(Double, Boolean)>)
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_RotateAsync_IEnumerable_System_ValueTuple_System_Double_System_Boolean___
-  commentId: M:Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable{System.ValueTuple{System.Double,System.Boolean}})
-  name.vb: RotateAsync(IEnumerable(Of (Double, Boolean)))
-  fullName: Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable<System.ValueTuple<System.Double, System.Boolean>>)
-  fullName.vb: Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable(Of System.ValueTuple(Of System.Double, System.Boolean)))
-  nameWithType: ButtplugClientDevice.RotateAsync(IEnumerable<(Double, Boolean)>)
-  nameWithType.vb: ButtplugClientDevice.RotateAsync(IEnumerable(Of (Double, Boolean)))
+- uid: Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable{Buttplug.Core.Messages.RotateCmd.RotateCommand})
+  name: RotateAsync(IEnumerable<RotateCmd.RotateCommand>)
+  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_RotateAsync_IEnumerable_Buttplug_Core_Messages_RotateCmd_RotateCommand__
+  commentId: M:Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable{Buttplug.Core.Messages.RotateCmd.RotateCommand})
+  name.vb: RotateAsync(IEnumerable(Of RotateCmd.RotateCommand))
+  fullName: Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable<Buttplug.Core.Messages.RotateCmd.RotateCommand>)
+  fullName.vb: Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable(Of Buttplug.Core.Messages.RotateCmd.RotateCommand))
+  nameWithType: ButtplugClientDevice.RotateAsync(IEnumerable<RotateCmd.RotateCommand>)
+  nameWithType.vb: ButtplugClientDevice.RotateAsync(IEnumerable(Of RotateCmd.RotateCommand))
 - uid: Buttplug.Client.ButtplugClientDevice.RotateAsync(System.Double,System.Boolean)
   name: RotateAsync(Double, Boolean)
   href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_RotateAsync_System_Double_System_Boolean_
@@ -482,6 +482,15 @@ references:
   isSpec: "True"
   fullName: Buttplug.Client.ButtplugClientDevice.Stop
   nameWithType: ButtplugClientDevice.Stop
+- uid: Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{Buttplug.Core.Messages.ScalarCmd.ScalarCommand})
+  name: VibrateAsync(IEnumerable<ScalarCmd.ScalarCommand>)
+  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_Buttplug_Core_Messages_ScalarCmd_ScalarCommand__
+  commentId: M:Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{Buttplug.Core.Messages.ScalarCmd.ScalarCommand})
+  name.vb: VibrateAsync(IEnumerable(Of ScalarCmd.ScalarCommand))
+  fullName: Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable<Buttplug.Core.Messages.ScalarCmd.ScalarCommand>)
+  fullName.vb: Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable(Of Buttplug.Core.Messages.ScalarCmd.ScalarCommand))
+  nameWithType: ButtplugClientDevice.VibrateAsync(IEnumerable<ScalarCmd.ScalarCommand>)
+  nameWithType.vb: ButtplugClientDevice.VibrateAsync(IEnumerable(Of ScalarCmd.ScalarCommand))
 - uid: Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{System.Double})
   name: VibrateAsync(IEnumerable<Double>)
   href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_System_Double__
@@ -491,15 +500,6 @@ references:
   fullName.vb: Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable(Of System.Double))
   nameWithType: ButtplugClientDevice.VibrateAsync(IEnumerable<Double>)
   nameWithType.vb: ButtplugClientDevice.VibrateAsync(IEnumerable(Of Double))
-- uid: Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name: VibrateAsync(IEnumerable<(UInt32, Double)>)
-  href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_System_ValueTuple_System_UInt32_System_Double___
-  commentId: M:Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name.vb: VibrateAsync(IEnumerable(Of (UInt32, Double)))
-  fullName: Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable<System.ValueTuple<System.UInt32, System.Double>>)
-  fullName.vb: Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable(Of System.ValueTuple(Of System.UInt32, System.Double)))
-  nameWithType: ButtplugClientDevice.VibrateAsync(IEnumerable<(UInt32, Double)>)
-  nameWithType.vb: ButtplugClientDevice.VibrateAsync(IEnumerable(Of (UInt32, Double)))
 - uid: Buttplug.Client.ButtplugClientDevice.VibrateAsync(System.Double)
   name: VibrateAsync(Double)
   href: api/Buttplug.Client.ButtplugClientDevice.html#Buttplug_Client_ButtplugClientDevice_VibrateAsync_System_Double_
@@ -694,88 +694,82 @@ references:
   isSpec: "True"
   fullName: Buttplug.Client.ButtplugRemoteJSONConnector.ReceiveMessages
   nameWithType: ButtplugRemoteJSONConnector.ReceiveMessages
-- uid: Buttplug.Client.Connectors.WebsocketConnector
-  name: Buttplug.Client.Connectors.WebsocketConnector
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.html
-  commentId: N:Buttplug.Client.Connectors.WebsocketConnector
-  fullName: Buttplug.Client.Connectors.WebsocketConnector
-  nameWithType: Buttplug.Client.Connectors.WebsocketConnector
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector
+- uid: Buttplug.Client.ButtplugWebsocketConnector
   name: ButtplugWebsocketConnector
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html
-  commentId: T:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html
+  commentId: T:Buttplug.Client.ButtplugWebsocketConnector
+  fullName: Buttplug.Client.ButtplugWebsocketConnector
   nameWithType: ButtplugWebsocketConnector
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.#ctor(Uri)
+- uid: Buttplug.Client.ButtplugWebsocketConnector.#ctor(Uri)
   name: ButtplugWebsocketConnector(Uri)
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector__ctor_Uri_
-  commentId: M:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.#ctor(Uri)
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.ButtplugWebsocketConnector(Uri)
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector__ctor_Uri_
+  commentId: M:Buttplug.Client.ButtplugWebsocketConnector.#ctor(Uri)
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.ButtplugWebsocketConnector(Uri)
   nameWithType: ButtplugWebsocketConnector.ButtplugWebsocketConnector(Uri)
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.#ctor*
+- uid: Buttplug.Client.ButtplugWebsocketConnector.#ctor*
   name: ButtplugWebsocketConnector
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector__ctor_
-  commentId: Overload:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.#ctor
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector__ctor_
+  commentId: Overload:Buttplug.Client.ButtplugWebsocketConnector.#ctor
   isSpec: "True"
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.ButtplugWebsocketConnector
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.ButtplugWebsocketConnector
   nameWithType: ButtplugWebsocketConnector.ButtplugWebsocketConnector
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.ConnectAsync(CancellationToken)
+- uid: Buttplug.Client.ButtplugWebsocketConnector.ConnectAsync(CancellationToken)
   name: ConnectAsync(CancellationToken)
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector_ConnectAsync_CancellationToken_
-  commentId: M:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.ConnectAsync(CancellationToken)
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.ConnectAsync(CancellationToken)
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector_ConnectAsync_CancellationToken_
+  commentId: M:Buttplug.Client.ButtplugWebsocketConnector.ConnectAsync(CancellationToken)
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.ConnectAsync(CancellationToken)
   nameWithType: ButtplugWebsocketConnector.ConnectAsync(CancellationToken)
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.ConnectAsync*
+- uid: Buttplug.Client.ButtplugWebsocketConnector.ConnectAsync*
   name: ConnectAsync
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector_ConnectAsync_
-  commentId: Overload:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.ConnectAsync
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector_ConnectAsync_
+  commentId: Overload:Buttplug.Client.ButtplugWebsocketConnector.ConnectAsync
   isSpec: "True"
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.ConnectAsync
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.ConnectAsync
   nameWithType: ButtplugWebsocketConnector.ConnectAsync
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.Connected
+- uid: Buttplug.Client.ButtplugWebsocketConnector.Connected
   name: Connected
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector_Connected
-  commentId: P:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.Connected
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.Connected
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector_Connected
+  commentId: P:Buttplug.Client.ButtplugWebsocketConnector.Connected
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.Connected
   nameWithType: ButtplugWebsocketConnector.Connected
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.Connected*
+- uid: Buttplug.Client.ButtplugWebsocketConnector.Connected*
   name: Connected
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector_Connected_
-  commentId: Overload:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.Connected
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector_Connected_
+  commentId: Overload:Buttplug.Client.ButtplugWebsocketConnector.Connected
   isSpec: "True"
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.Connected
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.Connected
   nameWithType: ButtplugWebsocketConnector.Connected
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.DisconnectAsync(CancellationToken)
+- uid: Buttplug.Client.ButtplugWebsocketConnector.DisconnectAsync(CancellationToken)
   name: DisconnectAsync(CancellationToken)
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector_DisconnectAsync_CancellationToken_
-  commentId: M:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.DisconnectAsync(CancellationToken)
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.DisconnectAsync(CancellationToken)
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector_DisconnectAsync_CancellationToken_
+  commentId: M:Buttplug.Client.ButtplugWebsocketConnector.DisconnectAsync(CancellationToken)
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.DisconnectAsync(CancellationToken)
   nameWithType: ButtplugWebsocketConnector.DisconnectAsync(CancellationToken)
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.DisconnectAsync*
+- uid: Buttplug.Client.ButtplugWebsocketConnector.DisconnectAsync*
   name: DisconnectAsync
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector_DisconnectAsync_
-  commentId: Overload:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.DisconnectAsync
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector_DisconnectAsync_
+  commentId: Overload:Buttplug.Client.ButtplugWebsocketConnector.DisconnectAsync
   isSpec: "True"
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.DisconnectAsync
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.DisconnectAsync
   nameWithType: ButtplugWebsocketConnector.DisconnectAsync
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.Disconnected
+- uid: Buttplug.Client.ButtplugWebsocketConnector.Disconnected
   name: Disconnected
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector_Disconnected
-  commentId: E:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.Disconnected
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.Disconnected
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector_Disconnected
+  commentId: E:Buttplug.Client.ButtplugWebsocketConnector.Disconnected
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.Disconnected
   nameWithType: ButtplugWebsocketConnector.Disconnected
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.SendAsync(Buttplug.Core.Messages.ButtplugMessage,CancellationToken)
+- uid: Buttplug.Client.ButtplugWebsocketConnector.SendAsync(Buttplug.Core.Messages.ButtplugMessage,CancellationToken)
   name: SendAsync(ButtplugMessage, CancellationToken)
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector_SendAsync_Buttplug_Core_Messages_ButtplugMessage_CancellationToken_
-  commentId: M:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.SendAsync(Buttplug.Core.Messages.ButtplugMessage,CancellationToken)
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.SendAsync(Buttplug.Core.Messages.ButtplugMessage, CancellationToken)
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector_SendAsync_Buttplug_Core_Messages_ButtplugMessage_CancellationToken_
+  commentId: M:Buttplug.Client.ButtplugWebsocketConnector.SendAsync(Buttplug.Core.Messages.ButtplugMessage,CancellationToken)
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.SendAsync(Buttplug.Core.Messages.ButtplugMessage, CancellationToken)
   nameWithType: ButtplugWebsocketConnector.SendAsync(ButtplugMessage, CancellationToken)
-- uid: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.SendAsync*
+- uid: Buttplug.Client.ButtplugWebsocketConnector.SendAsync*
   name: SendAsync
-  href: api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html#Buttplug_Client_Connectors_WebsocketConnector_ButtplugWebsocketConnector_SendAsync_
-  commentId: Overload:Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.SendAsync
+  href: api/Buttplug.Client.ButtplugWebsocketConnector.html#Buttplug_Client_ButtplugWebsocketConnector_SendAsync_
+  commentId: Overload:Buttplug.Client.ButtplugWebsocketConnector.SendAsync
   isSpec: "True"
-  fullName: Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.SendAsync
+  fullName: Buttplug.Client.ButtplugWebsocketConnector.SendAsync
   nameWithType: ButtplugWebsocketConnector.SendAsync
 - uid: Buttplug.Client.DeviceAddedEventArgs
   name: DeviceAddedEventArgs
@@ -903,6 +897,40 @@ references:
   isSpec: "True"
   fullName: Buttplug.Client.IButtplugClientConnector.SendAsync
   nameWithType: IButtplugClientConnector.SendAsync
+- uid: Buttplug.Client.ReturnMessage
+  name: ReturnMessage
+  href: api/Buttplug.Client.ReturnMessage.html
+  commentId: T:Buttplug.Client.ReturnMessage
+  fullName: Buttplug.Client.ReturnMessage
+  nameWithType: ReturnMessage
+- uid: Buttplug.Client.ReturnMessage.#ctor(System.String,Task{Buttplug.Core.Messages.ButtplugMessage})
+  name: ReturnMessage(String, Task<ButtplugMessage>)
+  href: api/Buttplug.Client.ReturnMessage.html#Buttplug_Client_ReturnMessage__ctor_System_String_Task_Buttplug_Core_Messages_ButtplugMessage__
+  commentId: M:Buttplug.Client.ReturnMessage.#ctor(System.String,Task{Buttplug.Core.Messages.ButtplugMessage})
+  name.vb: ReturnMessage(String, Task(Of ButtplugMessage))
+  fullName: Buttplug.Client.ReturnMessage.ReturnMessage(System.String, Task<Buttplug.Core.Messages.ButtplugMessage>)
+  fullName.vb: Buttplug.Client.ReturnMessage.ReturnMessage(System.String, Task(Of Buttplug.Core.Messages.ButtplugMessage))
+  nameWithType: ReturnMessage.ReturnMessage(String, Task<ButtplugMessage>)
+  nameWithType.vb: ReturnMessage.ReturnMessage(String, Task(Of ButtplugMessage))
+- uid: Buttplug.Client.ReturnMessage.#ctor*
+  name: ReturnMessage
+  href: api/Buttplug.Client.ReturnMessage.html#Buttplug_Client_ReturnMessage__ctor_
+  commentId: Overload:Buttplug.Client.ReturnMessage.#ctor
+  isSpec: "True"
+  fullName: Buttplug.Client.ReturnMessage.ReturnMessage
+  nameWithType: ReturnMessage.ReturnMessage
+- uid: Buttplug.Client.ReturnMessage.Message
+  name: Message
+  href: api/Buttplug.Client.ReturnMessage.html#Buttplug_Client_ReturnMessage_Message
+  commentId: F:Buttplug.Client.ReturnMessage.Message
+  fullName: Buttplug.Client.ReturnMessage.Message
+  nameWithType: ReturnMessage.Message
+- uid: Buttplug.Client.ReturnMessage.Promise
+  name: Promise
+  href: api/Buttplug.Client.ReturnMessage.html#Buttplug_Client_ReturnMessage_Promise
+  commentId: F:Buttplug.Client.ReturnMessage.Promise
+  fullName: Buttplug.Client.ReturnMessage.Promise
+  nameWithType: ReturnMessage.Promise
 - uid: Buttplug.Core
   name: Buttplug.Core
   href: api/Buttplug.Core.html
@@ -1979,30 +2007,30 @@ references:
   isSpec: "True"
   fullName: Buttplug.Core.Messages.LinearCmd.LinearCmd
   nameWithType: LinearCmd.LinearCmd
-- uid: Buttplug.Core.Messages.LinearCmd.Create(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name: Create(IEnumerable<(UInt32 duration, Double position)>)
-  href: api/Buttplug.Core.Messages.LinearCmd.html#Buttplug_Core_Messages_LinearCmd_Create_IEnumerable_System_ValueTuple_System_UInt32_System_Double___
-  commentId: M:Buttplug.Core.Messages.LinearCmd.Create(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name.vb: Create(IEnumerable(Of (duration As UInt32, position As Double)))
-  fullName: Buttplug.Core.Messages.LinearCmd.Create(IEnumerable<System.ValueTuple<System.UInt32, System.Double>>)
-  fullName.vb: Buttplug.Core.Messages.LinearCmd.Create(IEnumerable(Of System.ValueTuple(Of System.UInt32, System.Double)))
-  nameWithType: LinearCmd.Create(IEnumerable<(UInt32 duration, Double position)>)
-  nameWithType.vb: LinearCmd.Create(IEnumerable(Of (duration As UInt32, position As Double)))
+- uid: Buttplug.Core.Messages.LinearCmd.Create(IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})
+  name: Create(IEnumerable<LinearCmd.VectorCommand>)
+  href: api/Buttplug.Core.Messages.LinearCmd.html#Buttplug_Core_Messages_LinearCmd_Create_IEnumerable_Buttplug_Core_Messages_LinearCmd_VectorCommand__
+  commentId: M:Buttplug.Core.Messages.LinearCmd.Create(IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})
+  name.vb: Create(IEnumerable(Of LinearCmd.VectorCommand))
+  fullName: Buttplug.Core.Messages.LinearCmd.Create(IEnumerable<Buttplug.Core.Messages.LinearCmd.VectorCommand>)
+  fullName.vb: Buttplug.Core.Messages.LinearCmd.Create(IEnumerable(Of Buttplug.Core.Messages.LinearCmd.VectorCommand))
+  nameWithType: LinearCmd.Create(IEnumerable<LinearCmd.VectorCommand>)
+  nameWithType.vb: LinearCmd.Create(IEnumerable(Of LinearCmd.VectorCommand))
 - uid: Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.Double,System.UInt32)
   name: Create(UInt32, Double, UInt32)
   href: api/Buttplug.Core.Messages.LinearCmd.html#Buttplug_Core_Messages_LinearCmd_Create_System_UInt32_System_Double_System_UInt32_
   commentId: M:Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.Double,System.UInt32)
   fullName: Buttplug.Core.Messages.LinearCmd.Create(System.UInt32, System.Double, System.UInt32)
   nameWithType: LinearCmd.Create(UInt32, Double, UInt32)
-- uid: Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.UInt32,IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name: Create(UInt32, UInt32, IEnumerable<(UInt32 duration, Double position)>)
-  href: api/Buttplug.Core.Messages.LinearCmd.html#Buttplug_Core_Messages_LinearCmd_Create_System_UInt32_System_UInt32_IEnumerable_System_ValueTuple_System_UInt32_System_Double___
-  commentId: M:Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.UInt32,IEnumerable{System.ValueTuple{System.UInt32,System.Double}})
-  name.vb: Create(UInt32, UInt32, IEnumerable(Of (duration As UInt32, position As Double)))
-  fullName: Buttplug.Core.Messages.LinearCmd.Create(System.UInt32, System.UInt32, IEnumerable<System.ValueTuple<System.UInt32, System.Double>>)
-  fullName.vb: Buttplug.Core.Messages.LinearCmd.Create(System.UInt32, System.UInt32, IEnumerable(Of System.ValueTuple(Of System.UInt32, System.Double)))
-  nameWithType: LinearCmd.Create(UInt32, UInt32, IEnumerable<(UInt32 duration, Double position)>)
-  nameWithType.vb: LinearCmd.Create(UInt32, UInt32, IEnumerable(Of (duration As UInt32, position As Double)))
+- uid: Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.UInt32,IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})
+  name: Create(UInt32, UInt32, IEnumerable<LinearCmd.VectorCommand>)
+  href: api/Buttplug.Core.Messages.LinearCmd.html#Buttplug_Core_Messages_LinearCmd_Create_System_UInt32_System_UInt32_IEnumerable_Buttplug_Core_Messages_LinearCmd_VectorCommand__
+  commentId: M:Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.UInt32,IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})
+  name.vb: Create(UInt32, UInt32, IEnumerable(Of LinearCmd.VectorCommand))
+  fullName: Buttplug.Core.Messages.LinearCmd.Create(System.UInt32, System.UInt32, IEnumerable<Buttplug.Core.Messages.LinearCmd.VectorCommand>)
+  fullName.vb: Buttplug.Core.Messages.LinearCmd.Create(System.UInt32, System.UInt32, IEnumerable(Of Buttplug.Core.Messages.LinearCmd.VectorCommand))
+  nameWithType: LinearCmd.Create(UInt32, UInt32, IEnumerable<LinearCmd.VectorCommand>)
+  nameWithType.vb: LinearCmd.Create(UInt32, UInt32, IEnumerable(Of LinearCmd.VectorCommand))
 - uid: Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.UInt32,System.UInt32,System.Double,System.UInt32)
   name: Create(UInt32, UInt32, UInt32, Double, UInt32)
   href: api/Buttplug.Core.Messages.LinearCmd.html#Buttplug_Core_Messages_LinearCmd_Create_System_UInt32_System_UInt32_System_UInt32_System_Double_System_UInt32_
@@ -2016,6 +2044,37 @@ references:
   isSpec: "True"
   fullName: Buttplug.Core.Messages.LinearCmd.Create
   nameWithType: LinearCmd.Create
+- uid: Buttplug.Core.Messages.LinearCmd.VectorCommand
+  name: LinearCmd.VectorCommand
+  href: api/Buttplug.Core.Messages.LinearCmd.VectorCommand.html
+  commentId: T:Buttplug.Core.Messages.LinearCmd.VectorCommand
+  fullName: Buttplug.Core.Messages.LinearCmd.VectorCommand
+  nameWithType: LinearCmd.VectorCommand
+- uid: Buttplug.Core.Messages.LinearCmd.VectorCommand.#ctor(System.Double,System.UInt32)
+  name: VectorCommand(Double, UInt32)
+  href: api/Buttplug.Core.Messages.LinearCmd.VectorCommand.html#Buttplug_Core_Messages_LinearCmd_VectorCommand__ctor_System_Double_System_UInt32_
+  commentId: M:Buttplug.Core.Messages.LinearCmd.VectorCommand.#ctor(System.Double,System.UInt32)
+  fullName: Buttplug.Core.Messages.LinearCmd.VectorCommand.VectorCommand(System.Double, System.UInt32)
+  nameWithType: LinearCmd.VectorCommand.VectorCommand(Double, UInt32)
+- uid: Buttplug.Core.Messages.LinearCmd.VectorCommand.#ctor*
+  name: VectorCommand
+  href: api/Buttplug.Core.Messages.LinearCmd.VectorCommand.html#Buttplug_Core_Messages_LinearCmd_VectorCommand__ctor_
+  commentId: Overload:Buttplug.Core.Messages.LinearCmd.VectorCommand.#ctor
+  isSpec: "True"
+  fullName: Buttplug.Core.Messages.LinearCmd.VectorCommand.VectorCommand
+  nameWithType: LinearCmd.VectorCommand.VectorCommand
+- uid: Buttplug.Core.Messages.LinearCmd.VectorCommand.duration
+  name: duration
+  href: api/Buttplug.Core.Messages.LinearCmd.VectorCommand.html#Buttplug_Core_Messages_LinearCmd_VectorCommand_duration
+  commentId: F:Buttplug.Core.Messages.LinearCmd.VectorCommand.duration
+  fullName: Buttplug.Core.Messages.LinearCmd.VectorCommand.duration
+  nameWithType: LinearCmd.VectorCommand.duration
+- uid: Buttplug.Core.Messages.LinearCmd.VectorCommand.position
+  name: position
+  href: api/Buttplug.Core.Messages.LinearCmd.VectorCommand.html#Buttplug_Core_Messages_LinearCmd_VectorCommand_position
+  commentId: F:Buttplug.Core.Messages.LinearCmd.VectorCommand.position
+  fullName: Buttplug.Core.Messages.LinearCmd.VectorCommand.position
+  nameWithType: LinearCmd.VectorCommand.position
 - uid: Buttplug.Core.Messages.LinearCmd.Vectors
   name: Vectors
   href: api/Buttplug.Core.Messages.LinearCmd.html#Buttplug_Core_Messages_LinearCmd_Vectors
@@ -2273,30 +2332,30 @@ references:
   isSpec: "True"
   fullName: Buttplug.Core.Messages.RotateCmd.RotateCmd
   nameWithType: RotateCmd.RotateCmd
-- uid: Buttplug.Core.Messages.RotateCmd.Create(IEnumerable{System.ValueTuple{System.Double,System.Boolean}})
-  name: Create(IEnumerable<(Double speed, Boolean clockwise)>)
-  href: api/Buttplug.Core.Messages.RotateCmd.html#Buttplug_Core_Messages_RotateCmd_Create_IEnumerable_System_ValueTuple_System_Double_System_Boolean___
-  commentId: M:Buttplug.Core.Messages.RotateCmd.Create(IEnumerable{System.ValueTuple{System.Double,System.Boolean}})
-  name.vb: Create(IEnumerable(Of (speed As Double, clockwise As Boolean)))
-  fullName: Buttplug.Core.Messages.RotateCmd.Create(IEnumerable<System.ValueTuple<System.Double, System.Boolean>>)
-  fullName.vb: Buttplug.Core.Messages.RotateCmd.Create(IEnumerable(Of System.ValueTuple(Of System.Double, System.Boolean)))
-  nameWithType: RotateCmd.Create(IEnumerable<(Double speed, Boolean clockwise)>)
-  nameWithType.vb: RotateCmd.Create(IEnumerable(Of (speed As Double, clockwise As Boolean)))
+- uid: Buttplug.Core.Messages.RotateCmd.Create(IEnumerable{Buttplug.Core.Messages.RotateCmd.RotateCommand})
+  name: Create(IEnumerable<RotateCmd.RotateCommand>)
+  href: api/Buttplug.Core.Messages.RotateCmd.html#Buttplug_Core_Messages_RotateCmd_Create_IEnumerable_Buttplug_Core_Messages_RotateCmd_RotateCommand__
+  commentId: M:Buttplug.Core.Messages.RotateCmd.Create(IEnumerable{Buttplug.Core.Messages.RotateCmd.RotateCommand})
+  name.vb: Create(IEnumerable(Of RotateCmd.RotateCommand))
+  fullName: Buttplug.Core.Messages.RotateCmd.Create(IEnumerable<Buttplug.Core.Messages.RotateCmd.RotateCommand>)
+  fullName.vb: Buttplug.Core.Messages.RotateCmd.Create(IEnumerable(Of Buttplug.Core.Messages.RotateCmd.RotateCommand))
+  nameWithType: RotateCmd.Create(IEnumerable<RotateCmd.RotateCommand>)
+  nameWithType.vb: RotateCmd.Create(IEnumerable(Of RotateCmd.RotateCommand))
 - uid: Buttplug.Core.Messages.RotateCmd.Create(System.Double,System.Boolean,System.UInt32)
   name: Create(Double, Boolean, UInt32)
   href: api/Buttplug.Core.Messages.RotateCmd.html#Buttplug_Core_Messages_RotateCmd_Create_System_Double_System_Boolean_System_UInt32_
   commentId: M:Buttplug.Core.Messages.RotateCmd.Create(System.Double,System.Boolean,System.UInt32)
   fullName: Buttplug.Core.Messages.RotateCmd.Create(System.Double, System.Boolean, System.UInt32)
   nameWithType: RotateCmd.Create(Double, Boolean, UInt32)
-- uid: Buttplug.Core.Messages.RotateCmd.Create(System.UInt32,System.UInt32,IEnumerable{System.ValueTuple{System.Double,System.Boolean}})
-  name: Create(UInt32, UInt32, IEnumerable<(Double speed, Boolean clockwise)>)
-  href: api/Buttplug.Core.Messages.RotateCmd.html#Buttplug_Core_Messages_RotateCmd_Create_System_UInt32_System_UInt32_IEnumerable_System_ValueTuple_System_Double_System_Boolean___
-  commentId: M:Buttplug.Core.Messages.RotateCmd.Create(System.UInt32,System.UInt32,IEnumerable{System.ValueTuple{System.Double,System.Boolean}})
-  name.vb: Create(UInt32, UInt32, IEnumerable(Of (speed As Double, clockwise As Boolean)))
-  fullName: Buttplug.Core.Messages.RotateCmd.Create(System.UInt32, System.UInt32, IEnumerable<System.ValueTuple<System.Double, System.Boolean>>)
-  fullName.vb: Buttplug.Core.Messages.RotateCmd.Create(System.UInt32, System.UInt32, IEnumerable(Of System.ValueTuple(Of System.Double, System.Boolean)))
-  nameWithType: RotateCmd.Create(UInt32, UInt32, IEnumerable<(Double speed, Boolean clockwise)>)
-  nameWithType.vb: RotateCmd.Create(UInt32, UInt32, IEnumerable(Of (speed As Double, clockwise As Boolean)))
+- uid: Buttplug.Core.Messages.RotateCmd.Create(System.UInt32,System.UInt32,IEnumerable{Buttplug.Core.Messages.RotateCmd.RotateCommand})
+  name: Create(UInt32, UInt32, IEnumerable<RotateCmd.RotateCommand>)
+  href: api/Buttplug.Core.Messages.RotateCmd.html#Buttplug_Core_Messages_RotateCmd_Create_System_UInt32_System_UInt32_IEnumerable_Buttplug_Core_Messages_RotateCmd_RotateCommand__
+  commentId: M:Buttplug.Core.Messages.RotateCmd.Create(System.UInt32,System.UInt32,IEnumerable{Buttplug.Core.Messages.RotateCmd.RotateCommand})
+  name.vb: Create(UInt32, UInt32, IEnumerable(Of RotateCmd.RotateCommand))
+  fullName: Buttplug.Core.Messages.RotateCmd.Create(System.UInt32, System.UInt32, IEnumerable<Buttplug.Core.Messages.RotateCmd.RotateCommand>)
+  fullName.vb: Buttplug.Core.Messages.RotateCmd.Create(System.UInt32, System.UInt32, IEnumerable(Of Buttplug.Core.Messages.RotateCmd.RotateCommand))
+  nameWithType: RotateCmd.Create(UInt32, UInt32, IEnumerable<RotateCmd.RotateCommand>)
+  nameWithType.vb: RotateCmd.Create(UInt32, UInt32, IEnumerable(Of RotateCmd.RotateCommand))
 - uid: Buttplug.Core.Messages.RotateCmd.Create(System.UInt32,System.UInt32,System.Double,System.Boolean,System.UInt32)
   name: Create(UInt32, UInt32, Double, Boolean, UInt32)
   href: api/Buttplug.Core.Messages.RotateCmd.html#Buttplug_Core_Messages_RotateCmd_Create_System_UInt32_System_UInt32_System_Double_System_Boolean_System_UInt32_
@@ -2310,6 +2369,37 @@ references:
   isSpec: "True"
   fullName: Buttplug.Core.Messages.RotateCmd.Create
   nameWithType: RotateCmd.Create
+- uid: Buttplug.Core.Messages.RotateCmd.RotateCommand
+  name: RotateCmd.RotateCommand
+  href: api/Buttplug.Core.Messages.RotateCmd.RotateCommand.html
+  commentId: T:Buttplug.Core.Messages.RotateCmd.RotateCommand
+  fullName: Buttplug.Core.Messages.RotateCmd.RotateCommand
+  nameWithType: RotateCmd.RotateCommand
+- uid: Buttplug.Core.Messages.RotateCmd.RotateCommand.#ctor(System.Double,System.Boolean)
+  name: RotateCommand(Double, Boolean)
+  href: api/Buttplug.Core.Messages.RotateCmd.RotateCommand.html#Buttplug_Core_Messages_RotateCmd_RotateCommand__ctor_System_Double_System_Boolean_
+  commentId: M:Buttplug.Core.Messages.RotateCmd.RotateCommand.#ctor(System.Double,System.Boolean)
+  fullName: Buttplug.Core.Messages.RotateCmd.RotateCommand.RotateCommand(System.Double, System.Boolean)
+  nameWithType: RotateCmd.RotateCommand.RotateCommand(Double, Boolean)
+- uid: Buttplug.Core.Messages.RotateCmd.RotateCommand.#ctor*
+  name: RotateCommand
+  href: api/Buttplug.Core.Messages.RotateCmd.RotateCommand.html#Buttplug_Core_Messages_RotateCmd_RotateCommand__ctor_
+  commentId: Overload:Buttplug.Core.Messages.RotateCmd.RotateCommand.#ctor
+  isSpec: "True"
+  fullName: Buttplug.Core.Messages.RotateCmd.RotateCommand.RotateCommand
+  nameWithType: RotateCmd.RotateCommand.RotateCommand
+- uid: Buttplug.Core.Messages.RotateCmd.RotateCommand.clockwise
+  name: clockwise
+  href: api/Buttplug.Core.Messages.RotateCmd.RotateCommand.html#Buttplug_Core_Messages_RotateCmd_RotateCommand_clockwise
+  commentId: F:Buttplug.Core.Messages.RotateCmd.RotateCommand.clockwise
+  fullName: Buttplug.Core.Messages.RotateCmd.RotateCommand.clockwise
+  nameWithType: RotateCmd.RotateCommand.clockwise
+- uid: Buttplug.Core.Messages.RotateCmd.RotateCommand.speed
+  name: speed
+  href: api/Buttplug.Core.Messages.RotateCmd.RotateCommand.html#Buttplug_Core_Messages_RotateCmd_RotateCommand_speed
+  commentId: F:Buttplug.Core.Messages.RotateCmd.RotateCommand.speed
+  fullName: Buttplug.Core.Messages.RotateCmd.RotateCommand.speed
+  nameWithType: RotateCmd.RotateCommand.speed
 - uid: Buttplug.Core.Messages.RotateCmd.RotateSubcommand
   name: RotateCmd.RotateSubcommand
   href: api/Buttplug.Core.Messages.RotateCmd.RotateSubcommand.html
@@ -2385,6 +2475,37 @@ references:
   isSpec: "True"
   fullName: Buttplug.Core.Messages.ScalarCmd.ScalarCmd
   nameWithType: ScalarCmd.ScalarCmd
+- uid: Buttplug.Core.Messages.ScalarCmd.ScalarCommand
+  name: ScalarCmd.ScalarCommand
+  href: api/Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html
+  commentId: T:Buttplug.Core.Messages.ScalarCmd.ScalarCommand
+  fullName: Buttplug.Core.Messages.ScalarCmd.ScalarCommand
+  nameWithType: ScalarCmd.ScalarCommand
+- uid: Buttplug.Core.Messages.ScalarCmd.ScalarCommand.#ctor(System.UInt32,System.Double)
+  name: ScalarCommand(UInt32, Double)
+  href: api/Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html#Buttplug_Core_Messages_ScalarCmd_ScalarCommand__ctor_System_UInt32_System_Double_
+  commentId: M:Buttplug.Core.Messages.ScalarCmd.ScalarCommand.#ctor(System.UInt32,System.Double)
+  fullName: Buttplug.Core.Messages.ScalarCmd.ScalarCommand.ScalarCommand(System.UInt32, System.Double)
+  nameWithType: ScalarCmd.ScalarCommand.ScalarCommand(UInt32, Double)
+- uid: Buttplug.Core.Messages.ScalarCmd.ScalarCommand.#ctor*
+  name: ScalarCommand
+  href: api/Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html#Buttplug_Core_Messages_ScalarCmd_ScalarCommand__ctor_
+  commentId: Overload:Buttplug.Core.Messages.ScalarCmd.ScalarCommand.#ctor
+  isSpec: "True"
+  fullName: Buttplug.Core.Messages.ScalarCmd.ScalarCommand.ScalarCommand
+  nameWithType: ScalarCmd.ScalarCommand.ScalarCommand
+- uid: Buttplug.Core.Messages.ScalarCmd.ScalarCommand.index
+  name: index
+  href: api/Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html#Buttplug_Core_Messages_ScalarCmd_ScalarCommand_index
+  commentId: F:Buttplug.Core.Messages.ScalarCmd.ScalarCommand.index
+  fullName: Buttplug.Core.Messages.ScalarCmd.ScalarCommand.index
+  nameWithType: ScalarCmd.ScalarCommand.index
+- uid: Buttplug.Core.Messages.ScalarCmd.ScalarCommand.scalar
+  name: scalar
+  href: api/Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html#Buttplug_Core_Messages_ScalarCmd_ScalarCommand_scalar
+  commentId: F:Buttplug.Core.Messages.ScalarCmd.ScalarCommand.scalar
+  fullName: Buttplug.Core.Messages.ScalarCmd.ScalarCommand.scalar
+  nameWithType: ScalarCmd.ScalarCommand.scalar
 - uid: Buttplug.Core.Messages.ScalarCmd.Scalars
   name: Scalars
   href: api/Buttplug.Core.Messages.ScalarCmd.html#Buttplug_Core_Messages_ScalarCmd_Scalars

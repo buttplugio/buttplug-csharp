@@ -392,12 +392,12 @@ reconnects, the index should be reused.</p>
     </tbody>
   </table>
   <a id="Buttplug_Client_ButtplugClientDevice_LinearAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_LinearAsync_IEnumerable_System_ValueTuple_System_UInt32_System_Double___" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})">LinearAsync(IEnumerable&lt;(UInt32, Double)&gt;)</h4>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_LinearAsync_IEnumerable_Buttplug_Core_Messages_LinearCmd_VectorCommand__" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})">LinearAsync(IEnumerable&lt;LinearCmd.VectorCommand&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task LinearAsync(IEnumerable&lt;(uint, double)&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task LinearAsync(IEnumerable&lt;LinearCmd.VectorCommand&gt; cmds)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -410,7 +410,7 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.valuetuple-2">ValueTuple</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorCommand.html">LinearCmd.VectorCommand</a>&gt;</td>
         <td><span class="parametername">cmds</span></td>
         <td></td>
       </tr>
@@ -477,12 +477,12 @@ reconnects, the index should be reused.</p>
     </tbody>
   </table>
   <a id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_System_Double__" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{System.Double})">OscillateAsync(IEnumerable&lt;Double&gt;)</h4>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_Buttplug_Core_Messages_ScalarCmd_ScalarCommand__" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{Buttplug.Core.Messages.ScalarCmd.ScalarCommand})">OscillateAsync(IEnumerable&lt;ScalarCmd.ScalarCommand&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task OscillateAsync(IEnumerable&lt;double&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task OscillateAsync(IEnumerable&lt;ScalarCmd.ScalarCommand&gt; cmds)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -495,7 +495,7 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html">ScalarCmd.ScalarCommand</a>&gt;</td>
         <td><span class="parametername">cmds</span></td>
         <td></td>
       </tr>
@@ -517,12 +517,12 @@ reconnects, the index should be reused.</p>
     </tbody>
   </table>
   <a id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_System_ValueTuple_System_UInt32_System_Double___" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})">OscillateAsync(IEnumerable&lt;(UInt32, Double)&gt;)</h4>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_System_Double__" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{System.Double})">OscillateAsync(IEnumerable&lt;Double&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task OscillateAsync(IEnumerable&lt;(uint, double)&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task OscillateAsync(IEnumerable&lt;double&gt; cmds)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -535,7 +535,7 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.valuetuple-2">ValueTuple</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
         <td><span class="parametername">cmds</span></td>
         <td></td>
       </tr>
@@ -597,12 +597,12 @@ reconnects, the index should be reused.</p>
     </tbody>
   </table>
   <a id="Buttplug_Client_ButtplugClientDevice_RotateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_RotateAsync_IEnumerable_System_ValueTuple_System_Double_System_Boolean___" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable{System.ValueTuple{System.Double,System.Boolean}})">RotateAsync(IEnumerable&lt;(Double, Boolean)&gt;)</h4>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_RotateAsync_IEnumerable_Buttplug_Core_Messages_RotateCmd_RotateCommand__" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable{Buttplug.Core.Messages.RotateCmd.RotateCommand})">RotateAsync(IEnumerable&lt;RotateCmd.RotateCommand&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task RotateAsync(IEnumerable&lt;(double, bool)&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task RotateAsync(IEnumerable&lt;RotateCmd.RotateCommand&gt; cmds)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -615,7 +615,7 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.valuetuple-2">ValueTuple</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a>&gt;&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.RotateCmd.RotateCommand.html">RotateCmd.RotateCommand</a>&gt;</td>
         <td><span class="parametername">cmds</span></td>
         <td></td>
       </tr>
@@ -825,12 +825,12 @@ reconnects, the index should be reused.</p>
     </tbody>
   </table>
   <a id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_System_Double__" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{System.Double})">VibrateAsync(IEnumerable&lt;Double&gt;)</h4>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_Buttplug_Core_Messages_ScalarCmd_ScalarCommand__" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{Buttplug.Core.Messages.ScalarCmd.ScalarCommand})">VibrateAsync(IEnumerable&lt;ScalarCmd.ScalarCommand&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task VibrateAsync(IEnumerable&lt;double&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task VibrateAsync(IEnumerable&lt;ScalarCmd.ScalarCommand&gt; cmds)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -843,7 +843,7 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html">ScalarCmd.ScalarCommand</a>&gt;</td>
         <td><span class="parametername">cmds</span></td>
         <td></td>
       </tr>
@@ -865,12 +865,12 @@ reconnects, the index should be reused.</p>
     </tbody>
   </table>
   <a id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_System_ValueTuple_System_UInt32_System_Double___" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{System.ValueTuple{System.UInt32,System.Double}})">VibrateAsync(IEnumerable&lt;(UInt32, Double)&gt;)</h4>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_System_Double__" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{System.Double})">VibrateAsync(IEnumerable&lt;Double&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task VibrateAsync(IEnumerable&lt;(uint, double)&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task VibrateAsync(IEnumerable&lt;double&gt; cmds)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -883,7 +883,7 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.valuetuple-2">ValueTuple</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
         <td><span class="parametername">cmds</span></td>
         <td></td>
       </tr>

@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Client.ButtplugClientDevice.html",
-          "hash": "R+uOXHXXa+RzzEdaIexHTw=="
+          "hash": "16/pPa9DGD3kzC0ux2qN2w=="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Client.ButtplugRemoteJSONConnector.html",
-          "hash": "UYRbW0YyFnAFWlNNSifpnQ=="
+          "hash": "mp60VY52hemmR6Zst7iWrg=="
         }
       },
       "is_incremental": false,
@@ -77,23 +77,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.yml",
+      "source_relative_path": "api/Buttplug.Client.ButtplugWebsocketConnector.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Buttplug.Client.Connectors.WebsocketConnector.ButtplugWebsocketConnector.html",
-          "hash": "NROpyn15qT9iaZn7QRMV8g=="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Buttplug.Client.Connectors.WebsocketConnector.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Buttplug.Client.Connectors.WebsocketConnector.html",
-          "hash": "lHYxW05CTSZXfgStN7eexA=="
+          "relative_path": "api/Buttplug.Client.ButtplugWebsocketConnector.html",
+          "hash": "QyPlUsFz5D9vm+6bpLevIg=="
         }
       },
       "is_incremental": false,
@@ -137,11 +125,23 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Buttplug.Client.ReturnMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Buttplug.Client.ReturnMessage.html",
+          "hash": "jHrCcv+8B9Ga8forB12hHA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Buttplug.Client.yml",
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Client.html",
-          "hash": "r3Hx3qPWHPTwa/9LSeG6LA=="
+          "hash": "g0edrfP4/igQEQUep3ZIBQ=="
         }
       },
       "is_incremental": false,
@@ -437,6 +437,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Buttplug.Core.Messages.LinearCmd.VectorCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Buttplug.Core.Messages.LinearCmd.VectorCommand.html",
+          "hash": "WqW3KAVPKQ8tItssenhy2g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Buttplug.Core.Messages.LinearCmd.VectorSubcommand.yml",
       "output": {
         ".html": {
@@ -453,7 +465,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Core.Messages.LinearCmd.html",
-          "hash": "0Bv5z5TSPbdg++zp2pV09w=="
+          "hash": "Yymktw/qUYlg8ct3rkdKuA=="
         }
       },
       "is_incremental": false,
@@ -557,6 +569,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Buttplug.Core.Messages.RotateCmd.RotateCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Buttplug.Core.Messages.RotateCmd.RotateCommand.html",
+          "hash": "3LFXFF2jitVWlmICw1Q+vg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Buttplug.Core.Messages.RotateCmd.RotateSubcommand.yml",
       "output": {
         ".html": {
@@ -573,7 +597,19 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Core.Messages.RotateCmd.html",
-          "hash": "X4agNjUIB03QKnrdqXsCRw=="
+          "hash": "FM2BA5kX6heHG4uW7UwzUg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Buttplug.Core.Messages.ScalarCmd.ScalarCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html",
+          "hash": "3X/JpTGpZMHLE+NZ3kn13g=="
         }
       },
       "is_incremental": false,
@@ -741,7 +777,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Buttplug.Core.Messages.html",
-          "hash": "1Ku+T52KHBMBUzzSqjC+BQ=="
+          "hash": "ymBhhnrmFdfFiDJQKGea/Q=="
         }
       },
       "is_incremental": false,
@@ -777,7 +813,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "s+PK7TUwM1dPjSBZJNX/Xg=="
+          "hash": "t6QRgoYCW4pSuasxGdPenA=="
         }
       },
       "is_incremental": false,
@@ -828,7 +864,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 63,
+          "total_file_count": 66,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
