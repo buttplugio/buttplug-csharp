@@ -1,5 +1,4 @@
 ﻿using Buttplug.Core;
-
 using System;
 using System.Net.WebSockets;
 using Buttplug.Core.Messages;
@@ -8,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace Buttplug.Client.Connectors.WebsocketConnector
+namespace Buttplug.Client
 {
     public class ButtplugWebsocketConnector : ButtplugRemoteJSONConnector, IButtplugClientConnector
     {
