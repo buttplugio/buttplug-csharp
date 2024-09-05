@@ -63,19 +63,10 @@ The main reason I'm still keeping up my own C# client is that this is a big part
 
 ## Nuget and Packages
 
-In order to reduce the amount of required dependencies, Buttplug is currently split into 3 Nuget packages.
+As of v3.1.0, Buttplug is now a single package. Websocket connectors have been moved to System.Net.Websockets and are now included with the base library.
 
 - [Buttplug](https://www.nuget.org/packages/Buttplug/) - The Client Implemenation. Only dependency
   is NewtonsonJSON and Microsoft.CSharp 4.7
-- [Buttplug.Client.Connectors.WebsocketConnector](https://www.nuget.org/packages/Buttplug.Client.Connectors.WebsocketConnector/)
-  - A Websocket connector built in top of
-    [WebsocketListener](https://github.com/deniszykov/WebSocketListener). While a websocket
-    implementation is very much needed to use the client libraries, This is kept as a seperate
-    dependency in case developers want to use a connector built on top of another Websocket library
-    that may work better with or is already integrated in their setup (Like WebsocketSharp).
-- Buttplug.Util.WebsocketDevice (Not yet available) - This is a test package that allows simulation
-  of devices via the Buttplug Websocket Device Manager. More info about this can be found in [The
-  Buttplug Developer Guide](https://docs.buttplug.io/).
 
 ## Contributing
 
@@ -103,7 +94,7 @@ This project is BSD 3-Clause licensed.
 
 ```text
 
-Copyright (c) 2016-2023, Nonpolynomial, LLC
+Copyright (c) 2016-2024, Nonpolynomial, LLC
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

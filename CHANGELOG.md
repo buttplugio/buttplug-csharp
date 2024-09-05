@@ -1,3 +1,21 @@
+# 3.1.1 (2024-09-05)
+
+## Bugfixes
+
+- Oops, the README still mentioned the old websockets package. Fixing that, which requires a version
+  change to show up on NuGet.
+
+# 3.1.0 (2024-09-05)
+
+## Features
+
+- Reimplement Websockets using .Net System.Net.Websockets
+  - Remove a dependency that'd been causing us issues for a while
+- Move Buttplug.Client.Connector.Websocket to main module
+  - Since we're building without the extra dependency now, this can live in the main library.
+- Update to Newtonsoft.JSON 13.0.3
+  - Evaluating move to included litjson to remove this and make the library dependency free.
+
 # 3.0.1 (2023-06-18)
 
 ## Bugfixes
