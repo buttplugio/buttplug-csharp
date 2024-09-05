@@ -4,7 +4,7 @@
     <PackageId />
     <Title>Buttplug</Title>
     <AssemblyName>Buttplug</AssemblyName>
-    <Version>3.1.0</Version>
+    <Version>3.1.1</Version>
     <Summary>Buttplug Sex Toy Control Library - Client Implementation</Summary>
     <Description>Buttplug Sex Toy Control Library. Contains Core (messages, errors, etc), Client, and Websocket Connector components</Description>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net462;net47</TargetFrameworks>
