@@ -4,8 +4,15 @@
 
 - Oops, the README still mentioned the old websockets package. Fixing that, which requires a version
   change to show up on NuGet.
+- Module path change for websockets didn't get checked in
 
 # 3.1.0 (2024-09-05)
+
+## Breaking Changes
+
+- Client device command tuple calls changed to requiring class structures. If you were actually
+  using the tuple calls, PLEASE GET AHOLD OF ME, everyone I asked wasn't and I'm very curious if they were useful. I can't personally see how they were.
+- Websockets are now included in this library, in the Buttplug.Client namespace.
 
 ## Features
 
@@ -13,6 +20,9 @@
   - Remove a dependency that'd been causing us issues for a while
 - Move Buttplug.Client.Connector.Websocket to main module
   - Since we're building without the extra dependency now, this can live in the main library.
+- Remove tuple calls from public API and internals
+  - I'm not sure the external facing tuple calls were ever used, and they required extra
+    dependencies in some cases. Converted tuples to using small classes. Not great, but we need to stay .Net Standard 2.0/.Net Framework 4.6.2 compatible and I want to kill the dependency.
 - Update to Newtonsoft.JSON 13.0.3
   - Evaluating move to included litjson to remove this and make the library dependency free.
 
