@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
+<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CommonProjectProperties">
   <Import Project="..\Buttplug.ProjectFiles\CommonProjectProperties.targets" />
   <PropertyGroup>
     <PackageId />
@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
