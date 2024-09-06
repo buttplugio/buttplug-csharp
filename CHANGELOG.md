@@ -1,12 +1,4 @@
-# 3.1.1 (2024-09-05)
-
-## Bugfixes
-
-- Oops, the README still mentioned the old websockets package. Fixing that, which requires a version
-  change to show up on NuGet.
-- Module path change for websockets didn't get checked in
-
-# 3.1.0 (2024-09-05)
+# 4.0.0 (2024-09-05)
 
 ## Breaking Changes
 
@@ -25,6 +17,10 @@
     dependencies in some cases. Converted tuples to using small classes. Not great, but we need to stay .Net Standard 2.0/.Net Framework 4.6.2 compatible and I want to kill the dependency.
 - Update to Newtonsoft.JSON 13.0.3
   - Evaluating move to included litjson to remove this and make the library dependency free.
+
+# 3.0.2/3.1.1 (2024-09-05)
+
+- Yanked because of semver breakage. Should just have called this v4. See v4 notes.
 
 # 3.0.1 (2023-06-18)
 
