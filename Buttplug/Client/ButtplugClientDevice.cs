@@ -263,10 +263,10 @@ namespace Buttplug.Client
                 throw new ButtplugDeviceException($"Device {Name} does not have battery capabilities.");
             }
 
-            var result = await _handler.SendMessageAsync(new SensorReadCmd(Index, SensorReadAttributes(SensorType.Battery).ElementAt(0).Index, SensorType.Battery)).ConfigureAwait(false);
+            var result = await _handler.SendMessageAsync(new InputCmd(Index, SensorReadAttributes(SensorType.Battery).ElementAt(0).Index, SensorType.Battery)).ConfigureAwait(false);
             switch (result)
             {
-                case SensorReading response:
+                case InputReading response:
                     return response.data[0] / 100.0;
                 case Error err:
                     throw ButtplugException.FromError(err);
