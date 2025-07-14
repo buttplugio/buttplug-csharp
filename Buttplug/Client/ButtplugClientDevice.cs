@@ -72,6 +72,94 @@ namespace Buttplug.Client
             }
         }
         
+        public async Task RotateAsync(uint speed)
+        {
+            foreach (var feature in _features.Values)
+            {
+                if (feature.CanRotate())
+                {
+                    await feature.RotateAsync(speed);
+                }
+            }
+        }
+        
+        public async Task OscillateAsync(uint speed)
+        {
+            foreach (var feature in _features.Values)
+            {
+                if (feature.CanOscillate())
+                {
+                    await feature.OscillateAsync(speed);
+                }
+            }
+        }
+
+        public async Task ConstrictAsync(uint speed)
+        {
+            foreach (var feature in _features.Values)
+            {
+                if (feature.CanConstrict())
+                {
+                    await feature.ConstrictAsync(speed);
+                }
+            }
+        }
+
+        public async Task SprayAsync(uint speed)
+        {
+            foreach (var feature in _features.Values)
+            {
+                if (feature.CanSpray())
+                {
+                    await feature.SprayAsync(speed);
+                }
+            }
+        }
+        
+        public async Task HeaterAsync(uint speed)
+        {
+            foreach (var feature in _features.Values)
+            {
+                if (feature.CanHeater())
+                {
+                    await feature.HeaterAsync(speed);
+                }
+            }
+        }
+
+        public async Task LedAsync(uint speed)
+        {
+            foreach (var feature in _features.Values)
+            {
+                if (feature.CanLed())
+                {
+                    await feature.LedAsync(speed);
+                }
+            }
+        }
+        
+        public async Task PositionWithDurationAsync(uint position, uint duration)
+        {
+            foreach (var feature in _features.Values)
+            {
+                if (feature.CanPositionWithDuration())
+                {
+                    await feature.PositionWithDurationAsync(position, duration);
+                }
+            }
+        }
+        
+        public async Task RotateWithDirectionAsync(uint speed, bool clockwise)
+        {
+            foreach (var feature in _features.Values)
+            {
+                if (feature.CanRotateWithDirection())
+                {
+                    await feature.RotateWithDirectionAsync(speed, clockwise);
+                }
+            }
+        }
+
         public async Task Stop()
         {
             await _handler.SendMessageExpectOk(new StopDeviceCmd(Index)).ConfigureAwait(false);

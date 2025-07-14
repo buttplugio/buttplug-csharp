@@ -34,7 +34,7 @@ namespace Buttplug.Core.Messages
         [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
         public OutputCommandPositionWithDuration PositionWithDuration;
         [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
-        public OutputCommandRotationWithDirection RotationWithDirection;
+        public OutputCommandRotationWithDirection RotateWithDirection;
     }
 
     public class OutputCommandValue
