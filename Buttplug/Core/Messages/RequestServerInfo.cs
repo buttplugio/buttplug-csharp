@@ -18,20 +18,21 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Client message schema version.
         /// </summary>
-        [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
-        public uint MessageVersion;
+        [JsonProperty(Required = Required.Always)]
+        public uint ProtocolVersionMajor = ButtplugConsts.ProtocolVersionMajor;
+
+        [JsonProperty(Required = Required.Always)]
+        public uint ProtocolVersionMinor = ButtplugConsts.ProtocolVersionMinor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestServerInfo"/> class.
         /// </summary>
         /// <param name="clientName">Client name.</param>
-        /// <param name="id">Message Id.</param>
-        /// <param name="schemversion">Message schema version.</param>
-        public RequestServerInfo(string clientName, uint id = ButtplugConsts.DefaultMsgId, uint schemversion = ButtplugConsts.CurrentSpecVersion)
+        /// <param name="id">Message id.</param>
+        public RequestServerInfo(string clientName, uint id = ButtplugConsts.DefaultMsgId)
             : base(id)
         {
             ClientName = clientName;
-            MessageVersion = schemversion;
         }
     }
 }

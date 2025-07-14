@@ -139,11 +139,11 @@ namespace Buttplug.Client
                             Convert.ToInt32(Math.Round(si.MaxPingTime / 2.0, 0)));
                     }
 
-                    if (si.MessageVersion < ButtplugConsts.CurrentSpecVersion)
+                    if (si.ProtocolVersionMajor < ButtplugConsts.ProtocolVersionMajor)
                     {
                         await DisconnectAsync().ConfigureAwait(false);
                         throw new ButtplugHandshakeException(
-                            $"Buttplug Server's schema version ({si.MessageVersion}) is less than the client's ({ButtplugConsts.CurrentSpecVersion}). A newer server is required.",
+                            $"Buttplug Server's schema version ({si.ProtocolVersionMajor}) is less than the client's ({ButtplugConsts.ProtocolVersionMajor}). A newer server is required.",
                             res.Id);
                     }
 
@@ -151,17 +151,7 @@ namespace Buttplug.Client
                     var resp = await _handler.SendMessageAsync(new RequestDeviceList()).ConfigureAwait(false);
                     if (resp is DeviceList list)
                     {
-                        foreach (var d in list.Devices)
-                        {
-                            if (_devices.ContainsKey(d.DeviceIndex))
-                            {
-                                continue;
-                            }
-
-                            var device = new ButtplugClientDevice(_handler, d);
-                            _devices[d.DeviceIndex] = device;
-                            DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(device));
-                        }
+                        HandleDeviceList(list);
                     }
                     else
                     {
@@ -174,9 +164,7 @@ namespace Buttplug.Client
                         throw new ButtplugHandshakeException(
                             "Received unknown response to DeviceList handshake query");
                     }
-
                     break;
-
                 case Error e:
                     await DisconnectAsync().ConfigureAwait(false);
                     throw ButtplugException.FromError(e);
@@ -247,6 +235,30 @@ namespace Buttplug.Client
             ErrorReceived?.Invoke(this, exception);
         }
 
+        private void HandleDeviceList(DeviceList listMsg)
+        {
+            foreach (var pair in listMsg.Devices)
+            {
+                if (!_devices.ContainsKey(pair.Key))
+                {
+                    var dev = new ButtplugClientDevice(_handler, pair.Value);
+                    _devices.TryAdd(pair.Key, dev);
+                    DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(dev));
+                }
+            }
+
+            foreach (var index in _devices.Keys)
+            {
+                if (!listMsg.Devices.ContainsKey(index))
+                {
+                    if (_devices.TryRemove(index, out var oldDev))
+                    {
+                        DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Message Received event handler. Either tries to match incoming messages as replies to
         /// messages we've sent, or fires an event related to an incoming event, like device
@@ -260,28 +272,8 @@ namespace Buttplug.Client
 
             switch (msg)
             {
-                case DeviceAdded d:
-                    var dev = new ButtplugClientDevice(_handler, d);
-                    _devices.AddOrUpdate(d.DeviceIndex, dev, (u, device) => dev);
-                    DeviceAdded?.Invoke(this, new DeviceAddedEventArgs(dev));
-                    break;
-
-                case DeviceRemoved d:
-                    if (!_devices.ContainsKey(d.DeviceIndex))
-                    {
-                        ErrorReceived?.Invoke(this,
-                            new ButtplugExceptionEventArgs(
-                                new ButtplugDeviceException(
-                                    "Got device removed message for unknown device.",
-                                    msg.Id)));
-                        return;
-                    }
-
-                    if (_devices.TryRemove(d.DeviceIndex, out var oldDev))
-                    {
-                        DeviceRemoved?.Invoke(this, new DeviceRemovedEventArgs(oldDev));
-                    }
-
+                case DeviceList d:
+                    HandleDeviceList(d);
                     break;
 
                 case ScanningFinished _:

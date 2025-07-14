@@ -24,8 +24,14 @@ namespace Buttplug.Core
         public const uint DefaultMsgId = 1;
 
         /// <summary>
-        /// Spec version this Buttplug library is based on.
+        /// Major spec version this Buttplug library is based on. Must be greater than or equal to server version.
         /// </summary>
-        public const uint CurrentSpecVersion = 3;
+        public const uint ProtocolVersionMajor = 4;
+        
+        /// <summary>
+        /// Minor spec version this Buttplug library is based on. Used for minor update notifications (new input/output
+        /// types)
+        /// </summary>
+        public const uint ProtocolVersionMinor = 0;
     }
 }

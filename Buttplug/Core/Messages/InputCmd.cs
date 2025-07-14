@@ -2,6 +2,21 @@
 
 namespace Buttplug.Core.Messages
 {
+    public enum InputType
+    {
+        Battery,
+        Rssi,
+        Button,
+        Pressure,
+    }
+
+    public enum InputCommandType
+    {
+        Read,
+        Subscribe,
+        Unsubscribe,
+    }
+    
     /// <summary>
     /// Sent to server, generic message that can control any device that takes a single value and staticly
     /// sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).
@@ -13,32 +28,28 @@ namespace Buttplug.Core.Messages
         /// List of vibrator speeds.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public uint SensorIndex;
+        public uint FeatureIndex;
 
         [JsonProperty(Required = Required.Always)]
-        public SensorType SensorType;
+        public InputType InputType;
+        
+        [JsonProperty(Required = Required.Always)]
+        public InputCommandType InputCommand;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScalarCmd"/> class.
+        /// Initializes a new instance of the <see cref="InputCmd"/> class.
         /// </summary>
         /// <param name="deviceIndex">Device index.</param>
-        /// <param name="scalars">List of per-actuator scalar commands.</param>
+        /// <param name="featureIndex">Feature index.</param>
+        /// <param name="inputType">Type of input</param>
         /// <param name="id">Message ID.</param>
         [JsonConstructor]
-        public InputCmd(uint deviceIndex, uint sensorIndex, SensorType sensorType, uint id = ButtplugConsts.DefaultMsgId)
+        public InputCmd(uint deviceIndex, uint featureIndex, InputType inputType, InputCommandType inputCommand, uint id = ButtplugConsts.DefaultMsgId)
             : base(id, deviceIndex)
         {
-            SensorIndex = sensorIndex;
-            SensorType = sensorType;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ScalarCmd"/> class.
-        /// </summary>
-        /// <param name="scalars">List of per-actuator scalar commands.</param>
-        public InputCmd(uint sensorIndex, SensorType sensorType)
-            : this(uint.MaxValue, sensorIndex, sensorType)
-        {
+            FeatureIndex = featureIndex;
+            InputType = inputType;
+            InputCommand = inputCommand;
         }
     }
 }

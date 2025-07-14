@@ -103,7 +103,7 @@ namespace Buttplug.Client
                                         
                     if (incomingMsg.MessageType == WebSocketMessageType.Text)
                     {
-                        var msgContent = System.Text.Encoding.Default.GetString(buff, 0, incomingMsg.Count);
+                        var msgContent = Encoding.Default.GetString(buff, 0, incomingMsg.Count);
                         ReceiveMessages(msgContent);
                      }
                 }
