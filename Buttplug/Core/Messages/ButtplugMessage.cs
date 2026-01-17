@@ -92,29 +92,4 @@ namespace Buttplug.Core.Messages
     public interface IButtplugMessageOutgoingOnly
     {
     }
-
-    /// <summary>
-    /// Interface for messages containing Device Info, such as DeviceAdded/Removed.
-    /// </summary>
-    public interface IButtplugDeviceInfoMessage
-    {
-        /// <summary>
-        /// Device name.
-        /// </summary>
-        string DeviceName { get; }
-
-        /// <summary>
-        /// Device index, as assigned by a Buttplug server.
-        /// </summary>
-        uint DeviceIndex { get; }
-
-        /// <summary>
-        /// Buttplug messages supported by this device, with additional attributes.
-        /// </summary>
-        DeviceMessageAttributes DeviceMessages { get; }
-
-        string DeviceDisplayName { get; }
-
-        uint DeviceMessageTimingGap { get; }
-    }
 }

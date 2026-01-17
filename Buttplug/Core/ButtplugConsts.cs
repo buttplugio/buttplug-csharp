@@ -24,8 +24,23 @@ namespace Buttplug.Core
         public const uint DefaultMsgId = 1;
 
         /// <summary>
-        /// Spec version this Buttplug library is based on.
+        /// Maximum valid message ID.
         /// </summary>
-        public const uint CurrentSpecVersion = 3;
+        public const uint MaxId = 4294967295;
+
+        /// <summary>
+        /// Protocol major version this Buttplug library is based on.
+        /// </summary>
+        public const uint ProtocolVersionMajor = 4;
+
+        /// <summary>
+        /// Protocol minor version this Buttplug library is based on.
+        /// </summary>
+        public const uint ProtocolVersionMinor = 0;
+
+        /// <summary>
+        /// Spec version this Buttplug library is based on (for backwards compatibility).
+        /// </summary>
+        public const uint CurrentSpecVersion = ProtocolVersionMajor;
     }
 }

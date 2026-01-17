@@ -1,125 +1,42 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Runtime.Serialization;
-using System.Linq;
-using Newtonsoft.Json.Converters;
+﻿// <copyright file="DeviceMessageAttributes.cs" company="Nonpolynomial Labs LLC">
+// Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
+// Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
+// Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System.Collections.Generic;
 
 namespace Buttplug.Core.Messages
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum ActuatorType
+    /// <summary>
+    /// Interface for messages containing Device Info, such as DeviceList.
+    /// Updated for V4 protocol using DeviceFeatures instead of DeviceMessages.
+    /// </summary>
+    public interface IButtplugDeviceInfoMessage
     {
-        [EnumMember(Value = "Unknown")]
-        Unknown,
-        [EnumMember(Value = "Vibrate")]
-        Vibrate,
-        [EnumMember(Value = "Rotate")]
-        Rotate,
-        [EnumMember(Value = "Oscillate")]
-        Oscillate,
-        [EnumMember(Value = "Constrict")]
-        Constrict,
-        [EnumMember(Value = "Inflate")]
-        Inflate,
-        [EnumMember(Value = "Position")]
-        Position
-    }
+        /// <summary>
+        /// Device name.
+        /// </summary>
+        string DeviceName { get; }
 
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum SensorType
-    {
-        [EnumMember(Value = "Unknown")]
-        Unknown,
-        [EnumMember(Value = "Battery")]
-        Battery,
-        [EnumMember(Value = "RSSI")]
-        RSSI,
-        [EnumMember(Value = "Button")]
-        Button,
-        [EnumMember(Value = "Pressure")]
-        Pressure
-    }
+        /// <summary>
+        /// Device index, as assigned by a Buttplug server.
+        /// </summary>
+        uint DeviceIndex { get; }
 
-    public class GenericDeviceMessageAttributes
-    {
-        [JsonIgnore]
-        public uint Index { get { return _index; } }
+        /// <summary>
+        /// User-configured display name for the device.
+        /// </summary>
+        string DeviceDisplayName { get; }
 
-        [JsonIgnore]
-        internal uint _index;
-        [JsonProperty(Required = Required.Always)]
-        public readonly string FeatureDescriptor;
-        [JsonProperty(Required = Required.Always)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public readonly ActuatorType ActuatorType;
-        [JsonProperty(Required = Required.Always)]
-        public readonly uint StepCount;
-    }
+        /// <summary>
+        /// Recommended time gap between messages in milliseconds.
+        /// </summary>
+        uint DeviceMessageTimingGap { get; }
 
-    public class SensorDeviceMessageAttributes
-    {
-        [JsonIgnore]
-        public uint Index { get { return _index; } }
-
-        [JsonIgnore]
-        internal uint _index;
-        [JsonProperty(Required = Required.Always)]
-        public readonly string FeatureDescriptor;
-        [JsonProperty(Required = Required.Always)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public readonly SensorType SensorType;
-        [JsonProperty(Required = Required.Always)]
-        public readonly uint[][] SensorRange;
-    }
-
-    public class RawDeviceMessageAttributes
-    {
-        public readonly string[] Endpoints;
-    }
-
-    public class NullDeviceMessageAttributes
-    {
-    }
-
-    public class DeviceMessageAttributes
-    {
-        public GenericDeviceMessageAttributes[] ScalarCmd;
-        public GenericDeviceMessageAttributes[] RotateCmd;
-        public GenericDeviceMessageAttributes[] LinearCmd;
-        public SensorDeviceMessageAttributes[] SensorReadCmd;
-        public SensorDeviceMessageAttributes[] SensorSubscribeCmd;
-
-        public readonly RawDeviceMessageAttributes[] RawReadCmd;
-        public readonly RawDeviceMessageAttributes[] RawWriteCmd;
-        public readonly RawDeviceMessageAttributes[] RawSubscribeCmd;
-
-        public readonly NullDeviceMessageAttributes StopDeviceCmd;
-
-        internal class EnumeratePair<T>
-        {
-            public readonly int index;
-            public readonly T attr;
-
-            public EnumeratePair(T attr, int index)
-            {
-                this.index = index;
-                this.attr = attr;
-            }
-        }
-
-        // Set Indexes for all attributes
-        //
-        // This is a hack to live until when we actually transfer ids as part of buttplug messages,
-        // which will probably be in spec v4.
-        [OnDeserialized]
-        internal void OnDeserializedMethod(StreamingContext context)
-        {
-
-            ScalarCmd?.Select((x, i) => new EnumeratePair<GenericDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
-            RotateCmd?.Select((x, i) => new EnumeratePair<GenericDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
-            LinearCmd?.Select((x, i) => new EnumeratePair<GenericDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
-            SensorReadCmd?.Select((x, i) => new EnumeratePair<SensorDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
-            SensorSubscribeCmd?.Select((x, i) => new EnumeratePair<SensorDeviceMessageAttributes>(x, i)).ToList().ForEach(x => x.attr._index = (uint)x.index);
-        }
+        /// <summary>
+        /// Device features, keyed by feature index as string.
+        /// </summary>
+        Dictionary<string, DeviceFeature> DeviceFeatures { get; }
     }
 }

@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
-
 using Buttplug.Core.Messages;
 
 namespace Buttplug.Client
@@ -34,28 +33,34 @@ namespace Buttplug.Client
         /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The user-configured display name for the device.
+        /// </summary>
         public string DisplayName { get; }
 
+        /// <summary>
+        /// Recommended time gap between messages in milliseconds.
+        /// </summary>
         public uint MessageTimingGap { get; }
 
         /// <summary>
-        /// The Buttplug Protocol messages supported by this device, with additional attributes.
+        /// The device features, keyed by feature index.
         /// </summary>
-        public DeviceMessageAttributes MessageAttributes { get; }
+        public IReadOnlyDictionary<uint, ButtplugClientDeviceFeature> Features => _features;
 
+        private readonly Dictionary<uint, ButtplugClientDeviceFeature> _features;
         private readonly ButtplugClientMessageHandler _handler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
-        /// information received via a DeviceList, DeviceAdded, or DeviceRemoved message from the server.
+        /// information received via a DeviceList message from the server.
         /// </summary>
-        /// <param name="devInfo">
-        /// A Buttplug protocol message implementing the IButtplugDeviceInfoMessage interface.
-        /// </param>
+        /// <param name="handler">Message handler for sending commands.</param>
+        /// <param name="devInfo">Device info from the server.</param>
         internal ButtplugClientDevice(
             ButtplugClientMessageHandler handler,
             IButtplugDeviceInfoMessage devInfo)
-           : this(handler, devInfo.DeviceIndex, devInfo.DeviceName, devInfo.DeviceMessages, devInfo.DeviceDisplayName, devInfo.DeviceMessageTimingGap)
+            : this(handler, devInfo.DeviceIndex, devInfo.DeviceName, devInfo.DeviceFeatures, devInfo.DeviceDisplayName, devInfo.DeviceMessageTimingGap)
         {
             ButtplugUtils.ArgumentNotNull(devInfo, nameof(devInfo));
         }
@@ -64,14 +69,17 @@ namespace Buttplug.Client
         /// Initializes a new instance of the <see cref="ButtplugClientDevice"/> class, using
         /// discrete parameters.
         /// </summary>
+        /// <param name="handler">Message handler for sending commands.</param>
         /// <param name="index">The device index.</param>
         /// <param name="name">The device name.</param>
-        /// <param name="messages">The device allowed message list, with corresponding attributes.</param>
+        /// <param name="deviceFeatures">The device features.</param>
+        /// <param name="displayName">The user-configured display name.</param>
+        /// <param name="messageTimingGap">Recommended time gap between messages.</param>
         internal ButtplugClientDevice(
             ButtplugClientMessageHandler handler,
             uint index,
             string name,
-            DeviceMessageAttributes messages,
+            Dictionary<string, DeviceFeature> deviceFeatures,
             string displayName,
             uint messageTimingGap)
         {
@@ -79,205 +87,199 @@ namespace Buttplug.Client
             _handler = handler;
             Index = index;
             Name = name;
-            MessageAttributes = messages;
             DisplayName = displayName;
             MessageTimingGap = messageTimingGap;
-        }
 
-        public List<GenericDeviceMessageAttributes> GenericAcutatorAttributes(ActuatorType actuator)
-        {
-            if (MessageAttributes.ScalarCmd != null)
+            _features = new Dictionary<uint, ButtplugClientDeviceFeature>();
+            if (deviceFeatures != null)
             {
-                return MessageAttributes.ScalarCmd.Where(x => x.ActuatorType == actuator).ToList();
-            }
-
-            return Enumerable.Empty<GenericDeviceMessageAttributes>().ToList();
-        }
-
-        public async Task ScalarAsync(ScalarCmd.ScalarSubcommand command)
-        {
-            var scalars = new List<ScalarCmd.ScalarSubcommand>();
-            GenericAcutatorAttributes(command.ActuatorType).ForEach(x => scalars.Add(new ScalarCmd.ScalarSubcommand(x.Index, command.Scalar, command.ActuatorType)));
-            if (!scalars.Any())
-            {
-                throw new ButtplugDeviceException($"Scalar command for device {Name} did not generate any commands. Are you sure the device supports the ActuatorType sent?");
-            }
-            await _handler.SendMessageExpectOk(new ScalarCmd(Index, scalars)).ConfigureAwait(false);
-        }
-
-        public async Task ScalarAsync(List<ScalarCmd.ScalarSubcommand> command)
-        {
-            if (!command.Any())
-            {
-                throw new ArgumentException($"Command List for ScalarAsync must have at least 1 command.");
-            }
-            await _handler.SendMessageExpectOk(new ScalarCmd(Index, command)).ConfigureAwait(false);
-        }
-
-        public List<GenericDeviceMessageAttributes> VibrateAttributes
-        {
-            get
-            {
-                return GenericAcutatorAttributes(ActuatorType.Vibrate);
-            }
-        }
-
-        public async Task VibrateAsync(double speed)
-        {
-            await ScalarAsync(new ScalarCmd.ScalarSubcommand(uint.MaxValue, speed, ActuatorType.Vibrate));
-        }
-
-        public async Task VibrateAsync(IEnumerable<double> cmds)
-        {
-            var attrs = VibrateAttributes;
-            if (cmds.Count() > attrs.Count())
-            {
-                throw new ButtplugDeviceException($"Device {Name} only has {attrs.Count()} vibrators, but {cmds.Count()} commands given.");
-            }
-            await ScalarAsync(attrs.Select((x, i) => new ScalarCmd.ScalarSubcommand(x.Index, cmds.ElementAt(i), ActuatorType.Vibrate)).ToList()).ConfigureAwait(false);
-        }
-
-        public async Task VibrateAsync(IEnumerable<ScalarCmd.ScalarCommand> cmds)
-        {
-            await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(x.index, x.scalar, ActuatorType.Vibrate)).ToList()).ConfigureAwait(false);
-        }
-
-        public List<GenericDeviceMessageAttributes> OscillateAttributes
-        {
-            get
-            {
-                return GenericAcutatorAttributes(ActuatorType.Oscillate);
-            }
-        }
-
-        public async Task OscillateAsync(double speed)
-        {
-            await ScalarAsync(new ScalarCmd.ScalarSubcommand(uint.MaxValue, speed, ActuatorType.Oscillate));
-        }
-
-        public async Task OscillateAsync(IEnumerable<double> cmds)
-        {
-            var attrs = OscillateAttributes;
-            if (cmds.Count() > attrs.Count())
-            {
-                throw new ButtplugDeviceException($"Device {Name} only has {attrs.Count()} vibrators, but {cmds.Count()} commands given.");
-            }
-            await ScalarAsync(attrs.Select((x, i) => new ScalarCmd.ScalarSubcommand(x.Index, cmds.ElementAt(i), ActuatorType.Oscillate)).ToList()).ConfigureAwait(false);
-        }
-
-        public async Task OscillateAsync(IEnumerable<ScalarCmd.ScalarCommand> cmds)
-        {
-            await ScalarAsync(cmds.Select((x) => new ScalarCmd.ScalarSubcommand(x.index, x.scalar, ActuatorType.Oscillate)).ToList()).ConfigureAwait(false);
-        }
-
-        public List<GenericDeviceMessageAttributes> RotateAttributes
-        {
-            get
-            {
-                if (MessageAttributes.RotateCmd != null)
+                foreach (var kvp in deviceFeatures)
                 {
-                    return MessageAttributes.RotateCmd.ToList();
+                    if (uint.TryParse(kvp.Key, out var featureIndex))
+                    {
+                        _features[featureIndex] = new ButtplugClientDeviceFeature(this, kvp.Value, _handler);
+                    }
                 }
-                return Enumerable.Empty<GenericDeviceMessageAttributes>().ToList();
             }
         }
 
-        public async Task RotateAsync(double speed, bool clockwise)
+        #region Feature Queries
+
+        /// <summary>
+        /// Gets all features that have a specific output type.
+        /// </summary>
+        /// <param name="outputType">The output type to filter by.</param>
+        /// <returns>Enumerable of matching features.</returns>
+        public IEnumerable<ButtplugClientDeviceFeature> GetFeaturesWithOutput(OutputType outputType)
         {
-            if (!RotateAttributes.Any())
-            {
-                throw new ButtplugDeviceException($"Device {Name} does not support rotation");
-            }
-            var msg = RotateCmd.Create(speed, clockwise, (uint)RotateAttributes.Count);
-            msg.DeviceIndex = Index;
-            await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
+            return _features.Values.Where(f => f.HasOutput(outputType));
         }
 
-        public async Task RotateAsync(IEnumerable<RotateCmd.RotateCommand> cmds)
+        /// <summary>
+        /// Gets all features that have a specific input type.
+        /// </summary>
+        /// <param name="inputType">The input type to filter by.</param>
+        /// <returns>Enumerable of matching features.</returns>
+        public IEnumerable<ButtplugClientDeviceFeature> GetFeaturesWithInput(InputType inputType)
         {
-            if (!RotateAttributes.Any()) 
-            {
-                throw new ButtplugDeviceException($"Device {Name} does not support rotation");
-            }
-            var msg = RotateCmd.Create(cmds);
-            msg.DeviceIndex = Index;
-            await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
+            return _features.Values.Where(f => f.HasInput(inputType));
         }
 
-        public List<GenericDeviceMessageAttributes> LinearAttributes
+        /// <summary>
+        /// Gets a specific feature by its index.
+        /// </summary>
+        /// <param name="featureIndex">The feature index.</param>
+        /// <returns>The feature, or null if not found.</returns>
+        public ButtplugClientDeviceFeature GetFeature(uint featureIndex)
         {
-            get
-            {
-                if (MessageAttributes.LinearCmd != null)
-                {
-                    return MessageAttributes.LinearCmd.ToList();
-                }
-                return Enumerable.Empty<GenericDeviceMessageAttributes>().ToList();
-            }
+            return _features.TryGetValue(featureIndex, out var feature) ? feature : null;
         }
 
-        public async Task LinearAsync(uint duration, double position)
+        /// <summary>
+        /// Checks if this device has any features with the specified output type.
+        /// </summary>
+        public bool HasOutput(OutputType outputType)
         {
-            if (!LinearAttributes.Any())
-            {
-                throw new ButtplugDeviceException($"Device {Name} does not support linear position");
-            }
-            var msg = LinearCmd.Create(duration, position, (uint)LinearAttributes.Count);
-            msg.DeviceIndex = Index;
-            await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
+            return _features.Values.Any(f => f.HasOutput(outputType));
         }
 
-        public async Task LinearAsync(IEnumerable<LinearCmd.VectorCommand> cmds)
+        /// <summary>
+        /// Checks if this device has any features with the specified input type.
+        /// </summary>
+        public bool HasInput(InputType inputType)
         {
-            if (!LinearAttributes.Any())
-            {
-                throw new ButtplugDeviceException($"Device {Name} does not support linear position");
-            }
-            var msg = LinearCmd.Create(cmds);
-            msg.DeviceIndex = Index;
-            await _handler.SendMessageExpectOk(msg).ConfigureAwait(false);
+            return _features.Values.Any(f => f.HasInput(inputType));
         }
 
-        public List<SensorDeviceMessageAttributes> SensorReadAttributes(SensorType sensor)
+        #endregion
+
+        #region Output Commands
+
+        /// <summary>
+        /// Sends an output command to all features that support the command's output type.
+        /// </summary>
+        /// <param name="command">The output command to send.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <example>
+        /// <code>
+        /// // Vibrate at 50%
+        /// await device.RunOutputAsync(DeviceOutput.Vibrate.Percent(0.5));
+        ///
+        /// // Move to position over 500ms
+        /// await device.RunOutputAsync(DeviceOutput.PositionWithDuration.Percent(1.0, 500));
+        /// </code>
+        /// </example>
+        public async Task RunOutputAsync(DeviceOutputCommand command, CancellationToken token = default)
         {
-            if (MessageAttributes.SensorReadCmd != null)
+            var features = GetFeaturesWithOutput(command.OutputType).ToList();
+            if (!features.Any())
             {
-                return MessageAttributes.SensorReadCmd.Where(x => x.SensorType == sensor).ToList();
+                throw new ButtplugDeviceException($"Device {Name} has no features with output type {command.OutputType}");
             }
 
-            return Enumerable.Empty<SensorDeviceMessageAttributes>().ToList();
+            var tasks = features.Select(f => f.RunOutputAsync(command, token));
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
-        public bool HasBattery
+        /// <summary>
+        /// Sends an output command to a specific feature by index.
+        /// </summary>
+        /// <param name="featureIndex">The feature index.</param>
+        /// <param name="command">The output command to send.</param>
+        /// <param name="token">Cancellation token.</param>
+        public async Task RunOutputAsync(uint featureIndex, DeviceOutputCommand command, CancellationToken token = default)
         {
-            get
+            var feature = GetFeature(featureIndex);
+            if (feature == null)
             {
-                return SensorReadAttributes(SensorType.Battery).Any();
+                throw new ButtplugDeviceException($"Device {Name} does not have feature index {featureIndex}");
             }
+
+            await feature.RunOutputAsync(command, token).ConfigureAwait(false);
         }
 
-        public async Task<double> BatteryAsync()
+        #endregion
+
+        #region Input Commands
+
+        /// <summary>
+        /// Sends an input command to the first feature that supports the command's input type.
+        /// For Read commands, returns the reading. For Subscribe/Unsubscribe, returns null.
+        /// </summary>
+        /// <param name="command">The input command to send.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>The input reading for Read commands, null for Subscribe/Unsubscribe.</returns>
+        /// <example>
+        /// <code>
+        /// // Read battery level
+        /// var reading = await device.RunInputAsync(DeviceInput.Battery.Read());
+        /// var batteryLevel = reading?.GetValue(InputType.Battery);
+        ///
+        /// // Subscribe to button events
+        /// await device.RunInputAsync(DeviceInput.Button.Subscribe());
+        /// </code>
+        /// </example>
+        public async Task<InputReading> RunInputAsync(DeviceInputCommand command, CancellationToken token = default)
         {
-            if (!HasBattery)
+            var features = GetFeaturesWithInput(command.InputType).ToList();
+            if (!features.Any())
             {
-                throw new ButtplugDeviceException($"Device {Name} does not have battery capabilities.");
+                throw new ButtplugDeviceException($"Device {Name} has no features with input type {command.InputType}");
             }
 
-            var result = await _handler.SendMessageAsync(new SensorReadCmd(Index, SensorReadAttributes(SensorType.Battery).ElementAt(0).Index, SensorType.Battery)).ConfigureAwait(false);
-            switch (result)
-            {
-                case SensorReading response:
-                    return response.data[0] / 100.0;
-                case Error err:
-                    throw ButtplugException.FromError(err);
-                default:
-                    throw new ButtplugMessageException($"Message type {result.Name} not handled by BatteryAsync", result.Id);
-            }
+            // Use the first feature that supports this input type
+            return await features.First().RunInputAsync(command, token).ConfigureAwait(false);
         }
 
-        public async Task Stop()
+        /// <summary>
+        /// Sends an input command to a specific feature by index.
+        /// </summary>
+        /// <param name="featureIndex">The feature index.</param>
+        /// <param name="command">The input command to send.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>The input reading for Read commands, null for Subscribe/Unsubscribe.</returns>
+        public async Task<InputReading> RunInputAsync(uint featureIndex, DeviceInputCommand command, CancellationToken token = default)
         {
-            await _handler.SendMessageExpectOk(new StopDeviceCmd(Index)).ConfigureAwait(false);
+            var feature = GetFeature(featureIndex);
+            if (feature == null)
+            {
+                throw new ButtplugDeviceException($"Device {Name} does not have feature index {featureIndex}");
+            }
+
+            return await feature.RunInputAsync(command, token).ConfigureAwait(false);
         }
+
+        #endregion
+
+        #region Convenience Methods
+
+        /// <summary>
+        /// Reads the battery level of the device.
+        /// </summary>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>Battery level as a value between 0.0 and 1.0.</returns>
+        public async Task<double> BatteryAsync(CancellationToken token = default)
+        {
+            var reading = await RunInputAsync(DeviceInput.Battery.Read(), token).ConfigureAwait(false);
+            var batteryValue = reading?.GetValue(InputType.Battery);
+            if (!batteryValue.HasValue)
+            {
+                throw new ButtplugMessageException("Battery reading did not contain battery value.");
+            }
+
+            // Battery is typically returned as 0-100, convert to 0.0-1.0
+            return batteryValue.Value / 100.0;
+        }
+
+        /// <summary>
+        /// Stops all actions on this device.
+        /// </summary>
+        /// <param name="token">Cancellation token.</param>
+        public async Task StopAsync(CancellationToken token = default)
+        {
+            await _handler.SendMessageExpectOk(new StopDeviceCmd(Index), token).ConfigureAwait(false);
+        }
+
+        #endregion
     }
 }
