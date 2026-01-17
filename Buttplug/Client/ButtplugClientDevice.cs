@@ -256,19 +256,39 @@ namespace Buttplug.Client
         /// <summary>
         /// Reads the battery level of the device.
         /// </summary>
+        /// <param name="timeout">Optional timeout for the operation.</param>
         /// <param name="token">Cancellation token.</param>
         /// <returns>Battery level as a value between 0.0 and 1.0.</returns>
-        public async Task<double> BatteryAsync(CancellationToken token = default)
+        /// <exception cref="ButtplugDeviceException">Thrown if the device does not support battery reading.</exception>
+        /// <exception cref="ButtplugMessageException">Thrown if the battery reading response is invalid.</exception>
+        /// <exception cref="OperationCanceledException">Thrown if the operation times out or is cancelled.</exception>
+        public async Task<double> BatteryAsync(TimeSpan? timeout = null, CancellationToken token = default)
         {
-            var reading = await RunInputAsync(DeviceInput.Battery.Read(), token).ConfigureAwait(false);
-            var batteryValue = reading?.GetValue(InputType.Battery);
-            if (!batteryValue.HasValue)
+            CancellationTokenSource linkedCts = null;
+            try
             {
-                throw new ButtplugMessageException("Battery reading did not contain battery value.");
-            }
+                var effectiveToken = token;
+                if (timeout.HasValue)
+                {
+                    linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+                    linkedCts.CancelAfter(timeout.Value);
+                    effectiveToken = linkedCts.Token;
+                }
 
-            // Battery is typically returned as 0-100, convert to 0.0-1.0
-            return batteryValue.Value / 100.0;
+                var reading = await RunInputAsync(DeviceInput.Battery.Read(), effectiveToken).ConfigureAwait(false);
+                var batteryValue = reading?.GetValue(InputType.Battery);
+                if (!batteryValue.HasValue)
+                {
+                    throw new ButtplugMessageException($"Battery reading from device '{Name}' did not contain a battery value.");
+                }
+
+                // Battery is typically returned as 0-100, convert to 0.0-1.0
+                return batteryValue.Value / 100.0;
+            }
+            finally
+            {
+                linkedCts?.Dispose();
+            }
         }
 
         /// <summary>
