@@ -4,6 +4,7 @@
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
@@ -96,7 +97,13 @@ namespace Buttplug.Client
         {
             if (!HasOutput(command.OutputType))
             {
-                throw new ButtplugDeviceException($"Feature {FeatureIndex} on device {Device.Name} does not support output type {command.OutputType}");
+                var supportedOutputs = FeatureDefinition.Output?.Keys ?? Enumerable.Empty<string>();
+                var supportedList = supportedOutputs.Any()
+                    ? string.Join(", ", supportedOutputs)
+                    : "none";
+                throw new ButtplugDeviceException(
+                    $"Feature {FeatureIndex} ({FeatureDescriptor}) on device '{Device.Name}' does not support output type '{command.OutputType}'. " +
+                    $"Supported outputs: {supportedList}.");
             }
 
             // Get the output definition to determine step range
@@ -115,7 +122,9 @@ namespace Buttplug.Client
             {
                 if (!command.Duration.HasValue)
                 {
-                    throw new ButtplugDeviceException("PositionWithDuration requires a duration value");
+                    throw new ButtplugDeviceException(
+                        $"PositionWithDuration command for feature {FeatureIndex} ({FeatureDescriptor}) on device '{Device.Name}' requires a duration value. " +
+                        "Use DeviceOutput.PositionWithDuration.Percent(position, durationMs) or DeviceOutput.PositionWithDuration.Steps(steps, durationMs).");
                 }
                 cmd = OutputCmd.CreatePositionWithDuration(Device.Index, FeatureIndex, actualValue, command.Duration.Value);
             }
@@ -138,7 +147,13 @@ namespace Buttplug.Client
         {
             if (!HasInput(command.InputType))
             {
-                throw new ButtplugDeviceException($"Feature {FeatureIndex} on device {Device.Name} does not support input type {command.InputType}");
+                var supportedInputs = FeatureDefinition.Input?.Keys ?? Enumerable.Empty<string>();
+                var supportedList = supportedInputs.Any()
+                    ? string.Join(", ", supportedInputs)
+                    : "none";
+                throw new ButtplugDeviceException(
+                    $"Feature {FeatureIndex} ({FeatureDescriptor}) on device '{Device.Name}' does not support input type '{command.InputType}'. " +
+                    $"Supported inputs: {supportedList}.");
             }
 
             var cmd = new InputCmd(Device.Index, FeatureIndex, command.InputType, command.CommandType);

@@ -37,7 +37,8 @@ namespace Buttplug.Core
         /// <param name="logManager">Log manager, passed from the parser owner.</param>
         public ButtplugJsonMessageParser()
         {
-            _serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Error };
+            // Use Ignore to allow forward compatibility with new fields from newer servers
+            _serializer = new JsonSerializer { MissingMemberHandling = MissingMemberHandling.Ignore };
             _messageTypes = new Dictionary<string, Type>();
             foreach (var messageType in ButtplugUtils.GetAllMessageTypes())
             {
