@@ -158,7 +158,7 @@ namespace Buttplug.Client
         /// <returns>The output command.</returns>
         public DeviceOutputCommand Steps(int steps, uint durationMs)
         {
-            return new DeviceOutputCommand(OutputType.PositionWithDuration, PercentOrSteps.FromSteps(steps), durationMs);
+            return new DeviceOutputCommand(OutputType.HwPositionWithDuration, PercentOrSteps.FromSteps(steps), durationMs);
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace Buttplug.Client
         /// <returns>The output command.</returns>
         public DeviceOutputCommand Percent(double percent, uint durationMs)
         {
-            return new DeviceOutputCommand(OutputType.PositionWithDuration, PercentOrSteps.FromPercent(percent), durationMs);
+            return new DeviceOutputCommand(OutputType.HwPositionWithDuration, PercentOrSteps.FromPercent(percent), durationMs);
         }
     }
 
@@ -206,11 +206,6 @@ namespace Buttplug.Client
         /// Builder for Constrict commands.
         /// </summary>
         public static DeviceOutputValueBuilder Constrict => new DeviceOutputValueBuilder(OutputType.Constrict);
-
-        /// <summary>
-        /// Builder for Inflate commands.
-        /// </summary>
-        public static DeviceOutputValueBuilder Inflate => new DeviceOutputValueBuilder(OutputType.Inflate);
 
         /// <summary>
         /// Builder for Temperature commands.
@@ -338,5 +333,15 @@ namespace Buttplug.Client
         /// Builder for Pressure commands.
         /// </summary>
         public static DeviceInputBuilder Pressure => new DeviceInputBuilder(InputType.Pressure);
+
+        /// <summary>
+        /// Builder for Depth commands.
+        /// </summary>
+        public static DeviceInputBuilder Depth => new DeviceInputBuilder(InputType.Depth);
+
+        /// <summary>
+        /// Builder for Position commands.
+        /// </summary>
+        public static DeviceInputBuilder Position => new DeviceInputBuilder(InputType.Position);
     }
 }

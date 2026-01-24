@@ -34,16 +34,14 @@ namespace Buttplug.Core.Messages
         Rotate,
         [EnumMember(Value = "Position")]
         Position,
-        [EnumMember(Value = "PositionWithDuration")]
-        PositionWithDuration,
+        [EnumMember(Value = "HwPositionWithDuration")]
+        HwPositionWithDuration,
         [EnumMember(Value = "Led")]
         Led,
         [EnumMember(Value = "Temperature")]
         Temperature,
         [EnumMember(Value = "Constrict")]
         Constrict,
-        [EnumMember(Value = "Inflate")]
-        Inflate,
         [EnumMember(Value = "Spray")]
         Spray
     }
@@ -63,7 +61,11 @@ namespace Buttplug.Core.Messages
         [EnumMember(Value = "Button")]
         Button,
         [EnumMember(Value = "Pressure")]
-        Pressure
+        Pressure,
+        [EnumMember(Value = "Depth")]
+        Depth,
+        [EnumMember(Value = "Position")]
+        Position
     }
 
     /// <summary>
@@ -825,7 +827,7 @@ namespace Buttplug.Core.Messages
                 {
                     foreach (var prop in commandObj.Properties())
                     {
-                        if (prop.Name == "PositionWithDuration")
+                        if (prop.Name == "HwPositionWithDuration")
                         {
                             cmd.Command[prop.Name] = prop.Value.ToObject<OutputCommandValueWithDuration>(serializer);
                         }
@@ -915,12 +917,12 @@ namespace Buttplug.Core.Messages
         }
 
         /// <summary>
-        /// Creates an OutputCmd for PositionWithDuration output.
+        /// Creates an OutputCmd for HwPositionWithDuration output.
         /// </summary>
         public static OutputCmd CreatePositionWithDuration(uint deviceIndex, uint featureIndex, double position, uint duration, uint id = ButtplugConsts.DefaultMsgId)
         {
             var cmd = new OutputCmd(deviceIndex, featureIndex, id);
-            cmd.Command[OutputType.PositionWithDuration.ToString()] = new OutputCommandValueWithDuration(position, duration);
+            cmd.Command[OutputType.HwPositionWithDuration.ToString()] = new OutputCommandValueWithDuration(position, duration);
             return cmd;
         }
 
@@ -938,7 +940,7 @@ namespace Buttplug.Core.Messages
         /// </summary>
         public OutputCmd WithPositionAndDuration(double position, uint duration)
         {
-            Command[OutputType.PositionWithDuration.ToString()] = new OutputCommandValueWithDuration(position, duration);
+            Command[OutputType.HwPositionWithDuration.ToString()] = new OutputCommandValueWithDuration(position, duration);
             return this;
         }
     }

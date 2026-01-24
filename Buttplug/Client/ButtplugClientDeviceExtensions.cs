@@ -81,16 +81,5 @@ namespace Buttplug.Client
         {
             return device.RunOutputAsync(DeviceOutput.Constrict.Percent(percent), token);
         }
-
-        /// <summary>
-        /// Sends an inflate command to all inflation features on this device.
-        /// </summary>
-        /// <param name="device">The device.</param>
-        /// <param name="percent">The inflation level (0.0 to 1.0).</param>
-        /// <param name="token">Cancellation token.</param>
-        public static Task InflateAsync(this ButtplugClientDevice device, double percent, CancellationToken token = default)
-        {
-            return device.RunOutputAsync(DeviceOutput.Inflate.Percent(percent), token);
-        }
     }
 }

@@ -118,12 +118,12 @@ namespace Buttplug.Client
             double actualValue = command.Value.ToStepValue(maxSteps);
 
             OutputCmd cmd;
-            if (command.OutputType == OutputType.PositionWithDuration)
+            if (command.OutputType == OutputType.HwPositionWithDuration)
             {
                 if (!command.Duration.HasValue)
                 {
                     throw new ButtplugDeviceException(
-                        $"PositionWithDuration command for feature {FeatureIndex} ({FeatureDescriptor}) on device '{Device.Name}' requires a duration value. " +
+                        $"HwPositionWithDuration command for feature {FeatureIndex} ({FeatureDescriptor}) on device '{Device.Name}' requires a duration value. " +
                         "Use DeviceOutput.PositionWithDuration.Percent(position, durationMs) or DeviceOutput.PositionWithDuration.Steps(steps, durationMs).");
                 }
                 cmd = OutputCmd.CreatePositionWithDuration(Device.Index, FeatureIndex, actualValue, command.Duration.Value);

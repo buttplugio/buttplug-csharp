@@ -147,7 +147,7 @@ namespace Buttplug.Client
         /// <param name="token">Cancellation token.</param>
         public static async Task PositionWithDurationAllAsync(this ButtplugClient client, double percent, uint durationMs, CancellationToken token = default)
         {
-            var devices = client.GetDevicesWithOutput(OutputType.PositionWithDuration).ToList();
+            var devices = client.GetDevicesWithOutput(OutputType.HwPositionWithDuration).ToList();
             if (!devices.Any())
             {
                 return;
