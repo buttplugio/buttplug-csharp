@@ -26,13 +26,10 @@ client.ScanningFinished += (sender, args) =>
 };
 
 // Connect to the server
-Console.WriteLine("Connecting...");
 await client.ConnectAsync("ws://127.0.0.1:12345");
-Console.WriteLine("Connected!");
 
 // Start scanning for devices.
 // Devices will be announced via the DeviceAdded event.
-Console.WriteLine("\nStarting device scan...");
 Console.WriteLine("Turn on your devices now!");
 await client.StartScanningAsync();
 

@@ -14,17 +14,13 @@ try
 {
     // Connect to the server. The extension method creates a WebSocket connector
     // automatically from the URI string. Default port for Intiface Central is 12345.
-    Console.WriteLine("Connecting to Intiface Central...");
     await client.ConnectAsync("ws://127.0.0.1:12345");
-
-    // We're connected!
     Console.WriteLine("Connected! Check Intiface Central for the client name.");
     Console.WriteLine("Press Enter to disconnect...");
     Console.ReadLine();
 
     // Disconnect cleanly
     await client.DisconnectAsync();
-    Console.WriteLine("Disconnected.");
 }
 catch (ButtplugClientConnectorException ex)
 {

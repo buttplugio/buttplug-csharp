@@ -67,13 +67,10 @@ client.InputReadingReceived += (sender, args) =>
 };
 
 // Connect asynchronously - this may take time due to network
-Console.WriteLine("Connecting to server...");
 await client.ConnectAsync("ws://127.0.0.1:12345");
-Console.WriteLine("Connected!\n");
 
 // Scanning is also async - we start it and wait for events
-Console.WriteLine("Starting scan. Turn on devices now...");
-Console.WriteLine("(Events will be printed as devices connect)\n");
+Console.WriteLine("Turn on devices now (events will be printed)...\n");
 await client.StartScanningAsync();
 
 // Use CancellationToken for timeouts and cancellation
@@ -92,7 +89,6 @@ catch (OperationCanceledException)
 await client.StopScanningAsync();
 
 // Demonstrate concurrent operations
-Console.WriteLine("\nDemonstrating concurrent device control...");
 var devices = client.Devices;
 if (devices.Length > 0)
 {
@@ -101,16 +97,13 @@ if (devices.Length > 0)
         .Where(d => d.HasOutput(Buttplug.Core.Messages.OutputType.Vibrate))
         .Select(async device =>
         {
-            Console.WriteLine($"  Vibrating {device.Name}...");
             await device.VibrateAsync(0.5);
             await Task.Delay(500);
             await device.StopAsync();
-            Console.WriteLine($"  {device.Name} stopped.");
         });
 
     // Wait for all commands to complete
     await Task.WhenAll(tasks);
-    Console.WriteLine("All devices stopped.");
 }
 else
 {
