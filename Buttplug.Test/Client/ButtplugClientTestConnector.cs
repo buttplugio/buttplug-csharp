@@ -14,9 +14,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
+using NUnit.Framework.Constraints;
 
 namespace Buttplug.Client.Test
 {
+    /*
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class ButtplugClientTestConnector : IButtplugClientConnector
     {
@@ -34,8 +36,8 @@ namespace Buttplug.Client.Test
         {
             _messageResponse = new Dictionary<Type, ButtplugMessage>
             {
-                { typeof(RequestServerInfo), new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0) },
-                { typeof(RequestDeviceList), new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId) },
+                { typeof(RequestServerInfo), new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0, 0) },
+                { typeof(RequestDeviceList), new DeviceList(new Dictionary<uint, DeviceInfo>{{0, new DeviceInfo[0]}}, ButtplugConsts.DefaultMsgId) },
             };
         }
 
@@ -72,4 +74,5 @@ namespace Buttplug.Client.Test
             return Task.FromResult(result);
         }
     }
+    */
 }

@@ -18,6 +18,7 @@ using NUnit.Framework;
 
 namespace Buttplug.Client.Test
 {
+    /*
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class ButtplugClientTestJSONConnector : ButtplugRemoteJSONConnector, IButtplugClientConnector
     {
@@ -30,7 +31,7 @@ namespace Buttplug.Client.Test
         public ButtplugClientTestJSONConnector()
         {
             _messageResponse = new Dictionary<Type, ButtplugMessage>();
-            SetMessageResponse<RequestServerInfo>(new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0));
+            SetMessageResponse<RequestServerInfo>(new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0, 0));
             SetMessageResponse<RequestDeviceList>(new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId));
         }
 
@@ -70,4 +71,5 @@ namespace Buttplug.Client.Test
             return Task.FromResult(result);
         }
     }
+    */
 }

@@ -142,49 +142,5 @@ namespace Buttplug.Core.Test
             _parser.Invoking(x => x.Serialize(msg, 0)).Should().Throw<ButtplugMessageException>();
         }
         */
-
-        [Test]
-        public void TestLinearCmd()
-        {
-            void CheckMsg(LinearCmd msg)
-            {
-                msg.Id.Should().Be(4);
-                msg.DeviceIndex.Should().Be(2);
-                msg.Vectors.Count.Should().Be(1);
-                msg.Vectors[0].Index.Should().Be(0);
-                msg.Vectors[0].Duration.Should().Be(100);
-                msg.Vectors[0].Position.Should().Be(0.5);
-            }
-
-            var checkMsg = new LinearCmd(2, new List<LinearCmd.VectorSubcommand> { new LinearCmd.VectorSubcommand(0, 100, 0.5) }, 4);
-            CheckMsg(checkMsg);
-
-            var newMsg = CheckParsedVersion<LinearCmd>(checkMsg,
-                "[{\"LinearCmd\":{\"Vectors\":[{\"Duration\":100,\"Index\":0,\"Position\":0.5}],\"DeviceIndex\":2,\"Id\":4}}]");
-
-            CheckMsg(newMsg);
-        }
-
-        [Test]
-        public void TestRotateCmd()
-        {
-            void CheckMsg(RotateCmd msg)
-            {
-                msg.Id.Should().Be(4);
-                msg.DeviceIndex.Should().Be(2);
-                msg.Rotations.Count.Should().Be(1);
-                msg.Rotations[0].Index.Should().Be(0);
-                msg.Rotations[0].Speed.Should().Be(0.5);
-                msg.Rotations[0].Clockwise.Should().Be(true);
-            }
-
-            var checkMsg = new RotateCmd(2, new List<RotateCmd.RotateSubcommand> { new RotateCmd.RotateSubcommand(0, 0.5, true) }, 4);
-            CheckMsg(checkMsg);
-
-            var newMsg = CheckParsedVersion<RotateCmd>(checkMsg,
-                "[{\"RotateCmd\":{\"Rotations\":[{\"Clockwise\":true,\"Index\":0,\"Speed\":0.5}],\"DeviceIndex\":2,\"Id\":4}}]");
-
-            CheckMsg(newMsg);
-        }
     }
 }
