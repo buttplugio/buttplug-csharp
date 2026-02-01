@@ -211,7 +211,7 @@ namespace Buttplug.Core.Messages
         /// Human-readable description of this feature.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public string FeatureDescriptor;
+        public string FeatureDescription;
 
         /// <summary>
         /// Index of this feature within the device.
@@ -379,7 +379,7 @@ namespace Buttplug.Core.Messages
                 deviceList.Id = obj["Id"].Value<uint>();
             }
 
-            deviceList.Devices = new Dictionary<string, DeviceInfo>();
+            deviceList.Devices = new Dictionary<uint, DeviceInfo>();
             if (obj["Devices"] != null)
             {
                 var devicesObj = obj["Devices"] as JObject;
@@ -388,7 +388,7 @@ namespace Buttplug.Core.Messages
                     foreach (var prop in devicesObj.Properties())
                     {
                         var deviceInfo = prop.Value.ToObject<DeviceInfo>(serializer);
-                        deviceList.Devices[prop.Name] = deviceInfo;
+                        deviceList.Devices[uint.Parse(prop.Name)] = deviceInfo;
                     }
                 }
             }
@@ -426,17 +426,17 @@ namespace Buttplug.Core.Messages
         /// Devices currently connected, keyed by device index as string.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public Dictionary<string, DeviceInfo> Devices;
+        public Dictionary<uint, DeviceInfo> Devices;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeviceList"/> class.
         /// </summary>
         /// <param name="devices">Dictionary of devices keyed by index.</param>
         /// <param name="id">Message ID.</param>
-        public DeviceList(Dictionary<string, DeviceInfo> devices, uint id)
+        public DeviceList(Dictionary<uint, DeviceInfo> devices, uint id)
             : base(id)
         {
-            Devices = devices ?? new Dictionary<string, DeviceInfo>();
+            Devices = devices ?? new Dictionary<uint, DeviceInfo>();
         }
 
         /// <summary>
@@ -445,7 +445,7 @@ namespace Buttplug.Core.Messages
         internal DeviceList()
             : base(0)
         {
-            Devices = new Dictionary<string, DeviceInfo>();
+            Devices = new Dictionary<uint, DeviceInfo>();
         }
 
         /// <summary>
@@ -461,10 +461,9 @@ namespace Buttplug.Core.Messages
         /// </summary>
         public DeviceInfo GetDevice(uint index)
         {
-            var key = index.ToString();
-            if (Devices != null && Devices.ContainsKey(key))
+            if (Devices != null && Devices.ContainsKey(index))
             {
-                return Devices[key];
+                return Devices[index];
             }
             return null;
         }
@@ -756,13 +755,13 @@ namespace Buttplug.Core.Messages
         /// The value to set.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public double Value;
+        public int Value;
 
         public OutputCommandValue()
         {
         }
 
-        public OutputCommandValue(double value)
+        public OutputCommandValue(int value)
         {
             Value = value;
         }
@@ -777,7 +776,7 @@ namespace Buttplug.Core.Messages
         /// The position value to set.
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public double Value;
+        public int Value;
 
         /// <summary>
         /// The duration in milliseconds.
@@ -789,7 +788,7 @@ namespace Buttplug.Core.Messages
         {
         }
 
-        public OutputCommandValueWithDuration(double value, uint duration)
+        public OutputCommandValueWithDuration(int value, uint duration)
         {
             Value = value;
             Duration = duration;
@@ -909,7 +908,7 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Creates an OutputCmd for a simple value output (Vibrate, Oscillate, etc.).
         /// </summary>
-        public static OutputCmd Create(uint deviceIndex, uint featureIndex, OutputType outputType, double value, uint id = ButtplugConsts.DefaultMsgId)
+        public static OutputCmd Create(uint deviceIndex, uint featureIndex, OutputType outputType, int value, uint id = ButtplugConsts.DefaultMsgId)
         {
             var cmd = new OutputCmd(deviceIndex, featureIndex, id);
             cmd.Command[outputType.ToString()] = new OutputCommandValue(value);
@@ -919,7 +918,7 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Creates an OutputCmd for HwPositionWithDuration output.
         /// </summary>
-        public static OutputCmd CreatePositionWithDuration(uint deviceIndex, uint featureIndex, double position, uint duration, uint id = ButtplugConsts.DefaultMsgId)
+        public static OutputCmd CreatePositionWithDuration(uint deviceIndex, uint featureIndex, int position, uint duration, uint id = ButtplugConsts.DefaultMsgId)
         {
             var cmd = new OutputCmd(deviceIndex, featureIndex, id);
             cmd.Command[OutputType.HwPositionWithDuration.ToString()] = new OutputCommandValueWithDuration(position, duration);
@@ -929,7 +928,7 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Sets a simple value command.
         /// </summary>
-        public OutputCmd WithValue(OutputType outputType, double value)
+        public OutputCmd WithValue(OutputType outputType, int value)
         {
             Command[outputType.ToString()] = new OutputCommandValue(value);
             return this;
@@ -938,7 +937,7 @@ namespace Buttplug.Core.Messages
         /// <summary>
         /// Sets a position with duration command.
         /// </summary>
-        public OutputCmd WithPositionAndDuration(double position, uint duration)
+        public OutputCmd WithPositionAndDuration(int position, uint duration)
         {
             Command[OutputType.HwPositionWithDuration.ToString()] = new OutputCommandValueWithDuration(position, duration);
             return this;

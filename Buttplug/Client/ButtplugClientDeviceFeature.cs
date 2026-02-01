@@ -30,7 +30,7 @@ namespace Buttplug.Client
         /// <summary>
         /// Human-readable description of this feature.
         /// </summary>
-        public string FeatureDescriptor { get; }
+        public string FeatureDescription { get; }
 
         /// <summary>
         /// The underlying feature definition.
@@ -46,7 +46,7 @@ namespace Buttplug.Client
         {
             Device = device;
             FeatureIndex = feature.FeatureIndex;
-            FeatureDescriptor = feature.FeatureDescriptor;
+            FeatureDescription = feature.FeatureDescription;
             FeatureDefinition = feature;
             _handler = handler;
         }
@@ -102,7 +102,7 @@ namespace Buttplug.Client
                     ? string.Join(", ", supportedOutputs)
                     : "none";
                 throw new ButtplugDeviceException(
-                    $"Feature {FeatureIndex} ({FeatureDescriptor}) on device '{Device.Name}' does not support output type '{command.OutputType}'. " +
+                    $"Feature {FeatureIndex} ({FeatureDescription}) on device '{Device.Name}' does not support output type '{command.OutputType}'. " +
                     $"Supported outputs: {supportedList}.");
             }
 
@@ -115,7 +115,7 @@ namespace Buttplug.Client
             }
 
             // Convert to actual step value
-            double actualValue = command.Value.ToStepValue(maxSteps);
+            int actualValue = command.Value.ToStepValue(maxSteps);
 
             OutputCmd cmd;
             if (command.OutputType == OutputType.HwPositionWithDuration)
@@ -123,7 +123,7 @@ namespace Buttplug.Client
                 if (!command.Duration.HasValue)
                 {
                     throw new ButtplugDeviceException(
-                        $"HwPositionWithDuration command for feature {FeatureIndex} ({FeatureDescriptor}) on device '{Device.Name}' requires a duration value. " +
+                        $"HwPositionWithDuration command for feature {FeatureIndex} ({FeatureDescription}) on device '{Device.Name}' requires a duration value. " +
                         "Use DeviceOutput.PositionWithDuration.Percent(position, durationMs) or DeviceOutput.PositionWithDuration.Steps(steps, durationMs).");
                 }
                 cmd = OutputCmd.CreatePositionWithDuration(Device.Index, FeatureIndex, actualValue, command.Duration.Value);
@@ -152,7 +152,7 @@ namespace Buttplug.Client
                     ? string.Join(", ", supportedInputs)
                     : "none";
                 throw new ButtplugDeviceException(
-                    $"Feature {FeatureIndex} ({FeatureDescriptor}) on device '{Device.Name}' does not support input type '{command.InputType}'. " +
+                    $"Feature {FeatureIndex} ({FeatureDescription}) on device '{Device.Name}' does not support input type '{command.InputType}'. " +
                     $"Supported inputs: {supportedList}.");
             }
 
