@@ -22,7 +22,7 @@ client.DeviceAdded += async (sender, args) =>
     if (args.Device.HasOutput(Buttplug.Core.Messages.OutputType.Vibrate))
     {
         Console.WriteLine($"  Sending welcome vibration...");
-        await args.Device.VibrateAsync(0.25);
+        await args.Device.RunOutputAsync(DeviceOutput.Vibrate.Percent(0.25));
         await Task.Delay(200);
         await args.Device.StopAsync();
     }
@@ -97,7 +97,7 @@ if (devices.Length > 0)
         .Where(d => d.HasOutput(Buttplug.Core.Messages.OutputType.Vibrate))
         .Select(async device =>
         {
-            await device.VibrateAsync(0.5);
+            await device.RunOutputAsync(DeviceOutput.Vibrate.Percent(0.5));
             await Task.Delay(500);
             await device.StopAsync();
         });

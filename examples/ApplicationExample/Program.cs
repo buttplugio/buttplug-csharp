@@ -129,7 +129,7 @@ while (true)
                 {
                     if (device.HasOutput(OutputType.Vibrate))
                     {
-                        await device.VibrateAsync(intensity);
+                        await device.RunOutputAsync(DeviceOutput.Vibrate.Percent(intensity));
                         Console.WriteLine($"  {device.Name}: vibrating at {percent}%");
                     }
                 }

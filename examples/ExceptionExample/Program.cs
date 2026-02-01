@@ -115,7 +115,7 @@ try
 
         // Now try to send a command - this will throw
         Console.WriteLine("Attempting to send command after disconnect...");
-        await device.VibrateAsync(0.5);
+        await device.RunOutputAsync(DeviceOutput.Vibrate.Percent(0.5));
     }
     else
     {

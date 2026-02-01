@@ -36,7 +36,7 @@ foreach (var feature in device.Features.Values)
     {
         foreach (var outputType in outputs)
         {
-            Console.WriteLine($"  - {outputType} (Feature {feature.FeatureIndex}: {feature.FeatureDescriptor})");
+            Console.WriteLine($"  - {outputType} (Feature {feature.FeatureIndex}: {feature.FeatureDescription})");
         }
     }
 }
@@ -48,7 +48,7 @@ if (device.HasOutput(OutputType.Vibrate))
     Console.WriteLine($"\nDevice has {vibrateFeatures.Count} vibrator(s).");
 
     // Method 1: Use the convenience extension method
-    await device.VibrateAsync(0.5);
+    await device.RunOutputAsync(DeviceOutput.Vibrate.Percent(0.5));
     await Task.Delay(1000);
 
     // Method 2: Use the command builder API for more control
@@ -74,16 +74,16 @@ else
 // Demonstrate other output types if available
 if (device.HasOutput(OutputType.Rotate))
 {
-    await device.RotateAsync(0.5);
+    await device.RunOutputAsync(DeviceOutput.Rotate.Percent(0.5));
     await Task.Delay(1000);
     await device.StopAsync();
 }
 
 if (device.HasOutput(OutputType.Position))
 {
-    await device.PositionWithDurationAsync(1.0, 500);
+    await device.RunOutputAsync(DeviceOutput.PositionWithDuration.Percent(1.0, 500));
     await Task.Delay(1000);
-    await device.PositionWithDurationAsync(0.0, 500);
+    await device.RunOutputAsync(DeviceOutput.PositionWithDuration.Percent(0.0, 500));
 }
 
 // Read battery level if supported
