@@ -108,14 +108,16 @@ namespace Buttplug.Client
 
             // Get the output definition to determine step range
             var outputDef = FeatureDefinition.GetOutput(command.OutputType);
+            int minSteps = (command.OutputType == OutputType.Rotate) ? -100 : 0; // Default if not specified
             int maxSteps = 100; // Default if not specified
             if (outputDef?.Value != null && outputDef.Value.Length >= 2)
             {
+                minSteps = outputDef.Value[0];
                 maxSteps = outputDef.Value[1];
             }
 
             // Convert to actual step value
-            int actualValue = command.Value.ToStepValue(maxSteps);
+            int actualValue = command.Value.ToStepValue(minSteps, maxSteps);
 
             OutputCmd cmd;
             if (command.OutputType == OutputType.HwPositionWithDuration)
