@@ -78,7 +78,7 @@
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></div>
     <div class="level2"><span class="xref">StopAllDevices</span></div>
   </div>
@@ -103,13 +103,13 @@
   <h3 id="constructors">Constructors
   </h3>
   <a id="Buttplug_Core_Messages_StopAllDevices__ctor_" data-uid="Buttplug.Core.Messages.StopAllDevices.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_StopAllDevices__ctor_System_UInt32_" data-uid="Buttplug.Core.Messages.StopAllDevices.#ctor(System.UInt32)">StopAllDevices(UInt32)</h4>
+  <h4 id="Buttplug_Core_Messages_StopAllDevices__ctor_System_UInt32_System_Nullable_System_Boolean__System_Nullable_System_Boolean__" data-uid="Buttplug.Core.Messages.StopAllDevices.#ctor(System.UInt32,System.Nullable{System.Boolean},System.Nullable{System.Boolean})">StopAllDevices(UInt32, Nullable&lt;Boolean&gt;, Nullable&lt;Boolean&gt;)</h4>
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.StopAllDevices.html">StopAllDevices</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public StopAllDevices(uint id = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public StopAllDevices(uint id = null, bool? inputs = null, bool? outputs = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -122,10 +122,70 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td><span class="parametername">id</span></td>
         <td><p>Message ID.</p>
 </td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">inputs</span></td>
+        <td><p>Stop inputs.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">outputs</span></td>
+        <td><p>Stop outputs.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  <h4 id="Buttplug_Core_Messages_StopAllDevices_Inputs" data-uid="Buttplug.Core.Messages.StopAllDevices.Inputs">Inputs</h4>
+  <div class="markdown level1 summary"><p>If true, stop all input operations (subscriptions).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? Inputs</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_StopAllDevices_Outputs" data-uid="Buttplug.Core.Messages.StopAllDevices.Outputs">Outputs</h4>
+  <div class="markdown level1 summary"><p>If true, stop all output operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? Outputs</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td></td>
       </tr>
     </tbody>
   </table>

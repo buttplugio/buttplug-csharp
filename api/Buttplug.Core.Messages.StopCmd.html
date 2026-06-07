@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class Test
+    <title>Class StopCmd
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class Test
+    <meta name="title" content="Class StopCmd
    ">
     <meta name="generator" content="docfx 2.56.7.0">
     
@@ -68,19 +68,19 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.Test">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.StopCmd">
   
   
-  <h1 id="Buttplug_Core_Messages_Test" data-uid="Buttplug.Core.Messages.Test" class="text-break">Class Test
+  <h1 id="Buttplug_Core_Messages_StopCmd" data-uid="Buttplug.Core.Messages.StopCmd" class="text-break">Class StopCmd
   </h1>
-  <div class="markdown level0 summary"><p>Sends text to a server, expected to be echoed back.</p>
+  <div class="markdown level0 summary"><p>Sent to server, stops actions of all devices, a specific device, or a specific feature.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></div>
-    <div class="level2"><span class="xref">Test</span></div>
+    <div class="level2"><span class="xref">StopCmd</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -96,20 +96,20 @@
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
-  <h5 id="Buttplug_Core_Messages_Test_syntax">Syntax</h5>
+  <h5 id="Buttplug_Core_Messages_StopCmd_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class Test : ButtplugMessage</code></pre>
+    <pre><code class="lang-csharp hljs">public class StopCmd : ButtplugMessage</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
-  <a id="Buttplug_Core_Messages_Test__ctor_" data-uid="Buttplug.Core.Messages.Test.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_Test__ctor_System_String_System_UInt32_" data-uid="Buttplug.Core.Messages.Test.#ctor(System.String,System.UInt32)">Test(String, UInt32)</h4>
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.Test.html">Test</a> class.</p>
+  <a id="Buttplug_Core_Messages_StopCmd__ctor_" data-uid="Buttplug.Core.Messages.StopCmd.#ctor*"></a>
+  <h4 id="Buttplug_Core_Messages_StopCmd__ctor_System_UInt32_System_Nullable_System_UInt32__System_Nullable_System_UInt32__System_Nullable_System_Boolean__System_Nullable_System_Boolean__" data-uid="Buttplug.Core.Messages.StopCmd.#ctor(System.UInt32,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.Boolean},System.Nullable{System.Boolean})">StopCmd(UInt32, Nullable&lt;UInt32&gt;, Nullable&lt;UInt32&gt;, Nullable&lt;Boolean&gt;, Nullable&lt;Boolean&gt;)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.StopCmd.html">StopCmd</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Test(string str, uint id = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public StopCmd(uint id = null, uint? deviceIndex = null, uint? featureIndex = null, bool? inputs = null, bool? outputs = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -122,30 +122,48 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td><span class="parametername">str</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td><span class="parametername">id</span></td>
         <td><p>Message ID.</p>
 </td>
       </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.UInt32</span>&gt;</td>
+        <td><span class="parametername">deviceIndex</span></td>
+        <td><p>Optional device index.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.UInt32</span>&gt;</td>
+        <td><span class="parametername">featureIndex</span></td>
+        <td><p>Optional feature index.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">inputs</span></td>
+        <td><p>Stop inputs.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td><span class="parametername">outputs</span></td>
+        <td><p>Stop outputs.</p>
+</td>
+      </tr>
     </tbody>
   </table>
-  <h3 id="properties">Properties
+  <h3 id="fields">Fields
   </h3>
-  <a id="Buttplug_Core_Messages_Test_TestString_" data-uid="Buttplug.Core.Messages.Test.TestString*"></a>
-  <h4 id="Buttplug_Core_Messages_Test_TestString" data-uid="Buttplug.Core.Messages.Test.TestString">TestString</h4>
-  <div class="markdown level1 summary"><p>Text to send.</p>
+  <h4 id="Buttplug_Core_Messages_StopCmd_DeviceIndex" data-uid="Buttplug.Core.Messages.StopCmd.DeviceIndex">DeviceIndex</h4>
+  <div class="markdown level1 summary"><p>Index of device to stop. If omitted, all devices are stopped.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string TestString { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public uint? DeviceIndex</code></pre>
   </div>
-  <h5 class="propertyValue">Property Value</h5>
+  <h5 class="fieldValue">Field Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -155,7 +173,76 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.UInt32</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_StopCmd_FeatureIndex" data-uid="Buttplug.Core.Messages.StopCmd.FeatureIndex">FeatureIndex</h4>
+  <div class="markdown level1 summary"><p>Index of feature to stop. Ignored when device index is omitted.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint? FeatureIndex</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.UInt32</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_StopCmd_Inputs" data-uid="Buttplug.Core.Messages.StopCmd.Inputs">Inputs</h4>
+  <div class="markdown level1 summary"><p>If true, stop all input operations (subscriptions).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? Inputs</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_StopCmd_Outputs" data-uid="Buttplug.Core.Messages.StopCmd.Outputs">Outputs</h4>
+  <div class="markdown level1 summary"><p>If true, stop all output operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? Outputs</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>

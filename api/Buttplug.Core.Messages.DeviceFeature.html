@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Interface IButtplugClientConnector
+    <title>Class DeviceFeature
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Interface IButtplugClientConnector
+    <meta name="title" content="Class DeviceFeature
    ">
     <meta name="generator" content="docfx 2.56.7.0">
     
@@ -68,30 +68,230 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Buttplug.Client.IButtplugClientConnector">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.DeviceFeature">
   
   
-  <h1 id="Buttplug_Client_IButtplugClientConnector" data-uid="Buttplug.Client.IButtplugClientConnector" class="text-break">Interface IButtplugClientConnector
+  <h1 id="Buttplug_Core_Messages_DeviceFeature" data-uid="Buttplug.Core.Messages.DeviceFeature" class="text-break">Class DeviceFeature
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Represents a single feature of a device in V4 protocol.</p>
+</div>
   <div class="markdown level0 conceptual"></div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Client.html">Buttplug.Client</a></h6>
-  <h6><strong>Assembly</strong>: Buttplug.dll</h6>
-  <h5 id="Buttplug_Client_IButtplugClientConnector_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IButtplugClientConnector</code></pre>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">DeviceFeature</span></div>
   </div>
-  <h3 id="properties">Properties
+  <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
+  <h6><strong>Assembly</strong>: Buttplug.dll</h6>
+  <h5 id="Buttplug_Core_Messages_DeviceFeature_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class DeviceFeature : object</code></pre>
+  </div>
+  <h3 id="fields">Fields
   </h3>
-  <a id="Buttplug_Client_IButtplugClientConnector_Connected_" data-uid="Buttplug.Client.IButtplugClientConnector.Connected*"></a>
-  <h4 id="Buttplug_Client_IButtplugClientConnector_Connected" data-uid="Buttplug.Client.IButtplugClientConnector.Connected">Connected</h4>
-  <div class="markdown level1 summary"></div>
+  <h4 id="Buttplug_Core_Messages_DeviceFeature_FeatureDescription" data-uid="Buttplug.Core.Messages.DeviceFeature.FeatureDescription">FeatureDescription</h4>
+  <div class="markdown level1 summary"><p>Human-readable description of this feature.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">bool Connected { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string FeatureDescription</code></pre>
   </div>
-  <h5 class="propertyValue">Property Value</h5>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceFeature_FeatureIndex" data-uid="Buttplug.Core.Messages.DeviceFeature.FeatureIndex">FeatureIndex</h4>
+  <div class="markdown level1 summary"><p>Index of this feature within the device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint FeatureIndex</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceFeature_Input" data-uid="Buttplug.Core.Messages.DeviceFeature.Input">Input</h4>
+  <div class="markdown level1 summary"><p>Input capabilities of this feature, keyed by InputType name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;string, DeviceFeatureInput&gt; Input</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Dictionary</span>&lt;<span class="xref">System.String</span>, <a class="xref" href="Buttplug.Core.Messages.DeviceFeatureInput.html">DeviceFeatureInput</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceFeature_Output" data-uid="Buttplug.Core.Messages.DeviceFeature.Output">Output</h4>
+  <div class="markdown level1 summary"><p>Output capabilities of this feature, keyed by OutputType name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;string, DeviceFeatureOutput&gt; Output</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Dictionary</span>&lt;<span class="xref">System.String</span>, <a class="xref" href="Buttplug.Core.Messages.DeviceFeatureOutput.html">DeviceFeatureOutput</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <a id="Buttplug_Core_Messages_DeviceFeature_GetInput_" data-uid="Buttplug.Core.Messages.DeviceFeature.GetInput*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceFeature_GetInput_Buttplug_Core_Messages_InputType_" data-uid="Buttplug.Core.Messages.DeviceFeature.GetInput(Buttplug.Core.Messages.InputType)">GetInput(InputType)</h4>
+  <div class="markdown level1 summary"><p>Get the input attributes for a specific input type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DeviceFeatureInput GetInput(InputType type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputType.html">InputType</a></td>
+        <td><span class="parametername">type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.DeviceFeatureInput.html">DeviceFeatureInput</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceFeature_GetOutput_" data-uid="Buttplug.Core.Messages.DeviceFeature.GetOutput*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceFeature_GetOutput_Buttplug_Core_Messages_OutputType_" data-uid="Buttplug.Core.Messages.DeviceFeature.GetOutput(Buttplug.Core.Messages.OutputType)">GetOutput(OutputType)</h4>
+  <div class="markdown level1 summary"><p>Get the output attributes for a specific output type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DeviceFeatureOutput GetOutput(OutputType type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputType.html">OutputType</a></td>
+        <td><span class="parametername">type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.DeviceFeatureOutput.html">DeviceFeatureOutput</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceFeature_HasInput_" data-uid="Buttplug.Core.Messages.DeviceFeature.HasInput*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceFeature_HasInput_Buttplug_Core_Messages_InputType_" data-uid="Buttplug.Core.Messages.DeviceFeature.HasInput(Buttplug.Core.Messages.InputType)">HasInput(InputType)</h4>
+  <div class="markdown level1 summary"><p>Check if this feature has a specific input type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasInput(InputType type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputType.html">InputType</a></td>
+        <td><span class="parametername">type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -106,15 +306,14 @@
       </tr>
     </tbody>
   </table>
-  <h3 id="methods">Methods
-  </h3>
-  <a id="Buttplug_Client_IButtplugClientConnector_ConnectAsync_" data-uid="Buttplug.Client.IButtplugClientConnector.ConnectAsync*"></a>
-  <h4 id="Buttplug_Client_IButtplugClientConnector_ConnectAsync_CancellationToken_" data-uid="Buttplug.Client.IButtplugClientConnector.ConnectAsync(CancellationToken)">ConnectAsync(CancellationToken)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Core_Messages_DeviceFeature_HasOutput_" data-uid="Buttplug.Core.Messages.DeviceFeature.HasOutput*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceFeature_HasOutput_Buttplug_Core_Messages_OutputType_" data-uid="Buttplug.Core.Messages.DeviceFeature.HasOutput(Buttplug.Core.Messages.OutputType)">HasOutput(OutputType)</h4>
+  <div class="markdown level1 summary"><p>Check if this feature has a specific output type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task ConnectAsync(CancellationToken token = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public bool HasOutput(OutputType type)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -127,8 +326,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">CancellationToken</span></td>
-        <td><span class="parametername">token</span></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputType.html">OutputType</a></td>
+        <td><span class="parametername">type</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -143,160 +342,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_IButtplugClientConnector_DisconnectAsync_" data-uid="Buttplug.Client.IButtplugClientConnector.DisconnectAsync*"></a>
-  <h4 id="Buttplug_Client_IButtplugClientConnector_DisconnectAsync_CancellationToken_" data-uid="Buttplug.Client.IButtplugClientConnector.DisconnectAsync(CancellationToken)">DisconnectAsync(CancellationToken)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task DisconnectAsync(CancellationToken token = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">CancellationToken</span></td>
-        <td><span class="parametername">token</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_IButtplugClientConnector_SendAsync_" data-uid="Buttplug.Client.IButtplugClientConnector.SendAsync*"></a>
-  <h4 id="Buttplug_Client_IButtplugClientConnector_SendAsync_Buttplug_Core_Messages_ButtplugMessage_CancellationToken_" data-uid="Buttplug.Client.IButtplugClientConnector.SendAsync(Buttplug.Core.Messages.ButtplugMessage,CancellationToken)">SendAsync(ButtplugMessage, CancellationToken)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;ButtplugMessage&gt; SendAsync(ButtplugMessage msg, CancellationToken token = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></td>
-        <td><span class="parametername">msg</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><span class="xref">CancellationToken</span></td>
-        <td><span class="parametername">token</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="events">Events
-  </h3>
-  <h4 id="Buttplug_Client_IButtplugClientConnector_Disconnected" data-uid="Buttplug.Client.IButtplugClientConnector.Disconnected">Disconnected</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">event EventHandler Disconnected</code></pre>
-  </div>
-  <h5 class="eventType">Event Type</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">EventHandler</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h4 id="Buttplug_Client_IButtplugClientConnector_InvalidMessageReceived" data-uid="Buttplug.Client.IButtplugClientConnector.InvalidMessageReceived">InvalidMessageReceived</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">event EventHandler&lt;ButtplugExceptionEventArgs&gt; InvalidMessageReceived</code></pre>
-  </div>
-  <h5 class="eventType">Event Type</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">EventHandler</span>&lt;<a class="xref" href="Buttplug.Core.ButtplugExceptionEventArgs.html">ButtplugExceptionEventArgs</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h4 id="Buttplug_Client_IButtplugClientConnector_MessageReceived" data-uid="Buttplug.Client.IButtplugClientConnector.MessageReceived">MessageReceived</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">event EventHandler&lt;MessageReceivedEventArgs&gt; MessageReceived</code></pre>
-  </div>
-  <h5 class="eventType">Event Type</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">EventHandler</span>&lt;<a class="xref" href="Buttplug.Core.Messages.MessageReceivedEventArgs.html">MessageReceivedEventArgs</a>&gt;</td>
+        <td><span class="xref">System.Boolean</span></td>
         <td></td>
       </tr>
     </tbody>

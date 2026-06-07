@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class SensorReading
+    <title>Class OutputCommandValueWithDuration
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class SensorReading
+    <meta name="title" content="Class OutputCommandValueWithDuration
    ">
     <meta name="generator" content="docfx 2.56.7.0">
     
@@ -68,74 +68,74 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.SensorReading">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.OutputCommandValueWithDuration">
   
   
-  <h1 id="Buttplug_Core_Messages_SensorReading" data-uid="Buttplug.Core.Messages.SensorReading" class="text-break">Class SensorReading
+  <h1 id="Buttplug_Core_Messages_OutputCommandValueWithDuration" data-uid="Buttplug.Core.Messages.OutputCommandValueWithDuration" class="text-break">Class OutputCommandValueWithDuration
   </h1>
-  <div class="markdown level0 summary"><p>Sent to server, generic message that can control any device that takes a single value and staticly
-sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).</p>
+  <div class="markdown level0 summary"><p>Output command value for PositionWithDuration outputs.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
-    <div class="level1"><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></div>
-    <div class="level2"><a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a></div>
-    <div class="level3"><span class="xref">SensorReading</span></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html#Buttplug_Core_Messages_ButtplugDeviceMessage_DeviceIndex">ButtplugDeviceMessage.DeviceIndex</a>
-    </div>
-    <div>
-      <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html#Buttplug_Core_Messages_ButtplugMessage_Id">ButtplugMessage.Id</a>
-    </div>
-    <div>
-      <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html#Buttplug_Core_Messages_ButtplugMessage_Name">ButtplugMessage.Name</a>
-    </div>
-    <div>
-      <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html#Buttplug_Core_Messages_ButtplugMessage_GetName_Type_">ButtplugMessage.GetName(Type)</a>
-    </div>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">OutputCommandValueWithDuration</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
-  <h5 id="Buttplug_Core_Messages_SensorReading_syntax">Syntax</h5>
+  <h5 id="Buttplug_Core_Messages_OutputCommandValueWithDuration_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class SensorReading : ButtplugDeviceMessage</code></pre>
+    <pre><code class="lang-csharp hljs">public class OutputCommandValueWithDuration : object</code></pre>
   </div>
-  <h3 id="fields">Fields
+  <h3 id="constructors">Constructors
   </h3>
-  <h4 id="Buttplug_Core_Messages_SensorReading_data" data-uid="Buttplug.Core.Messages.SensorReading.data">data</h4>
+  <a id="Buttplug_Core_Messages_OutputCommandValueWithDuration__ctor_" data-uid="Buttplug.Core.Messages.OutputCommandValueWithDuration.#ctor*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCommandValueWithDuration__ctor" data-uid="Buttplug.Core.Messages.OutputCommandValueWithDuration.#ctor">OutputCommandValueWithDuration()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly List&lt;int&gt; data</code></pre>
+    <pre><code class="lang-csharp hljs">public OutputCommandValueWithDuration()</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <a id="Buttplug_Core_Messages_OutputCommandValueWithDuration__ctor_" data-uid="Buttplug.Core.Messages.OutputCommandValueWithDuration.#ctor*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCommandValueWithDuration__ctor_System_Int32_System_UInt32_" data-uid="Buttplug.Core.Messages.OutputCommandValueWithDuration.#ctor(System.Int32,System.UInt32)">OutputCommandValueWithDuration(Int32, UInt32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OutputCommandValueWithDuration(int value, uint duration)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
+        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.int32">Int32</a>&gt;</td>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">duration</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_SensorReading_SensorIndex" data-uid="Buttplug.Core.Messages.SensorReading.SensorIndex">SensorIndex</h4>
-  <div class="markdown level1 summary"><p>List of vibrator speeds.</p>
+  <h3 id="fields">Fields
+  </h3>
+  <h4 id="Buttplug_Core_Messages_OutputCommandValueWithDuration_Duration" data-uid="Buttplug.Core.Messages.OutputCommandValueWithDuration.Duration">Duration</h4>
+  <div class="markdown level1 summary"><p>The duration in milliseconds.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly uint SensorIndex</code></pre>
+    <pre><code class="lang-csharp hljs">public uint Duration</code></pre>
   </div>
   <h5 class="fieldValue">Field Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -147,17 +147,18 @@ sets an actuator to that value (speed, oscillation frequency, instanteous positi
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_SensorReading_SensorType" data-uid="Buttplug.Core.Messages.SensorReading.SensorType">SensorType</h4>
-  <div class="markdown level1 summary"></div>
+  <h4 id="Buttplug_Core_Messages_OutputCommandValueWithDuration_Value" data-uid="Buttplug.Core.Messages.OutputCommandValueWithDuration.Value">Value</h4>
+  <div class="markdown level1 summary"><p>The position value to set.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly SensorType SensorType</code></pre>
+    <pre><code class="lang-csharp hljs">public int Value</code></pre>
   </div>
   <h5 class="fieldValue">Field Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -169,7 +170,7 @@ sets an actuator to that value (speed, oscillation frequency, instanteous positi
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.SensorType.html">SensorType</a></td>
+        <td><span class="xref">System.Int32</span></td>
         <td></td>
       </tr>
     </tbody>

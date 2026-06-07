@@ -78,7 +78,7 @@
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">ButtplugClientDevice</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Client.html">Buttplug.Client</a></h6>
@@ -91,7 +91,8 @@
   </h3>
   <a id="Buttplug_Client_ButtplugClientDevice_DisplayName_" data-uid="Buttplug.Client.ButtplugClientDevice.DisplayName*"></a>
   <h4 id="Buttplug_Client_ButtplugClientDevice_DisplayName" data-uid="Buttplug.Client.ButtplugClientDevice.DisplayName">DisplayName</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The user-configured display name for the device.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -107,18 +108,19 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="xref">System.String</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_HasBattery_" data-uid="Buttplug.Client.ButtplugClientDevice.HasBattery*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_HasBattery" data-uid="Buttplug.Client.ButtplugClientDevice.HasBattery">HasBattery</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_ButtplugClientDevice_Features_" data-uid="Buttplug.Client.ButtplugClientDevice.Features*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_Features" data-uid="Buttplug.Client.ButtplugClientDevice.Features">Features</h4>
+  <div class="markdown level1 summary"><p>The device features, keyed by feature index.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool HasBattery { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;uint, ButtplugClientDeviceFeature&gt; Features { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -130,7 +132,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><span class="xref">IReadOnlyDictionary</span>&lt;<span class="xref">System.UInt32</span>, <a class="xref" href="Buttplug.Client.ButtplugClientDeviceFeature.html">ButtplugClientDeviceFeature</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -154,7 +156,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -163,56 +165,10 @@
   <div class="markdown level1 remarks"><p>If a device is removed, this may be the only populated field. If the same device
 reconnects, the index should be reused.</p>
 </div>
-  <a id="Buttplug_Client_ButtplugClientDevice_LinearAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAttributes*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_LinearAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAttributes">LinearAttributes</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; LinearAttributes { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_MessageAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.MessageAttributes*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_MessageAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.MessageAttributes">MessageAttributes</h4>
-  <div class="markdown level1 summary"><p>The Buttplug Protocol messages supported by this device, with additional attributes.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DeviceMessageAttributes MessageAttributes { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.DeviceMessageAttributes.html">DeviceMessageAttributes</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
   <a id="Buttplug_Client_ButtplugClientDevice_MessageTimingGap_" data-uid="Buttplug.Client.ButtplugClientDevice.MessageTimingGap*"></a>
   <h4 id="Buttplug_Client_ButtplugClientDevice_MessageTimingGap" data-uid="Buttplug.Client.ButtplugClientDevice.MessageTimingGap">MessageTimingGap</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Recommended time gap between messages in milliseconds.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -228,7 +184,7 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -252,76 +208,7 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_OscillateAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAttributes*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAttributes">OscillateAttributes</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; OscillateAttributes { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_RotateAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAttributes*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_RotateAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAttributes">RotateAttributes</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; RotateAttributes { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_VibrateAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAttributes*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAttributes" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAttributes">VibrateAttributes</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; VibrateAttributes { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
+        <td><span class="xref">System.String</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -329,35 +216,13 @@ reconnects, the index should be reused.</p>
   <h3 id="methods">Methods
   </h3>
   <a id="Buttplug_Client_ButtplugClientDevice_BatteryAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.BatteryAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_BatteryAsync" data-uid="Buttplug.Client.ButtplugClientDevice.BatteryAsync">BatteryAsync()</h4>
-  <div class="markdown level1 summary"></div>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_BatteryAsync_System_Nullable_TimeSpan__CancellationToken_" data-uid="Buttplug.Client.ButtplugClientDevice.BatteryAsync(System.Nullable{TimeSpan},CancellationToken)">BatteryAsync(Nullable&lt;TimeSpan&gt;, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Reads the battery level of the device.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;double&gt; BatteryAsync()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_GenericAcutatorAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.GenericAcutatorAttributes*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_GenericAcutatorAttributes_Buttplug_Core_Messages_ActuatorType_" data-uid="Buttplug.Client.ButtplugClientDevice.GenericAcutatorAttributes(Buttplug.Core.Messages.ActuatorType)">GenericAcutatorAttributes(ActuatorType)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;GenericDeviceMessageAttributes&gt; GenericAcutatorAttributes(ActuatorType actuator)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;double&gt; BatteryAsync(TimeSpan? timeout = null, CancellationToken token = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -370,9 +235,16 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.ActuatorType.html">ActuatorType</a></td>
-        <td><span class="parametername">actuator</span></td>
-        <td></td>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">TimeSpan</span>&gt;</td>
+        <td><span class="parametername">timeout</span></td>
+        <td><p>Optional timeout for the operation.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">CancellationToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td><p>Cancellation token.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -386,18 +258,41 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>&gt;</td>
-        <td></td>
+        <td><span class="xref">Task</span>&lt;<span class="xref">System.Double</span>&gt;</td>
+        <td><p>Battery level as a value between 0.0 and 1.0.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_LinearAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_LinearAsync_IEnumerable_Buttplug_Core_Messages_LinearCmd_VectorCommand__" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync(IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})">LinearAsync(IEnumerable&lt;LinearCmd.VectorCommand&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.ButtplugDeviceException.html">ButtplugDeviceException</a></td>
+        <td><p>Thrown if the device does not support battery reading.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.ButtplugMessageException.html">ButtplugMessageException</a></td>
+        <td><p>Thrown if the battery reading response is invalid.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_GetFeature_" data-uid="Buttplug.Client.ButtplugClientDevice.GetFeature*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_GetFeature_System_UInt32_" data-uid="Buttplug.Client.ButtplugClientDevice.GetFeature(System.UInt32)">GetFeature(UInt32)</h4>
+  <div class="markdown level1 summary"><p>Gets a specific feature by its index.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task LinearAsync(IEnumerable&lt;LinearCmd.VectorCommand&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public ButtplugClientDeviceFeature GetFeature(uint featureIndex)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -410,9 +305,10 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorCommand.html">LinearCmd.VectorCommand</a>&gt;</td>
-        <td><span class="parametername">cmds</span></td>
-        <td></td>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">featureIndex</span></td>
+        <td><p>The feature index.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -426,18 +322,20 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
+        <td><a class="xref" href="Buttplug.Client.ButtplugClientDeviceFeature.html">ButtplugClientDeviceFeature</a></td>
+        <td><p>The feature, or null if not found.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_LinearAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_LinearAsync_System_UInt32_System_Double_" data-uid="Buttplug.Client.ButtplugClientDevice.LinearAsync(System.UInt32,System.Double)">LinearAsync(UInt32, Double)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_ButtplugClientDevice_GetFeaturesWithInput_" data-uid="Buttplug.Client.ButtplugClientDevice.GetFeaturesWithInput*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_GetFeaturesWithInput_Buttplug_Core_Messages_InputType_" data-uid="Buttplug.Client.ButtplugClientDevice.GetFeaturesWithInput(Buttplug.Core.Messages.InputType)">GetFeaturesWithInput(InputType)</h4>
+  <div class="markdown level1 summary"><p>Gets all features that have a specific input type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task LinearAsync(uint duration, double position)</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;ButtplugClientDeviceFeature&gt; GetFeaturesWithInput(InputType inputType)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -450,14 +348,10 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">duration</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
-        <td><span class="parametername">position</span></td>
-        <td></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputType.html">InputType</a></td>
+        <td><span class="parametername">inputType</span></td>
+        <td><p>The input type to filter by.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -471,18 +365,20 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Client.ButtplugClientDeviceFeature.html">ButtplugClientDeviceFeature</a>&gt;</td>
+        <td><p>Enumerable of matching features.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_Buttplug_Core_Messages_ScalarCmd_ScalarCommand__" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{Buttplug.Core.Messages.ScalarCmd.ScalarCommand})">OscillateAsync(IEnumerable&lt;ScalarCmd.ScalarCommand&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_ButtplugClientDevice_GetFeaturesWithOutput_" data-uid="Buttplug.Client.ButtplugClientDevice.GetFeaturesWithOutput*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_GetFeaturesWithOutput_Buttplug_Core_Messages_OutputType_" data-uid="Buttplug.Client.ButtplugClientDevice.GetFeaturesWithOutput(Buttplug.Core.Messages.OutputType)">GetFeaturesWithOutput(OutputType)</h4>
+  <div class="markdown level1 summary"><p>Gets all features that have a specific output type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task OscillateAsync(IEnumerable&lt;ScalarCmd.ScalarCommand&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;ButtplugClientDeviceFeature&gt; GetFeaturesWithOutput(OutputType outputType)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -495,9 +391,10 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html">ScalarCmd.ScalarCommand</a>&gt;</td>
-        <td><span class="parametername">cmds</span></td>
-        <td></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputType.html">OutputType</a></td>
+        <td><span class="parametername">outputType</span></td>
+        <td><p>The output type to filter by.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -511,18 +408,20 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Client.ButtplugClientDeviceFeature.html">ButtplugClientDeviceFeature</a>&gt;</td>
+        <td><p>Enumerable of matching features.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_IEnumerable_System_Double__" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(IEnumerable{System.Double})">OscillateAsync(IEnumerable&lt;Double&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_ButtplugClientDevice_HasInput_" data-uid="Buttplug.Client.ButtplugClientDevice.HasInput*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_HasInput_Buttplug_Core_Messages_InputType_" data-uid="Buttplug.Client.ButtplugClientDevice.HasInput(Buttplug.Core.Messages.InputType)">HasInput(InputType)</h4>
+  <div class="markdown level1 summary"><p>Checks if this device has any features with the specified input type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task OscillateAsync(IEnumerable&lt;double&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public bool HasInput(InputType inputType)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -535,48 +434,8 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
-        <td><span class="parametername">cmds</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_OscillateAsync_System_Double_" data-uid="Buttplug.Client.ButtplugClientDevice.OscillateAsync(System.Double)">OscillateAsync(Double)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task OscillateAsync(double speed)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
-        <td><span class="parametername">speed</span></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputType.html">InputType</a></td>
+        <td><span class="parametername">inputType</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -591,18 +450,19 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Task</span></td>
+        <td><span class="xref">System.Boolean</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_RotateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_RotateAsync_IEnumerable_Buttplug_Core_Messages_RotateCmd_RotateCommand__" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync(IEnumerable{Buttplug.Core.Messages.RotateCmd.RotateCommand})">RotateAsync(IEnumerable&lt;RotateCmd.RotateCommand&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_ButtplugClientDevice_HasOutput_" data-uid="Buttplug.Client.ButtplugClientDevice.HasOutput*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_HasOutput_Buttplug_Core_Messages_OutputType_" data-uid="Buttplug.Client.ButtplugClientDevice.HasOutput(Buttplug.Core.Messages.OutputType)">HasOutput(OutputType)</h4>
+  <div class="markdown level1 summary"><p>Checks if this device has any features with the specified output type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task RotateAsync(IEnumerable&lt;RotateCmd.RotateCommand&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public bool HasOutput(OutputType outputType)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -615,8 +475,8 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.RotateCmd.RotateCommand.html">RotateCmd.RotateCommand</a>&gt;</td>
-        <td><span class="parametername">cmds</span></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputType.html">OutputType</a></td>
+        <td><span class="parametername">outputType</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -631,18 +491,20 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Task</span></td>
+        <td><span class="xref">System.Boolean</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_RotateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_RotateAsync_System_Double_System_Boolean_" data-uid="Buttplug.Client.ButtplugClientDevice.RotateAsync(System.Double,System.Boolean)">RotateAsync(Double, Boolean)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_ButtplugClientDevice_RunInputAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.RunInputAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_RunInputAsync_Buttplug_Client_DeviceInputCommand_CancellationToken_" data-uid="Buttplug.Client.ButtplugClientDevice.RunInputAsync(Buttplug.Client.DeviceInputCommand,CancellationToken)">RunInputAsync(DeviceInputCommand, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Sends an input command to the first feature that supports the command&apos;s input type.
+For Read commands, returns the reading. For Subscribe/Unsubscribe, returns null.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task RotateAsync(double speed, bool clockwise)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;InputReading&gt; RunInputAsync(DeviceInputCommand command, CancellationToken token = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -655,54 +517,16 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
-        <td><span class="parametername">speed</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
-        <td><span class="parametername">clockwise</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_ScalarAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.ScalarAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_ScalarAsync_Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand_" data-uid="Buttplug.Client.ButtplugClientDevice.ScalarAsync(Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand)">ScalarAsync(ScalarCmd.ScalarSubcommand)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task ScalarAsync(ScalarCmd.ScalarSubcommand command)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a></td>
+        <td><a class="xref" href="Buttplug.Client.DeviceInputCommand.html">DeviceInputCommand</a></td>
         <td><span class="parametername">command</span></td>
-        <td></td>
+        <td><p>The input command to send.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">CancellationToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td><p>Cancellation token.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -716,18 +540,28 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
+        <td><span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.InputReading.html">InputReading</a>&gt;</td>
+        <td><p>The input reading for Read commands, null for Subscribe/Unsubscribe.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_ScalarAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.ScalarAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_ScalarAsync_List_Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand__" data-uid="Buttplug.Client.ButtplugClientDevice.ScalarAsync(List{Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand})">ScalarAsync(List&lt;ScalarCmd.ScalarSubcommand&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <h5 id="Buttplug_Client_ButtplugClientDevice_RunInputAsync_Buttplug_Client_DeviceInputCommand_CancellationToken__examples">Examples</h5>
+  <pre><code>// Read battery level
+var reading = await device.RunInputAsync(DeviceInput.Battery.Read());
+var batteryLevel = reading?.GetValue(InputType.Battery);
+
+// Subscribe to button events
+await device.RunInputAsync(DeviceInput.Button.Subscribe());</code></pre>
+
+  <a id="Buttplug_Client_ButtplugClientDevice_RunInputAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.RunInputAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_RunInputAsync_System_UInt32_Buttplug_Client_DeviceInputCommand_CancellationToken_" data-uid="Buttplug.Client.ButtplugClientDevice.RunInputAsync(System.UInt32,Buttplug.Client.DeviceInputCommand,CancellationToken)">RunInputAsync(UInt32, DeviceInputCommand, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Sends an input command to a specific feature by index.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task ScalarAsync(List&lt;ScalarCmd.ScalarSubcommand&gt; command)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;InputReading&gt; RunInputAsync(uint featureIndex, DeviceInputCommand command, CancellationToken token = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -740,9 +574,71 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a>&gt;</td>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">featureIndex</span></td>
+        <td><p>The feature index.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Buttplug.Client.DeviceInputCommand.html">DeviceInputCommand</a></td>
         <td><span class="parametername">command</span></td>
-        <td></td>
+        <td><p>The input command to send.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">CancellationToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span>&lt;<a class="xref" href="Buttplug.Core.Messages.InputReading.html">InputReading</a>&gt;</td>
+        <td><p>The input reading for Read commands, null for Subscribe/Unsubscribe.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_ButtplugClientDevice_RunOutputAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.RunOutputAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_RunOutputAsync_Buttplug_Client_DeviceOutputCommand_CancellationToken_" data-uid="Buttplug.Client.ButtplugClientDevice.RunOutputAsync(Buttplug.Client.DeviceOutputCommand,CancellationToken)">RunOutputAsync(DeviceOutputCommand, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Sends an output command to all features that support the command&apos;s output type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RunOutputAsync(DeviceOutputCommand command, CancellationToken token = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Client.DeviceOutputCommand.html">DeviceOutputCommand</a></td>
+        <td><span class="parametername">command</span></td>
+        <td><p>The output command to send.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">CancellationToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td><p>Cancellation token.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -761,13 +657,21 @@ reconnects, the index should be reused.</p>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_SensorReadAttributes_" data-uid="Buttplug.Client.ButtplugClientDevice.SensorReadAttributes*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_SensorReadAttributes_Buttplug_Core_Messages_SensorType_" data-uid="Buttplug.Client.ButtplugClientDevice.SensorReadAttributes(Buttplug.Core.Messages.SensorType)">SensorReadAttributes(SensorType)</h4>
-  <div class="markdown level1 summary"></div>
+  <h5 id="Buttplug_Client_ButtplugClientDevice_RunOutputAsync_Buttplug_Client_DeviceOutputCommand_CancellationToken__examples">Examples</h5>
+  <pre><code>// Vibrate at 50%
+await device.RunOutputAsync(DeviceOutput.Vibrate.Percent(0.5));
+
+// Move to position over 500ms
+await device.RunOutputAsync(DeviceOutput.PositionWithDuration.Percent(1.0, 500));</code></pre>
+
+  <a id="Buttplug_Client_ButtplugClientDevice_RunOutputAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.RunOutputAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_RunOutputAsync_System_UInt32_Buttplug_Client_DeviceOutputCommand_CancellationToken_" data-uid="Buttplug.Client.ButtplugClientDevice.RunOutputAsync(System.UInt32,Buttplug.Client.DeviceOutputCommand,CancellationToken)">RunOutputAsync(UInt32, DeviceOutputCommand, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Sends an output command to a specific feature by index.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;SensorDeviceMessageAttributes&gt; SensorReadAttributes(SensorType sensor)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task RunOutputAsync(uint featureIndex, DeviceOutputCommand command, CancellationToken token = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -780,72 +684,22 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.SensorType.html">SensorType</a></td>
-        <td><span class="parametername">sensor</span></td>
-        <td></td>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">featureIndex</span></td>
+        <td><p>The feature index.</p>
+</td>
       </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <td><a class="xref" href="Buttplug.Client.DeviceOutputCommand.html">DeviceOutputCommand</a></td>
+        <td><span class="parametername">command</span></td>
+        <td><p>The output command to send.</p>
+</td>
       </tr>
-    </thead>
-    <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.SensorDeviceMessageAttributes.html">SensorDeviceMessageAttributes</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_Stop_" data-uid="Buttplug.Client.ButtplugClientDevice.Stop*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_Stop" data-uid="Buttplug.Client.ButtplugClientDevice.Stop">Stop()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task Stop()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_Buttplug_Core_Messages_ScalarCmd_ScalarCommand__" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{Buttplug.Core.Messages.ScalarCmd.ScalarCommand})">VibrateAsync(IEnumerable&lt;ScalarCmd.ScalarCommand&gt;)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task VibrateAsync(IEnumerable&lt;ScalarCmd.ScalarCommand&gt; cmds)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html">ScalarCmd.ScalarCommand</a>&gt;</td>
-        <td><span class="parametername">cmds</span></td>
-        <td></td>
+        <td><span class="xref">CancellationToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td><p>Cancellation token.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -864,13 +718,14 @@ reconnects, the index should be reused.</p>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_IEnumerable_System_Double__" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(IEnumerable{System.Double})">VibrateAsync(IEnumerable&lt;Double&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_ButtplugClientDevice_StopAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.StopAsync*"></a>
+  <h4 id="Buttplug_Client_ButtplugClientDevice_StopAsync_CancellationToken_" data-uid="Buttplug.Client.ButtplugClientDevice.StopAsync(CancellationToken)">StopAsync(CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Stops all actions on this device.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task VibrateAsync(IEnumerable&lt;double&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task StopAsync(CancellationToken token = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -883,49 +738,10 @@ reconnects, the index should be reused.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a>&gt;</td>
-        <td><span class="parametername">cmds</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync*"></a>
-  <h4 id="Buttplug_Client_ButtplugClientDevice_VibrateAsync_System_Double_" data-uid="Buttplug.Client.ButtplugClientDevice.VibrateAsync(System.Double)">VibrateAsync(Double)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task VibrateAsync(double speed)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
-        <td><span class="parametername">speed</span></td>
-        <td></td>
+        <td><span class="xref">CancellationToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td><p>Cancellation token.</p>
+</td>
       </tr>
     </tbody>
   </table>

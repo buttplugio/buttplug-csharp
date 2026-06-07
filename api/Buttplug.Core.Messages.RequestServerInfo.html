@@ -73,13 +73,13 @@
   
   <h1 id="Buttplug_Core_Messages_RequestServerInfo" data-uid="Buttplug.Core.Messages.RequestServerInfo" class="text-break">Class RequestServerInfo
   </h1>
-  <div class="markdown level0 summary"><p>Sent to server to set up client information, including client name and schema version.
+  <div class="markdown level0 summary"><p>Sent to server to set up client information, including client name and protocol version.
 Denotes the beginning of a connection handshake.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></div>
     <div class="level2"><span class="xref">RequestServerInfo</span></div>
   </div>
@@ -104,13 +104,13 @@ Denotes the beginning of a connection handshake.</p>
   <h3 id="constructors">Constructors
   </h3>
   <a id="Buttplug_Core_Messages_RequestServerInfo__ctor_" data-uid="Buttplug.Core.Messages.RequestServerInfo.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_RequestServerInfo__ctor_System_String_System_UInt32_System_UInt32_" data-uid="Buttplug.Core.Messages.RequestServerInfo.#ctor(System.String,System.UInt32,System.UInt32)">RequestServerInfo(String, UInt32, UInt32)</h4>
+  <h4 id="Buttplug_Core_Messages_RequestServerInfo__ctor_System_String_System_UInt32_System_UInt32_System_UInt32_" data-uid="Buttplug.Core.Messages.RequestServerInfo.#ctor(System.String,System.UInt32,System.UInt32,System.UInt32)">RequestServerInfo(String, UInt32, UInt32, UInt32)</h4>
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.RequestServerInfo.html">RequestServerInfo</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public RequestServerInfo(string clientName, uint id = null, uint schemversion = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public RequestServerInfo(string clientName, uint id = null, uint protocolVersionMajor = null, uint protocolVersionMinor = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -123,21 +123,27 @@ Denotes the beginning of a connection handshake.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="xref">System.String</span></td>
         <td><span class="parametername">clientName</span></td>
         <td><p>Client name.</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td><span class="parametername">id</span></td>
         <td><p>Message Id.</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">schemversion</span></td>
-        <td><p>Message schema version.</p>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">protocolVersionMajor</span></td>
+        <td><p>Protocol major version.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">protocolVersionMinor</span></td>
+        <td><p>Protocol minor version.</p>
 </td>
       </tr>
     </tbody>
@@ -162,18 +168,18 @@ Denotes the beginning of a connection handshake.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="xref">System.String</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_RequestServerInfo_MessageVersion" data-uid="Buttplug.Core.Messages.RequestServerInfo.MessageVersion">MessageVersion</h4>
-  <div class="markdown level1 summary"><p>Client message schema version.</p>
+  <h4 id="Buttplug_Core_Messages_RequestServerInfo_ProtocolVersionMajor" data-uid="Buttplug.Core.Messages.RequestServerInfo.ProtocolVersionMajor">ProtocolVersionMajor</h4>
+  <div class="markdown level1 summary"><p>Client protocol major version.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public uint MessageVersion</code></pre>
+    <pre><code class="lang-csharp hljs">public uint ProtocolVersionMajor</code></pre>
   </div>
   <h5 class="fieldValue">Field Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -185,7 +191,30 @@ Denotes the beginning of a connection handshake.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_RequestServerInfo_ProtocolVersionMinor" data-uid="Buttplug.Core.Messages.RequestServerInfo.ProtocolVersionMinor">ProtocolVersionMinor</h4>
+  <div class="markdown level1 summary"><p>Client protocol minor version.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint ProtocolVersionMinor</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
         <td></td>
       </tr>
     </tbody>

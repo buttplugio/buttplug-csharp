@@ -1,0 +1,513 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class DeviceInfo
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class DeviceInfo
+   ">
+    <meta name="generator" content="docfx 2.56.7.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.DeviceInfo">
+  
+  
+  <h1 id="Buttplug_Core_Messages_DeviceInfo" data-uid="Buttplug.Core.Messages.DeviceInfo" class="text-break">Class DeviceInfo
+  </h1>
+  <div class="markdown level0 summary"><p>Container class for describing a device in V4 protocol.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">DeviceInfo</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Buttplug.Core.Messages.IButtplugDeviceInfoMessage.html">IButtplugDeviceInfoMessage</a></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
+  <h6><strong>Assembly</strong>: Buttplug.dll</h6>
+  <h5 id="Buttplug_Core_Messages_DeviceInfo_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class DeviceInfo : object, IButtplugDeviceInfoMessage</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_DeviceDisplayName" data-uid="Buttplug.Core.Messages.DeviceInfo.DeviceDisplayName">DeviceDisplayName</h4>
+  <div class="markdown level1 summary"><p>Device display name, set up by the user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DeviceDisplayName</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_DeviceFeatures" data-uid="Buttplug.Core.Messages.DeviceInfo.DeviceFeatures">DeviceFeatures</h4>
+  <div class="markdown level1 summary"><p>Device features, keyed by feature index as string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;string, DeviceFeature&gt; DeviceFeatures</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Dictionary</span>&lt;<span class="xref">System.String</span>, <a class="xref" href="Buttplug.Core.Messages.DeviceFeature.html">DeviceFeature</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_DeviceIndex" data-uid="Buttplug.Core.Messages.DeviceInfo.DeviceIndex">DeviceIndex</h4>
+  <div class="markdown level1 summary"><p>Device index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint DeviceIndex</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_DeviceMessageTimingGap" data-uid="Buttplug.Core.Messages.DeviceInfo.DeviceMessageTimingGap">DeviceMessageTimingGap</h4>
+  <div class="markdown level1 summary"><p>Recommended amount of time between commands, in milliseconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint DeviceMessageTimingGap</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_DeviceName" data-uid="Buttplug.Core.Messages.DeviceInfo.DeviceName">DeviceName</h4>
+  <div class="markdown level1 summary"><p>Name of the device.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DeviceName</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <a id="Buttplug_Core_Messages_DeviceInfo_GetAllFeatures_" data-uid="Buttplug.Core.Messages.DeviceInfo.GetAllFeatures*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_GetAllFeatures" data-uid="Buttplug.Core.Messages.DeviceInfo.GetAllFeatures">GetAllFeatures()</h4>
+  <div class="markdown level1 summary"><p>Gets all features as an enumerable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;DeviceFeature&gt; GetAllFeatures()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.DeviceFeature.html">DeviceFeature</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceInfo_GetFeature_" data-uid="Buttplug.Core.Messages.DeviceInfo.GetFeature*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_GetFeature_System_UInt32_" data-uid="Buttplug.Core.Messages.DeviceInfo.GetFeature(System.UInt32)">GetFeature(UInt32)</h4>
+  <div class="markdown level1 summary"><p>Gets a feature by its index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DeviceFeature GetFeature(uint index)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">index</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.DeviceFeature.html">DeviceFeature</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceInfo_GetFeaturesWithInput_" data-uid="Buttplug.Core.Messages.DeviceInfo.GetFeaturesWithInput*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_GetFeaturesWithInput_Buttplug_Core_Messages_InputType_" data-uid="Buttplug.Core.Messages.DeviceInfo.GetFeaturesWithInput(Buttplug.Core.Messages.InputType)">GetFeaturesWithInput(InputType)</h4>
+  <div class="markdown level1 summary"><p>Gets all features that have a specific input type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;DeviceFeature&gt; GetFeaturesWithInput(InputType type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputType.html">InputType</a></td>
+        <td><span class="parametername">type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.DeviceFeature.html">DeviceFeature</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceInfo_GetFeaturesWithOutput_" data-uid="Buttplug.Core.Messages.DeviceInfo.GetFeaturesWithOutput*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_GetFeaturesWithOutput_Buttplug_Core_Messages_OutputType_" data-uid="Buttplug.Core.Messages.DeviceInfo.GetFeaturesWithOutput(Buttplug.Core.Messages.OutputType)">GetFeaturesWithOutput(OutputType)</h4>
+  <div class="markdown level1 summary"><p>Gets all features that have a specific output type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;DeviceFeature&gt; GetFeaturesWithOutput(OutputType type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputType.html">OutputType</a></td>
+        <td><span class="parametername">type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.DeviceFeature.html">DeviceFeature</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="eii">Explicit Interface Implementations
+  </h3>
+  <a id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceDisplayName_" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceDisplayName*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceDisplayName" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceDisplayName">IButtplugDeviceInfoMessage.DeviceDisplayName</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string IButtplugDeviceInfoMessage.DeviceDisplayName { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceFeatures_" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceFeatures*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceFeatures" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceFeatures">IButtplugDeviceInfoMessage.DeviceFeatures</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Dictionary&lt;string, DeviceFeature&gt; IButtplugDeviceInfoMessage.DeviceFeatures { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Dictionary</span>&lt;<span class="xref">System.String</span>, <a class="xref" href="Buttplug.Core.Messages.DeviceFeature.html">DeviceFeature</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceIndex_" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceIndex*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceIndex" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceIndex">IButtplugDeviceInfoMessage.DeviceIndex</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">uint IButtplugDeviceInfoMessage.DeviceIndex { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceMessageTimingGap_" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceMessageTimingGap*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceMessageTimingGap" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceMessageTimingGap">IButtplugDeviceInfoMessage.DeviceMessageTimingGap</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">uint IButtplugDeviceInfoMessage.DeviceMessageTimingGap { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceName_" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceName*"></a>
+  <h4 id="Buttplug_Core_Messages_DeviceInfo_Buttplug_Core_Messages_IButtplugDeviceInfoMessage_DeviceName" data-uid="Buttplug.Core.Messages.DeviceInfo.Buttplug#Core#Messages#IButtplugDeviceInfoMessage#DeviceName">IButtplugDeviceInfoMessage.DeviceName</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string IButtplugDeviceInfoMessage.DeviceName { get; }</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="Buttplug.Core.Messages.IButtplugDeviceInfoMessage.html">IButtplugDeviceInfoMessage</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -73,11 +73,12 @@
   
   <h1 id="Buttplug_Client_ButtplugClient" data-uid="Buttplug.Client.ButtplugClient" class="text-break">Class ButtplugClient
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Main client class for connecting to Buttplug servers and managing devices.</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">ButtplugClient</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Client.html">Buttplug.Client</a></h6>
@@ -108,7 +109,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="xref">System.String</span></td>
         <td><span class="parametername">clientName</span></td>
         <td><p>The name of the client (used by the server for UI and permissions).</p>
 </td>
@@ -140,10 +141,6 @@
       </tr>
     </tbody>
   </table>
-  <h5 id="Buttplug_Client_ButtplugClient__pingTimer_remarks">Remarks</h5>
-  <div class="markdown level1 remarks"><p>Sends a ping message to the server whenever the timer triggers. Usually runs at
-(requested ping interval / 2).</p>
-</div>
   <h3 id="properties">Properties
   </h3>
   <a id="Buttplug_Client_ButtplugClient_Connected_" data-uid="Buttplug.Client.ButtplugClient.Connected*"></a>
@@ -165,9 +162,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
-        <td><p>Value indicating whether the client is connected to a server.</p>
-</td>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -191,8 +187,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a>[]</td>
-        <td><p>A list of connected Buttplug devices.</p>
-</td>
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -215,7 +210,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="xref">System.String</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -224,7 +219,8 @@
   </h3>
   <a id="Buttplug_Client_ButtplugClient_ConnectAsync_" data-uid="Buttplug.Client.ButtplugClient.ConnectAsync*"></a>
   <h4 id="Buttplug_Client_ButtplugClient_ConnectAsync_Buttplug_Client_IButtplugClientConnector_CancellationToken_" data-uid="Buttplug.Client.ButtplugClient.ConnectAsync(Buttplug.Client.IButtplugClientConnector,CancellationToken)">ConnectAsync(IButtplugClientConnector, CancellationToken)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Connects to a Buttplug server using the provided connector.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -243,12 +239,14 @@
       <tr>
         <td><a class="xref" href="Buttplug.Client.IButtplugClientConnector.html">IButtplugClientConnector</a></td>
         <td><span class="parametername">connector</span></td>
-        <td></td>
+        <td><p>The connector to use for communication.</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">CancellationToken</span></td>
         <td><span class="parametername">token</span></td>
-        <td></td>
+        <td><p>Cancellation token.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -269,7 +267,8 @@
   </table>
   <a id="Buttplug_Client_ButtplugClient_DisconnectAsync_" data-uid="Buttplug.Client.ButtplugClient.DisconnectAsync*"></a>
   <h4 id="Buttplug_Client_ButtplugClient_DisconnectAsync" data-uid="Buttplug.Client.ButtplugClient.DisconnectAsync">DisconnectAsync()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Disconnects from the server.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -319,7 +318,7 @@ it is still open.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><span class="xref">System.Boolean</span></td>
         <td><span class="parametername">disposing</span></td>
         <td></td>
       </tr>
@@ -327,7 +326,8 @@ it is still open.</p>
   </table>
   <a id="Buttplug_Client_ButtplugClient_StartScanningAsync_" data-uid="Buttplug.Client.ButtplugClient.StartScanningAsync*"></a>
   <h4 id="Buttplug_Client_ButtplugClient_StartScanningAsync_CancellationToken_" data-uid="Buttplug.Client.ButtplugClient.StartScanningAsync(CancellationToken)">StartScanningAsync(CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Instructs the server to start scanning for devices. New devices will be raised as <a class="xref" href="Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_DeviceAdded">DeviceAdded</a> events. When scanning completes, an <a class="xref" href="Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_ScanningFinished">ScanningFinished</a>
+  <div class="markdown level1 summary"><p>Instructs the server to start scanning for devices. New devices will be raised as
+<a class="xref" href="Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_DeviceAdded">DeviceAdded</a> events. When scanning completes, a <a class="xref" href="Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_ScanningFinished">ScanningFinished</a>
 event will be triggered.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -348,7 +348,7 @@ event will be triggered.</p>
       <tr>
         <td><span class="xref">CancellationToken</span></td>
         <td><span class="parametername">token</span></td>
-        <td><p>Cancellation token, for cancelling action externally if it is not yet finished.</p>
+        <td><p>Cancellation token.</p>
 </td>
       </tr>
     </tbody>
@@ -364,8 +364,7 @@ event will be triggered.</p>
     <tbody>
       <tr>
         <td><span class="xref">Task</span></td>
-        <td><p>Void on success, throws <see cref="!:ButtplugClientException"></see> otherwise.</p>
-</td>
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -391,7 +390,7 @@ event will be triggered.</p>
       <tr>
         <td><span class="xref">CancellationToken</span></td>
         <td><span class="parametername">token</span></td>
-        <td><p>Cancellation token, for cancelling action externally if it is not yet finished.</p>
+        <td><p>Cancellation token.</p>
 </td>
       </tr>
     </tbody>
@@ -407,14 +406,14 @@ event will be triggered.</p>
     <tbody>
       <tr>
         <td><span class="xref">Task</span></td>
-        <td><p>Void on success, throws <see cref="!:ButtplugClientException"></see> otherwise.</p>
-</td>
+        <td></td>
       </tr>
     </tbody>
   </table>
   <a id="Buttplug_Client_ButtplugClient_StopScanningAsync_" data-uid="Buttplug.Client.ButtplugClient.StopScanningAsync*"></a>
   <h4 id="Buttplug_Client_ButtplugClient_StopScanningAsync_CancellationToken_" data-uid="Buttplug.Client.ButtplugClient.StopScanningAsync(CancellationToken)">StopScanningAsync(CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Instructs the server to stop scanning for devices. If scanning was in progress, a <a class="xref" href="Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_ScanningFinished">ScanningFinished</a> event will be sent when the server has stopped scanning.</p>
+  <div class="markdown level1 summary"><p>Instructs the server to stop scanning for devices. If scanning was in progress, a
+<a class="xref" href="Buttplug.Client.ButtplugClient.html#Buttplug_Client_ButtplugClient_ScanningFinished">ScanningFinished</a> event will be sent when the server has stopped scanning.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -434,7 +433,7 @@ event will be triggered.</p>
       <tr>
         <td><span class="xref">CancellationToken</span></td>
         <td><span class="parametername">token</span></td>
-        <td><p>Cancellation token, for cancelling action externally if it is not yet finished.</p>
+        <td><p>Cancellation token.</p>
 </td>
       </tr>
     </tbody>
@@ -450,8 +449,7 @@ event will be triggered.</p>
     <tbody>
       <tr>
         <td><span class="xref">Task</span></td>
-        <td><p>Void on success, throws <see cref="!:ButtplugClientException"></see> otherwise.</p>
-</td>
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -528,8 +526,31 @@ after this event fires.</p>
       </tr>
     </tbody>
   </table>
+  <h4 id="Buttplug_Client_ButtplugClient_InputReadingReceived" data-uid="Buttplug.Client.ButtplugClient.InputReadingReceived">InputReadingReceived</h4>
+  <div class="markdown level1 summary"><p>Event fired when an InputReading is received (for subscribed sensors).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;InputReadingEventArgs&gt; InputReadingReceived</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">EventHandler</span>&lt;<a class="xref" href="Buttplug.Client.InputReadingEventArgs.html">InputReadingEventArgs</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h4 id="Buttplug_Client_ButtplugClient_PingTimeout" data-uid="Buttplug.Client.ButtplugClient.PingTimeout">PingTimeout</h4>
-  <div class="markdown level1 summary"><p>Event fired when a server ping timeout has occured.</p>
+  <div class="markdown level1 summary"><p>Event fired when a server ping timeout has occurred.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -575,7 +596,7 @@ after this event fires.</p>
     </tbody>
   </table>
   <h4 id="Buttplug_Client_ButtplugClient_ServerDisconnect" data-uid="Buttplug.Client.ButtplugClient.ServerDisconnect">ServerDisconnect</h4>
-  <div class="markdown level1 summary"><p>Event fired when a server disconnect has occured.</p>
+  <div class="markdown level1 summary"><p>Event fired when a server disconnect has occurred.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -597,6 +618,22 @@ after this event fires.</p>
       </tr>
     </tbody>
   </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Buttplug.Client.ButtplugClientExtensions.html#Buttplug_Client_ButtplugClientExtensions_ConnectAsync_Buttplug_Client_ButtplugClient_System_String_CancellationToken_">ButtplugClientExtensions.ConnectAsync(ButtplugClient, String, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Buttplug.Client.ButtplugClientExtensions.html#Buttplug_Client_ButtplugClientExtensions_ConnectAsync_Buttplug_Client_ButtplugClient_Uri_CancellationToken_">ButtplugClientExtensions.ConnectAsync(ButtplugClient, Uri, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Buttplug.Client.ButtplugClientExtensions.html#Buttplug_Client_ButtplugClientExtensions_GetDevice_Buttplug_Client_ButtplugClient_System_UInt32_">ButtplugClientExtensions.GetDevice(ButtplugClient, UInt32)</a>
+  </div>
+  <div>
+      <a class="xref" href="Buttplug.Client.ButtplugClientExtensions.html#Buttplug_Client_ButtplugClientExtensions_GetDevicesWithOutput_Buttplug_Client_ButtplugClient_Buttplug_Core_Messages_OutputType_">ButtplugClientExtensions.GetDevicesWithOutput(ButtplugClient, OutputType)</a>
+  </div>
+  <div>
+      <a class="xref" href="Buttplug.Client.ButtplugClientExtensions.html#Buttplug_Client_ButtplugClientExtensions_GetDevicesWithInput_Buttplug_Client_ButtplugClient_Buttplug_Core_Messages_InputType_">ButtplugClientExtensions.GetDevicesWithInput(ButtplugClient, InputType)</a>
+  </div>
 </article>
           </div>
           

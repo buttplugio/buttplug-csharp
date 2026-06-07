@@ -85,104 +85,78 @@
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.ButtplugMessageMetadata.html">ButtplugMessageMetadata</a></h4>
       <section></section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceAdded.html">DeviceAdded</a></h4>
-      <section><p>Sent from server when a new device is discovered.</p>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceFeature.html">DeviceFeature</a></h4>
+      <section><p>Represents a single feature of a device in V4 protocol.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceFeatureInput.html">DeviceFeatureInput</a></h4>
+      <section><p>Input feature attributes for a device feature.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceFeatureOutput.html">DeviceFeatureOutput</a></h4>
+      <section><p>Output feature attributes for a device feature.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceInfo.html">DeviceInfo</a></h4>
+      <section><p>Container class for describing a device in V4 protocol.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.DeviceList.html">DeviceList</a></h4>
       <section><p>List of devices connected to the server.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceMessageAttributes.html">DeviceMessageAttributes</a></h4>
-      <section></section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceMessageInfo.html">DeviceMessageInfo</a></h4>
-      <section><p>Container class for describing a device.</p>
-</section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceRemoved.html">DeviceRemoved</a></h4>
-      <section><p>Sent from server when a device is disconnected.</p>
+      <h4><a class="xref" href="Buttplug.Core.Messages.DeviceListConverter.html">DeviceListConverter</a></h4>
+      <section><p>Custom JSON converter for DeviceList that handles the dictionary keyed by device index strings.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.Error.html">Error</a></h4>
       <section><p>Indicator that there has been an error in the system, either due to the last message/query
 sent, or due to an internal error.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a></h4>
-      <section></section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.GenericMessageSubcommand.html">GenericMessageSubcommand</a></h4>
-      <section></section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.LinearCmd.html">LinearCmd</a></h4>
-      <section><p>Sent to server, generic message that can control any linear-actuated device. This message can
-take multiple commands for devices with multiple actuators.</p>
+      <h4><a class="xref" href="Buttplug.Core.Messages.InputCmd.html">InputCmd</a></h4>
+      <section><p>Sent to server, requests a sensor reading or manages sensor subscriptions.
+Replaces SensorReadCmd and SensorSubscribeCmd from V3.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorCommand.html">LinearCmd.VectorCommand</a></h4>
-      <section><p>Container object for representing a single linear motion command on a device that may
-have multiple independent linear actuated features.</p>
+      <h4><a class="xref" href="Buttplug.Core.Messages.InputReading.html">InputReading</a></h4>
+      <section><p>Sent from server, contains a sensor reading from a device.
+Replaces SensorReading from V3.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorSubcommand.html">LinearCmd.VectorSubcommand</a></h4>
-      <section><p>Container object for representing a single linear motion command on a device that may
-have multiple independent linear actuated features.</p>
+      <h4><a class="xref" href="Buttplug.Core.Messages.InputReadingConverter.html">InputReadingConverter</a></h4>
+      <section><p>Custom JSON converter for InputReading to handle the dynamic Reading property.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.MessageAttributes.html">MessageAttributes</a></h4>
-      <section><p>Container class for device attributes.</p>
+      <h4><a class="xref" href="Buttplug.Core.Messages.InputReadingValue.html">InputReadingValue</a></h4>
+      <section><p>Value container for sensor readings.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.MessageReceivedEventArgs.html">MessageReceivedEventArgs</a></h4>
       <section><p>Event fired when a new <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a> is received.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.NullDeviceMessageAttributes.html">NullDeviceMessageAttributes</a></h4>
-      <section></section>
       <h4><a class="xref" href="Buttplug.Core.Messages.Ok.html">Ok</a></h4>
       <section><p>Signifies the success of the last message/query.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a></h4>
+      <section><p>Sent to server, generic message that controls device outputs (vibration, rotation, position, etc.).
+Replaces ScalarCmd, RotateCmd, and LinearCmd from V3.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.OutputCmdConverter.html">OutputCmdConverter</a></h4>
+      <section><p>Custom JSON converter for OutputCmd to handle the dynamic Command property.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.OutputCommandValue.html">OutputCommandValue</a></h4>
+      <section><p>Output command value for non-duration outputs.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.OutputCommandValueWithDuration.html">OutputCommandValueWithDuration</a></h4>
+      <section><p>Output command value for PositionWithDuration outputs.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.Ping.html">Ping</a></h4>
       <section><p>Sent to server, at an interval specified by the server. If ping is not received in a timely
 manner, devices are stopped and client/server connection is severed.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.RawDeviceMessageAttributes.html">RawDeviceMessageAttributes</a></h4>
-      <section></section>
       <h4><a class="xref" href="Buttplug.Core.Messages.RequestDeviceList.html">RequestDeviceList</a></h4>
       <section><p>Sent to server to request a list of all connected devices.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.RequestServerInfo.html">RequestServerInfo</a></h4>
-      <section><p>Sent to server to set up client information, including client name and schema version.
+      <section><p>Sent to server to set up client information, including client name and protocol version.
 Denotes the beginning of a connection handshake.</p>
-</section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.RotateCmd.html">RotateCmd</a></h4>
-      <section><p>Sent to server, generic message that can control any rotating device. This message can take
-multiple commands for devices with multiple rotators.</p>
-</section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.RotateCmd.RotateCommand.html">RotateCmd.RotateCommand</a></h4>
-      <section><p>Container object for representing a single rotation command on a device that may have
-multiple independent rotating features. Missing index, as it is to be used in enumerative structures that imply index.</p>
-</section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.RotateCmd.RotateSubcommand.html">RotateCmd.RotateSubcommand</a></h4>
-      <section><p>Container object for representing a single rotation command on a device that may have
-multiple independent rotating features.</p>
-</section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.ScalarCmd.html">ScalarCmd</a></h4>
-      <section><p>Sent to server, generic message that can control any device that takes a single value and staticly
-sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).</p>
-</section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarCommand.html">ScalarCmd.ScalarCommand</a></h4>
-      <section><p>Container object for representing a single rotation command on a device that may have
-multiple independent rotating features. Missing index, as it is to be used in enumerative structures that imply index.</p>
-</section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a></h4>
-      <section><p>Container object for representing a single scalar value on a device that may have
-multiple independent scalar actuators.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.ScanningFinished.html">ScanningFinished</a></h4>
       <section><p>Sent from server when scanning has finished.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.SensorDeviceMessageAttributes.html">SensorDeviceMessageAttributes</a></h4>
-      <section></section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.SensorReadCmd.html">SensorReadCmd</a></h4>
-      <section><p>Sent to server, generic message that can control any device that takes a single value and staticly
-sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).</p>
-</section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.SensorReading.html">SensorReading</a></h4>
-      <section><p>Sent to server, generic message that can control any device that takes a single value and staticly
-sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).</p>
-</section>
       <h4><a class="xref" href="Buttplug.Core.Messages.ServerInfo.html">ServerInfo</a></h4>
       <section><p>Sent from server, in response to <a class="xref" href="Buttplug.Core.Messages.RequestServerInfo.html">RequestServerInfo</a>. Contains server name,
-message version, ping information, etc...</p>
+protocol version, ping information, etc...</p>
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.StartScanning.html">StartScanning</a></h4>
       <section><p>Sent to server, to start scanning for devices across supported busses.</p>
@@ -190,32 +164,38 @@ message version, ping information, etc...</p>
       <h4><a class="xref" href="Buttplug.Core.Messages.StopAllDevices.html">StopAllDevices</a></h4>
       <section><p>Sent to server, stops actions of all currently connected devices.</p>
 </section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.StopCmd.html">StopCmd</a></h4>
+      <section><p>Sent to server, stops actions of all devices, a specific device, or a specific feature.</p>
+</section>
       <h4><a class="xref" href="Buttplug.Core.Messages.StopDeviceCmd.html">StopDeviceCmd</a></h4>
       <section><p>Sent to server, stops actions of a specific device.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.StopScanning.html">StopScanning</a></h4>
       <section><p>Sent to server, to stop scanning for devices across supported busses.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.Test.html">Test</a></h4>
-      <section><p>Sends text to a server, expected to be echoed back.</p>
-</section>
     <h3 id="interfaces">Interfaces
   </h3>
       <h4><a class="xref" href="Buttplug.Core.Messages.IButtplugDeviceInfoMessage.html">IButtplugDeviceInfoMessage</a></h4>
-      <section><p>Interface for messages containing Device Info, such as DeviceAdded/Removed.</p>
+      <section><p>Interface for messages containing Device Info, such as DeviceList.
+Updated for V4 protocol using DeviceFeatures instead of DeviceMessages.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Core.Messages.IButtplugMessageOutgoingOnly.html">IButtplugMessageOutgoingOnly</a></h4>
       <section><p>Interface for messages only sent from server to client.</p>
 </section>
     <h3 id="enums">Enums
   </h3>
-      <h4><a class="xref" href="Buttplug.Core.Messages.ActuatorType.html">ActuatorType</a></h4>
-      <section></section>
       <h4><a class="xref" href="Buttplug.Core.Messages.Error.ErrorClass.html">Error.ErrorClass</a></h4>
       <section><p>Types of errors described by the message.</p>
 </section>
-      <h4><a class="xref" href="Buttplug.Core.Messages.SensorType.html">SensorType</a></h4>
-      <section></section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.InputCommandType.html">InputCommandType</a></h4>
+      <section><p>Command types for input sensors.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.InputType.html">InputType</a></h4>
+      <section><p>Input sensor types supported by the protocol.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Core.Messages.OutputType.html">OutputType</a></h4>
+      <section><p>Output actuator types supported by the protocol.</p>
+</section>
 </article>
           </div>
           

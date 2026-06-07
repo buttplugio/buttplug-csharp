@@ -73,27 +73,25 @@
   
   <h1 id="Buttplug_Client_DeviceRemovedEventArgs" data-uid="Buttplug.Client.DeviceRemovedEventArgs" class="text-break">Class DeviceRemovedEventArgs
   </h1>
-  <div class="markdown level0 summary"><p>Event wrapper for Buttplug DeviceAdded or DeviceRemoved messages. Used when the server
-informs the client of a device connecting or disconnecting.</p>
+  <div class="markdown level0 summary"><p>Event arguments for device removed events.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">DeviceRemovedEventArgs</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Client.html">Buttplug.Client</a></h6>
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
   <h5 id="Buttplug_Client_DeviceRemovedEventArgs_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class DeviceRemovedEventArgs : object</code></pre>
+    <pre><code class="lang-csharp hljs">public class DeviceRemovedEventArgs : EventArgs</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
   <a id="Buttplug_Client_DeviceRemovedEventArgs__ctor_" data-uid="Buttplug.Client.DeviceRemovedEventArgs.#ctor*"></a>
   <h4 id="Buttplug_Client_DeviceRemovedEventArgs__ctor_Buttplug_Client_ButtplugClientDevice_" data-uid="Buttplug.Client.DeviceRemovedEventArgs.#ctor(Buttplug.Client.ButtplugClientDevice)">DeviceRemovedEventArgs(ButtplugClientDevice)</h4>
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Client.DeviceRemovedEventArgs.html">DeviceRemovedEventArgs</a> class.</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -112,22 +110,22 @@ informs the client of a device connecting or disconnecting.</p>
       <tr>
         <td><a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a></td>
         <td><span class="parametername">device</span></td>
-        <td><p>Device being removed.</p>
-</td>
+        <td></td>
       </tr>
     </tbody>
   </table>
-  <h3 id="fields">Fields
+  <h3 id="properties">Properties
   </h3>
+  <a id="Buttplug_Client_DeviceRemovedEventArgs_Device_" data-uid="Buttplug.Client.DeviceRemovedEventArgs.Device*"></a>
   <h4 id="Buttplug_Client_DeviceRemovedEventArgs_Device" data-uid="Buttplug.Client.DeviceRemovedEventArgs.Device">Device</h4>
-  <div class="markdown level1 summary"><p>The client representation of a Buttplug Device.</p>
+  <div class="markdown level1 summary"><p>The device that was removed.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly ButtplugClientDevice Device</code></pre>
+    <pre><code class="lang-csharp hljs">public ButtplugClientDevice Device { get; }</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>

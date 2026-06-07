@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class LinearCmd
+    <title>Class OutputCmd
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class LinearCmd
+    <meta name="title" content="Class OutputCmd
    ">
     <meta name="generator" content="docfx 2.56.7.0">
     
@@ -68,21 +68,21 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.LinearCmd">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.OutputCmd">
   
   
-  <h1 id="Buttplug_Core_Messages_LinearCmd" data-uid="Buttplug.Core.Messages.LinearCmd" class="text-break">Class LinearCmd
+  <h1 id="Buttplug_Core_Messages_OutputCmd" data-uid="Buttplug.Core.Messages.OutputCmd" class="text-break">Class OutputCmd
   </h1>
-  <div class="markdown level0 summary"><p>Sent to server, generic message that can control any linear-actuated device. This message can
-take multiple commands for devices with multiple actuators.</p>
+  <div class="markdown level0 summary"><p>Sent to server, generic message that controls device outputs (vibration, rotation, position, etc.).
+Replaces ScalarCmd, RotateCmd, and LinearCmd from V3.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></div>
     <div class="level2"><a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a></div>
-    <div class="level3"><span class="xref">LinearCmd</span></div>
+    <div class="level3"><span class="xref">OutputCmd</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -101,45 +101,29 @@ take multiple commands for devices with multiple actuators.</p>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
-  <h5 id="Buttplug_Core_Messages_LinearCmd_syntax">Syntax</h5>
+  <h5 id="Buttplug_Core_Messages_OutputCmd_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class LinearCmd : ButtplugDeviceMessage</code></pre>
+    <pre><code class="lang-csharp hljs">public class OutputCmd : ButtplugDeviceMessage</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
-  <a id="Buttplug_Core_Messages_LinearCmd__ctor_" data-uid="Buttplug.Core.Messages.LinearCmd.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_LinearCmd__ctor_List_Buttplug_Core_Messages_LinearCmd_VectorSubcommand__" data-uid="Buttplug.Core.Messages.LinearCmd.#ctor(List{Buttplug.Core.Messages.LinearCmd.VectorSubcommand})">LinearCmd(List&lt;LinearCmd.VectorSubcommand&gt;)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LinearCmd(List&lt;LinearCmd.VectorSubcommand&gt; vectors)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorSubcommand.html">LinearCmd.VectorSubcommand</a>&gt;</td>
-        <td><span class="parametername">vectors</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Core_Messages_LinearCmd__ctor_" data-uid="Buttplug.Core.Messages.LinearCmd.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_LinearCmd__ctor_System_UInt32_List_Buttplug_Core_Messages_LinearCmd_VectorSubcommand__System_UInt32_" data-uid="Buttplug.Core.Messages.LinearCmd.#ctor(System.UInt32,List{Buttplug.Core.Messages.LinearCmd.VectorSubcommand},System.UInt32)">LinearCmd(UInt32, List&lt;LinearCmd.VectorSubcommand&gt;, UInt32)</h4>
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.LinearCmd.html">LinearCmd</a> class.</p>
+  <a id="Buttplug_Core_Messages_OutputCmd__ctor_" data-uid="Buttplug.Core.Messages.OutputCmd.#ctor*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCmd__ctor" data-uid="Buttplug.Core.Messages.OutputCmd.#ctor">OutputCmd()</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LinearCmd(uint deviceIndex, List&lt;LinearCmd.VectorSubcommand&gt; vectors, uint id = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public OutputCmd()</code></pre>
+  </div>
+  <a id="Buttplug_Core_Messages_OutputCmd__ctor_" data-uid="Buttplug.Core.Messages.OutputCmd.#ctor*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCmd__ctor_System_UInt32_System_UInt32_System_UInt32_" data-uid="Buttplug.Core.Messages.OutputCmd.#ctor(System.UInt32,System.UInt32,System.UInt32)">OutputCmd(UInt32, UInt32, UInt32)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OutputCmd(uint deviceIndex, uint featureIndex, uint id = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -152,19 +136,19 @@ take multiple commands for devices with multiple actuators.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td><span class="parametername">deviceIndex</span></td>
         <td><p>Device index.</p>
 </td>
       </tr>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorSubcommand.html">LinearCmd.VectorSubcommand</a>&gt;</td>
-        <td><span class="parametername">vectors</span></td>
-        <td><p>Movement vector list.</p>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">featureIndex</span></td>
+        <td><p>Feature index.</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td><span class="parametername">id</span></td>
         <td><p>Message ID.</p>
 </td>
@@ -173,13 +157,14 @@ take multiple commands for devices with multiple actuators.</p>
   </table>
   <h3 id="fields">Fields
   </h3>
-  <h4 id="Buttplug_Core_Messages_LinearCmd_Vectors" data-uid="Buttplug.Core.Messages.LinearCmd.Vectors">Vectors</h4>
-  <div class="markdown level1 summary"><p>List of linear movement vectors.</p>
+  <h4 id="Buttplug_Core_Messages_OutputCmd_Command" data-uid="Buttplug.Core.Messages.OutputCmd.Command">Command</h4>
+  <div class="markdown level1 summary"><p>The command to send, keyed by output type name.
+Values are either OutputCommandValue or OutputCommandValueWithDuration.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;LinearCmd.VectorSubcommand&gt; Vectors</code></pre>
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;string, object&gt; Command</code></pre>
   </div>
   <h5 class="fieldValue">Field Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -191,20 +176,44 @@ take multiple commands for devices with multiple actuators.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorSubcommand.html">LinearCmd.VectorSubcommand</a>&gt;</td>
+        <td><span class="xref">Dictionary</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.Object</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_OutputCmd_FeatureIndex" data-uid="Buttplug.Core.Messages.OutputCmd.FeatureIndex">FeatureIndex</h4>
+  <div class="markdown level1 summary"><p>The feature index to control.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint FeatureIndex</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
   <h3 id="methods">Methods
   </h3>
-  <a id="Buttplug_Core_Messages_LinearCmd_Create_" data-uid="Buttplug.Core.Messages.LinearCmd.Create*"></a>
-  <h4 id="Buttplug_Core_Messages_LinearCmd_Create_IEnumerable_Buttplug_Core_Messages_LinearCmd_VectorCommand__" data-uid="Buttplug.Core.Messages.LinearCmd.Create(IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})">Create(IEnumerable&lt;LinearCmd.VectorCommand&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Core_Messages_OutputCmd_Create_" data-uid="Buttplug.Core.Messages.OutputCmd.Create*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCmd_Create_System_UInt32_System_UInt32_Buttplug_Core_Messages_OutputType_System_Int32_System_UInt32_" data-uid="Buttplug.Core.Messages.OutputCmd.Create(System.UInt32,System.UInt32,Buttplug.Core.Messages.OutputType,System.Int32,System.UInt32)">Create(UInt32, UInt32, OutputType, Int32, UInt32)</h4>
+  <div class="markdown level1 summary"><p>Creates an OutputCmd for a simple value output (Vibrate, Oscillate, etc.).</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static LinearCmd Create(IEnumerable&lt;LinearCmd.VectorCommand&gt; cmds)</code></pre>
+    <pre><code class="lang-csharp hljs">public static OutputCmd Create(uint deviceIndex, uint featureIndex, OutputType outputType, int value, uint id = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -217,108 +226,28 @@ take multiple commands for devices with multiple actuators.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorCommand.html">LinearCmd.VectorCommand</a>&gt;</td>
-        <td><span class="parametername">cmds</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.LinearCmd.html">LinearCmd</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Core_Messages_LinearCmd_Create_" data-uid="Buttplug.Core.Messages.LinearCmd.Create*"></a>
-  <h4 id="Buttplug_Core_Messages_LinearCmd_Create_System_UInt32_System_Double_System_UInt32_" data-uid="Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.Double,System.UInt32)">Create(UInt32, Double, UInt32)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static LinearCmd Create(uint duration, double position, uint cmdCount)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">duration</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
-        <td><span class="parametername">position</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">cmdCount</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.LinearCmd.html">LinearCmd</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="Buttplug_Core_Messages_LinearCmd_Create_" data-uid="Buttplug.Core.Messages.LinearCmd.Create*"></a>
-  <h4 id="Buttplug_Core_Messages_LinearCmd_Create_System_UInt32_System_UInt32_IEnumerable_Buttplug_Core_Messages_LinearCmd_VectorCommand__" data-uid="Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.UInt32,IEnumerable{Buttplug.Core.Messages.LinearCmd.VectorCommand})">Create(UInt32, UInt32, IEnumerable&lt;LinearCmd.VectorCommand&gt;)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static LinearCmd Create(uint deviceIndex, uint msgId, IEnumerable&lt;LinearCmd.VectorCommand&gt; cmds)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td><span class="parametername">deviceIndex</span></td>
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">msgId</span></td>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">featureIndex</span></td>
         <td></td>
       </tr>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.LinearCmd.VectorCommand.html">LinearCmd.VectorCommand</a>&gt;</td>
-        <td><span class="parametername">cmds</span></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputType.html">OutputType</a></td>
+        <td><span class="parametername">outputType</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">id</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -333,18 +262,19 @@ take multiple commands for devices with multiple actuators.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.LinearCmd.html">LinearCmd</a></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Core_Messages_LinearCmd_Create_" data-uid="Buttplug.Core.Messages.LinearCmd.Create*"></a>
-  <h4 id="Buttplug_Core_Messages_LinearCmd_Create_System_UInt32_System_UInt32_System_UInt32_System_Double_System_UInt32_" data-uid="Buttplug.Core.Messages.LinearCmd.Create(System.UInt32,System.UInt32,System.UInt32,System.Double,System.UInt32)">Create(UInt32, UInt32, UInt32, Double, UInt32)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Core_Messages_OutputCmd_CreatePositionWithDuration_" data-uid="Buttplug.Core.Messages.OutputCmd.CreatePositionWithDuration*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCmd_CreatePositionWithDuration_System_UInt32_System_UInt32_System_Int32_System_UInt32_System_UInt32_" data-uid="Buttplug.Core.Messages.OutputCmd.CreatePositionWithDuration(System.UInt32,System.UInt32,System.Int32,System.UInt32,System.UInt32)">CreatePositionWithDuration(UInt32, UInt32, Int32, UInt32, UInt32)</h4>
+  <div class="markdown level1 summary"><p>Creates an OutputCmd for HwPositionWithDuration output.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static LinearCmd Create(uint deviceIndex, uint msgId, uint duration, double position, uint cmdCount)</code></pre>
+    <pre><code class="lang-csharp hljs">public static OutputCmd CreatePositionWithDuration(uint deviceIndex, uint featureIndex, int position, uint duration, uint id = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -357,28 +287,28 @@ take multiple commands for devices with multiple actuators.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td><span class="parametername">deviceIndex</span></td>
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">msgId</span></td>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">featureIndex</span></td>
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">duration</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
+        <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">position</span></td>
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">cmdCount</span></td>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">duration</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">id</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -393,7 +323,99 @@ take multiple commands for devices with multiple actuators.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.LinearCmd.html">LinearCmd</a></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_OutputCmd_WithPositionAndDuration_" data-uid="Buttplug.Core.Messages.OutputCmd.WithPositionAndDuration*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCmd_WithPositionAndDuration_System_Int32_System_UInt32_" data-uid="Buttplug.Core.Messages.OutputCmd.WithPositionAndDuration(System.Int32,System.UInt32)">WithPositionAndDuration(Int32, UInt32)</h4>
+  <div class="markdown level1 summary"><p>Sets a position with duration command.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OutputCmd WithPositionAndDuration(int position, uint duration)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">position</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">duration</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_OutputCmd_WithValue_" data-uid="Buttplug.Core.Messages.OutputCmd.WithValue*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCmd_WithValue_Buttplug_Core_Messages_OutputType_System_Int32_" data-uid="Buttplug.Core.Messages.OutputCmd.WithValue(Buttplug.Core.Messages.OutputType,System.Int32)">WithValue(OutputType, Int32)</h4>
+  <div class="markdown level1 summary"><p>Sets a simple value command.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OutputCmd WithValue(OutputType outputType, int value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputType.html">OutputType</a></td>
+        <td><span class="parametername">outputType</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a></td>
         <td></td>
       </tr>
     </tbody>

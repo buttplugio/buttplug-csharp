@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class DeviceMessageAttributes
+    <title>Class PercentOrSteps
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class DeviceMessageAttributes
+    <meta name="title" content="Class PercentOrSteps
    ">
     <meta name="generator" content="docfx 2.56.7.0">
     
@@ -68,34 +68,37 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Client.PercentOrSteps">
   
   
-  <h1 id="Buttplug_Core_Messages_DeviceMessageAttributes" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes" class="text-break">Class DeviceMessageAttributes
+  <h1 id="Buttplug_Client_PercentOrSteps" data-uid="Buttplug.Client.PercentOrSteps" class="text-break">Class PercentOrSteps
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Represents either a percentage or a step value for device commands.</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
-    <div class="level1"><span class="xref">DeviceMessageAttributes</span></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">PercentOrSteps</span></div>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Client.html">Buttplug.Client</a></h6>
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
-  <h5 id="Buttplug_Core_Messages_DeviceMessageAttributes_syntax">Syntax</h5>
+  <h5 id="Buttplug_Client_PercentOrSteps_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class DeviceMessageAttributes : object</code></pre>
+    <pre><code class="lang-csharp hljs">public class PercentOrSteps : object</code></pre>
   </div>
-  <h3 id="fields">Fields
+  <h3 id="properties">Properties
   </h3>
-  <h4 id="Buttplug_Core_Messages_DeviceMessageAttributes_LinearCmd" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes.LinearCmd">LinearCmd</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_PercentOrSteps_Percent_" data-uid="Buttplug.Client.PercentOrSteps.Percent*"></a>
+  <h4 id="Buttplug_Client_PercentOrSteps_Percent" data-uid="Buttplug.Client.PercentOrSteps.Percent">Percent</h4>
+  <div class="markdown level1 summary"><p>Gets the percentage value, if this represents a percentage.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public GenericDeviceMessageAttributes[] LinearCmd</code></pre>
+    <pre><code class="lang-csharp hljs">public double? Percent { get; }</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -105,19 +108,21 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>[]</td>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Double</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_DeviceMessageAttributes_RawReadCmd" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes.RawReadCmd">RawReadCmd</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_PercentOrSteps_Steps_" data-uid="Buttplug.Client.PercentOrSteps.Steps*"></a>
+  <h4 id="Buttplug_Client_PercentOrSteps_Steps" data-uid="Buttplug.Client.PercentOrSteps.Steps">Steps</h4>
+  <div class="markdown level1 summary"><p>Gets the step value, if this represents steps.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly RawDeviceMessageAttributes[] RawReadCmd</code></pre>
+    <pre><code class="lang-csharp hljs">public int? Steps { get; }</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -127,41 +132,51 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.RawDeviceMessageAttributes.html">RawDeviceMessageAttributes</a>[]</td>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Int32</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_DeviceMessageAttributes_RawSubscribeCmd" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes.RawSubscribeCmd">RawSubscribeCmd</h4>
-  <div class="markdown level1 summary"></div>
+  <h3 id="methods">Methods
+  </h3>
+  <a id="Buttplug_Client_PercentOrSteps_FromPercent_" data-uid="Buttplug.Client.PercentOrSteps.FromPercent*"></a>
+  <h4 id="Buttplug_Client_PercentOrSteps_FromPercent_System_Double_System_Double_System_Double_" data-uid="Buttplug.Client.PercentOrSteps.FromPercent(System.Double,System.Double,System.Double)">FromPercent(Double, Double, Double)</h4>
+  <div class="markdown level1 summary"><p>Creates a PercentOrSteps from a percentage value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly RawDeviceMessageAttributes[] RawSubscribeCmd</code></pre>
+    <pre><code class="lang-csharp hljs">public static PercentOrSteps FromPercent(double percent, double minPercent = 0, double maxPercent = 1)</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
+        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.RawDeviceMessageAttributes.html">RawDeviceMessageAttributes</a>[]</td>
+        <td><span class="xref">System.Double</span></td>
+        <td><span class="parametername">percent</span></td>
+        <td><p>The percentage value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td><span class="parametername">minPercent</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td><span class="parametername">maxPercent</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_DeviceMessageAttributes_RawWriteCmd" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes.RawWriteCmd">RawWriteCmd</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly RawDeviceMessageAttributes[] RawWriteCmd</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -171,63 +186,56 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.RawDeviceMessageAttributes.html">RawDeviceMessageAttributes</a>[]</td>
-        <td></td>
+        <td><a class="xref" href="Buttplug.Client.PercentOrSteps.html">PercentOrSteps</a></td>
+        <td><p>A PercentOrSteps representing the percentage.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_DeviceMessageAttributes_RotateCmd" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes.RotateCmd">RotateCmd</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public GenericDeviceMessageAttributes[] RotateCmd</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="exceptions">Exceptions</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
-        <th>Description</th>
+        <th>Condition</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>[]</td>
-        <td></td>
+        <td><a class="xref" href="Buttplug.Core.ButtplugDeviceException.html">ButtplugDeviceException</a></td>
+        <td><p>Thrown if percent is not in range.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_DeviceMessageAttributes_ScalarCmd" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes.ScalarCmd">ScalarCmd</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_PercentOrSteps_FromSteps_" data-uid="Buttplug.Client.PercentOrSteps.FromSteps*"></a>
+  <h4 id="Buttplug_Client_PercentOrSteps_FromSteps_System_Int32_" data-uid="Buttplug.Client.PercentOrSteps.FromSteps(System.Int32)">FromSteps(Int32)</h4>
+  <div class="markdown level1 summary"><p>Creates a PercentOrSteps from a step value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public GenericDeviceMessageAttributes[] ScalarCmd</code></pre>
+    <pre><code class="lang-csharp hljs">public static PercentOrSteps FromSteps(int steps)</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
+        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.GenericDeviceMessageAttributes.html">GenericDeviceMessageAttributes</a>[]</td>
-        <td></td>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">steps</span></td>
+        <td><p>The step value.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_DeviceMessageAttributes_SensorReadCmd" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes.SensorReadCmd">SensorReadCmd</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public SensorDeviceMessageAttributes[] SensorReadCmd</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -237,41 +245,40 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.SensorDeviceMessageAttributes.html">SensorDeviceMessageAttributes</a>[]</td>
-        <td></td>
+        <td><a class="xref" href="Buttplug.Client.PercentOrSteps.html">PercentOrSteps</a></td>
+        <td><p>A PercentOrSteps representing the step value.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_DeviceMessageAttributes_SensorSubscribeCmd" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes.SensorSubscribeCmd">SensorSubscribeCmd</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Buttplug_Client_PercentOrSteps_ToStepValue_" data-uid="Buttplug.Client.PercentOrSteps.ToStepValue*"></a>
+  <h4 id="Buttplug_Client_PercentOrSteps_ToStepValue_System_Int32_" data-uid="Buttplug.Client.PercentOrSteps.ToStepValue(System.Int32)">ToStepValue(Int32)</h4>
+  <div class="markdown level1 summary"><p>Converts this value to an actual step value given a max step count.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public SensorDeviceMessageAttributes[] SensorSubscribeCmd</code></pre>
+    <pre><code class="lang-csharp hljs">public int ToStepValue(int maxSteps)</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
+        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.SensorDeviceMessageAttributes.html">SensorDeviceMessageAttributes</a>[]</td>
-        <td></td>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">maxSteps</span></td>
+        <td><p>The maximum number of steps.</p>
+</td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_DeviceMessageAttributes_StopDeviceCmd" data-uid="Buttplug.Core.Messages.DeviceMessageAttributes.StopDeviceCmd">StopDeviceCmd</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly NullDeviceMessageAttributes StopDeviceCmd</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -281,8 +288,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.NullDeviceMessageAttributes.html">NullDeviceMessageAttributes</a></td>
-        <td></td>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>The calculated step value.</p>
+</td>
       </tr>
     </tbody>
   </table>

@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class ScalarCmd.ScalarSubcommand
+    <title>Class InputReadingConverter
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class ScalarCmd.ScalarSubcommand
+    <meta name="title" content="Class InputReadingConverter
    ">
     <meta name="generator" content="docfx 2.56.7.0">
     
@@ -68,43 +68,34 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.InputReadingConverter">
   
   
-  <h1 id="Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand" data-uid="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand" class="text-break">Class ScalarCmd.ScalarSubcommand
+  <h1 id="Buttplug_Core_Messages_InputReadingConverter" data-uid="Buttplug.Core.Messages.InputReadingConverter" class="text-break">Class InputReadingConverter
   </h1>
-  <div class="markdown level0 summary"><p>Container object for representing a single scalar value on a device that may have
-multiple independent scalar actuators.</p>
+  <div class="markdown level0 summary"><p>Custom JSON converter for InputReading to handle the dynamic Reading property.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
-    <div class="level1"><a class="xref" href="Buttplug.Core.Messages.GenericMessageSubcommand.html">GenericMessageSubcommand</a></div>
-    <div class="level2"><span class="xref">ScalarCmd.ScalarSubcommand</span></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <a class="xref" href="Buttplug.Core.Messages.GenericMessageSubcommand.html#Buttplug_Core_Messages_GenericMessageSubcommand_Index">GenericMessageSubcommand.Index</a>
-    </div>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">InputReadingConverter</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
-  <h5 id="Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand_syntax">Syntax</h5>
+  <h5 id="Buttplug_Core_Messages_InputReadingConverter_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ScalarSubcommand : GenericMessageSubcommand</code></pre>
+    <pre><code class="lang-csharp hljs">public class InputReadingConverter : JsonConverter&lt;InputReading&gt;</code></pre>
   </div>
-  <h3 id="constructors">Constructors
+  <h3 id="methods">Methods
   </h3>
-  <a id="Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand__ctor_" data-uid="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand__ctor_System_UInt32_System_Double_Buttplug_Core_Messages_ActuatorType_" data-uid="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.#ctor(System.UInt32,System.Double,Buttplug.Core.Messages.ActuatorType)">ScalarSubcommand(UInt32, Double, ActuatorType)</h4>
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a> class.</p>
-</div>
+  <a id="Buttplug_Core_Messages_InputReadingConverter_ReadJson_" data-uid="Buttplug.Core.Messages.InputReadingConverter.ReadJson*"></a>
+  <h4 id="Buttplug_Core_Messages_InputReadingConverter_ReadJson_JsonReader_Type_Buttplug_Core_Messages_InputReading_System_Boolean_JsonSerializer_" data-uid="Buttplug.Core.Messages.InputReadingConverter.ReadJson(JsonReader,Type,Buttplug.Core.Messages.InputReading,System.Boolean,JsonSerializer)">ReadJson(JsonReader, Type, InputReading, Boolean, JsonSerializer)</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ScalarSubcommand(uint index, double scalar, ActuatorType actuatorType)</code></pre>
+    <pre><code class="lang-csharp hljs">public override InputReading ReadJson(JsonReader reader, Type objectType, InputReading existingValue, bool hasExistingValue, JsonSerializer serializer)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -117,70 +108,78 @@ multiple independent scalar actuators.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">index</span></td>
-        <td><p>Scalar feature index.</p>
-</td>
+        <td><span class="xref">JsonReader</span></td>
+        <td><span class="parametername">reader</span></td>
+        <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
-        <td><span class="parametername">scalar</span></td>
-        <td><p>Scalar value.</p>
-</td>
+        <td><span class="xref">Type</span></td>
+        <td><span class="parametername">objectType</span></td>
+        <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.ActuatorType.html">ActuatorType</a></td>
-        <td><span class="parametername">actuatorType</span></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputReading.html">InputReading</a></td>
+        <td><span class="parametername">existingValue</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">hasExistingValue</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">JsonSerializer</span></td>
+        <td><span class="parametername">serializer</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h3 id="fields">Fields
-  </h3>
-  <h4 id="Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand_ActuatorType" data-uid="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.ActuatorType">ActuatorType</h4>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputReading.html">InputReading</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_InputReadingConverter_WriteJson_" data-uid="Buttplug.Core.Messages.InputReadingConverter.WriteJson*"></a>
+  <h4 id="Buttplug_Core_Messages_InputReadingConverter_WriteJson_JsonWriter_Buttplug_Core_Messages_InputReading_JsonSerializer_" data-uid="Buttplug.Core.Messages.InputReadingConverter.WriteJson(JsonWriter,Buttplug.Core.Messages.InputReading,JsonSerializer)">WriteJson(JsonWriter, InputReading, JsonSerializer)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly ActuatorType ActuatorType</code></pre>
+    <pre><code class="lang-csharp hljs">public override void WriteJson(JsonWriter writer, InputReading value, JsonSerializer serializer)</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
+        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.ActuatorType.html">ActuatorType</a></td>
+        <td><span class="xref">JsonWriter</span></td>
+        <td><span class="parametername">writer</span></td>
         <td></td>
       </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-  </h3>
-  <a id="Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand_Scalar_" data-uid="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.Scalar*"></a>
-  <h4 id="Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand_Scalar" data-uid="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.Scalar">Scalar</h4>
-  <div class="markdown level1 summary"><p>Gets/sets vibration speed (0.0-1.0).</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public double Scalar { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
       <tr>
-        <th>Type</th>
-        <th>Description</th>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputReading.html">InputReading</a></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
       </tr>
-    </thead>
-    <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.double">Double</a></td>
+        <td><span class="xref">JsonSerializer</span></td>
+        <td><span class="parametername">serializer</span></td>
         <td></td>
       </tr>
     </tbody>

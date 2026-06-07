@@ -78,11 +78,18 @@
     <h3 id="classes">Classes
   </h3>
       <h4><a class="xref" href="Buttplug.Client.ButtplugClient.html">ButtplugClient</a></h4>
-      <section></section>
+      <section><p>Main client class for connecting to Buttplug servers and managing devices.</p>
+</section>
       <h4><a class="xref" href="Buttplug.Client.ButtplugClientConnectorException.html">ButtplugClientConnectorException</a></h4>
       <section></section>
       <h4><a class="xref" href="Buttplug.Client.ButtplugClientDevice.html">ButtplugClientDevice</a></h4>
       <section><p>The Buttplug Client representation of a Buttplug Device connected to a server.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.ButtplugClientDeviceFeature.html">ButtplugClientDeviceFeature</a></h4>
+      <section><p>Represents a single feature of a Buttplug device.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.ButtplugClientExtensions.html">ButtplugClientExtensions</a></h4>
+      <section><p>Extension methods for <a class="xref" href="Buttplug.Client.ButtplugClient.html">ButtplugClient</a> providing convenient shortcuts for common operations.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Client.ButtplugConnectorJSONParser.html">ButtplugConnectorJSONParser</a></h4>
       <section></section>
@@ -93,12 +100,37 @@
       <h4><a class="xref" href="Buttplug.Client.ButtplugWebsocketConnector.html">ButtplugWebsocketConnector</a></h4>
       <section></section>
       <h4><a class="xref" href="Buttplug.Client.DeviceAddedEventArgs.html">DeviceAddedEventArgs</a></h4>
-      <section><p>Event wrapper for Buttplug DeviceAdded or DeviceRemoved messages. Used when the server
-informs the client of a device connecting or disconnecting.</p>
+      <section><p>Event arguments for device added events.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.DeviceInput.html">DeviceInput</a></h4>
+      <section><p>Static class providing builders for device input commands.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.DeviceInputBuilder.html">DeviceInputBuilder</a></h4>
+      <section><p>Builder for creating input commands with a specific input type.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.DeviceInputCommand.html">DeviceInputCommand</a></h4>
+      <section><p>Represents an input command to be sent to a device feature.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.DeviceOutput.html">DeviceOutput</a></h4>
+      <section><p>Static class providing builders for device output commands.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.DeviceOutputCommand.html">DeviceOutputCommand</a></h4>
+      <section><p>Represents an output command to be sent to a device feature.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.DeviceOutputPositionWithDurationBuilder.html">DeviceOutputPositionWithDurationBuilder</a></h4>
+      <section><p>Builder for creating PositionWithDuration output commands.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.DeviceOutputValueBuilder.html">DeviceOutputValueBuilder</a></h4>
+      <section><p>Builder for creating output commands with a specific output type.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Client.DeviceRemovedEventArgs.html">DeviceRemovedEventArgs</a></h4>
-      <section><p>Event wrapper for Buttplug DeviceAdded or DeviceRemoved messages. Used when the server
-informs the client of a device connecting or disconnecting.</p>
+      <section><p>Event arguments for device removed events.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.InputReadingEventArgs.html">InputReadingEventArgs</a></h4>
+      <section><p>Event arguments for input reading events.</p>
+</section>
+      <h4><a class="xref" href="Buttplug.Client.PercentOrSteps.html">PercentOrSteps</a></h4>
+      <section><p>Represents either a percentage or a step value for device commands.</p>
 </section>
       <h4><a class="xref" href="Buttplug.Client.ReturnMessage.html">ReturnMessage</a></h4>
       <section></section>

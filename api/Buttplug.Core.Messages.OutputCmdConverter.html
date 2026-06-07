@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Enum ActuatorType
+    <title>Class OutputCmdConverter
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Enum ActuatorType
+    <meta name="title" content="Class OutputCmdConverter
    ">
     <meta name="generator" content="docfx 2.56.7.0">
     
@@ -68,59 +68,122 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.ActuatorType">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.OutputCmdConverter">
   
   
-  <h1 id="Buttplug_Core_Messages_ActuatorType" data-uid="Buttplug.Core.Messages.ActuatorType" class="text-break">Enum ActuatorType
+  <h1 id="Buttplug_Core_Messages_OutputCmdConverter" data-uid="Buttplug.Core.Messages.OutputCmdConverter" class="text-break">Class OutputCmdConverter
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Custom JSON converter for OutputCmd to handle the dynamic Command property.</p>
+</div>
   <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">OutputCmdConverter</span></div>
+  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
-  <h5 id="Buttplug_Core_Messages_ActuatorType_syntax">Syntax</h5>
+  <h5 id="Buttplug_Core_Messages_OutputCmdConverter_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public enum ActuatorType : int</code></pre>
+    <pre><code class="lang-csharp hljs">public class OutputCmdConverter : JsonConverter&lt;OutputCmd&gt;</code></pre>
   </div>
-  <h3 id="fields">Fields
+  <h3 id="methods">Methods
   </h3>
+  <a id="Buttplug_Core_Messages_OutputCmdConverter_ReadJson_" data-uid="Buttplug.Core.Messages.OutputCmdConverter.ReadJson*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCmdConverter_ReadJson_JsonReader_Type_Buttplug_Core_Messages_OutputCmd_System_Boolean_JsonSerializer_" data-uid="Buttplug.Core.Messages.OutputCmdConverter.ReadJson(JsonReader,Type,Buttplug.Core.Messages.OutputCmd,System.Boolean,JsonSerializer)">ReadJson(JsonReader, Type, OutputCmd, Boolean, JsonSerializer)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override OutputCmd ReadJson(JsonReader reader, Type objectType, OutputCmd existingValue, bool hasExistingValue, JsonSerializer serializer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
+        <th>Type</th>
         <th>Name</th>
         <th>Description</th>
       </tr>
-    <thead>
+    </thead>
     <tbody>
       <tr>
-        <td id="Buttplug_Core_Messages_ActuatorType_Constrict">Constrict</td>
+        <td><span class="xref">JsonReader</span></td>
+        <td><span class="parametername">reader</span></td>
         <td></td>
       </tr>
       <tr>
-        <td id="Buttplug_Core_Messages_ActuatorType_Inflate">Inflate</td>
+        <td><span class="xref">Type</span></td>
+        <td><span class="parametername">objectType</span></td>
         <td></td>
       </tr>
       <tr>
-        <td id="Buttplug_Core_Messages_ActuatorType_Oscillate">Oscillate</td>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a></td>
+        <td><span class="parametername">existingValue</span></td>
         <td></td>
       </tr>
       <tr>
-        <td id="Buttplug_Core_Messages_ActuatorType_Position">Position</td>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">hasExistingValue</span></td>
         <td></td>
       </tr>
       <tr>
-        <td id="Buttplug_Core_Messages_ActuatorType_Rotate">Rotate</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td id="Buttplug_Core_Messages_ActuatorType_Unknown">Unknown</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td id="Buttplug_Core_Messages_ActuatorType_Vibrate">Vibrate</td>
+        <td><span class="xref">JsonSerializer</span></td>
+        <td><span class="parametername">serializer</span></td>
         <td></td>
       </tr>
     </tbody>
-  </thead></thead></table>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_OutputCmdConverter_WriteJson_" data-uid="Buttplug.Core.Messages.OutputCmdConverter.WriteJson*"></a>
+  <h4 id="Buttplug_Core_Messages_OutputCmdConverter_WriteJson_JsonWriter_Buttplug_Core_Messages_OutputCmd_JsonSerializer_" data-uid="Buttplug.Core.Messages.OutputCmdConverter.WriteJson(JsonWriter,Buttplug.Core.Messages.OutputCmd,JsonSerializer)">WriteJson(JsonWriter, OutputCmd, JsonSerializer)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void WriteJson(JsonWriter writer, OutputCmd value, JsonSerializer serializer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">JsonWriter</span></td>
+        <td><span class="parametername">writer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.OutputCmd.html">OutputCmd</a></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">JsonSerializer</span></td>
+        <td><span class="parametername">serializer</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
 </article>
           </div>
           

@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class DeviceList
+    <title>Class InputReading
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class DeviceList
+    <meta name="title" content="Class InputReading
    ">
     <meta name="generator" content="docfx 2.56.7.0">
     
@@ -68,19 +68,21 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.DeviceList">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.InputReading">
   
   
-  <h1 id="Buttplug_Core_Messages_DeviceList" data-uid="Buttplug.Core.Messages.DeviceList" class="text-break">Class DeviceList
+  <h1 id="Buttplug_Core_Messages_InputReading" data-uid="Buttplug.Core.Messages.InputReading" class="text-break">Class InputReading
   </h1>
-  <div class="markdown level0 summary"><p>List of devices connected to the server.</p>
+  <div class="markdown level0 summary"><p>Sent from server, contains a sensor reading from a device.
+Replaces SensorReading from V3.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></div>
-    <div class="level2"><span class="xref">DeviceList</span></div>
+    <div class="level2"><a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a></div>
+    <div class="level3"><span class="xref">InputReading</span></div>
   </div>
   <div classs="implements">
     <h5>Implements</h5>
@@ -88,6 +90,9 @@
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html#Buttplug_Core_Messages_ButtplugDeviceMessage_DeviceIndex">ButtplugDeviceMessage.DeviceIndex</a>
+    </div>
     <div>
       <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html#Buttplug_Core_Messages_ButtplugMessage_Id">ButtplugMessage.Id</a>
     </div>
@@ -100,20 +105,29 @@
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
-  <h5 id="Buttplug_Core_Messages_DeviceList_syntax">Syntax</h5>
+  <h5 id="Buttplug_Core_Messages_InputReading_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class DeviceList : ButtplugMessage, IButtplugMessageOutgoingOnly</code></pre>
+    <pre><code class="lang-csharp hljs">public class InputReading : ButtplugDeviceMessage, IButtplugMessageOutgoingOnly</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
-  <a id="Buttplug_Core_Messages_DeviceList__ctor_" data-uid="Buttplug.Core.Messages.DeviceList.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_DeviceList__ctor_Dictionary_System_UInt32_Buttplug_Core_Messages_DeviceInfo__System_UInt32_" data-uid="Buttplug.Core.Messages.DeviceList.#ctor(Dictionary{System.UInt32,Buttplug.Core.Messages.DeviceInfo},System.UInt32)">DeviceList(Dictionary&lt;UInt32, DeviceInfo&gt;, UInt32)</h4>
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.DeviceList.html">DeviceList</a> class.</p>
+  <a id="Buttplug_Core_Messages_InputReading__ctor_" data-uid="Buttplug.Core.Messages.InputReading.#ctor*"></a>
+  <h4 id="Buttplug_Core_Messages_InputReading__ctor" data-uid="Buttplug.Core.Messages.InputReading.#ctor">InputReading()</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.InputReading.html">InputReading</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DeviceList(Dictionary&lt;uint, DeviceInfo&gt; devices, uint id)</code></pre>
+    <pre><code class="lang-csharp hljs">public InputReading()</code></pre>
+  </div>
+  <a id="Buttplug_Core_Messages_InputReading__ctor_" data-uid="Buttplug.Core.Messages.InputReading.#ctor*"></a>
+  <h4 id="Buttplug_Core_Messages_InputReading__ctor_System_UInt32_System_UInt32_System_UInt32_" data-uid="Buttplug.Core.Messages.InputReading.#ctor(System.UInt32,System.UInt32,System.UInt32)">InputReading(UInt32, UInt32, UInt32)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.InputReading.html">InputReading</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InputReading(uint deviceIndex, uint featureIndex, uint id = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -126,9 +140,15 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Dictionary</span>&lt;<span class="xref">System.UInt32</span>, <a class="xref" href="Buttplug.Core.Messages.DeviceInfo.html">DeviceInfo</a>&gt;</td>
-        <td><span class="parametername">devices</span></td>
-        <td><p>Dictionary of devices keyed by index.</p>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">deviceIndex</span></td>
+        <td><p>Device index.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">featureIndex</span></td>
+        <td><p>Feature index.</p>
 </td>
       </tr>
       <tr>
@@ -141,13 +161,13 @@
   </table>
   <h3 id="fields">Fields
   </h3>
-  <h4 id="Buttplug_Core_Messages_DeviceList_Devices" data-uid="Buttplug.Core.Messages.DeviceList.Devices">Devices</h4>
-  <div class="markdown level1 summary"><p>Devices currently connected, keyed by device index as string.</p>
+  <h4 id="Buttplug_Core_Messages_InputReading_FeatureIndex" data-uid="Buttplug.Core.Messages.InputReading.FeatureIndex">FeatureIndex</h4>
+  <div class="markdown level1 summary"><p>The feature index the reading is from.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Dictionary&lt;uint, DeviceInfo&gt; Devices</code></pre>
+    <pre><code class="lang-csharp hljs">public uint FeatureIndex</code></pre>
   </div>
   <h5 class="fieldValue">Field Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -159,23 +179,20 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Dictionary</span>&lt;<span class="xref">System.UInt32</span>, <a class="xref" href="Buttplug.Core.Messages.DeviceInfo.html">DeviceInfo</a>&gt;</td>
+        <td><span class="xref">System.UInt32</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h3 id="methods">Methods
-  </h3>
-  <a id="Buttplug_Core_Messages_DeviceList_GetAllDevices_" data-uid="Buttplug.Core.Messages.DeviceList.GetAllDevices*"></a>
-  <h4 id="Buttplug_Core_Messages_DeviceList_GetAllDevices" data-uid="Buttplug.Core.Messages.DeviceList.GetAllDevices">GetAllDevices()</h4>
-  <div class="markdown level1 summary"><p>Gets all devices as an enumerable.</p>
+  <h4 id="Buttplug_Core_Messages_InputReading_Reading" data-uid="Buttplug.Core.Messages.InputReading.Reading">Reading</h4>
+  <div class="markdown level1 summary"><p>The reading values, keyed by input type name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;DeviceInfo&gt; GetAllDevices()</code></pre>
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;string, InputReadingValue&gt; Reading</code></pre>
   </div>
-  <h5 class="returns">Returns</h5>
+  <h5 class="fieldValue">Field Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -185,19 +202,71 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="Buttplug.Core.Messages.DeviceInfo.html">DeviceInfo</a>&gt;</td>
+        <td><span class="xref">Dictionary</span>&lt;<span class="xref">System.String</span>, <a class="xref" href="Buttplug.Core.Messages.InputReadingValue.html">InputReadingValue</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Core_Messages_DeviceList_GetDevice_" data-uid="Buttplug.Core.Messages.DeviceList.GetDevice*"></a>
-  <h4 id="Buttplug_Core_Messages_DeviceList_GetDevice_System_UInt32_" data-uid="Buttplug.Core.Messages.DeviceList.GetDevice(System.UInt32)">GetDevice(UInt32)</h4>
-  <div class="markdown level1 summary"><p>Gets a device by its index.</p>
+  <h3 id="properties">Properties
+  </h3>
+  <a id="Buttplug_Core_Messages_InputReading_BatteryLevel_" data-uid="Buttplug.Core.Messages.InputReading.BatteryLevel*"></a>
+  <h4 id="Buttplug_Core_Messages_InputReading_BatteryLevel" data-uid="Buttplug.Core.Messages.InputReading.BatteryLevel">BatteryLevel</h4>
+  <div class="markdown level1 summary"><p>Gets the battery level as a percentage (0.0 to 1.0).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DeviceInfo GetDevice(uint index)</code></pre>
+    <pre><code class="lang-csharp hljs">public double? BatteryLevel { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Double</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Core_Messages_InputReading_RSSILevel_" data-uid="Buttplug.Core.Messages.InputReading.RSSILevel*"></a>
+  <h4 id="Buttplug_Core_Messages_InputReading_RSSILevel" data-uid="Buttplug.Core.Messages.InputReading.RSSILevel">RSSILevel</h4>
+  <div class="markdown level1 summary"><p>Gets the RSSI level.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double? RSSILevel { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Double</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <a id="Buttplug_Core_Messages_InputReading_GetValue_" data-uid="Buttplug.Core.Messages.InputReading.GetValue*"></a>
+  <h4 id="Buttplug_Core_Messages_InputReading_GetValue_Buttplug_Core_Messages_InputType_" data-uid="Buttplug.Core.Messages.InputReading.GetValue(Buttplug.Core.Messages.InputType)">GetValue(InputType)</h4>
+  <div class="markdown level1 summary"><p>Gets a reading value for a specific input type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double? GetValue(InputType type)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -210,8 +279,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.UInt32</span></td>
-        <td><span class="parametername">index</span></td>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputType.html">InputType</a></td>
+        <td><span class="parametername">type</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -226,7 +295,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Buttplug.Core.Messages.DeviceInfo.html">DeviceInfo</a></td>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.Double</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>

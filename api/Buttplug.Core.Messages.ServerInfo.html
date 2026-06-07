@@ -74,12 +74,12 @@
   <h1 id="Buttplug_Core_Messages_ServerInfo" data-uid="Buttplug.Core.Messages.ServerInfo" class="text-break">Class ServerInfo
   </h1>
   <div class="markdown level0 summary"><p>Sent from server, in response to <a class="xref" href="Buttplug.Core.Messages.RequestServerInfo.html">RequestServerInfo</a>. Contains server name,
-message version, ping information, etc...</p>
+protocol version, ping information, etc...</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></div>
     <div class="level2"><span class="xref">ServerInfo</span></div>
   </div>
@@ -108,13 +108,13 @@ message version, ping information, etc...</p>
   <h3 id="constructors">Constructors
   </h3>
   <a id="Buttplug_Core_Messages_ServerInfo__ctor_" data-uid="Buttplug.Core.Messages.ServerInfo.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_ServerInfo__ctor_System_String_System_UInt32_System_UInt32_System_UInt32_" data-uid="Buttplug.Core.Messages.ServerInfo.#ctor(System.String,System.UInt32,System.UInt32,System.UInt32)">ServerInfo(String, UInt32, UInt32, UInt32)</h4>
+  <h4 id="Buttplug_Core_Messages_ServerInfo__ctor_System_String_System_UInt32_System_UInt32_System_UInt32_System_UInt32_" data-uid="Buttplug.Core.Messages.ServerInfo.#ctor(System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">ServerInfo(String, UInt32, UInt32, UInt32, UInt32)</h4>
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.ServerInfo.html">ServerInfo</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ServerInfo(string serverName, uint messageVersion, uint maxPingTime, uint id = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public ServerInfo(string serverName, uint protocolVersionMajor, uint protocolVersionMinor, uint maxPingTime, uint id = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -127,25 +127,31 @@ message version, ping information, etc...</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="xref">System.String</span></td>
         <td><span class="parametername">serverName</span></td>
         <td><p>Server name.</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">messageVersion</span></td>
-        <td><p>Server message schema version.</p>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">protocolVersionMajor</span></td>
+        <td><p>Server protocol major version.</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
+        <td><span class="parametername">protocolVersionMinor</span></td>
+        <td><p>Server protocol minor version.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
         <td><span class="parametername">maxPingTime</span></td>
         <td><p>Ping timeout.</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td><span class="parametername">id</span></td>
         <td><p>Message ID.</p>
 </td>
@@ -155,7 +161,7 @@ message version, ping information, etc...</p>
   <h3 id="fields">Fields
   </h3>
   <h4 id="Buttplug_Core_Messages_ServerInfo_MaxPingTime" data-uid="Buttplug.Core.Messages.ServerInfo.MaxPingTime">MaxPingTime</h4>
-  <div class="markdown level1 summary"><p>Expected ping time (in milliseconds).</p>
+  <div class="markdown level1 summary"><p>Expected ping time (in milliseconds). 0 means no ping required.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -172,18 +178,18 @@ message version, ping information, etc...</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h4 id="Buttplug_Core_Messages_ServerInfo_MessageVersion" data-uid="Buttplug.Core.Messages.ServerInfo.MessageVersion">MessageVersion</h4>
-  <div class="markdown level1 summary"><p>The schema version of the server. Must be greater or equal to version client reported in <a class="xref" href="Buttplug.Core.Messages.RequestServerInfo.html">RequestServerInfo</a>.</p>
+  <h4 id="Buttplug_Core_Messages_ServerInfo_ProtocolVersionMajor" data-uid="Buttplug.Core.Messages.ServerInfo.ProtocolVersionMajor">ProtocolVersionMajor</h4>
+  <div class="markdown level1 summary"><p>The major protocol version of the server.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public uint MessageVersion</code></pre>
+    <pre><code class="lang-csharp hljs">public uint ProtocolVersionMajor</code></pre>
   </div>
   <h5 class="fieldValue">Field Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -195,7 +201,30 @@ message version, ping information, etc...</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
+        <td><span class="xref">System.UInt32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="Buttplug_Core_Messages_ServerInfo_ProtocolVersionMinor" data-uid="Buttplug.Core.Messages.ServerInfo.ProtocolVersionMinor">ProtocolVersionMinor</h4>
+  <div class="markdown level1 summary"><p>The minor protocol version of the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint ProtocolVersionMinor</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -218,7 +247,33 @@ message version, ping information, etc...</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <a id="Buttplug_Core_Messages_ServerInfo_MessageVersion_" data-uid="Buttplug.Core.Messages.ServerInfo.MessageVersion*"></a>
+  <h4 id="Buttplug_Core_Messages_ServerInfo_MessageVersion" data-uid="Buttplug.Core.Messages.ServerInfo.MessageVersion">MessageVersion</h4>
+  <div class="markdown level1 summary"><p>Combined message version for backwards compatibility checks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint MessageVersion { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
         <td></td>
       </tr>
     </tbody>

@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class ScalarCmd
+    <title>Class DeviceInputCommand
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class ScalarCmd
+    <meta name="title" content="Class DeviceInputCommand
    ">
     <meta name="generator" content="docfx 2.56.7.0">
     
@@ -68,53 +68,35 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Buttplug.Core.Messages.ScalarCmd">
+            <article class="content wrap" id="_content" data-uid="Buttplug.Client.DeviceInputCommand">
   
   
-  <h1 id="Buttplug_Core_Messages_ScalarCmd" data-uid="Buttplug.Core.Messages.ScalarCmd" class="text-break">Class ScalarCmd
+  <h1 id="Buttplug_Client_DeviceInputCommand" data-uid="Buttplug.Client.DeviceInputCommand" class="text-break">Class DeviceInputCommand
   </h1>
-  <div class="markdown level0 summary"><p>Sent to server, generic message that can control any device that takes a single value and staticly
-sets an actuator to that value (speed, oscillation frequency, instanteous position, etc).</p>
+  <div class="markdown level0 summary"><p>Represents an input command to be sent to a device feature.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
-    <div class="level1"><a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html">ButtplugMessage</a></div>
-    <div class="level2"><a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html">ButtplugDeviceMessage</a></div>
-    <div class="level3"><span class="xref">ScalarCmd</span></div>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">DeviceInputCommand</span></div>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <a class="xref" href="Buttplug.Core.Messages.ButtplugDeviceMessage.html#Buttplug_Core_Messages_ButtplugDeviceMessage_DeviceIndex">ButtplugDeviceMessage.DeviceIndex</a>
-    </div>
-    <div>
-      <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html#Buttplug_Core_Messages_ButtplugMessage_Id">ButtplugMessage.Id</a>
-    </div>
-    <div>
-      <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html#Buttplug_Core_Messages_ButtplugMessage_Name">ButtplugMessage.Name</a>
-    </div>
-    <div>
-      <a class="xref" href="Buttplug.Core.Messages.ButtplugMessage.html#Buttplug_Core_Messages_ButtplugMessage_GetName_Type_">ButtplugMessage.GetName(Type)</a>
-    </div>
-  </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Core.Messages.html">Buttplug.Core.Messages</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Buttplug.Client.html">Buttplug.Client</a></h6>
   <h6><strong>Assembly</strong>: Buttplug.dll</h6>
-  <h5 id="Buttplug_Core_Messages_ScalarCmd_syntax">Syntax</h5>
+  <h5 id="Buttplug_Client_DeviceInputCommand_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ScalarCmd : ButtplugDeviceMessage</code></pre>
+    <pre><code class="lang-csharp hljs">public class DeviceInputCommand : object</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
-  <a id="Buttplug_Core_Messages_ScalarCmd__ctor_" data-uid="Buttplug.Core.Messages.ScalarCmd.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_ScalarCmd__ctor_List_Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand__" data-uid="Buttplug.Core.Messages.ScalarCmd.#ctor(List{Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand})">ScalarCmd(List&lt;ScalarCmd.ScalarSubcommand&gt;)</h4>
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.ScalarCmd.html">ScalarCmd</a> class.</p>
+  <a id="Buttplug_Client_DeviceInputCommand__ctor_" data-uid="Buttplug.Client.DeviceInputCommand.#ctor*"></a>
+  <h4 id="Buttplug_Client_DeviceInputCommand__ctor_Buttplug_Core_Messages_InputType_Buttplug_Core_Messages_InputCommandType_" data-uid="Buttplug.Client.DeviceInputCommand.#ctor(Buttplug.Core.Messages.InputType,Buttplug.Core.Messages.InputCommandType)">DeviceInputCommand(InputType, InputCommandType)</h4>
+  <div class="markdown level1 summary"><p>Creates a new input command.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ScalarCmd(List&lt;ScalarCmd.ScalarSubcommand&gt; scalars)</code></pre>
+    <pre><code class="lang-csharp hljs">public DeviceInputCommand(InputType inputType, InputCommandType commandType)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -127,63 +109,31 @@ sets an actuator to that value (speed, oscillation frequency, instanteous positi
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a>&gt;</td>
-        <td><span class="parametername">scalars</span></td>
-        <td><p>List of per-actuator scalar commands.</p>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputType.html">InputType</a></td>
+        <td><span class="parametername">inputType</span></td>
+        <td><p>The input type.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputCommandType.html">InputCommandType</a></td>
+        <td><span class="parametername">commandType</span></td>
+        <td><p>The command type.</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <a id="Buttplug_Core_Messages_ScalarCmd__ctor_" data-uid="Buttplug.Core.Messages.ScalarCmd.#ctor*"></a>
-  <h4 id="Buttplug_Core_Messages_ScalarCmd__ctor_System_UInt32_List_Buttplug_Core_Messages_ScalarCmd_ScalarSubcommand__System_UInt32_" data-uid="Buttplug.Core.Messages.ScalarCmd.#ctor(System.UInt32,List{Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand},System.UInt32)">ScalarCmd(UInt32, List&lt;ScalarCmd.ScalarSubcommand&gt;, UInt32)</h4>
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Buttplug.Core.Messages.ScalarCmd.html">ScalarCmd</a> class.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ScalarCmd(uint deviceIndex, List&lt;ScalarCmd.ScalarSubcommand&gt; scalars, uint id = null)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">deviceIndex</span></td>
-        <td><p>Device index.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a>&gt;</td>
-        <td><span class="parametername">scalars</span></td>
-        <td><p>List of per-actuator scalar commands.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.uint32">UInt32</a></td>
-        <td><span class="parametername">id</span></td>
-        <td><p>Message ID.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
+  <h3 id="properties">Properties
   </h3>
-  <h4 id="Buttplug_Core_Messages_ScalarCmd_Scalars" data-uid="Buttplug.Core.Messages.ScalarCmd.Scalars">Scalars</h4>
-  <div class="markdown level1 summary"><p>List of vibrator speeds.</p>
+  <a id="Buttplug_Client_DeviceInputCommand_CommandType_" data-uid="Buttplug.Client.DeviceInputCommand.CommandType*"></a>
+  <h4 id="Buttplug_Client_DeviceInputCommand_CommandType" data-uid="Buttplug.Client.DeviceInputCommand.CommandType">CommandType</h4>
+  <div class="markdown level1 summary"><p>The command type (Read, Subscribe, Unsubscribe).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;ScalarCmd.ScalarSubcommand&gt; Scalars</code></pre>
+    <pre><code class="lang-csharp hljs">public InputCommandType CommandType { get; }</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -193,7 +143,31 @@ sets an actuator to that value (speed, oscillation frequency, instanteous positi
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List</span>&lt;<a class="xref" href="Buttplug.Core.Messages.ScalarCmd.ScalarSubcommand.html">ScalarCmd.ScalarSubcommand</a>&gt;</td>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputCommandType.html">InputCommandType</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="Buttplug_Client_DeviceInputCommand_InputType_" data-uid="Buttplug.Client.DeviceInputCommand.InputType*"></a>
+  <h4 id="Buttplug_Client_DeviceInputCommand_InputType" data-uid="Buttplug.Client.DeviceInputCommand.InputType">InputType</h4>
+  <div class="markdown level1 summary"><p>The type of input (Battery, RSSI, Button, etc.).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InputType InputType { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Buttplug.Core.Messages.InputType.html">InputType</a></td>
         <td></td>
       </tr>
     </tbody>
