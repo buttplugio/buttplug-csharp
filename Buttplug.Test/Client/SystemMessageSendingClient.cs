@@ -27,7 +27,7 @@ namespace Buttplug.Client.Test
 
         public async Task SendOutgoingOnlyMessage()
         {
-            await _handler.SendMessageAsync(new Ok(ButtplugConsts.DefaultMsgId));
+            await _handler.SendMessageExpectOk(new Ok(ButtplugConsts.DefaultMsgId));
         }
     }
 }

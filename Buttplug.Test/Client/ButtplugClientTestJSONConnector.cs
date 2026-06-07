@@ -1,4 +1,4 @@
-﻿// <copyright file="ButtplugClientTestJSONConnector.cs" company="Nonpolynomial Labs LLC">
+// <copyright file="ButtplugClientTestJSONConnector.cs" company="Nonpolynomial Labs LLC">
 // Buttplug C# Source Code File - Visit https://buttplug.io for more info about the project.
 // Copyright (c) Nonpolynomial Labs LLC. All rights reserved.
 // Licensed under the BSD 3-Clause license. See LICENSE file in the project root for full license information.
@@ -14,32 +14,35 @@ using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 using Buttplug.Core.Messages;
-using NUnit.Framework;
 
 namespace Buttplug.Client.Test
 {
-    /*
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Test classes can skip documentation requirements")]
     public class ButtplugClientTestJSONConnector : ButtplugRemoteJSONConnector, IButtplugClientConnector
     {
+        private readonly Dictionary<Type, ButtplugMessage> _messageResponse =
+            new Dictionary<Type, ButtplugMessage>();
+
+        public ButtplugClientTestJSONConnector()
+        {
+            SetMessageResponse<RequestServerInfo>(
+                new ServerInfo(
+                    "Test Server",
+                    ButtplugConsts.ProtocolVersionMajor,
+                    ButtplugConsts.ProtocolVersionMinor,
+                    0));
+            SetMessageResponse<RequestDeviceList>(
+                new DeviceList(new Dictionary<uint, DeviceInfo>(), ButtplugConsts.DefaultMsgId));
+        }
+
         public event EventHandler Disconnected;
 
         public bool Connected { get; private set; }
 
-        private Dictionary<Type, ButtplugMessage> _messageResponse;
-
-        public ButtplugClientTestJSONConnector()
-        {
-            _messageResponse = new Dictionary<Type, ButtplugMessage>();
-            SetMessageResponse<RequestServerInfo>(new ServerInfo("Test Server", ButtplugConsts.CurrentSpecVersion, 0, 0));
-            SetMessageResponse<RequestDeviceList>(new DeviceList(new DeviceMessageInfo[0], ButtplugConsts.DefaultMsgId));
-        }
-
         public void SetMessageResponse<T>(ButtplugMessage msg)
             where T : ButtplugMessage
         {
-            _messageResponse.Remove(typeof(T));
-            _messageResponse.Add(typeof(T), msg);
+            _messageResponse[typeof(T)] = msg;
         }
 
         public void SendServerMessage(string msgString)
@@ -47,29 +50,28 @@ namespace Buttplug.Client.Test
             ReceiveMessages(msgString);
         }
 
-        public Task ConnectAsync(CancellationToken token = default(CancellationToken))
+        public Task ConnectAsync(CancellationToken token = default)
         {
             Connected = true;
             return Task.CompletedTask;
         }
 
-        public Task DisconnectAsync(CancellationToken token = default(CancellationToken))
+        public Task DisconnectAsync(CancellationToken token = default)
         {
             Connected = false;
+            Disconnected?.Invoke(this, EventArgs.Empty);
             return Task.CompletedTask;
         }
 
-        public Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default(CancellationToken))
+        public Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken token = default)
         {
-            var result = _messageResponse[msg.GetType()];
-            if (result == null)
+            if (!_messageResponse.TryGetValue(msg.GetType(), out var result))
             {
-                Assert.Fail($"Don't have a message to respond to {msg.GetType()} with.");
+                throw new ButtplugMessageException($"No response registered for {msg.GetType().Name}.");
             }
 
             result.Id = msg.Id;
             return Task.FromResult(result);
         }
     }
-    */
 }

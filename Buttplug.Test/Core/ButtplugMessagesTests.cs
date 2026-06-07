@@ -7,8 +7,6 @@
 // Test file, disable ConfigureAwait checking.
 // ReSharper disable ConsiderUsingConfigureAwait
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Buttplug.Core.Messages;
 using FluentAssertions;
@@ -25,18 +23,6 @@ namespace Buttplug.Core.Test
         public void OneTimeSetUp()
         {
             _parser = new ButtplugJsonMessageParser();
-        }
-
-        private T CheckParsedVersion<T>(ButtplugMessage msg, string jsonStr)
-            where T : ButtplugMessage
-        {
-            var str = _parser.Serialize(msg);
-            str.Should().Be(jsonStr);
-            var msgs = _parser.Deserialize(str).ToArray();
-            msgs.Length.Should().Be(1);
-            var finalMsg = msgs[0];
-            finalMsg.Should().BeOfType<T>();
-            return finalMsg as T;
         }
 
         [Test]
@@ -72,99 +58,5 @@ namespace Buttplug.Core.Test
             str.Should().NotContain("DeviceIndex");
             _parser.Deserialize(str).Single().Should().BeOfType<StopCmd>();
         }
-        /*
-        [Test]
-        public void TestDeviceAddedCmdVersion1()
-        {
-            void CheckMsg(DeviceAdded msg)
-            {
-                msg.DeviceIndex.Should().Be(2);
-                msg.Id.Should().Be(0);
-                msg.DeviceName.Should().Be("testDev");
-                msg.DeviceMessages.Count.Should().Be(2);
-                msg.DeviceMessages.Keys.Should().Contain(new[] { "StopDeviceCmd", "VibrateCmd" });
-                msg.DeviceMessages["VibrateCmd"].FeatureCount.Should().Be(1);
-            }
-
-            var msg = new DeviceAdded(2, "testDev", new Dictionary<string, MessageAttributes>
-            {
-                { "StopDeviceCmd", new MessageAttributes() },
-                { "VibrateCmd", new MessageAttributes() { FeatureCount = 1 } },
-            });
-
-            CheckMsg(msg);
-            var msgSchemv1 = CheckParsedVersion<DeviceAdded>(msg,
-                "[{\"DeviceAdded\":{\"DeviceName\":\"testDev\",\"DeviceMessages\":{\"StopDeviceCmd\":{},\"VibrateCmd\":{\"FeatureCount\":1}},\"DeviceIndex\":2,\"Id\":0}}]");
-            CheckMsg(msgSchemv1);
-        }
-
-        [Test]
-        public void TestDeviceListCmdVersion1()
-        {
-            void CheckMsg(DeviceList msg)
-            {
-                msg.Id.Should().Be(6);
-                msg.Devices.Length.Should().Be(2);
-                msg.Devices[0].DeviceName.Should().Be("testDev0");
-                msg.Devices[0].DeviceIndex.Should().Be(2);
-                msg.Devices[0].DeviceMessages.Count.Should().Be(2);
-                msg.Devices[0].DeviceMessages.Should().ContainKeys("StopDeviceCmd", "VibrateCmd");
-                msg.Devices[0].DeviceMessages["StopDeviceCmd"].FeatureCount.Should().BeNull();
-                msg.Devices[0].DeviceMessages["VibrateCmd"].FeatureCount.Should().Be(1);
-
-                msg.Devices[1].DeviceName.Should().Be("testDev1");
-                msg.Devices[1].DeviceIndex.Should().Be(5);
-                msg.Devices[1].DeviceMessages.Count.Should().Be(2);
-                msg.Devices[1].DeviceMessages.Should().ContainKeys("StopDeviceCmd", "RotateCmd");
-                msg.Devices[1].DeviceMessages["StopDeviceCmd"].FeatureCount.Should().BeNull();
-                msg.Devices[1].DeviceMessages["RotateCmd"].FeatureCount.Should().Be(2);
-            }
-
-            var msg = new DeviceList(new[]
-            {
-                new DeviceMessageInfo(2, "testDev0", new Dictionary<string, MessageAttributes>
-                {
-                    { "StopDeviceCmd", new MessageAttributes() },
-                    { "VibrateCmd", new MessageAttributes() { FeatureCount = 1 } },
-                }),
-                new DeviceMessageInfo(5, "testDev1", new Dictionary<string, MessageAttributes>
-                {
-                    { "StopDeviceCmd", new MessageAttributes() },
-                    { "RotateCmd", new MessageAttributes() { FeatureCount = 2 } },
-                }),
-            }, 6);
-
-            CheckMsg(msg);
-
-            var newMsg = CheckParsedVersion<DeviceList>(msg, 1,
-                "[{\"DeviceList\":{\"Devices\":[{\"DeviceName\":\"testDev0\",\"DeviceIndex\":2,\"DeviceMessages\":{\"StopDeviceCmd\":{},\"VibrateCmd\":{\"FeatureCount\":1}}},{\"DeviceName\":\"testDev1\",\"DeviceIndex\":5,\"DeviceMessages\":{\"StopDeviceCmd\":{},\"RotateCmd\":{\"FeatureCount\":2}}}],\"Id\":6}}]"
-            );
-
-            CheckMsg(newMsg);
-        }
-
-        [Test]
-        public void TestVibrateCmd()
-        {
-            void CheckMsg(VibrateCmd msg)
-            {
-                msg.Id.Should().Be(4);
-                msg.DeviceIndex.Should().Be(2);
-                msg.Speeds.Count.Should().Be(1);
-                msg.Speeds[0].Index.Should().Be(0);
-                msg.Speeds[0].Speed.Should().Be(0.5);
-            }
-
-            var msg = new VibrateCmd(2, new List<VibrateCmd.VibrateSubcommand> { new VibrateCmd.VibrateSubcommand(0, 0.5) }, 4);
-            CheckMsg(msg);
-
-            var newMsg = CheckParsedVersion<VibrateCmd>(msg, 1,
-                "[{\"VibrateCmd\":{\"Speeds\":[{\"Index\":0,\"Speed\":0.5}],\"DeviceIndex\":2,\"Id\":4}}]");
-
-            CheckMsg(newMsg);
-
-            _parser.Invoking(x => x.Serialize(msg, 0)).Should().Throw<ButtplugMessageException>();
-        }
-        */
     }
 }
