@@ -28,6 +28,8 @@ namespace Buttplug.Client
 
         private Task _readTask;
 
+        private CancellationTokenSource _readLoopCancellationToken;
+
         /// <summary>
         /// </summary>
         /// <param name="uri">
@@ -63,7 +65,9 @@ namespace Buttplug.Client
                 throw new ButtplugClientConnectorException("Websocket Connection Exception! See Inner Exception", e);
             }
 
-            _readTask = Task.Run(async () => await RunClientLoop(token).ConfigureAwait(false), token);
+            _readLoopCancellationToken?.Dispose();
+            _readLoopCancellationToken = new CancellationTokenSource();
+            _readTask = Task.Run(async () => await RunClientLoop(_readLoopCancellationToken.Token).ConfigureAwait(false));
         }
 
         /// <summary>
@@ -72,13 +76,23 @@ namespace Buttplug.Client
         /// <returns>Nothing (Task used for async/await)</returns>
         public async Task DisconnectAsync(CancellationToken token = default)
         {
+            _readLoopCancellationToken?.Cancel();
+
             if (_wsClient != null && (_wsClient.State == WebSocketState.Connecting || _wsClient.State == WebSocketState.Open))
+            {
                 await _wsClient.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None).ConfigureAwait(false);
+            }
 
             _wsClient?.Dispose();
             _wsClient = null;
 
-            await _readTask.ConfigureAwait(false);
+            if (_readTask != null)
+            {
+                await _readTask.ConfigureAwait(false);
+            }
+
+            _readLoopCancellationToken?.Dispose();
+            _readLoopCancellationToken = null;
         }
 
         public async Task<ButtplugMessage> SendAsync(ButtplugMessage msg, CancellationToken cancellationToken)
@@ -118,7 +132,7 @@ namespace Buttplug.Client
                 if (_wsClient != null)
                 {
                     // Clean up the websocket and fire the disconnection event.
-                    _wsClient.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", token).Dispose();
+                    _wsClient.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None).Dispose();
                     _wsClient = null;
                 }
                 // If we somehow still have some live messages, throw exceptions so they aren't stuck.
