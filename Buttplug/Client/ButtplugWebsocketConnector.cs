@@ -100,7 +100,7 @@ namespace Buttplug.Client
             if (_wsClient == null)
                 throw new ButtplugException("Cannot send messages while disconnected", Error.ErrorClass.ERROR_MSG);
 
-            var returnMsg = PrepareMessage(msg);
+            var returnMsg = PrepareMessage(msg, cancellationToken);
             await _wsClient.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(returnMsg.Message)), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
             return await returnMsg.Promise.ConfigureAwait(false);
         }

@@ -29,18 +29,29 @@ namespace Buttplug.Client
         /// <summary>
         /// Stores messages waiting for reply from the server.
         /// </summary>
-        private readonly ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>> _waitingMsgs =
-            new ConcurrentDictionary<uint, TaskCompletionSource<ButtplugMessage>>();
+        private readonly ConcurrentDictionary<uint, WaitingMessage> _waitingMsgs =
+            new ConcurrentDictionary<uint, WaitingMessage>();
 
-        public Task<ButtplugMessage> PrepareMessage(ButtplugMessage msg)
+        public Task<ButtplugMessage> PrepareMessage(ButtplugMessage msg, CancellationToken token = default)
         {
             // The client always increments the IDs on outgoing messages
             msg.Id = NextMsgId;
 
-            var promise = new TaskCompletionSource<ButtplugMessage>();
-            _waitingMsgs.TryAdd(msg.Id, promise);
+            var waitingMessage = new WaitingMessage(new TaskCompletionSource<ButtplugMessage>());
+            _waitingMsgs.TryAdd(msg.Id, waitingMessage);
 
-            return promise.Task;
+            if (token.CanBeCanceled)
+            {
+                waitingMessage.Cancellation = token.Register(() =>
+                {
+                    if (_waitingMsgs.TryRemove(msg.Id, out var queued))
+                    {
+                        queued.Promise.TrySetCanceled();
+                    }
+                });
+            }
+
+            return waitingMessage.Promise.Task;
         }
 
         public void CheckMessage(ButtplugMessage msg)
@@ -58,21 +69,27 @@ namespace Buttplug.Client
                 throw new ButtplugMessageException("Message with non-matching ID received.", msg.Id);
             }
 
+            queued.Dispose();
+
             if (msg is Error errMsg)
             {
-                queued.SetException(ButtplugException.FromError(errMsg));
+                queued.Promise.SetException(ButtplugException.FromError(errMsg));
                 return;
             }
 
-            queued.SetResult(msg);
+            queued.Promise.SetResult(msg);
         }
 
         protected virtual void Dispose(bool disposing)
         {
             // If we've somehow destructed while holding tasks, throw exceptions at all of them.
-            foreach (var task in _waitingMsgs.Values)
+            foreach (var pair in _waitingMsgs)
             {
-                task.TrySetException(new Exception("Sorter has been destroyed with live tasks still in queue."));
+                if (_waitingMsgs.TryRemove(pair.Key, out var queued))
+                {
+                    queued.Dispose();
+                    queued.Promise.TrySetException(new Exception("Sorter has been destroyed with live tasks still in queue."));
+                }
             }
         }
 
@@ -80,6 +97,23 @@ namespace Buttplug.Client
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        private class WaitingMessage : IDisposable
+        {
+            public WaitingMessage(TaskCompletionSource<ButtplugMessage> promise)
+            {
+                Promise = promise;
+            }
+
+            public TaskCompletionSource<ButtplugMessage> Promise { get; }
+
+            public CancellationTokenRegistration Cancellation { get; set; }
+
+            public void Dispose()
+            {
+                Cancellation.Dispose();
+            }
         }
     }
 }

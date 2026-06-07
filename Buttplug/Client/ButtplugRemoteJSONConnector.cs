@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Core;
 
@@ -34,9 +35,9 @@ namespace Buttplug.Client
         private readonly ButtplugConnectorJSONParser _jsonSerializer = new ButtplugConnectorJSONParser();
         private readonly ButtplugConnectorMessageSorter _msgSorter = new ButtplugConnectorMessageSorter();
 
-        public ReturnMessage PrepareMessage(ButtplugMessage msg)
+        public ReturnMessage PrepareMessage(ButtplugMessage msg, CancellationToken token = default)
         {
-            var promise = _msgSorter.PrepareMessage(msg);
+            var promise = _msgSorter.PrepareMessage(msg, token);
             var jsonMsg = _jsonSerializer.Serialize(msg);
             return new ReturnMessage(jsonMsg, promise);
         }
