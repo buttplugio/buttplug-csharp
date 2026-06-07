@@ -95,6 +95,8 @@ namespace Buttplug.Client
         /// </summary>
         private IButtplugClientConnector _connector;
 
+        private int _serverDisconnectRaised;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtplugClient"/> class.
         /// </summary>
@@ -119,7 +121,8 @@ namespace Buttplug.Client
 
             // Reset client internals
             _connector = connector;
-            _connector.Disconnected += (obj, eventArgs) => ServerDisconnect?.Invoke(obj, eventArgs);
+            _serverDisconnectRaised = 0;
+            _connector.Disconnected += ConnectorDisconnectedHandler;
             _connector.InvalidMessageReceived += ConnectorErrorHandler;
             _connector.MessageReceived += MessageReceivedHandler;
             _devices.Clear();
@@ -171,8 +174,10 @@ namespace Buttplug.Client
             }
 
             _connector.MessageReceived -= MessageReceivedHandler;
+            _connector.InvalidMessageReceived -= ConnectorErrorHandler;
             await _connector.DisconnectAsync().ConfigureAwait(false);
-            ServerDisconnect?.Invoke(this, EventArgs.Empty);
+            _connector.Disconnected -= ConnectorDisconnectedHandler;
+            SignalServerDisconnect(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -262,6 +267,19 @@ namespace Buttplug.Client
         private void ConnectorErrorHandler(object sender, ButtplugExceptionEventArgs exception)
         {
             ErrorReceived?.Invoke(this, exception);
+        }
+
+        private void ConnectorDisconnectedHandler(object sender, EventArgs eventArgs)
+        {
+            SignalServerDisconnect(sender, eventArgs);
+        }
+
+        private void SignalServerDisconnect(object sender, EventArgs eventArgs)
+        {
+            if (Interlocked.Exchange(ref _serverDisconnectRaised, 1) == 0)
+            {
+                ServerDisconnect?.Invoke(sender, eventArgs);
+            }
         }
 
         /// <summary>
