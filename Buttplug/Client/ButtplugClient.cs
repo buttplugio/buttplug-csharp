@@ -149,8 +149,16 @@ namespace Buttplug.Client
                             res.Id);
                     }
 
-                    // Get full device list and populate internal list
-                    await RequestDeviceListAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        // Get full device list and populate internal list
+                        await RequestDeviceListAsync(token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await DisconnectAsync().ConfigureAwait(false);
+                        throw;
+                    }
                     break;
 
                 case Error e:
@@ -242,6 +250,7 @@ namespace Buttplug.Client
         /// <param name="token">Cancellation token.</param>
         public async Task StartScanningAsync(CancellationToken token = default)
         {
+            EnsureConnected();
             await _handler.SendMessageExpectOk(new StartScanning(), token).ConfigureAwait(false);
         }
 
@@ -252,6 +261,7 @@ namespace Buttplug.Client
         /// <param name="token">Cancellation token.</param>
         public async Task StopScanningAsync(CancellationToken token = default)
         {
+            EnsureConnected();
             await _handler.SendMessageExpectOk(new StopScanning(), token).ConfigureAwait(false);
         }
 
@@ -261,7 +271,16 @@ namespace Buttplug.Client
         /// <param name="token">Cancellation token.</param>
         public async Task StopAllDevicesAsync(CancellationToken token = default)
         {
+            EnsureConnected();
             await _handler.SendMessageExpectOk(new StopCmd(), token).ConfigureAwait(false);
+        }
+
+        private void EnsureConnected()
+        {
+            if (!Connected)
+            {
+                throw new ButtplugClientConnectorException("Client not connected.");
+            }
         }
 
         private void ConnectorErrorHandler(object sender, ButtplugExceptionEventArgs exception)
