@@ -11,9 +11,9 @@ jobs:
         dotnet-version: [ '10.0.x' ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Restore signing pfx
@@ -25,7 +25,7 @@ jobs:
           $pfxPath = Join-Path -Path $env:RUNNER_TEMP -ChildPath "cert.pfx"; 
           $encodedBytes = [System.Convert]::FromBase64String($env:PFX_CONTENT); 
           Set-Content $pfxPath -Value $encodedBytes -AsByteStream;
-          Write-Output "::set-output name=PFX_PATH::$pfxPath";
+          "PFX_PATH=$pfxPath" >> $env:GITHUB_OUTPUT
       - name: Install dependencies
         run: dotnet restore
       - name: Build
@@ -37,8 +37,9 @@ jobs:
           $pfxPath = Join-Path -Path $env:RUNNER_TEMP -ChildPath "cert.pfx"; 
           nuget sign **\*.nupkg -CertificatePath "$pfxPath" -CertificatePassword "$env:PFX_KEY" -Timestamper http://timestamp.comodoca.com/rfc3161
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: windows-installer
+          name: windows-nuget-packages-${{ matrix.dotnet-version }}
           path: |
             Buttplug*/**/*.*nupkg
+          if-no-files-found: error
