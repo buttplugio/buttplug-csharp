@@ -1,13 +1,5 @@
 # 5.0.1 (2026-06-07)
 
-## Features
-
-- Updated messages and client APIs for the Buttplug v4 protocol, including `OutputCmd`,
-  `InputCmd`, `StopCmd`, device features, and protocol major/minor handshake fields.
-- Added composable device output and input command builders for feature-based device control.
-- Added simplified extension classes and updated examples for the current client API.
-- Added .NET Framework nullable annotation support for the v4 client code.
-
 ## Bugfixes
 
 - #679: Pending message replies are now canceled and removed when their cancellation token is canceled.
@@ -25,6 +17,21 @@
 - Updated the test project to .NET 10 and current NUnit/Microsoft.NET.Test.Sdk packages.
 - Restored v5-compatible client connector and client/server error coverage.
 - Removed stale v1/v3 commented tests that referenced removed message types and APIs.
+
+# 5.0.0 (2026-06-07)
+
+## Features
+
+- Updated messages and client APIs for the Buttplug v4 protocol, including `OutputCmd`,
+  `InputCmd`, `StopCmd`, device features, and protocol major/minor handshake fields.
+- Added composable device output and input command builders for feature-based device control.
+- Added simplified extension classes and updated examples for the current client API.
+- Added .NET Framework nullable annotation support for the v4 client code.
+
+## Bugfixes
+
+- Updated `BatteryAsync` for cancellation support.
+- Updated errors to include more expressive message handling.
 
 # 4.0.0 (2024-09-05)
 
