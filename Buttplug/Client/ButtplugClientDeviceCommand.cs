@@ -11,7 +11,7 @@ using Buttplug.Core.Messages;
 namespace Buttplug.Client
 {
     /// <summary>
-    /// Represents either a percentage (0.0 to 1.0) or a step value for device commands.
+    /// Represents either a percentage or a step value for device commands.
     /// </summary>
     public class PercentOrSteps
     {
@@ -47,14 +47,14 @@ namespace Buttplug.Client
         /// <summary>
         /// Creates a PercentOrSteps from a percentage value.
         /// </summary>
-        /// <param name="percent">The percentage value (0.0 to 1.0).</param>
+        /// <param name="percent">The percentage value.</param>
         /// <returns>A PercentOrSteps representing the percentage.</returns>
-        /// <exception cref="ButtplugDeviceException">Thrown if percent is not in range 0.0 to 1.0.</exception>
-        public static PercentOrSteps FromPercent(double percent)
+        /// <exception cref="ButtplugDeviceException">Thrown if percent is not in range.</exception>
+        public static PercentOrSteps FromPercent(double percent, double minPercent = 0.0, double maxPercent = 1.0)
         {
-            if (percent < 0.0 || percent > 1.0)
+            if (percent < minPercent || percent > maxPercent)
             {
-                throw new ButtplugDeviceException($"Percent value {percent} is not in the range 0.0 <= x <= 1.0");
+                throw new ButtplugDeviceException($"Percent value {percent} is not in the range {minPercent} <= x <= {maxPercent}");
             }
             return new PercentOrSteps(percent, null);
         }
@@ -133,11 +133,12 @@ namespace Buttplug.Client
         /// <summary>
         /// Creates a command with the specified percentage value.
         /// </summary>
-        /// <param name="percent">The percentage (0.0 to 1.0).</param>
+        /// <param name="percent">The percentage.</param>
         /// <returns>The output command.</returns>
         public DeviceOutputCommand Percent(double percent)
         {
-            return new DeviceOutputCommand(_outputType, PercentOrSteps.FromPercent(percent));
+            var minPercent = _outputType == OutputType.Rotate ? -1.0 : 0.0;
+            return new DeviceOutputCommand(_outputType, PercentOrSteps.FromPercent(percent, minPercent));
         }
     }
 
