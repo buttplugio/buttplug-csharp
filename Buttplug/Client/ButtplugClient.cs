@@ -256,7 +256,7 @@ namespace Buttplug.Client
         /// <param name="token">Cancellation token.</param>
         public async Task StopAllDevicesAsync(CancellationToken token = default)
         {
-            await _handler.SendMessageExpectOk(new StopAllDevices(), token).ConfigureAwait(false);
+            await _handler.SendMessageExpectOk(new StopCmd(), token).ConfigureAwait(false);
         }
 
         private void ConnectorErrorHandler(object sender, ButtplugExceptionEventArgs exception)

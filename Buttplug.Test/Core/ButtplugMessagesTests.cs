@@ -48,6 +48,30 @@ namespace Buttplug.Core.Test
                 ButtplugMessage.GetName(msgClass);
             }
         }
+
+        [Test]
+        public void TestStopCmdSerializesWithV4MessageName()
+        {
+            var msg = new StopCmd(deviceIndex: 0);
+
+            var str = _parser.Serialize(msg);
+
+            str.Should().Contain("\"StopCmd\"");
+            str.Should().NotContain("StopDeviceCmd");
+            _parser.Deserialize(str).Single().Should().BeOfType<StopCmd>();
+        }
+
+        [Test]
+        public void TestStopCmdCanStopAllDevices()
+        {
+            var msg = new StopCmd();
+
+            var str = _parser.Serialize(msg);
+
+            str.Should().Contain("\"StopCmd\"");
+            str.Should().NotContain("DeviceIndex");
+            _parser.Deserialize(str).Single().Should().BeOfType<StopCmd>();
+        }
         /*
         [Test]
         public void TestDeviceAddedCmdVersion1()

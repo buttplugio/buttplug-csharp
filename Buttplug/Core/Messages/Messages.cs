@@ -671,6 +671,59 @@ namespace Buttplug.Core.Messages
     #region Device Control - Stop Commands
 
     /// <summary>
+    /// Sent to server, stops actions of all devices, a specific device, or a specific feature.
+    /// </summary>
+    [ButtplugMessageMetadata("StopCmd")]
+    public class StopCmd : ButtplugMessage
+    {
+        /// <summary>
+        /// Index of device to stop. If omitted, all devices are stopped.
+        /// </summary>
+        [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
+        public uint? DeviceIndex;
+
+        /// <summary>
+        /// Index of feature to stop. Ignored when device index is omitted.
+        /// </summary>
+        [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
+        public uint? FeatureIndex;
+
+        /// <summary>
+        /// If true, stop all input operations (subscriptions).
+        /// </summary>
+        [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Inputs;
+
+        /// <summary>
+        /// If true, stop all output operations.
+        /// </summary>
+        [JsonProperty(Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Outputs;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StopCmd"/> class.
+        /// </summary>
+        /// <param name="id">Message ID.</param>
+        /// <param name="deviceIndex">Optional device index.</param>
+        /// <param name="featureIndex">Optional feature index.</param>
+        /// <param name="inputs">Stop inputs.</param>
+        /// <param name="outputs">Stop outputs.</param>
+        public StopCmd(
+            uint id = ButtplugConsts.DefaultMsgId,
+            uint? deviceIndex = null,
+            uint? featureIndex = null,
+            bool? inputs = null,
+            bool? outputs = null)
+            : base(id)
+        {
+            DeviceIndex = deviceIndex;
+            FeatureIndex = featureIndex;
+            Inputs = inputs;
+            Outputs = outputs;
+        }
+    }
+
+    /// <summary>
     /// Sent to server, stops actions of a specific device.
     /// </summary>
     [ButtplugMessageMetadata("StopDeviceCmd")]

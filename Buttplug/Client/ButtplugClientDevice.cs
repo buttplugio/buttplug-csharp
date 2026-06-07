@@ -297,7 +297,7 @@ namespace Buttplug.Client
         /// <param name="token">Cancellation token.</param>
         public async Task StopAsync(CancellationToken token = default)
         {
-            await _handler.SendMessageExpectOk(new StopDeviceCmd(Index), token).ConfigureAwait(false);
+            await _handler.SendMessageExpectOk(new StopCmd(deviceIndex: Index), token).ConfigureAwait(false);
         }
 
         #endregion
