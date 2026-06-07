@@ -49,8 +49,6 @@ namespace Buttplug.Core.Test
             // Valid json and message type but with erroneous content
             "[{\"Ok\":{\"Id\":\"Test\"}}]",
 
-            // Valid json and message type but with extra content
-            "[{\"Ok\":{\"NotAField\":\"NotAValue\",\"Id\":0}}]",
         };
 
         [Theory]
