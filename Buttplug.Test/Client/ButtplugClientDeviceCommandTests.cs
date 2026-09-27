@@ -29,5 +29,49 @@ namespace Buttplug.Client.Test
                 .Should()
                 .Throw<ButtplugDeviceException>();
         }
+        
+        [Test]
+        public void TestToStepValuePositive()
+        {
+            var p = PercentOrSteps.FromPercent(0.5);
+            Assert.AreEqual(50, p.ToStepValue(-100, 100));
+            
+            p = PercentOrSteps.FromPercent(1.0);
+            Assert.AreEqual(100, p.ToStepValue(-100, 100));
+
+            p = PercentOrSteps.FromPercent(0.0);
+            Assert.AreEqual(0, p.ToStepValue(-100, 100));
+        }
+
+        [Test]
+        public void TestToStepValueNegative()
+        {
+            var p = PercentOrSteps.FromPercent(-0.5, -1.0);
+            // Math.Floor(-0.5 * -100 * -1) = Math.Floor(-0.5 * 100) = Math.Floor(-50) = -50
+            Assert.AreEqual(-50, p.ToStepValue(-100, 100));
+
+            p = PercentOrSteps.FromPercent(-1.0, -1.0);
+            Assert.AreEqual(-100, p.ToStepValue(-100, 100));
+        }
+
+        [Test]
+        public void TestToStepValueAsymmetric()
+        {
+            var p = PercentOrSteps.FromPercent(0.555);
+            Assert.AreEqual(56, p.ToStepValue(-10, 100));
+
+            p = PercentOrSteps.FromPercent(-0.555, -1.0);
+            Assert.AreEqual(-6, p.ToStepValue(-10, 100));
+        }
+
+        [Test]
+        public void TestToStepValueSteps()
+        {
+            var s = PercentOrSteps.FromSteps(42);
+            Assert.AreEqual(42, s.ToStepValue(-100, 100));
+            
+            s = PercentOrSteps.FromSteps(-42);
+            Assert.AreEqual(-42, s.ToStepValue(-100, 100));
+        }
     }
 }

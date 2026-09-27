@@ -62,13 +62,24 @@ namespace Buttplug.Client
         /// <summary>
         /// Converts this value to an actual step value given a max step count.
         /// </summary>
+        /// <param name="minSteps">The maximum number of steps in the negative direction.</param>
         /// <param name="maxSteps">The maximum number of steps.</param>
         /// <returns>The calculated step value.</returns>
-        public int ToStepValue(int maxSteps)
+        public int ToStepValue(int minSteps, int maxSteps)
         {
             if (_steps.HasValue)
             {
                 return _steps.Value;
+            }
+
+            if (!_percent.HasValue)
+            {
+                return 0;
+            }
+            
+            if (_percent.Value < 0)
+            {
+                return (int)Math.Floor(_percent.Value * minSteps * -1);
             }
             return (int)Math.Ceiling(_percent.Value * maxSteps);
         }
